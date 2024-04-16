@@ -16,7 +16,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: terraform
         env:
           TERRAFORM_VERSION: "1.8.0"
@@ -32,7 +32,6 @@ jobs:
           mkdir _tmp
           chmod -R 777 _tmp
           
-          cp terraform.tfvars.example terraform.tfvars
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           terraform init
