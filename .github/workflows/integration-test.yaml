@@ -27,7 +27,7 @@ jobs:
           cd $WD/api
           docker build . -t regapi:latest
           cd $WD/web/site
-          docker build . -t regregweb:latest
+          docker build . -t regweb:latest
           cd $WD/terraform
           mkdir _tmp
           chmod -R 777 _tmp
