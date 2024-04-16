@@ -1,0 +1,51 @@
+name: Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "web/site/**"
+      - "api/**"
+      - "terraform/**"
+
+jobs:
+  integration_tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - name: terraform
+        env:
+          TERRAFORM_VERSION: "1.8.0"
+        run: |
+          export WD=`pwd`
+          cd /tmp
+          wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+          unzip -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+          rm -rf /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+          chmod +x terraform
+          alias terraform='/tmp/terraform'
+          cd $WD/terraform
+          mkdir _tmp
+          chmod -R 777 _tmp
+          
+          cp terraform.tfvars.example terraform.tfvars
+          echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
+          terraform init
+          terraform apply -auto-approve
+
+      - name: testim install
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: npm i -g @testim/testim-cli
+          working-directory: ./testim #optional
+
+      - name: test
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url https://ar.example.demo --params-file ./config.json
+          working-directory: ./testim #optional
