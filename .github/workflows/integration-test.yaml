@@ -46,5 +46,5 @@ jobs:
       - name: test
         uses: coactions/setup-xvfb@v1
         with:
-          run: testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url https://ar.example.demo --params-file ./config.json
+          run: testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url http://ar.example.demo --params-file ./config.json
           working-directory: ./testim #optional
