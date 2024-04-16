@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "web/site/**"
-      - "api/**"
-      - "terraform/**"
 
 jobs:
   integration_tests:
