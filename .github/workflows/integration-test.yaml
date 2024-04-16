@@ -21,7 +21,6 @@ jobs:
           cd /tmp
           wget -q https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
           unzip -o /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-          ls -liah
           rm -rf /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
           chmod +x terraform
           alias terraform='/tmp/terraform'
@@ -31,7 +30,6 @@ jobs:
           
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
-          terraform -v
           terraform init
           terraform apply -auto-approve
 
