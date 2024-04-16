@@ -24,6 +24,10 @@ jobs:
           rm -rf /tmp/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
           chmod +x terraform
           alias terraform='/tmp/terraform'
+          cd $WD/api
+          docker build . -t regapi:latest
+          cd $WD/web/site
+          docker build . -t regregweb:latest
           cd $WD/terraform
           mkdir _tmp
           chmod -R 777 _tmp
