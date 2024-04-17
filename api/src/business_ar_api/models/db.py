@@ -1,4 +1,5 @@
-# Copyright © 2023 Province of British Columbia
+
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,55 +32,13 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""The Legal API service.
+"""Create SQLAlchenmy and Schema managers.
 
-This module is the API for the Legal Entity system.
+These will get initialized by the application using the models
 """
-import os
-
-import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
-from flask import Flask
-from flask_cors import CORS
-
-from .config import Config
-from .config import Production
-from .resources import register_endpoints
-from .common.flags import Flags
-from .common.auth import jwt
-from .common.run_version import get_run_version
+from flask_sqlalchemy import SQLAlchemy
 
 
-def create_app(environment: Config = Production, **kwargs) -> Flask:
-    """Return a configured Flask App using the Factory method."""
-    app = Flask(__name__)
-    app.config.from_object(environment)
-
-    # Configure Sentry
-    if dsn := app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(
-            dsn=dsn,
-            integrations=[FlaskIntegration()],
-            release=f"legal-api@{get_run_version()}",
-            send_default_pii=False,
-        )
-
-    CORS(app, resources="*")
-    # td is testData instance passed in to support testing
-    td = kwargs.get("ld_test_data", None)
-    Flags().init_app(app, td)
-    register_endpoints(app)
-    setup_jwt_manager(app, jwt)
-
-    return app
-
-
-def setup_jwt_manager(app, jwt_manager):
-    """Use flask app to configure the JWTManager to work for a particular Realm."""
-
-    def get_roles(a_dict):
-        return a_dict["realm_access"]["roles"]  # pragma: no cover
-
-    app.config["JWT_ROLE_CALLBACK"] = get_roles
-
-    jwt_manager.init_app(app)
+# by convention in the Flask community these are lower case,
+# whereas pylint wants them upper case
+db = SQLAlchemy()

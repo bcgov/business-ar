@@ -25,10 +25,10 @@ from flask_migrate import Migrate, upgrade
 from ldclient.integrations.test_data import TestData
 from sqlalchemy import event, text
 
-from sbc_apigw import create_app
-from sbc_apigw import jwt as _jwt
-from sbc_apigw.models import db as _db
-from sbc_apigw.config import Testing
+from business_ar_api import create_app
+from business_ar_api import jwt as _jwt
+from business_ar_api.models import db as _db
+from business_ar_api.config import Testing
 
 def create_test_db(user: str = None,
                    password: str = None,

@@ -34,7 +34,7 @@
 from flask import Flask
 
 from .base import bp as base_endpoint
-from .org_api_keys import bp as org_api_keys_bp
+from .accounts import bp as org_api_keys_bp
 
 
 def register_endpoints(app: Flask):

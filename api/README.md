@@ -2,7 +2,7 @@
 
 
 # Application Name
-SBC API Gateway
+Business AR API
 
 
 ## Technology Stack Used

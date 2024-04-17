@@ -44,7 +44,7 @@ from flask import current_app
 from flask import has_app_context
 from flask import Flask
 
-import sbc_apigw
+import business_ar_api
 
 
 class Flags:
@@ -115,9 +115,9 @@ class Flags:
         return {"key": "anonymous"}
 
     @staticmethod
-    def flag_user(user: sbc_apigw.models.User, account_id: int = None):
+    def flag_user(user: business_ar_api.models.User, account_id: int = None):
         """Convert User into a Flag user dict."""
-        if not isinstance(user, sbc_apigw.models.User):
+        if not isinstance(user, business_ar_api.models.User):
             return None
 
         _user = {

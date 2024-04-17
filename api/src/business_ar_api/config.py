@@ -85,23 +85,25 @@ class Config:
     KEYCLOAK_BCROS_ADMIN_CLIENTID = os.getenv("KEYCLOAK_BCROS_ADMIN_CLIENTID")
     KEYCLOAK_BCROS_ADMIN_SECRET = os.getenv("KEYCLOAK_BCROS_ADMIN_SECRET")
 
-    # API gateway config
-    API_GW_CONSUMERS_API_URL = os.getenv("API_GW_CONSUMERS_API_URL", None)
-    API_GW_KEY = os.getenv("API_GW_KEY", None)
-    API_GW_CONSUMERS_SANDBOX_API_URL = os.getenv(
-        "API_GW_CONSUMERS_SANDBOX_API_URL", None
-    )
-    API_GW_NON_PROD_KEY = os.getenv("API_GW_NON_PROD_KEY", None)
-    API_GW_EMAIL_SUFFIX = os.getenv("API_GW_EMAIL_SUFFIX", None)
-    API_GW_KC_CLIENT_ID_PATTERN = os.getenv(
-        "API_GW_KC_CLIENT_ID_PATTERN", "api-key-account-{account_id}"
-    )
-
     # API Endpoints
-    PAY_API_SANDBOX_URL = os.getenv("PAY_API_SANDBOX_URL")
     PAY_API_URL = os.getenv("PAY_API_URL")
     AUTH_API_URL = os.getenv("AUTH_API_URL")
-    AUTH_API_SANDBOX_URL = os.getenv("AUTH_API_SANDBOX_URL")
+
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    DB_USER = os.getenv("DATABASE_USERNAME", "")
+    DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "")
+    DB_NAME = os.getenv("DATABASE_NAME", "")
+    DB_HOST = os.getenv("DATABASE_HOST", "")
+    DB_PORT = int(os.getenv("DATABASE_PORT", "5432"))  # POSTGRESQL
+    # POSTGRESQL
+    if DB_UNIX_SOCKET := os.getenv("DATABASE_UNIX_SOCKET", None):
+        SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?host={DB_UNIX_SOCKET}"
+    else:
+        SQLALCHEMY_DATABASE_URI = (
+            f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        )
 
 
 class Production(Config):
