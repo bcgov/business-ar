@@ -26,7 +26,7 @@ bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/accounts")
 @cross_origin(origins="*", methods=["GET", "POST"])
 # @_jwt.has_one_of_roles(
 #     [Role.SYSTEM.value, Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value]
-#)
+# )
 def get_accounts():
     """Get all API keys for the account."""
     return {}, HTTPStatus.OK

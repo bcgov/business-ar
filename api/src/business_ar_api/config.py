@@ -89,7 +89,6 @@ class Config:
     PAY_API_URL = os.getenv("PAY_API_URL")
     AUTH_API_URL = os.getenv("AUTH_API_URL")
 
-
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     DB_USER = os.getenv("DATABASE_USERNAME", "")

@@ -1,4 +1,3 @@
-
 # Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
