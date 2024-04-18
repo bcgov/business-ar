@@ -31,34 +31,31 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Manages Auth service interactions."""
-from flask import current_app
+"""Exception responses."""
+from http import HTTPStatus
 
-from business_ar_api.services.rest_service import RestService
-from business_ar_api.utils.user_context import UserContext, user_context
+from flask import jsonify, current_app
+
+from .exceptions import BaseExceptionE
 
 
-class AuthService:
+def error_request_response(
+    message: str, http_status: HTTPStatus, errors: list[dict[str, str]] = None
+):
+    """Build generic request response with errors."""
+    return jsonify({"message": message, "details": errors or []}), http_status
 
-    @classmethod
-    @user_context
-    def get_user_accounts(cls, **kwargs):
-        user: UserContext = kwargs["user_context"]
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/orgs"
-        user_account_details = RestService.get(
-            endpoint=endpoint, token=user.bearer_token
-        ).json()
-        return user_account_details
 
-    @classmethod
-    @user_context
-    def create_user_account(cls, account_details: dict, **kwargs):
-        user: UserContext = kwargs["user_context"]
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"
-        new_user_account_details = RestService.post(
-            data=account_details,
-            endpoint=endpoint,
-            token=user.bearer_token,
-            generate_token=False,
-        ).json()
-        return new_user_account_details
+def exception_response(exception: BaseExceptionE):
+    """Build exception error response."""
+    current_app.logger.error(repr(exception))
+    try:
+        message = exception.message or "Error processing request."
+        detail = exception.error or repr(exception)
+        status_code = exception.status_code or HTTPStatus.INTERNAL_SERVER_ERROR
+    except Exception:  # noqa B902; Catch all scenario.
+        # uncaught exception
+        message = "Error processing request."
+        detail = repr(exception)
+        status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+    return jsonify({"message": message, "detail": detail}), status_code

@@ -11,16 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provides the WSGI entry point for running the application
-"""
-import os
-
-from business_ar_api import create_app, db
-from flask_migrate import Migrate 
-
-app = create_app() # pylint: disable=invalid-name
-migrate = Migrate(app, db)
-
-if __name__ == "__main__":
-    server_port = os.environ.get('PORT', '8080')
-    app.run(debug=False, port=server_port, host='0.0.0.0')
+"""Application Specific Exceptions/Responses, to manage handled errors."""
+from .exceptions import (
+    AuthException,
+    BusinessException,
+    DatabaseException,  # noqa: I001
+    ExternalServiceException,
+)  # noqa: I001
+from .responses import error_request_response, exception_response

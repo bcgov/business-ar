@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,22 +68,6 @@ class Config:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = int(os.getenv("JWT_OIDC_JWKS_CACHE_TIMEOUT"))
     except:  # pylint:disable=bare-except # noqa: B901, E722
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
-
-    # Keycloak auth config baseurl
-    KEYCLOAK_BASE_URL = os.getenv("KEYCLOAK_BASE_URL")
-    KEYCLOAK_REALMNAME = os.getenv("KEYCLOAK_REALMNAME")
-    KEYCLOAK_ADMIN_USERNAME = os.getenv("SBC_AUTH_ADMIN_CLIENT_ID")
-    KEYCLOAK_ADMIN_SECRET = os.getenv("SBC_AUTH_ADMIN_CLIENT_SECRET")
-
-    # Service account details
-    KEYCLOAK_SERVICE_ACCOUNT_ID = os.getenv("SBC_AUTH_ADMIN_CLIENT_ID")
-    KEYCLOAK_SERVICE_ACCOUNT_SECRET = os.getenv("SBC_AUTH_ADMIN_CLIENT_SECRET")
-
-    # Upstream Keycloak settings
-    KEYCLOAK_BCROS_BASE_URL = os.getenv("KEYCLOAK_BCROS_BASE_URL")
-    KEYCLOAK_BCROS_REALMNAME = os.getenv("KEYCLOAK_BCROS_REALMNAME")
-    KEYCLOAK_BCROS_ADMIN_CLIENTID = os.getenv("KEYCLOAK_BCROS_ADMIN_CLIENTID")
-    KEYCLOAK_BCROS_ADMIN_SECRET = os.getenv("KEYCLOAK_BCROS_ADMIN_SECRET")
 
     # API Endpoints
     PAY_API_URL = os.getenv("PAY_API_URL")

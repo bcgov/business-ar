@@ -31,34 +31,61 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Manages Auth service interactions."""
-from flask import current_app
 
-from business_ar_api.services.rest_service import RestService
-from business_ar_api.utils.user_context import UserContext, user_context
+"""Application Specific Exceptions, to manage api errors."""
+
+from dataclasses import dataclass
+from http import HTTPStatus
 
 
-class AuthService:
+@dataclass
+class BaseExceptionE(Exception):
+    """Base exception class for custom exceptions."""
 
-    @classmethod
-    @user_context
-    def get_user_accounts(cls, **kwargs):
-        user: UserContext = kwargs["user_context"]
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/orgs"
-        user_account_details = RestService.get(
-            endpoint=endpoint, token=user.bearer_token
-        ).json()
-        return user_account_details
+    error: str
+    message: str = None
+    status_code: HTTPStatus = None
 
-    @classmethod
-    @user_context
-    def create_user_account(cls, account_details: dict, **kwargs):
-        user: UserContext = kwargs["user_context"]
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"
-        new_user_account_details = RestService.post(
-            data=account_details,
-            endpoint=endpoint,
-            token=user.bearer_token,
-            generate_token=False,
-        ).json()
-        return new_user_account_details
+
+@dataclass
+class AuthException(BaseExceptionE):
+    """Authorization/Authentication exception."""
+
+    def __post_init__(self):
+        """Return a valid AuthorizationException."""
+        self.error = f"{self.error}, {self.status_code}"
+        if not self.message:
+            self.message = "Unauthorized access."
+        if not self.status_code:
+            self.status_code = HTTPStatus.FORBIDDEN
+
+
+@dataclass
+class BusinessException(BaseExceptionE):
+    """Business rules exception."""
+
+    def __post_init__(self):
+        """Return a valid BusinessException."""
+        if not self.message:
+            self.message = "Business exception."
+
+
+@dataclass
+class DatabaseException(BaseExceptionE):
+    """Database insert/update exception."""
+
+    def __post_init__(self):
+        """Return a valid DatabaseException."""
+        self.message = "Database error while processing request."
+        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+
+
+@dataclass
+class ExternalServiceException(BaseExceptionE):
+    """3rd party service exception."""
+
+    def __post_init__(self):
+        """Return a valid ExternalServiceException."""
+        self.message = "3rd party service error while processing request."
+        self.error = f"{repr(self.error)}, {self.status_code}"
+        self.status_code = HTTPStatus.SERVICE_UNAVAILABLE

@@ -1,4 +1,4 @@
-# Copyright © 2023 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
 from flask import Flask
 
 from .base import bp as base_endpoint
-from .accounts import bp as org_api_keys_bp
+from .accounts import bp as accounts_bp
 
 
 def register_endpoints(app: Flask):
@@ -46,4 +46,4 @@ def register_endpoints(app: Flask):
         blueprint=base_endpoint,
     )
 
-    app.register_blueprint(org_api_keys_bp)
+    app.register_blueprint(accounts_bp)

@@ -18,15 +18,27 @@ from flask_cors import cross_origin
 
 from http import HTTPStatus
 from business_ar_api.common.auth import jwt as _jwt
+from business_ar_api.enums.enum import Role
+from business_ar_api.services.auth import AuthService
 
-bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/accounts")
+bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
 
 
 @bp.route("", methods=["GET", "OPTIONS"])
-@cross_origin(origins="*", methods=["GET", "POST"])
-# @_jwt.has_one_of_roles(
-#     [Role.SYSTEM.value, Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value]
-# )
-def get_accounts():
-    """Get all API keys for the account."""
-    return {}, HTTPStatus.OK
+@cross_origin(origins="*", methods=["GET"])
+@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+def get_user_accounts():
+    """Get all accounts of the user."""
+    auth_service = AuthService()
+    return auth_service.get_user_accounts(), HTTPStatus.OK
+
+
+@bp.route("", methods=["POST", "OPTIONS"])
+@cross_origin(origins="*", methods=["POST"])
+@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+def create_user_account():
+    """Create a new user account."""
+    auth_service = AuthService()
+    json_input = request.get_json()
+    # TODOO: Validate using JSON schema
+    return auth_service.create_user_account(json_input), HTTPStatus.OK
