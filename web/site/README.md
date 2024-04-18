@@ -1,15 +1,15 @@
-# sbc-apigw
+# Business AR UI
 
 ## Development & Contributing
 
 Create a fork and local copy of this repo. Answer _Y_ to create a local clone.
 ```bash
-gh repo fork bcgov/sbc-apigw
+gh repo fork bcgov/business-ar
 ```
 
 Change into the directory and install the packages.
 ```bash
-cd sbc-apigw
+cd business-ar/web/site
 pnpm install
 ```
 
@@ -29,7 +29,7 @@ pnpm test:unit
 
 Run Playwright e2e tests in headless mode
 ```bash
-cd sbc-apigw
+cd business-ar/web/site
 pnpm test:e2e
 ```
 

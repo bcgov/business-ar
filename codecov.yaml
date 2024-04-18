@@ -1,20 +1,24 @@
 codecov:
-  require_ci_to_pass: true
+  require_ci_to_pass: false
   branch: main
   max_report_age: false
 
 coverage:
   precision: 2
   round: down
-  range: "50...100"
+  range: "80...100"
   status:
     patch: false
     project:
       default: false
-      apigw:
-        target: 50%
+      api:
+        target: 80%
         flags:
-          - apigw
+          - businessarapi
+      ui:
+        target: 80%
+        flags:
+          - businessarui
 ignore:
   - "^/tests/**/*" # ignore test harness code
 
@@ -32,7 +36,11 @@ comment:
   require_changes: true
 
 flags:
-  apigw:
+  businessarapi:
+    paths:
+      - api
+    carryforward: true
+  businessarui:
     paths:
       - web/site
     carryforward: true
