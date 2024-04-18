@@ -18,4 +18,4 @@ from .exceptions import (
     DatabaseException,  # noqa: I001
     ExternalServiceException,
 )  # noqa: I001
-from .responses import error_request_response, exception_response
+from .responses import error_response, exception_response

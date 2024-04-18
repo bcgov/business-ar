@@ -19,7 +19,9 @@ from flask_cors import cross_origin
 from http import HTTPStatus
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
+from business_ar_api.exceptions.responses import error_response
 from business_ar_api.services.auth import AuthService
+from business_ar_api.services.schema_service import SchemaService
 
 bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
 
@@ -40,5 +42,11 @@ def create_user_account():
     """Create a new user account."""
     auth_service = AuthService()
     json_input = request.get_json()
-    # TODOO: Validate using JSON schema
+
+    schema_name = "new-account.json"
+    schema_service = SchemaService()
+    [valid, errors] = schema_service.validate(schema_name, json_input)
+    if not valid:
+        return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
+
     return auth_service.create_user_account(json_input), HTTPStatus.OK
