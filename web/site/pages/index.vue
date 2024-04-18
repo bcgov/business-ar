@@ -11,7 +11,7 @@ export const bcscAuthProvider = new OAuthProvider('oidc.keycloak-bcsc')
 const auth = useFirebaseAuth()! // only exists on client side
 const error = ref<Error | null>(null)
 const user = useCurrentUser()
-const localePath = useLocalePath()
+// const localePath = useLocalePath()
 const { t, locale } = useI18n()
 
 useHead({
