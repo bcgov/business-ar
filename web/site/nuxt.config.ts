@@ -4,9 +4,7 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: [
-        '/en-CA/sbc/tos'
-      ]
+      routes: []
     }
   },
   modules: [
