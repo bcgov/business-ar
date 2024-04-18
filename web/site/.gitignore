@@ -139,3 +139,6 @@ out
 
 # playwright test results
 test-results
+
+#firebase service account
+service-account.json
