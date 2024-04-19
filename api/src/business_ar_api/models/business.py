@@ -31,15 +31,43 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""This exports all of the models and schemas used by the application."""
-from .business import Business
-from .db import db  # noqa: I001
-from .user import User
-from .user import UserRoles
+"""This manages data about a business."""
 
-__all__ = (
-    "db",
-    "Business",
-    "User",
-    "UserRoles",
-)
+from .base_model import BaseModel
+from .db import db
+
+
+class Business(BaseModel):
+    id = db.Column(db.Integer, primary_key=True)
+    legal_name = db.Column("legal_name", db.String(1000), index=True)
+    legal_type = db.Column("legal_type", db.String(10))
+    identifier = db.Column("identifier", db.String(10), index=True)
+    tax_id = db.Column("tax_id", db.String(15), index=True)
+    nano_id = db.Column("nano_id", db.String(25), index=True)
+
+    @classmethod
+    def find_by_nano_id(cls, nano_id: str):
+        """Return a Business by the nano_id."""
+        business = None
+        if nano_id:
+            business = cls.query.filter_by(nano_id=nano_id).one_or_none()
+        return business
+
+    @classmethod
+    def find_by_identifier(cls, identifier: str):
+        """Return a Business by identifier."""
+        business = None
+        if identifier:
+            business = cls.query.filter_by(identifier=identifier).one_or_none()
+        return business
+
+    def json(self):
+        """Return the business json."""
+        business_json = {
+            "legalName": self.legal_name,
+            "legalType": self.legal_type,
+            "identifier": self.identifier,
+            "taxId": self.tax_id,
+        }
+
+        return business_json

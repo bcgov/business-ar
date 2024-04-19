@@ -13,13 +13,15 @@
 # limitations under the License.
 """API endpoints for managing accounts."""
 
+from http import HTTPStatus
+
 from flask import Blueprint, request
 from flask_cors import cross_origin
 
-from http import HTTPStatus
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.responses import error_response
+from business_ar_api.models import Business
 from business_ar_api.services.auth import AuthService
 from business_ar_api.services.schema_service import SchemaService
 
@@ -50,3 +52,38 @@ def create_user_account():
         return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
 
     return auth_service.create_user_account(json_input), HTTPStatus.OK
+
+
+@bp.route("/<int:account_id>/affiliate", methods=["POST", "OPTIONS"])
+@cross_origin(origins="*", methods=["POST"])
+@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+def create_and_affiliate_entity(account_id: str):
+    """Create a new entity and affiliate it to the account."""
+    auth_service = AuthService()
+    json_input = request.get_json()
+    businessIdentifier = json_input.get("businessIdentifier")
+
+    if not businessIdentifier:
+        return error_response(
+            "Please provide businessIdentifier", HTTPStatus.BAD_REQUEST
+        )
+
+    business: Business = Business.find_by_identifier(businessIdentifier)
+    if not business:
+        return error_response(f"{businessIdentifier} not found", HTTPStatus.NOT_FOUND)
+
+    entity_json = {
+        "businessIdentifier": business.identifier,
+        "businessNumber": business.tax_id,
+        "name": business.legal_name,
+        "corpTypeCode": business.legal_type,
+    }
+
+    # Step 1: Create Entity
+    auth_service.create_entity(entity_json)
+
+    # Step 2: Affiliate the new entity to the account.
+    return (
+        auth_service.affiliate_entity_to_account(account_id, businessIdentifier),
+        HTTPStatus.OK,
+    )
