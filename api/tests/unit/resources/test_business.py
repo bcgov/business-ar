@@ -16,6 +16,7 @@
 Test suite to ensure that the Business endpoints are working as expected.
 """
 from http import HTTPStatus
+
 from business_ar_api.models import Business
 
 
@@ -43,7 +44,7 @@ def test_business_look_up_by_nano_id(session, client):
 
 
 def test_business_does_not_exist(session, client):
-    """Assert that a Business can be looked up using the nano id."""
+    """Assert that error is returned."""
     business = Business(
         legal_name="Test Business 4",
         legal_type="BC",
