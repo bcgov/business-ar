@@ -11,14 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Common setup and fixtures for the pytest suite used by this service."""
-
 import contextlib
-import datetime
-import time
-from contextlib import contextmanager, suppress
-from typing import Final
+from contextlib import contextmanager
 
 import psycopg2
 import pytest
@@ -84,9 +79,9 @@ def drop_test_db(user: str = None,
         DATABASE_URI = database_uri
     else:
         DATABASE_URI = f"postgresql://{user}:{password}@{host}:{port}/{user}"
-    
+
     DATABASE_URI = DATABASE_URI[:DATABASE_URI.rfind("/")] + '/postgres'
-    
+
     close_all = f"""
         SELECT pg_terminate_backend(pg_stat_activity.pid)
         FROM pg_stat_activity
@@ -153,6 +148,7 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
     Drops all existing tables - Meta follows Postgres FKs
     """
     with app.app_context():
+
         create_test_db(database=app.config.get('DATABASE_TEST_NAME'),
                        database_uri=app.config.get('SQLALCHEMY_DATABASE_URI'))
 

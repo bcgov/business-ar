@@ -48,7 +48,6 @@ class BaseModel(db.Model):
         """Save and flush."""
         db.session.add(self)
         db.session.flush()
-        self.create_activity(self)
         return self
 
     def add_to_session(self):
@@ -59,7 +58,6 @@ class BaseModel(db.Model):
         """Save and commit."""
         db.session.add(self)
         db.session.flush()
-        self.create_activity(self)
         db.session.commit()
 
         return self
@@ -68,7 +66,6 @@ class BaseModel(db.Model):
         """Delete and commit."""
         db.session.delete(self)
         db.session.flush()
-        self.create_activity(self, is_delete=True)
         db.session.commit()
 
     @staticmethod
