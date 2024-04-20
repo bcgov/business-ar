@@ -88,4 +88,4 @@ class ExternalServiceException(BaseExceptionE):
         """Return a valid ExternalServiceException."""
         self.message = "3rd party service error while processing request."
         self.error = f"{repr(self.error)}, {self.status_code}"
-        self.status_code = HTTPStatus.SERVICE_UNAVAILABLE
+        self.status_code = HTTPStatus.INTERNAL_SERVER_ERROR

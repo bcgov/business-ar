@@ -86,9 +86,7 @@ class RestService:
                 f"HTTPError on POST {endpoint} with status code "
                 f"{exc.response.status_code if exc.response else ''}"
             )
-            if response and response.status_code >= 500:
-                raise ExternalServiceException(exc) from exc
-            raise exc
+            raise ExternalServiceException(exc) from exc
         finally:
             RestService.__log_response(response)
 
