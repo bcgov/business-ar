@@ -26,11 +26,11 @@ def test_business_save(session):
         legal_type="BC",
         identifier="BC1217753",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-NyT"
+        nano_id="V1StGXR8_Z5jdHi6B-NyT",
     )
     business.save()
     assert business.id is not None
-    
+
 
 def test_find_by_identifier(session):
     """Assert that a business can be retrieved using its identifier."""
@@ -39,7 +39,7 @@ def test_find_by_identifier(session):
         legal_type="BC",
         identifier="BC1217754",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-NyW"
+        nano_id="V1StGXR8_Z5jdHi6B-NyW",
     )
     business.save()
     assert business.id is not None
@@ -54,7 +54,7 @@ def test_find_by_nano_id(session):
         legal_type="BC",
         identifier="BC1217755",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-NyR"
+        nano_id="V1StGXR8_Z5jdHi6B-NyR",
     )
     business.save()
     assert business.id is not None
@@ -69,7 +69,7 @@ def test_business_json(session):
         legal_type="BC",
         identifier="BC1217756",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-NyT"
+        nano_id="V1StGXR8_Z5jdHi6B-NyT",
     )
     business.save()
     business_json = {
