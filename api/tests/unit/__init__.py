@@ -1,5 +1,5 @@
-
 from contextlib import contextmanager
+
 
 @contextmanager
 def nested_session(session):

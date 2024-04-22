@@ -1,4 +1,4 @@
-# Copyright © 2019 Province of British Columbia
+# Copyright © 2024 Province of British Columbia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,9 +15,11 @@
 """
 import os
 
-from sbc_apigw import create_app
+from business_ar_api import create_app, db
+from flask_migrate import Migrate 
 
 app = create_app() # pylint: disable=invalid-name
+migrate = Migrate(app, db)
 
 if __name__ == "__main__":
     server_port = os.environ.get('PORT', '8080')

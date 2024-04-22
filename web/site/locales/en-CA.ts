@@ -17,33 +17,100 @@ export default {
     next: 'Next',
     previous: 'Previous',
     openMainNav: 'Open Main Navigation Menu',
-    closeMainNav: 'Close Main Navigation Menu'
+    closeMainNav: 'Close Main Navigation Menu',
+    loginBCSC: 'Login with BC Services Card',
+    createNewAccount: 'Create New Account',
+    createAccount: 'Create Account',
+    useThisAccount: {
+      main: 'Use this Account',
+      aria: 'Use this Account, {name}'
+    }
+  },
+  currency: {
+    cad: 'CAD',
+    usd: 'USD'
+  },
+  labels: {
+    note: 'Note',
+    optional: 'Optional',
+    characters: 'characters',
+    buttons: {
+      back: 'Back',
+      cancel: 'Cancel',
+      fileNowNoFee: 'File Now (no fee)',
+      reviewConfirm: 'Review and Confirm',
+      save: 'Save',
+      saveExit: 'Save and Resume Later'
+    },
+    birthdate: 'Birthdate',
+    competency: 'Competency',
+    citizenship: 'Citizenship',
+    citizenshipPR: 'Citizenship/Permanent Residency',
+    emailAddress: 'Email Address',
+    fullName: 'Full Legal Name',
+    preferredName: 'Preferred Name',
+    address: 'Address',
+    addressResidential: 'Residential Address',
+    state: 'State',
+    country: 'Country',
+    line1: 'Address Line 1',
+    line2: 'Address Line 2 (Optional)',
+    city: 'City',
+    region: 'Region (Optional)',
+    postalCode: 'Postal Code',
+    locationDescription: 'Location Description (Optional)',
+    countryOfCitizenship: {
+      citizen: 'Citizen of Canada',
+      pr: 'Permanent resident of Canada',
+      others: 'Other citizenship(s)',
+      selectAll: 'Select all countries of which this person is a citizen.',
+      placeholder: 'Countries of Citizenship',
+      findCountry: 'Find a Country',
+      select: 'Select',
+      selected: 'Selected'
+    },
+    findACountry: 'Find a country',
+    services: {
+      bcsc: 'BC Services Card',
+      bceid: 'BCeID',
+      idir: 'IDIR'
+    },
+    socialInsuranceNumber: 'Social Insurance Number (SIN)',
+    taxNumber: 'Tax Number',
+    busName: 'Business Name',
+    corpNum: 'Incorporation Number',
+    busNum: 'Business Number'
   },
   page: {
     notFound: {
       h1: 'Page Not Found'
     },
     home: {
-      title: 'Home',
-      h1: 'BC Registries API Gateway',
-      intro: 'Welcome to the BC Registries API Gateway! Access API information for all BC Registries services here.'
+      title: 'Service BC Annual Report - Home',
+      h1: 'File your BC Annual Report'
     },
-    products: {
-      title: 'All Products',
-      h1: 'All Products'
+    createAccount: {
+      title: 'Service BC Annual Report - Account Creation',
+      h1: 'Service BC Account Creation'
     },
-    dashboard: {
-      title: 'Dashboard',
-      description: 'Manage account information and view account activity', // Gérer les informations du compte et afficher l'activité du compte
-      sandboxMode: {
-        infoText: 'Sandbox Mode is enabled. Do not use for production.',
-        btnActive: 'Disable Sandbox Mode',
-        btnInactive: 'Enable Sandbox Mode',
-        text: 'Sandbox Mode'
-      },
-      tabs: {
-        profile: 'Profile',
-        apiKeys: 'API Keys' // Clés API
+    existingAccount: {
+      title: 'Service BC Annual Report - Choose Existing Account',
+      h1: 'Existing Account Found',
+      h2: 'Your Existing Accounts',
+      existingAccountWarning: 'It looks like you already have an account with BC Registries and Online Services. You can use an existing account to proceed or create a new one.'
+    }
+  },
+  widgets: {
+    feeSummary: {
+      title: 'Fee Summary',
+      total: 'Total Fees',
+      noFee: 'No Fee',
+      priorityFees: 'Priority Fees',
+      futureEffectiveFees: 'Future Effective Fees',
+      serviceFees: 'Service Fees',
+      itemLabels: {
+        TEST: 'This is test entry',
+        REGSIGIN: 'Significant Individual Change'
       }
     }
   },
@@ -64,41 +131,8 @@ export default {
   SbcLogo: {
     alt: 'Government of British Columbia Logo' // <img> alt
   },
-  ColorModeSelect: {
-    // aria-labels
-    light: 'Switch to dark mode',
-    dark: 'Switch to light mode'
-  },
   LocaleSelect: {
     // aria-label
     label: 'Select a Language, current language: English'
-  },
-  SbcProductCard: {
-    goTo: 'Go to'
-  },
-  SbcDashboardTableApiKeys: {
-    title: 'Developer Access',
-    description: {
-      main: 'Enabling developer access would allow you to integrate the BC Registries API services to your system.',
-      sec: 'Learn more in the'
-    },
-    cols: {
-      name: 'Name',
-      env: 'Environment',
-      apiKey: 'API Key',
-      actions: 'Actions'
-    }
-  },
-  modal: {
-    createKey: {
-      title: 'Create Key',
-      content: 'A name is required to create a new key. Please enter a unique name below.',
-      formLabel: 'Name'
-    },
-    revokeKey: {
-      title: 'Revoke Key - {key}',
-      content: 'Are you sure you want to revoke this API key? This will permanently remove access to the key, current projects using this key may be affected.',
-      formLabel: "Enter '{key}' to confirm."
-    }
   }
 }

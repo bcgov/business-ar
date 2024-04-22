@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const { mainLinks, openMobileNav } = useSbcNav()
-
+const { mainLinks, loggedInUserOptions } = useSbcNav()
+// const { t } = useI18n()
+// const localePath = useLocalePath()
 const headerRef = ref<HTMLElement | null>(null)
-
+const user = useCurrentUser()
 // expose template ref to access properties in parent
 defineExpose({
   headerRef
@@ -40,17 +41,47 @@ defineExpose({
         />
       </div>
       <div class="flex gap-1">
-        <ColorModeSelect />
         <LocaleSelect />
-        <UButton
-          class="lg:hidden"
-          icon="i-mdi-menu"
-          color="white"
-          variant="link"
-          size="lg"
-          :aria-label="$t('btn.openMainNav')"
-          @click="openMobileNav"
-        />
+        <UDropdown
+          v-if="user"
+          :items="loggedInUserOptions"
+          :ui="{
+            width: '',
+            item: {
+              disabled:
+                'cursor-text select-text text-bcGovGray-900 dark:text-white opacity-100 font-semibold',
+            }
+          }"
+        >
+          <UButton
+            color="white"
+            variant="link"
+          >
+            <SbcHeaderAccountLabel
+              class="hidden md:flex"
+              :username="parseSpecialChars(user.displayName, 'USER')"
+              account-name=""
+            />
+            <UAvatar
+              class="md:hidden"
+              :alt="parseSpecialChars(user.displayName, 'U')[0].toUpperCase()"
+              :ui="{
+                background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
+                text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
+                placeholder: 'font-semibold leading-none text-white truncate dark:text-bcGovColor-darkGray text-xl',
+                rounded: 'rounded-sm'
+              }"
+            />
+          </UButton>
+
+          <template #account>
+            <SbcHeaderAccountLabel
+              :username="parseSpecialChars(user.displayName, 'USER')"
+              account-name=""
+              theme="dropdown"
+            />
+          </template>
+        </UDropdown>
       </div>
     </nav>
   </header>

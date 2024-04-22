@@ -1,8 +1,0 @@
-# Used to populate product card components
-name: Business Search
-description: Search for businesses registered in B.C. and request copies of business documents.
-badge: BETA
-bulletPoints: 
-  - Search for businesses by name or number.
-  - Search for firms by their owner.
-  - Download business documents.
