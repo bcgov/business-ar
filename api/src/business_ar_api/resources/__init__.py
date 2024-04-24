@@ -36,10 +36,7 @@ from flask import Flask
 from .accounts import bp as accounts_bp
 from .base import bp as base_endpoint
 from .business import bp as business_bp
-<<<<<<< HEAD
 from .filing import bp as filings_bp
-=======
->>>>>>> 193ae52 (adding the most basic check to include gcip)
 from .meta import bp as meta_bp
 
 
