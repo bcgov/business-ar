@@ -76,9 +76,6 @@ class PaymentService:
                 "Content-Type": "application/json",
                 "Account-Id": account_id,
             }
-            print(token)
-            print(headers)
-            print(payload)
             resp = requests.post(
                 url=SVC_URL + "/payment-requests",
                 json=payload,
@@ -86,7 +83,6 @@ class PaymentService:
                 timeout=SVC_TIMEOUT,
             )
 
-            print(resp)
             if resp.status_code not in [HTTPStatus.OK, HTTPStatus.CREATED] or not (
                 resp.json()
             ).get("id", None):
