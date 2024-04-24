@@ -45,7 +45,6 @@ from business_ar_api.models.filing import FilingSerializer
 class FilingService:
     """
     The `FilingService` class is responsible for handling filing submissions.
-
     """
 
     @staticmethod
@@ -55,10 +54,10 @@ class FilingService:
         """
         filing = FilingModel()
         filing.business_id = business_id
-        filing.payload = filing_dict
+        filing.filing_json = filing_dict
         filing.submitter_id = submitter_id
         filing.invoice_id = None
-        filing.fiscal_year = filing_dict.get("header", {}).get("filingYear")
+        filing.fiscal_year = filing_dict["filing"]["header"]["filingYear"]
         filing.save()
         return filing
 

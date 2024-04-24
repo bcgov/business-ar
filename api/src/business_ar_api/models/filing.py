@@ -34,6 +34,7 @@
 """Filing Model."""
 from __future__ import annotations
 
+import copy
 from sqlalchemy import desc, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
@@ -106,15 +107,15 @@ class FilingSerializer:
     @staticmethod
     def to_dict(filing: Filing) -> dict:
         """Return the filing object as a dict."""
+        filing_dict = copy.deepcopy(filing.filing_json)
+        filing_dict["filing"]["header"]["filingYear"] = filing.fiscal_year
+        filing_dict["filing"]["header"]["paymentToken"] = filing.invoice_id
+        filing_dict["filing"]["header"]["status"] = filing.status
+        filing_dict["filing"]["header"]["filingDate"] = filing.filing_date.isoformat()
+        filing_dict["filing"]["header"]["completionDate"] = (
+            filing.completion_date.isoformat() if filing.completion_date else None
+        )
+        if filing.submitter_id:
+            filing_dict["filing"]["header"]["submitter"] = filing.submitter.username
 
-        return {
-            "id": filing.id,
-            "fiscalYear": filing.fiscal_year,
-            "status": filing.status,
-            "filing_date": filing.filing_date.isoformat(),
-            "completion_date": (
-                filing.completion_date.isoformat() if filing.completion_date else None
-            ),
-            "payload": filing.filing_json,
-            "submitter_id": filing.submitter_id,
-        }
+        return filing_dict

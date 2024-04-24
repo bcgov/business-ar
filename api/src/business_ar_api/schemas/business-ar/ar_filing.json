@@ -5,16 +5,19 @@
     "title": "AR filing Schema",
     "description": "Schema for AR filing.",
     "type": "object",
-    "properties": {
-        "header": {
-            "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/FilingHeader"
-        },
-        "annualReport": {
-            "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/AnnualReport"
-        }
-    },
     "required": [
-        "header",
-        "annualReport"
-    ]
+        "filing"
+    ],
+    "properties": {
+        "filing": {
+            "allOf": [
+                {
+                    "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/FilingHeader"
+                },
+                {
+                    "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/AnnualReport"
+                }
+            ]
+        }
+    }
 }

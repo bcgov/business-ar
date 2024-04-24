@@ -77,20 +77,28 @@
             "type": "object",
             "title": "Annual Report",
             "required": [
-                "annualReportDate",
-                "annualGeneralMeetingDate"
+                "annualReport"
             ],
             "properties": {
-                "annualGeneralMeetingDate": {
-                    "type": [
-                        "string",
-                        "null"
+                "annualReport": {
+                    "type": "object",
+                    "required": [
+                        "annualReportDate",
+                        "annualGeneralMeetingDate"
                     ],
-                    "format": "date"
-                },
-                "annualReportDate": {
-                    "type": "string",
-                    "format": "date"
+                    "properties": {
+                        "annualGeneralMeetingDate": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        },
+                        "annualReportDate": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
                 }
             }
         },
@@ -98,35 +106,43 @@
             "type": "object",
             "title": "Filing Header",
             "required": [
-                "filingYear"
+                "header"
             ],
             "properties": {
-                "filingYear": {
-                    "type": "integer"
-                },
-                "paymentToken": {
-                    "type": "string",
-                    "title": "A valid payment token for this filing."
-                },
-                "submitter": {
-                    "type": "string",
-                    "title": "Account name of the person submitting this filing."
-                },
-                "status": {
-                    "type": "string",
-                    "title": "The status of this filing.",
-                    "enum": [
-                        "DRAFT",
-                        "PENDING",
-                        "COMPLETED",
-                        "ERROR",
-                        "PAID"
-                    ]
-                },
-                "filingDate": {
-                    "type": "string",
-                    "format": "date",
-                    "title": "The submission date of the final version of the filing."
+                "header": {
+                    "type": "object",
+                    "required": [
+                        "filingYear"
+                    ],
+                    "properties": {
+                        "filingYear": {
+                            "type": "integer"
+                        },
+                        "paymentToken": {
+                            "type": "string",
+                            "title": "A valid payment token for this filing."
+                        },
+                        "submitter": {
+                            "type": "string",
+                            "title": "Account name of the person submitting this filing."
+                        },
+                        "status": {
+                            "type": "string",
+                            "title": "The status of this filing.",
+                            "enum": [
+                                "DRAFT",
+                                "PENDING",
+                                "COMPLETED",
+                                "ERROR",
+                                "PAID"
+                            ]
+                        },
+                        "filingDate": {
+                            "type": "string",
+                            "format": "date",
+                            "title": "The submission date of the final version of the filing."
+                        }
+                    }
                 }
             }
         }
