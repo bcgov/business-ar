@@ -90,13 +90,9 @@ class GoogleAuth:
         token = request.headers.get("Authorization", "").split(" ")[1]
 
         # Verify the JWT.
-        # with suppress(Exception):
-        try:
+        with suppress(Exception):
             decoded_payload = auth.verify_id_token(token, app=self.firebase_app)
             return decoded_payload
-        except Exception as err:
-            print(err)
-            print(err)
 
         return None
 
