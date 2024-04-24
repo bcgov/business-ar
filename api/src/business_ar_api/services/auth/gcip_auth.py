@@ -58,6 +58,12 @@ class GoogleAuth:
         self.app_code = self.app.config.get('APP_CODE', 'Default')
 
         app_options = None
+        if self.app.config.get('FIREBASE_AUTH_EMULATOR_HOST', None):
+            self.project_id = self.app.config.get('PROJECT_ID')
+            app_options = {
+                'projectId': self.project_id
+            }
+
         if not (self.app.config.get('FIREBASE_AUTH_EMULATOR_HOST', None)):
             self.project_id = self.app.config.get('PROJECT_ID')
             self.api_key = self.app.config.get('API_KEY')
@@ -84,9 +90,13 @@ class GoogleAuth:
         token = request.headers.get("Authorization", "").split(" ")[1]
 
         # Verify the JWT.
-        with suppress(Exception):
+        # with suppress(Exception):
+        try:
             decoded_payload = auth.verify_id_token(token, app=self.firebase_app)
             return decoded_payload
+        except Exception as err:
+            print(err)
+            print(err)
 
         return None
 

@@ -1,12 +1,16 @@
+import os
 from tests import no_firebase_github_ci
-
 
 from business_ar_api.services.auth import SBCAuthManager
 
 @no_firebase_github_ci
 def test_decorator_success(firebase_token):
     from flask import Flask
+    FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
+    PROJECT_ID = os.getenv("PROJECT_ID", "")
     app = Flask(__name__)
+    app.config['FIREBASE_AUTH_EMULATOR_HOST'] = FIREBASE_AUTH_EMULATOR_HOST
+    app.config['PROJECT_ID'] = PROJECT_ID
     sam = SBCAuthManager(app)
     route = '/decorator_test'
     msg = 'this is protected content'
@@ -27,7 +31,11 @@ def test_decorator_success(firebase_token):
 @no_firebase_github_ci
 def test_decorator_failure(firebase_token):
     from flask import Flask
+    FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
+    PROJECT_ID = os.getenv("PROJECT_ID", "")
     app = Flask(__name__)
+    app.config['FIREBASE_AUTH_EMULATOR_HOST'] = FIREBASE_AUTH_EMULATOR_HOST
+    app.config['PROJECT_ID'] = PROJECT_ID
     sam = SBCAuthManager(app)
 
     route = '/decorator_test'

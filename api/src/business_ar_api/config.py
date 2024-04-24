@@ -96,6 +96,7 @@ class Config:
     API_KEY = os.getenv("API_KEY", "")
     AUTH_DOMAIN = os.getenv("AUTH_DOMAIN", "")
     PROJECT_ID = os.getenv("PROJECT_ID", "")
+    FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
 
 
 class Production(Config):
@@ -123,5 +124,3 @@ class Testing(Config):
     DATABASE_TEST_PORT = int(os.getenv("DATABASE_TEST_PORT", "5432"))  # POSTGRESQL
 
     SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
-
-    FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
