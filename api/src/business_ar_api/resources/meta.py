@@ -31,25 +31,18 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Flask
+from flask import Blueprint
+from flask import jsonify
 
-from .accounts import bp as accounts_bp
-from .base import bp as base_endpoint
-from .business import bp as business_bp
-from .filing import bp as filings_bp
-from .meta import bp as meta_bp
+from business_ar_api.services.auth import sam
 
+bp = Blueprint("meta", __name__, url_prefix=f"/v1/meta")
 
-def register_endpoints(app: Flask):
-    # Allow base route to match with, and without a trailing slash
-    app.url_map.strict_slashes = False
+@bp.route("/", methods=("GET",))
+def base():
+    return jsonify(name="wood")
 
-    app.register_blueprint(
-        url_prefix="/",
-        blueprint=base_endpoint,
-    )
-
-    app.register_blueprint(accounts_bp)
-    app.register_blueprint(business_bp)
-    app.register_blueprint(filings_bp)
-    app.register_blueprint(meta_bp)
+@bp.route("/protected", methods=("GET",))
+@sam.jwt_authenticated
+def protected():
+    return jsonify(name="protected")
