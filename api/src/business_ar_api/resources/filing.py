@@ -73,7 +73,7 @@ def get_filings(identifier: str, filing_id: Optional[int] = None):
 
         if filing_id:
             filing = FilingService.find_filing_by_id(filing_id)
-            return jsonify(filing=FilingService.serialize(filing)), HTTPStatus.OK
+            return jsonify(FilingService.serialize(filing)), HTTPStatus.OK
         else:
             filings = FilingService.find_filings_by_business_id(business.id)
             filings_res = []
