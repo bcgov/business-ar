@@ -36,10 +36,7 @@ from flask import Flask
 from .accounts import bp as accounts_bp
 from .base import bp as base_endpoint
 from .business import bp as business_bp
-<<<<<<< HEAD
 from .filing import bp as filings_bp
-=======
->>>>>>> 193ae5266225f105f640d962dd0bc1fa8bf29855
 from .meta import bp as meta_bp
 
 
