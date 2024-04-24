@@ -134,3 +134,37 @@ def create_filing(identifier):
         return exception_response(authException)
     except Exception as exception:  # noqa: B902
         return exception_response(exception)
+
+
+@bp.route("/<string:identifier>/filings/<int:filing_id>/payment", methods=["PUT"])
+@cross_origin(origin="*")
+@jwt.requires_auth
+def update_filing_payment_status(identifier, filing_id):
+    """
+    Update the payment information of a filing by pulling data from sbc-pay.
+
+    Returns:
+        A tuple containing the response JSON and the HTTP status code.
+    """
+    try:
+        if not filing_id:
+            return error_response(
+                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
+            )
+
+        business = BusinessService.find_by_business_identifier(identifier)
+        if not business:
+            return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
+
+        # Check whether the user has permission to update the filing.
+        AuthService.is_authorized(business_identifier=identifier)
+
+        # update filing with payment details
+        filing = FilingService.update_payment_data(filing_id, jwt)
+
+        return jsonify(filing=FilingService.serialize(filing)), HTTPStatus.OK
+
+    except AuthException as authException:
+        return exception_response(authException)
+    except Exception as exception:  # noqa: B902
+        return exception_response(exception)

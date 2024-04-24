@@ -108,8 +108,10 @@ class FilingSerializer:
     def to_dict(filing: Filing) -> dict:
         """Return the filing object as a dict."""
         filing_dict = copy.deepcopy(filing.filing_json)
+        filing_dict["filing"]["header"]["id"] = filing.id
         filing_dict["filing"]["header"]["filingYear"] = filing.fiscal_year
         filing_dict["filing"]["header"]["paymentToken"] = filing.invoice_id
+        filing_dict["filing"]["header"]["paymentStatus"] = filing.payment_status_code
         filing_dict["filing"]["header"]["status"] = filing.status
         filing_dict["filing"]["header"]["filingDate"] = filing.filing_date.isoformat()
         filing_dict["filing"]["header"]["completionDate"] = (

@@ -37,9 +37,12 @@ including creating a filing.
 """
 from http import HTTPStatus
 
+from flask_jwt_oidc import JwtManager
+
 from business_ar_api.exceptions import BusinessException
 from business_ar_api.models import Filing as FilingModel
 from business_ar_api.models.filing import FilingSerializer
+from business_ar_api.services import PaymentService
 
 
 class FilingService:
@@ -100,3 +103,22 @@ class FilingService:
         Returns Filing JSON.
         """
         return FilingSerializer.to_dict(filing)
+
+    @staticmethod
+    def update_payment_data(filing_id: int, user_jwt: JwtManager) -> dict:
+        """
+        Update the filing with the payment details.
+        """
+        filing = FilingService.find_filing_by_id(filing_id)
+        if not filing.invoice_id:
+            raise BusinessException(
+                error=f"Filing with id {filing_id} does not have an invoice.",
+                status_code=HTTPStatus.BAD_REQUEST,
+                message="No invoice for the filing.",
+            )
+        payment_details = PaymentService.get_payment_details_by_invoice_id(
+            filing.invoice_id, user_jwt
+        )
+        filing.payment_status_code = payment_details.get("statusCode")
+        filing.save()
+        return filing

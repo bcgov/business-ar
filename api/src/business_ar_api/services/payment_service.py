@@ -40,6 +40,7 @@ from flask import current_app
 from flask_jwt_oidc import JwtManager
 
 from business_ar_api.exceptions import ExternalServiceException
+from business_ar_api.services.rest_service import RestService
 
 
 class PaymentService:
@@ -53,13 +54,13 @@ class PaymentService:
         """Create the invoice via the pay-api."""
         SVC_URL = current_app.config.get("PAY_API_URL")
         SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
-        DEFAULT_INVOICE_PAYLOAD = {
+        CREATE_INVOICE_PAYLOAD = {
             "filingInfo": {"filingTypes": [{"filingTypeCode": "ANNBC"}]},
             "businessInfo": {},
         }
-        payload = deepcopy(DEFAULT_INVOICE_PAYLOAD)
-        # update payload details
+        payload = deepcopy(CREATE_INVOICE_PAYLOAD)
 
+        # update payload details
         if identifier := business_details.get("identifier", None):
             label_name = "Incorporation Number"
             payload["details"] = [{"label": f"{label_name}: ", "value": identifier}]
@@ -111,3 +112,12 @@ class PaymentService:
             raise ExternalServiceException(
                 error=repr(err), status_code=HTTPStatus.PAYMENT_REQUIRED
             ) from err
+
+    @staticmethod
+    def get_payment_details_by_invoice_id(invoice_id: int, user_jwt: JwtManager):
+        endpoint = (
+            f"{current_app.config.get('PAY_API_URL')}/payment-requests/{invoice_id}"
+        )
+        token = user_jwt.get_token_auth_header()
+        payment_details = RestService.get(endpoint=endpoint, token=token).json()
+        return payment_details

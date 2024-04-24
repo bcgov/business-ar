@@ -34,6 +34,6 @@
 """This module wraps helper services used by the API."""
 from .auth_service import AuthService
 from .business_service import BusinessService
-from .filing_service import FilingService
 from .payment_service import PaymentService
+from .filing_service import FilingService
 from .schema_service import SchemaService
