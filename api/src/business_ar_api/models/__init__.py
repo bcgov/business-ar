@@ -36,10 +36,12 @@ from .business import Business
 from .db import db  # noqa: I001
 from .user import User
 from .user import UserRoles
+from .filing import Filing
 
 __all__ = (
     "db",
     "Business",
+    "Filing",
     "User",
     "UserRoles",
 )

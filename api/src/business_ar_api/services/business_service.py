@@ -31,23 +31,14 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Flask
+"""Business Service."""
 
-from .accounts import bp as accounts_bp
-from .base import bp as base_endpoint
-from .business import bp as business_bp
-from .filing import bp as filings_bp
+from business_ar_api.models import Business as BusinessModel
 
 
-def register_endpoints(app: Flask):
-    # Allow base route to match with, and without a trailing slash
-    app.url_map.strict_slashes = False
+class BusinessService:
 
-    app.register_blueprint(
-        url_prefix="/",
-        blueprint=base_endpoint,
-    )
-
-    app.register_blueprint(accounts_bp)
-    app.register_blueprint(business_bp)
-    app.register_blueprint(filings_bp)
+    @classmethod
+    def find_by_business_identifier(cls, business_identifier):
+        """Finds a business by its identifier"""
+        return BusinessModel.find_by_identifier(business_identifier)

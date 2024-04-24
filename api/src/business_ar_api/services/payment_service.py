@@ -47,20 +47,17 @@ class PaymentService:
     A class that provides utility functions for connecting with the BC Registries pay-api.
     """
 
-    SVC_URL = current_app.config.get("PAYMENT_SVC_URL")
-    SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
-    DEFAULT_INVOICE_PAYLOAD = {
-        "filingInfo": {"filingTypes": [{"filingTypeCode": "BCANN"}]}
-    }
-
     def create_invoice(
         self, account_id: str, user_jwt: JwtManager, details: dict
     ) -> requests.Response:
         """Create the invoice via the pay-api."""
+        SVC_URL = current_app.config.get("PAYMENT_SVC_URL")
+        SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
+        DEFAULT_INVOICE_PAYLOAD = {
+            "filingInfo": {"filingTypes": [{"filingTypeCode": "BCANN"}]}
+        }
         payload = deepcopy(self.default_invoice_payload)
         # update payload details
-        if folio_number := details.get("folioNumber", None):
-            payload["filingInfo"]["folioNumber"] = folio_number
 
         if identifier := details.get("businessIdentifier", None):
             label_name = (

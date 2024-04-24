@@ -1,0 +1,20 @@
+{
+    "$id": "https://business_ar.gov.bc.ca/.well_known/schemas/ar-filing.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "version": "0.3",
+    "title": "AR filing Schema",
+    "description": "Schema for AR filing.",
+    "type": "object",
+    "properties": {
+        "header": {
+            "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/FilingHeader"
+        },
+        "annualReport": {
+            "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/AnnualReport"
+        }
+    },
+    "required": [
+        "header",
+        "annualReport"
+    ]
+}

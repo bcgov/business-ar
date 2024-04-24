@@ -38,6 +38,7 @@ from sqlalchemy import desc, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
 
+from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
 from business_ar_api.models.base_model import BaseModel
 from .db import db
@@ -74,7 +75,7 @@ class Filing(BaseModel):
     )
 
     # Relationships
-    business_id = db.Column("business_id", db.Integer, db.ForeignKey("businesses.id"))
+    business_id = db.Column("business_id", db.Integer, db.ForeignKey("business.id"))
     submitter_id = db.Column("submitter_id", db.Integer, db.ForeignKey("users.id"))
 
     submitter = db.relationship(
@@ -84,20 +85,14 @@ class Filing(BaseModel):
     )
 
     @classmethod
-    def find_by_id(cls, filing_id: int) -> Filing | None:
+    def find_filing_by_id(cls, filing_id: int) -> Filing | None:
         """Return the filing by id."""
         return cls.query.filter_by(id=filing_id).one_or_none()
 
     @classmethod
-    def find_by_business_id(cls, id: int) -> Filing | None:
+    def find_filings_by_business_id(cls, id: int) -> Filing | None:
         """Return the submission by business_identifier."""
-        return cls.query.filter_by(business_identifier=id).one_or_none()
-
-    @classmethod
-    def get_filings(cls):
-        """Return the filings."""
-        query = cls.query.order_by(desc(Filing.submitted_datetime))
-        return query.all()
+        return cls.query.filter_by(business_id=id).all()
 
 
 class FilingSerializer:
@@ -114,12 +109,10 @@ class FilingSerializer:
 
         return {
             "id": filing.id,
-            "type": filing.type.value,
-            "effective_date": (
-                filing.effective_date.isoformat() if filing.effective_date else None
-            ),
-            "submitted_datetime": filing.submitted_datetime.isoformat(),
-            "payload": filing.payload,
-            "business_identifier": filing.business_identifier,
+            "fiscalYear": filing.fiscal_year,
+            "status": filing.type.status,
+            "filing_date": filing.filing_date.isoformat(),
+            "completion_date": filing.completion_date.isoformat(),
+            "payload": filing.filing_json,
             "submitter_id": filing.submitter_id,
         }

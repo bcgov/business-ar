@@ -33,10 +33,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """Manages Auth service interactions."""
 import requests
+from http import HTTPStatus
 from flask import current_app
 
+from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.enums.enum import ContentType
-from business_ar_api.exceptions.exceptions import BusinessException
+from business_ar_api.exceptions.exceptions import (
+    AuthException,
+    BusinessException,
+    ExternalServiceException,
+)
 from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
 
@@ -120,3 +126,51 @@ class AuthService:
             data=affiliation_payload, endpoint=endpoint, token=user.bearer_token
         ).json()
         return new_entity_details
+
+    @classmethod
+    @user_context
+    def is_authorized(cls, business_identifier: str, **kwargs) -> bool:
+        """Authorize the user for access to the service."""
+        try:
+            timeout = int(current_app.config.get("AUTH_SVC_TIMEOUT", 20))
+            api_url = current_app.config.get("AUTH_API_URL")
+            user: UserContext = kwargs["user_context"]
+            auth_token = user.bearer_token
+            # make api call
+            headers = {"Authorization": AuthHeaderType.BEARER.value.format(auth_token)}
+            auth_url = f"{api_url}/entities/{business_identifier}/authorizations"
+
+            resp = requests.get(url=auth_url, headers=headers, timeout=timeout)
+
+            if resp.status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
+                error = f"{resp.status_code} - {str(resp.json())}"
+                current_app.logger.debug("Invalid response from auth-api: %s", error)
+                raise ExternalServiceException(
+                    error=error, status_code=HTTPStatus.SERVICE_UNAVAILABLE
+                )
+
+            if resp.status_code != HTTPStatus.OK or "edit" not in resp.json().get(
+                "roles", []
+            ):
+                error = f"Unauthorized access to business: {business_identifier}"
+                current_app.logger.debug(error)
+                raise AuthException(error=error, status_code=HTTPStatus.FORBIDDEN)
+
+            return True
+        except AuthException as e:
+            raise e
+        except ExternalServiceException as exc:
+            raise exc
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+        ) as err:
+            current_app.logger.debug("Auth connection failure:", repr(err))
+            raise ExternalServiceException(
+                error=repr(err), status_code=HTTPStatus.SERVICE_UNAVAILABLE
+            ) from err
+        except Exception as err:
+            current_app.logger.debug("Generic Auth verification failure:", repr(err))
+            raise ExternalServiceException(
+                error=repr(err), status_code=HTTPStatus.SERVICE_UNAVAILABLE
+            ) from err
