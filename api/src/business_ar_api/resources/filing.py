@@ -118,16 +118,17 @@ def create_filing(identifier):
         AuthService.is_authorized(business_identifier=identifier)
 
         # create filing
-        filing = FilingService.create_filing(json_input, user.id)
+        filing = FilingService.create_filing(json_input, business.id, user.id)
 
         # create invoice in pay system
-        invoice_resp = PaymentService.create_invoice(account_id, jwt, json_input)
-        filing.invoice_id = invoice_resp.json()["id"]
+        invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json())
 
-        # Save the filing in the db.
-        filing = FilingService.save_filing(filing)
+        # Update the filing with the payment token save it in the db.
+        filing = FilingService.update_filing_invoice_details(
+            filing.id, invoice_resp.json()["id"]
+        )
 
-        return jsonify(id=filing.id), HTTPStatus.CREATED
+        return jsonify(filing=FilingService.serialize(filing)), HTTPStatus.CREATED
 
     except AuthException as authException:
         return exception_response(authException)

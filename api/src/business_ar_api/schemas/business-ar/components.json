@@ -78,8 +78,7 @@
             "title": "Annual Report",
             "required": [
                 "annualReportDate",
-                "annualGeneralMeetingDate",
-                "fiscalYear"
+                "annualGeneralMeetingDate"
             ],
             "properties": {
                 "annualGeneralMeetingDate": {
@@ -97,7 +96,7 @@
         },
         "FilingHeader": {
             "type": "object",
-            "title": "Annual Report",
+            "title": "Filing Header",
             "required": [
                 "filingYear"
             ],

@@ -63,10 +63,13 @@ class FilingService:
         return filing
 
     @staticmethod
-    def update_filing(filing: FilingModel) -> dict:
+    def update_filing_invoice_details(filing_id, invoice_id) -> dict:
         """
-        Update Filing Model.
+        Update filing invoice details.
         """
+        filing = FilingModel.find_filing_by_id(filing_id)
+        filing.invoice_id = invoice_id
+        filing.status = FilingModel.Status.PENDING
         filing.save()
         return filing
 

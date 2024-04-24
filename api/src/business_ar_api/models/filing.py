@@ -110,9 +110,11 @@ class FilingSerializer:
         return {
             "id": filing.id,
             "fiscalYear": filing.fiscal_year,
-            "status": filing.type.status,
+            "status": filing.status,
             "filing_date": filing.filing_date.isoformat(),
-            "completion_date": filing.completion_date.isoformat(),
+            "completion_date": (
+                filing.completion_date.isoformat() if filing.completion_date else None
+            ),
             "payload": filing.filing_json,
             "submitter_id": filing.submitter_id,
         }
