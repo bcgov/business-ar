@@ -9,15 +9,8 @@ definePageMeta({
   order: 0
 })
 
-const { data: arRequirements } = await useAsyncData(
-  'ar-requirements',
-  () => {
-    return queryContent()
-      .where({ _locale: locale.value, _extension: { $eq: 'yml' }, _path: { $contains: 'annual-report-requirements' } })
-      .findOne()
-  }
-)
-
+const content = await useQueryContentByRoute()
+console.log(content)
 const keycloak = useKeycloak()
 </script>
 <template>
