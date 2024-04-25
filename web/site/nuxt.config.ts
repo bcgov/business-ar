@@ -66,10 +66,14 @@ export default defineNuxtConfig({
       // kcClient: process.env.VUE_APP_KEYCLOAK_CLIENTID || '',
       // ldClientId: process.env.VUE_APP_LD_CLIENT_ID || '',
       // legalApiURL: `${process.env.VUE_APP_LEGAL_API_URL || ''}${process.env.VUE_APP_LEGAL_API_VERSION_2 || ''}`,
-      payApiURL: `${process.env.VUE_APP_PAY_API_URL || ''}${process.env.VUE_APP_PAY_API_VERSION || ''}`
+      payApiURL: `${process.env.VUE_APP_PAY_API_URL || ''}${process.env.VUE_APP_PAY_API_VERSION || ''}`,
       // btrApiURL: `${process.env.VUE_APP_BTR_API_URL || ''}${process.env.VUE_APP_BTR_API_VERSION || ''}`,
       // registryHomeURL: process.env.VUE_APP_REGISTRY_HOME_URL || '',
       // appEnv: `${process.env.VUE_APP_POD_NAMESPACE || 'unknown'}`
+      keycloakAuthUrl: process.env.NUXT_KEYCLOAK_AUTH_URL,
+      keycloakRealm: process.env.NUXT_KEYCLOAK_REALM,
+      keycloakClientId: process.env.NUXT_KEYCLOAK_CLIENTID,
+      registryHomeURL: process.env.NUXT_APP_REGISTRY_HOME_URL
     }
   },
   vuefire: {

@@ -1,16 +1,4 @@
-<script lang="ts">
-// only load these once
-import {
-  OAuthProvider,
-  signInWithPopup
-} from 'firebase/auth'
-
-export const bcscAuthProvider = new OAuthProvider('oidc.keycloak-bcsc')
-</script>
 <script setup lang="ts">
-const auth = useFirebaseAuth()! // only exists on client side
-const error = ref<Error | null>(null)
-const user = useCurrentUser()
 // const localePath = useLocalePath()
 const { t, locale } = useI18n()
 
@@ -31,23 +19,10 @@ const { data: arRequirements } = await useAsyncData(
   }
 )
 
-function signIn () {
-  error.value = null
-  signInWithPopup(auth, bcscAuthProvider).catch((reason) => {
-    error.value = reason
-  })
-}
-
-// can use to direct user after login but will always redirect if navigating home
-// auth.onAuthStateChanged((user) => {
-//   if (user) {
-//     return navigateTo(localePath('/choose-existing-account'))
-//   }
-// })
-
-// dev helpers
-watchEffect(() => console.log('error: ', error.value))
-watchEffect(() => console.log('user: ', user.value))
+const keycloak = useKeycloak()
+const user = await keycloak.getUserProfile()
+// const { $keycloak } = useNuxtApp()
+// const logout = () => $keycloak.logout({ redirectUri: useRelativeRoute('') })
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">
@@ -76,7 +51,13 @@ watchEffect(() => console.log('user: ', user.value))
     <UButton
       :label="$t('btn.loginBCSC')"
       icon="i-mdi-card-account-details-outline"
-      @click="signIn"
+      @click="keycloak.login"
     />
+    <UButton
+      label="logout"
+      @click="keycloak.logout"
+    />
+    {{ keycloak.authenticated }}
+    {{ user }}
   </div>
 </template>
