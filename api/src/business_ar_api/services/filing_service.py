@@ -120,5 +120,7 @@ class FilingService:
             filing.invoice_id, user_jwt
         )
         filing.payment_status_code = payment_details.get("statusCode")
+        if filing.payment_status_code == "COMPLETED":
+            filing.status = FilingModel.Status.COMPLETED
         filing.save()
         return filing
