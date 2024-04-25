@@ -1,46 +1,35 @@
 import Keycloak from 'keycloak-js'
-import { omit } from 'remeda'
 
-export default defineNuxtPlugin({
-  name: 'keycloak-init',
-  enforce: 'pre',
-  hooks: {
-    /**
-     * Fix router issue, see : https://github.com/keycloak/keycloak/issues/14742
-     */
-    'app:created' () {
-      const router = useRouter()
-      // Here i'm using remeda, you can use you own logic.
-      const query = omit(router.currentRoute.value.query, [
-        'state',
-        'session_state',
-        'code'
-      ])
-      router.replace({ query })
-    }
-  },
-  async setup () {
-    const config = useRuntimeConfig()
-    try {
-      const keycloak = new Keycloak({
-        url: config.public.keycloakAuthUrl,
-        realm: config.public.keycloakRealm,
-        clientId: config.public.keycloakClientId
-      })
-      await keycloak.init({
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: useRelativeRoute('silent-check-sso.html'),
-        responseMode: 'query',
-        redirectUri: 'http://localhost:3000'
-      })
-      return {
-        provide: {
-          keycloak
-        }
-      }
-    } catch (e) {
-      console.log(e)
-      throw createError({})
+export default defineNuxtPlugin(async (_nuxtApp) => {
+  // get config
+  const config = useRuntimeConfig()
+  // define new keycloak
+  const keycloak = new Keycloak({
+    url: config.public.keycloakAuthUrl,
+    realm: config.public.keycloakRealm,
+    clientId: config.public.keycloakClientId
+  })
+
+  try {
+    // init keycloak instance
+    await keycloak.init({
+      onLoad: 'check-sso',
+      responseMode: 'query',
+      redirectUri: config.public.appURL
+    })
+
+    // remove keycloak query params from route
+    const router = useRouter()
+    // need to figure out how to include locale here
+    router.replace('/')
+  } catch (error) {
+    console.error('Failed to initialize Keycloak adapter: ', error)
+  }
+
+  return {
+    provide: {
+      // provide global keycloak instance
+      keycloak
     }
   }
 })
