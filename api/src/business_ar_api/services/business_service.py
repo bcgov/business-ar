@@ -31,9 +31,14 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""This module wraps helper services used by the API."""
-from .auth_service import AuthService
-from .business_service import BusinessService
-from .payment_service import PaymentService
-from .filing_service import FilingService
-from .schema_service import SchemaService
+"""Business Service."""
+
+from business_ar_api.models import Business as BusinessModel
+
+
+class BusinessService:
+
+    @classmethod
+    def find_by_business_identifier(cls, business_identifier):
+        """Finds a business by its identifier"""
+        return BusinessModel.find_by_identifier(business_identifier)

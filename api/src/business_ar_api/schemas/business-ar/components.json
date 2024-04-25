@@ -72,6 +72,79 @@
                     ]
                 }
             }
+        },
+        "AnnualReport": {
+            "type": "object",
+            "title": "Annual Report",
+            "required": [
+                "annualReport"
+            ],
+            "properties": {
+                "annualReport": {
+                    "type": "object",
+                    "required": [
+                        "annualReportDate",
+                        "annualGeneralMeetingDate"
+                    ],
+                    "properties": {
+                        "annualGeneralMeetingDate": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        },
+                        "annualReportDate": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                }
+            }
+        },
+        "FilingHeader": {
+            "type": "object",
+            "title": "Filing Header",
+            "required": [
+                "header"
+            ],
+            "properties": {
+                "header": {
+                    "type": "object",
+                    "required": [
+                        "filingYear"
+                    ],
+                    "properties": {
+                        "filingYear": {
+                            "type": "integer"
+                        },
+                        "paymentToken": {
+                            "type": "string",
+                            "title": "A valid payment token for this filing."
+                        },
+                        "submitter": {
+                            "type": "string",
+                            "title": "Account name of the person submitting this filing."
+                        },
+                        "status": {
+                            "type": "string",
+                            "title": "The status of this filing.",
+                            "enum": [
+                                "DRAFT",
+                                "PENDING",
+                                "COMPLETED",
+                                "ERROR",
+                                "PAID"
+                            ]
+                        },
+                        "filingDate": {
+                            "type": "string",
+                            "format": "date",
+                            "title": "The submission date of the final version of the filing."
+                        }
+                    }
+                }
+            }
         }
     }
 }

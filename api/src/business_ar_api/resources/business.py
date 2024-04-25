@@ -27,7 +27,7 @@ bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 @bp.route("/token/<string:token>", methods=["GET", "OPTIONS"])
 @cross_origin(origins="*", methods=["GET"])
 def get_business_details_using_token(token):
-    """Get all accounts of the user."""
+    """Get business details using nano id."""
     if not token:
         return error_response("Please provide token.", HTTPStatus.BAD_REQUEST)
 

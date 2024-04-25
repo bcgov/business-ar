@@ -23,7 +23,7 @@ from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.models import Business
-from business_ar_api.services.auth import AuthService
+from business_ar_api.services.auth_service import AuthService
 from business_ar_api.services.schema_service import SchemaService
 
 bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
