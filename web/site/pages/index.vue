@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// const localePath = useLocalePath()
 const { t, locale } = useI18n()
 
 useHead({
@@ -20,9 +19,6 @@ const { data: arRequirements } = await useAsyncData(
 )
 
 const keycloak = useKeycloak()
-const user = await keycloak.getUserProfile()
-// const { $keycloak } = useNuxtApp()
-// const logout = () => $keycloak.logout({ redirectUri: useRelativeRoute('') })
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">
@@ -53,11 +49,5 @@ const user = await keycloak.getUserProfile()
       icon="i-mdi-card-account-details-outline"
       @click="keycloak.login"
     />
-    <UButton
-      label="logout"
-      @click="keycloak.logout"
-    />
-    {{ keycloak.authenticated }}
-    {{ user }}
   </div>
 </template>

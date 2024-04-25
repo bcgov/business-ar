@@ -1,20 +1,12 @@
 import type { DropdownItem } from '#ui/types'
-// import { useSbcAuth } from './sbcAuth' // auto import not working
-import {
-  signOut
-} from 'firebase/auth'
-const mobileNavRef = ref(false)
 
 // handle navigation items and functionality
 export function useSbcNav () {
-  const auth = useFirebaseAuth()!
-  // const sbcAuth = useSbcAuth()
   const localePath = useLocalePath()
   const { t } = useI18n()
-  const router = useRouter()
-  const route = useRoute()
+  const keycloak = useKeycloak()
 
-  const mainLinks = computed(() => {
+  const mainLinks = computed<DropdownItem[]>(() => {
     return [
       {
         icon: 'i-mdi-home',
@@ -33,13 +25,9 @@ export function useSbcNav () {
           disabled: true
         },
         {
-          label: 'Log out',
-          // label: t('BcrosHeader.menu.account.logout'),
+          label: t('btn.logout'),
           icon: 'i-mdi-logout',
-          click: () => {
-            signOut(auth)
-            return navigateTo(localePath('/'))
-          }
+          click: () => keycloak.logout()
         }
       ]
     ]
@@ -61,29 +49,9 @@ export function useSbcNav () {
   //   ]
   // })
 
-  function openMobileNav () {
-    mobileNavRef.value = true
-  }
-
-  async function closeMobileNav () {
-    await router.isReady()
-    await nextTick()
-    mobileNavRef.value = false
-  }
-
-  // close mobile menu when user changes routes
-  watch(() => route.path, (newRoute) => {
-    if (newRoute && mobileNavRef.value === true) {
-      closeMobileNav()
-    }
-  })
-
   return {
     mainLinks,
-    mobileNavRef,
-    loggedInUserOptions,
+    loggedInUserOptions
     // loggedOutUserOptions,
-    openMobileNav,
-    closeMobileNav
   }
 }

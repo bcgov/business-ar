@@ -24,7 +24,8 @@ export default {
     useThisAccount: {
       main: 'Use this Account',
       aria: 'Use this Account, {name}'
-    }
+    },
+    logout: 'Log out'
   },
   currency: {
     cad: 'CAD',
