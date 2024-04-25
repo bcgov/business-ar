@@ -93,11 +93,12 @@ class Config:
         )
     
     # Firebase
+    APP_CODE = os.getenv("APP_CODE", "")
     API_KEY = os.getenv("API_KEY", "")
     AUTH_DOMAIN = os.getenv("AUTH_DOMAIN", "")
     PROJECT_ID = os.getenv("PROJECT_ID", "")
     FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
-
+    
 
 class Production(Config):
     DEBUG = False
