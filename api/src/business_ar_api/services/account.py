@@ -47,7 +47,7 @@ from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
 
 
-class AuthService:
+class AccountService:
 
     @classmethod
     def get_service_client_token(cls):
@@ -98,7 +98,7 @@ class AuthService:
     @classmethod
     def create_entity(cls, entity_json: dict):
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
-        token = AuthService.get_service_client_token()
+        token = AccountService.get_service_client_token()
         if not token:
             raise BusinessException(code="ERR-001")
 
