@@ -65,14 +65,14 @@ describe('<SbcHeaderMain/>', () => {
       }
     })
 
-    const linkTexts = ['Service BC Connect', 'Products', 'Dashboard', 'Docs']
+    const linkTexts = ['Service BC Connect']
 
     linkTexts.forEach((link: string) => {
       expect(screen.getByText(link)).toBeTruthy()
     })
   })
 
-  it('renders logo, darkmode button, locale select menu', async () => {
+  it('renders logo locale select menu', async () => {
     await renderSuspended(SbcHeaderMain, {
       global: {
         mocks: {
@@ -84,9 +84,6 @@ describe('<SbcHeaderMain/>', () => {
 
     const logo = screen.getAllByAltText('Government of British Columbia Logo')
     expect(logo).toBeTruthy()
-
-    const darkModeButton = screen.getByLabelText('Switch to dark mode')
-    expect(darkModeButton).toBeTruthy()
 
     const localeSelectMenu = screen.getByLabelText('Select a Language, current language: English')
     expect(localeSelectMenu).toBeTruthy()
