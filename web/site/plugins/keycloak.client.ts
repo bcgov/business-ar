@@ -1,7 +1,6 @@
 import Keycloak from 'keycloak-js'
 
 export default defineNuxtPlugin(async (_nuxtApp) => {
-  // get config
   const config = useRuntimeConfig()
   // define new keycloak
   const keycloak = new Keycloak({
@@ -15,7 +14,7 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     await keycloak.init({
       onLoad: 'check-sso',
       responseMode: 'query',
-      redirectUri: config.public.appURL
+      pkceMethod: 'S256'
     })
 
     // remove keycloak query params from route
