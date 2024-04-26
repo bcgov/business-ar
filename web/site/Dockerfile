@@ -6,5 +6,6 @@ COPY . /app
 WORKDIR /app
 
 RUN pnpm install
+RUN mkdir /app/config
 EXPOSE 8000
 CMD [ "npm", "run", "dev"]
