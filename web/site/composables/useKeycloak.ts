@@ -18,6 +18,9 @@ export const useKeycloak = () => {
   }
 
   function isAuthenticated () {
+    if (!$keycloak) {
+      return false
+    }
     return $keycloak.authenticated
   }
 

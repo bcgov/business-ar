@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const content = await useQueryContentByRoute()
 const keycloak = useKeycloak()
+const routeWithoutLocale = useRouteWithoutLocale()
 
 useHead({
   title: t('page.home.title')
@@ -24,7 +24,13 @@ definePageMeta({
       </div>
     </UCard>
     <UCard class="w-full">
-      <ContentRenderer :value="content" class="prose prose-bcGov text-left" />
+      <ContentDoc
+        :query="{
+          path: routeWithoutLocale,
+          where: { _locale: $i18n.locale }
+        }"
+        class="prose prose-bcGov text-left"
+      />
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"
