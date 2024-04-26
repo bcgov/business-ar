@@ -1,13 +1,12 @@
 export const useKeycloak = () => {
   const { $keycloak } = useNuxtApp()
-  const localePath = useLocalePath()
 
   function login () {
     return $keycloak.login({ idpHint: 'bcsc' })
   }
 
   function logout () {
-    return $keycloak.logout({ redirectUri: useRelativeRoute(localePath('/')) })
+    return $keycloak.logout()
   }
 
   async function getUserProfile () {
