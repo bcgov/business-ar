@@ -1,4 +1,6 @@
 // return nuxt content file based off current route and locale
+// example: route.path: '/en-CA' will return the content file matching '/en-CA/index.md'
+// this currently only works with having 1 md file per route
 export async function useQueryContentByRoute () {
   const routeWithoutLocale = useRouteWithoutLocale()
   const { locale } = useI18n()

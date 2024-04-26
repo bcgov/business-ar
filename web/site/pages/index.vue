@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const content = await useQueryContentByRoute()
+const keycloak = useKeycloak()
 
 useHead({
   title: t('page.home.title')
@@ -8,10 +10,6 @@ useHead({
 definePageMeta({
   order: 0
 })
-
-const content = await useQueryContentByRoute()
-console.log(content)
-const keycloak = useKeycloak()
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">
@@ -26,16 +24,7 @@ const keycloak = useKeycloak()
       </div>
     </UCard>
     <UCard class="w-full">
-      <div class="flex flex-col text-left text-bcGovColor-midGray dark:text-white">
-        <h2 class="mb-6">
-          {{ arRequirements?.intro || '' }}
-        </h2>
-        <template v-if="arRequirements">
-          <ul v-for="req in arRequirements!.requirements" :key="req" class="ml-4 list-disc">
-            <li>{{ req }}</li>
-          </ul>
-        </template>
-      </div>
+      <ContentRenderer :value="content" class="prose prose-bcGov text-left" />
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"
