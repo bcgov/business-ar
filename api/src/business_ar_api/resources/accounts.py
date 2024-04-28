@@ -23,7 +23,7 @@ from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.models import Business
-from business_ar_api.services.auth_service import AuthService
+from business_ar_api.services.account_service import AccountService
 from business_ar_api.services.schema_service import SchemaService
 
 bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
@@ -34,7 +34,7 @@ bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def get_user_accounts():
     """Get all accounts of the user."""
-    auth_service = AuthService()
+    auth_service = AccountService()
     try:
         return auth_service.get_user_accounts(), HTTPStatus.OK
     except ExternalServiceException as service_exception:
@@ -46,7 +46,7 @@ def get_user_accounts():
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def create_user_account():
     """Create a new user account."""
-    auth_service = AuthService()
+    auth_service = AccountService()
     json_input = request.get_json()
 
     schema_name = "new-account.json"
@@ -65,7 +65,7 @@ def create_user_account():
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def create_and_affiliate_entity(account_id: str):
     """Create a new entity and affiliate it to the account."""
-    auth_service = AuthService()
+    auth_service = AccountService()
     json_input = request.get_json()
     business_identifier = json_input.get("businessIdentifier")
 

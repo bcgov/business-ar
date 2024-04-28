@@ -21,6 +21,12 @@ Install the dependencies
 poetry install
 ```
 
+### firebase
+Running the firebase emulators
+```bash
+firebase emulators:start --only auth --config firebase-demo.json --project firebase-demo
+```
+
 Configure the .env
 
 ### manage the DB

@@ -70,14 +70,14 @@ class Config:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # API Endpoints
-    PAY_API_URL = os.getenv("PAY_API_URL")
-    AUTH_API_URL = os.getenv("AUTH_API_URL")
+    PAY_API_URL = os.getenv("PAY_API_URL") + os.getenv("PAY_API_VERSION", "") 
+    AUTH_API_URL = os.getenv("AUTH_API_URL") + os.getenv("AUTH_API_VERSION", "")
 
     AUTH_SVC_URL = os.getenv("AUTH_SVC_URL")
     AUTH_SVC_CLIENT_ID = os.getenv("AUTH_SVC_CLIENT_ID")
     AUTH_SVC_CLIENT_SECRET = os.getenv("AUTH_SVC_CLIENT_SECRET")
 
-    COLIN_API_URL = os.getenv("COLIN_API_URL")
+    COLIN_API_URL = os.getenv("COLIN_API_URL") + os.getenv("COLIN_API_VERSION", "")
     COLIN_API_SVC_CLIENT_ID = os.getenv("COLIN_API_SVC_CLIENT_ID")
     COLIN_API_SVC_CLIENT_SECRET = os.getenv("COLIN_API_SVC_CLIENT_SECRET")
 
@@ -96,6 +96,12 @@ class Config:
             f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
         )
 
+    # Firebase
+    APP_CODE = os.getenv("APP_CODE", "")
+    API_KEY = os.getenv("API_KEY", "")
+    AUTH_DOMAIN = os.getenv("AUTH_DOMAIN", "")
+    PROJECT_ID = os.getenv("PROJECT_ID", "")
+    FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
 
 class Production(Config):
     DEBUG = False

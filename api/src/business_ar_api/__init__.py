@@ -46,6 +46,7 @@ from .config import Config
 from .config import Production
 from .models import db
 from .resources import register_endpoints
+from .services.auth import sam
 from .common.flags import Flags
 from .common.auth import jwt
 from .common.run_version import get_run_version
@@ -72,6 +73,7 @@ def create_app(environment: Config = Production, **kwargs) -> Flask:
     Flags().init_app(app, td)
     register_endpoints(app)
     setup_jwt_manager(app, jwt)
+    sam.init_app(app)
 
     return app
 
