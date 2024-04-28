@@ -70,14 +70,14 @@ class Config:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # API Endpoints
-    PAY_API_URL = os.getenv("PAY_API_URL") + os.getenv("PAY_API_VERSION", "") 
-    AUTH_API_URL = os.getenv("AUTH_API_URL") + os.getenv("AUTH_API_VERSION", "")
+    PAY_API_URL = os.getenv("PAY_API_URL", "") + os.getenv("PAY_API_VERSION", "") 
+    AUTH_API_URL = os.getenv("AUTH_API_URL", "") + os.getenv("AUTH_API_VERSION", "")
 
     AUTH_SVC_URL = os.getenv("AUTH_SVC_URL")
     AUTH_SVC_CLIENT_ID = os.getenv("AUTH_SVC_CLIENT_ID")
     AUTH_SVC_CLIENT_SECRET = os.getenv("AUTH_SVC_CLIENT_SECRET")
 
-    COLIN_API_URL = os.getenv("COLIN_API_URL") + os.getenv("COLIN_API_VERSION", "")
+    COLIN_API_URL = os.getenv("COLIN_API_URL", "") + os.getenv("COLIN_API_VERSION", "")
     COLIN_API_SVC_CLIENT_ID = os.getenv("COLIN_API_SVC_CLIENT_ID")
     COLIN_API_SVC_CLIENT_SECRET = os.getenv("COLIN_API_SVC_CLIENT_SECRET")
 
