@@ -157,13 +157,13 @@ watchEffect(() => console.log('fees: ', payFeesWidget.fees))
           <!-- AGM Date -->
           <span class="col-span-1 col-start-1 row-span-1 row-start-1 font-semibold text-bcGovColor-darkGray">AGM Date</span>
           <UFormGroup name="AGMDate" class="col-span-full col-start-2 row-span-1 row-start-1" help="Format: YYYY-MM-DD" :ui="{ help: 'text-bcGovColor-midGray' }">
-            <!-- <SbcInputsDateSelect
+            <SbcInputsDateSelect
               id="SelectAGMDate"
               :max-date="new Date()"
               placeholder="Select Date"
               variant="bcGov"
               @selection="ARData.AGMDate = dateToString($event!, 'YYYY-MM-DD')"
-            /> -->
+            />
             <!-- :variant="birthDateErrors.length > 0 ? 'error' : 'bcGov'" -->
             <!-- :errors="birthDateErrors" -->
             <!-- @selection="significantIndividual.profile.birthDate = dateToString($event, 'YYYY-MM-DD')" -->
