@@ -42,5 +42,5 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.
 gcloud init
 ```
 ```bash
-4/0AeaYSHAZtRmnR_z7b4fiLPptgFO3NAJTT58fy1Thki7VJ_AB3-uO1vzCE3rB-ZLOFjY_bg
+gcloud auth application-default login
 ```
