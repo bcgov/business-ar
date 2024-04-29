@@ -35,40 +35,39 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     }
   }
 
-  const data = {
-    name: 'Test AR Account 2',
-    accessType: 'REGULAR',
-    typeCode: 'BASIC',
-    productSubscriptions: [
-      {
-        productCode: 'BUSINESS'
-      }
-    ],
-    mailingAddress: {
-      city: 'Victoria',
-      country: 'CA',
-      region: 'BC',
-      deliveryInstructions: 'test',
-      postalCode: 'V8W 2C3',
-      street: '200-1012 Douglas St',
-      streetAdditional: ''
-    },
-    paymentInfo: {
-      paymentMethod: 'DIRECT_PAY'
-    }
-  }
+  // const data = {
+  //   name: 'Test AR Account 2',
+  //   accessType: 'REGULAR',
+  //   typeCode: 'BASIC',
+  //   productSubscriptions: [
+  //     {
+  //       productCode: 'BUSINESS'
+  //     }
+  //   ],
+  //   mailingAddress: {
+  //     city: 'Victoria',
+  //     country: 'CA',
+  //     region: 'BC',
+  //     deliveryInstructions: 'test',
+  //     postalCode: 'V8W 2C3',
+  //     street: '200-1012 Douglas St',
+  //     streetAdditional: ''
+  //   },
+  //   paymentInfo: {
+  //     paymentMethod: 'DIRECT_PAY'
+  //   }
+  // }
 
   async function createNewAccount (accountData: any) {
     // await $fetch(apiUrl, {
     await $fetch('/api/accounts', {
       method: 'POST',
       body: {
-        data,
-        auth: token
+        accountData
       },
-      // headers: {
-      //   Authorization: `Bearer ${token}`
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       async onResponse ({ response }) {
         console.log(response._data)
         if (response.ok) {
