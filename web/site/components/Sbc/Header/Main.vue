@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { mainLinks, loggedInUserOptions } = useSbcNav()
 const keycloak = useKeycloak()
+const account = useSbcAccount()
 </script>
 <template>
   <header
@@ -53,7 +54,7 @@ const keycloak = useKeycloak()
             <SbcHeaderAccountLabel
               class="hidden md:flex"
               :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
-              account-name=""
+              :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
             />
             <UAvatar
               class="md:hidden"
@@ -70,7 +71,7 @@ const keycloak = useKeycloak()
           <template #account>
             <SbcHeaderAccountLabel
               :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
-              account-name=""
+              :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
               theme="dropdown"
             />
           </template>

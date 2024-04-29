@@ -18,9 +18,9 @@ export default defineNuxtPlugin(async (_nuxtApp) => {
     })
 
     // remove keycloak query params from route
-    const router = useRouter()
+    // const router = useRouter()
     // need to figure out how to include locale here
-    router.replace('/')
+    // router.replace('/')
   } catch (error) {
     console.error('Failed to initialize Keycloak adapter: ', error)
   }

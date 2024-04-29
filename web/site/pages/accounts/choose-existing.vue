@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { isoCountriesList } from '~/utils/isoCountriesList'
+import { type SbcCountry } from '~/interfaces/sbc-address'
 const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useSbcAccount()
+console.log(accountStore.userAccounts)
 
 useHead({
   title: t('page.existingAccount.title')
@@ -30,7 +33,7 @@ definePageMeta({
     <h2 class="self-start text-xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.existingAccount.h2') }} ({{ accountStore.userAccounts?.length || 0 }})
     </h2>
-    <UCard class="w-full">
+    <UCard class="max-h-96 w-full overflow-auto">
       <ul
         class="flex flex-col divide-y text-left text-bcGovColor-midGray dark:text-white"
       >
@@ -58,7 +61,7 @@ definePageMeta({
                 {{ account.mailingAddress[0].city }},
                 {{ account.mailingAddress[0].region }}
                 {{ account.mailingAddress[0].postalCode }},
-                {{ isoCountriesList.find((country) => country.alpha_2 === account.mailingAddress[0].country)?.name || account.mailingAddress[0].country }}
+                {{ isoCountriesList.find((country: SbcCountry) => country.alpha_2 === account.mailingAddress[0].country)?.name || account.mailingAddress[0].country }}
               </span>
             </div>
           </div>
@@ -72,14 +75,14 @@ definePageMeta({
             :block="isSmallScreen"
             @click="() => {
               accountStore.selectUserAccount(account.id)
-              return navigateTo(localePath('/file-annual-report'))
+              return navigateTo(localePath('/annual-report'))
             }"
           />
         </li>
       </ul>
     </UCard>
     <UButton
-      :to="localePath('/create-account')"
+      :to="localePath('/accounts/create-new')"
       variant="outline"
       :label="$t('btn.createNewAccount')"
       icon="i-mdi-chevron-right"

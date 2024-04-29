@@ -10,6 +10,9 @@ useHead({
 definePageMeta({
   order: 0
 })
+
+// const { $keycloak } = useNuxtApp()
+// console.log($keycloak?.token)
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">

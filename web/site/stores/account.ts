@@ -1,17 +1,22 @@
+import { type Org } from '~/interfaces/org'
 export const useSbcAccount = defineStore('sbc-account', () => {
-  // const user = useCurrentUser()
+  const { $keycloak } = useNuxtApp()
   const localePath = useLocalePath()
 
-  const currentAccount = ref({})
-  const userAccounts = ref([])
+  const currentAccount = ref<Org>({} as Org)
+  const userAccounts = ref<Org[]>([])
 
   // need to add user id to get correct users account
   async function getUserAccounts () {
+    const token = $keycloak?.token
     // const apiURL = useRuntimeConfig().public.authApiURL
-    return await $fetch('/api/accounts', {
+    return await $fetch('http://127.0.0.1:5000/v1/user/accounts', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       onResponse ({ response }) {
         if (response.ok) {
-          userAccounts.value = response._data
+          userAccounts.value = response._data.orgs
         }
         console.log(response)
       },
@@ -19,29 +24,14 @@ export const useSbcAccount = defineStore('sbc-account', () => {
         console.error(response._data.message)
       }
     })
-    // return await axios.get<UserSettingsI[]>(`${apiURL}/users/${keycloakGuid}/settings`)
-    //   .then((response) => {
-    //     const data = response?.data
-    //     if (!data) { throw new Error('Invalid AUTH API response') }
-    //     return data.filter(userSettings => (userSettings.type === UserSettingsTypeE.ACCOUNT)) as AccountI[]
-    //   })
-    //   .catch((error) => {
-    //     console.warn('Error fetching user settings / account list.')
-    //     errors.value.push({
-    //       statusCode: error?.response?.status || StatusCodes.INTERNAL_SERVER_ERROR,
-    //       message: error?.response?.data?.message,
-    //       category: ErrorCategoryE.ACCOUNT_LIST
-    //     })
-    //   })
   }
 
-  function selectUserAccount (accountId: string) {
+  function selectUserAccount (accountId: number) {
     for (const i in userAccounts.value) {
       if (userAccounts.value[i].id === accountId) {
         currentAccount.value = userAccounts.value[i]
       }
     }
-    // sessionStorage.setItem(SessionStorageKeyE.CURRENT_ACCOUNT, JSON.stringify(currentAccount.value))
   }
 
   async function createNewAccount (accountData: any) {
@@ -69,4 +59,6 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     selectUserAccount,
     createNewAccount
   }
-}, { persist: true })
+}
+//  { persist: true }
+)

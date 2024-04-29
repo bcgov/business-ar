@@ -3,9 +3,9 @@ export default defineNuxtRouteMiddleware(async () => {
   // console.log('in middleware')
   const localePath = useLocalePath()
   const account = useSbcAccount()
-  const userAccounts = await account.getUserAccounts()
-  // console.log('num accounts: ', userAccounts.length)
-  if (userAccounts.length === 0) {
-    return navigateTo(localePath('/create-account'))
+  await account.getUserAccounts()
+  // console.log('num accounts: ', account.userAccounts.length)
+  if (account.userAccounts.length === 0) {
+    return navigateTo(localePath('/accounts/create-new'))
   }
 })

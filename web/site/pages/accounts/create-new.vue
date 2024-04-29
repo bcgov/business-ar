@@ -4,11 +4,11 @@ import { z } from 'zod'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
-const user = useCurrentUser()
 const accountStore = useSbcAccount()
 const accountFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const accountFormErrors = ref<Array<{path: string, message: string}> | null>(null)
 const formLoading = ref(false)
+const keycloak = useKeycloak()
 
 useHead({
   title: t('page.createAccount.title')
@@ -173,7 +173,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
       <div class="flex flex-col gap-y-4 md:grid md:grid-cols-6">
         <span class="col-span-1 col-start-1 font-semibold text-bcGovColor-darkGray">Your Name</span>
         <div class="col-span-full col-start-2 flex flex-col gap-2 text-bcGovColor-midGray">
-          <span> {{ parseSpecialChars(user?.displayName) }} </span>
+          <span> {{ parseSpecialChars(keycloak.kcUser.value.fullName, 'USER') }} </span>
           <span> This is your legal name as it appears on your BC Services Card. </span>
         </div>
       </div>
@@ -195,6 +195,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
             v-model="accountDetails.accountName"
             :variant="handleFormInputVariant('accountName')"
             placeholder="Account Name"
+            class="placeholder:text-bcGovColor-midGray"
           />
         </UFormGroup>
 
@@ -229,10 +230,11 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
           />
         </UFormGroup>
 
+        <!-- might add this back in later -->
         <!-- mailing address -->
-        <span class="col-span-1 col-start-1 row-span-1 row-start-6 mt-4 font-semibold text-bcGovColor-darkGray md:mt-0">Mailing Address</span>
+        <!-- <span class="col-span-1 col-start-1 row-span-1 row-start-6 mt-4 font-semibold text-bcGovColor-darkGray md:mt-0">Mailing Address</span> -->
         <!-- country -->
-        <UFormGroup name="address.country" class="col-span-full col-start-2 row-span-1 row-start-6">
+        <!-- <UFormGroup name="address.country" class="col-span-full col-start-2 row-span-1 row-start-6">
           <USelectMenu
             v-model="accountDetails.address.country"
             :ui-menu="{ label: 'text-gray-700' }"
@@ -246,20 +248,20 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
             @change="changeCountry"
             @blur="countryBlurred = true"
           />
-        </UFormGroup>
+        </UFormGroup> -->
         <!-- address line 1 -->
-        <UFormGroup name="address.line1" class="col-span-full col-start-2 row-span-1 row-start-7">
+        <!-- <UFormGroup name="address.line1" class="col-span-full col-start-2 row-span-1 row-start-7">
           <SbcInputsAddressLine1Autocomplete
             v-model="accountDetails.address.line1"
             :country-iso3166-alpha2="accountDetails.address.alpha_2"
             :input-variant="handleFormInputVariant('address.line1')"
             data-cy="address-line1-autocomplete"
             @addr-auto-completed="addrAutoCompleted"
-          />
-          <!-- @blur="addressForm.validate('line1', { silent: true })" -->
-        </UFormGroup>
+          /> -->
+        <!-- @blur="addressForm.validate('line1', { silent: true })" -->
+        <!-- </UFormGroup> -->
         <!-- address line 2 optional -->
-        <UFormGroup class="col-span-full col-start-2 row-span-1 row-start-8" name="address.line2">
+        <!-- <UFormGroup class="col-span-full col-start-2 row-span-1 row-start-8" name="address.line2">
           <UInput
             v-model="accountDetails.address.line2"
             :placeholder="$t('labels.line2')"
@@ -267,13 +269,13 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
             :variant="handleFormInputVariant('address.line2')"
             data-cy="address-line2"
           />
-        </UFormGroup>
+        </UFormGroup> -->
 
         <!--  city; region combo; postal code -->
-        <div class="col-span-full col-start-2 row-span-1 row-start-9">
-          <div class="flex flex-col gap-4 md:flex-row">
-            <!-- city -->
-            <UFormGroup class="md:flex-1" name="address.city">
+        <!-- <div class="col-span-full col-start-2 row-span-1 row-start-9">
+          <div class="flex flex-col gap-4 md:flex-row"> -->
+        <!-- city -->
+        <!-- <UFormGroup class="md:flex-1" name="address.city">
               <UInput
                 v-model="accountDetails.address.city"
                 :placeholder="$t('labels.city')"
@@ -281,9 +283,9 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
                 :variant="handleFormInputVariant('address.city')"
                 data-cy="address-city"
               />
-            </UFormGroup>
-            <!-- region (province/state) -->
-            <UFormGroup class="md:flex-1" name="address.region">
+            </UFormGroup> -->
+        <!-- region (province/state) -->
+        <!-- <UFormGroup class="md:flex-1" name="address.region">
               <USelectMenu
                 v-if="accountDetails.address.country.alpha_2==='US' || accountDetails.address?.country.alpha_2==='CA'"
                 v-model="accountDetails.address.region"
@@ -302,9 +304,9 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
                 :variant="handleFormInputVariant('address.region')"
                 data-cy="address-region-input"
               />
-            </UFormGroup>
-            <!-- postal code -->
-            <UFormGroup class="md:flex-1" name="address.postalCode">
+            </UFormGroup> -->
+        <!-- postal code -->
+        <!-- <UFormGroup class="md:flex-1" name="address.postalCode">
               <UInput
                 v-model="accountDetails.address.postalCode"
                 :placeholder="$t('labels.postalCode')"
@@ -313,11 +315,11 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
                 :variant="handleFormInputVariant('address.postalCode')"
                 data-cy="address-postal-code"
               />
-            </UFormGroup>
-          </div>
-        </div>
+            </UFormGroup> -->
+        <!-- </div>
+        </div> -->
         <!-- submit button -->
-        <div class="col-span-full col-start-1 row-span-1 row-start-10">
+        <div class="col-span-full col-start-1 row-span-1 row-start-6">
           <div class="flex">
             <UButton
               class="ml-auto"
