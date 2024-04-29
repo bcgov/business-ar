@@ -80,7 +80,6 @@ def create_and_affiliate_entity(account_id: str):
 
     entity_json = {
         "businessIdentifier": business.identifier,
-        "businessNumber": business.tax_id,
         "name": business.legal_name,
         "corpTypeCode": business.legal_type,
     }

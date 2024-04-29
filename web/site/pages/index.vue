@@ -1,18 +1,7 @@
-<script lang="ts">
-// only load these once
-import {
-  OAuthProvider,
-  signInWithPopup
-} from 'firebase/auth'
-
-export const bcscAuthProvider = new OAuthProvider('oidc.keycloak-bcsc')
-</script>
 <script setup lang="ts">
-const auth = useFirebaseAuth()! // only exists on client side
-const error = ref<Error | null>(null)
-const user = useCurrentUser()
-// const localePath = useLocalePath()
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const keycloak = useKeycloak()
+const routeWithoutLocale = useRouteWithoutLocale()
 
 useHead({
   title: t('page.home.title')
@@ -21,33 +10,6 @@ useHead({
 definePageMeta({
   order: 0
 })
-
-const { data: arRequirements } = await useAsyncData(
-  'ar-requirements',
-  () => {
-    return queryContent()
-      .where({ _locale: locale.value, _extension: { $eq: 'yml' }, _path: { $contains: 'annual-report-requirements' } })
-      .findOne()
-  }
-)
-
-function signIn () {
-  error.value = null
-  signInWithPopup(auth, bcscAuthProvider).catch((reason) => {
-    error.value = reason
-  })
-}
-
-// can use to direct user after login but will always redirect if navigating home
-// auth.onAuthStateChanged((user) => {
-//   if (user) {
-//     return navigateTo(localePath('/choose-existing-account'))
-//   }
-// })
-
-// dev helpers
-watchEffect(() => console.log('error: ', error.value))
-watchEffect(() => console.log('user: ', user.value))
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">
@@ -62,21 +24,18 @@ watchEffect(() => console.log('user: ', user.value))
       </div>
     </UCard>
     <UCard class="w-full">
-      <div class="flex flex-col text-left text-bcGovColor-midGray dark:text-white">
-        <h2 class="mb-6">
-          {{ arRequirements?.intro || '' }}
-        </h2>
-        <template v-if="arRequirements">
-          <ul v-for="req in arRequirements!.requirements" :key="req" class="ml-4 list-disc">
-            <li>{{ req }}</li>
-          </ul>
-        </template>
-      </div>
+      <ContentDoc
+        :query="{
+          path: routeWithoutLocale,
+          where: { _locale: $i18n.locale }
+        }"
+        class="prose prose-bcGov text-left"
+      />
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"
       icon="i-mdi-card-account-details-outline"
-      @click="signIn"
+      @click="keycloak.login"
     />
   </div>
 </template>

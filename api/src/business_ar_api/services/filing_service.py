@@ -121,6 +121,6 @@ class FilingService:
         )
         filing.payment_status_code = payment_details.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
-            filing.status = FilingModel.Status.COMPLETED
+            filing.status = FilingModel.Status.PAID
         filing.save()
         return filing

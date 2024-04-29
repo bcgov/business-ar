@@ -19,7 +19,8 @@ from flask import Blueprint
 from flask_cors import cross_origin
 
 from business_ar_api.exceptions.responses import error_response
-from business_ar_api.models import Business
+from business_ar_api.models import Business as BusinessModel
+from business_ar_api.services import BusinessService
 
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
@@ -31,7 +32,27 @@ def get_business_details_using_token(token):
     if not token:
         return error_response("Please provide token.", HTTPStatus.BAD_REQUEST)
 
-    business: Business = Business.find_by_nano_id(token)
+    business: BusinessModel = BusinessModel.find_by_nano_id(token)
     if not business:
         return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
     return business.json(), HTTPStatus.OK
+
+
+@bp.route("/<string:identifier>", methods=["GET", "OPTIONS"])
+@cross_origin(origins="*", methods=["GET"])
+def get_business_details(identifier):
+    """Get business details from colin"""
+    if not identifier:
+        return error_response(
+            "Please provide business identifier.", HTTPStatus.BAD_REQUEST
+        )
+
+    business: BusinessModel = BusinessService.find_by_business_identifier(identifier)
+    if not business:
+        return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
+
+    business_details = BusinessService.get_business_details_from_colin(
+        business.identifier, business.legal_type
+    )
+
+    return business_details, HTTPStatus.OK

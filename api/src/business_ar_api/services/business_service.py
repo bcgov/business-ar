@@ -32,13 +32,62 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """Business Service."""
+from datetime import date, datetime
+from http import HTTPStatus
+from flask import current_app
 
+from business_ar_api.exceptions.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
+from business_ar_api.services import AuthService
+from business_ar_api.services.rest_service import RestService
 
 
 class BusinessService:
 
     @classmethod
-    def find_by_business_identifier(cls, business_identifier):
+    def find_by_business_identifier(cls, business_identifier: str) -> BusinessModel:
         """Finds a business by its identifier"""
         return BusinessModel.find_by_identifier(business_identifier)
+
+    @classmethod
+    def get_business_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
+        client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
+        colin_business_identifier = identifier[2:]
+        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/{legal_type}/{colin_business_identifier}"
+
+        token = AuthService.get_service_client_token(client_id, client_secret)
+
+        if not token:
+            raise BusinessException(
+                error="Unable to get a token",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+
+        business_details = RestService.get(
+            endpoint=colin_api_endpoint, token=token
+        ).json()
+
+        if business_details:
+            business_details["business"]["nextARYear"] = (
+                BusinessService._get_next_ar_year(business_details)
+            )
+
+        return business_details
+
+    @classmethod
+    def _get_next_ar_year(cls, business_details: dict) -> int:
+        next_ar_year = -1
+        last_ar_date_string = business_details.get("business", {}).get(
+            "lastArDate", None
+        )
+        founding_date_string = business_details.get("business", {}).get(
+            "foundingDate", None
+        )
+        if last_ar_date_string:
+            last_ar_date = datetime.strptime(last_ar_date_string, "%Y-%m-%d")
+            next_ar_year = last_ar_date.year + 1
+        elif founding_date_string:
+            founding_date: date = datetime.fromisoformat(founding_date_string).date()
+            next_ar_year = founding_date.year + 1
+        return next_ar_year

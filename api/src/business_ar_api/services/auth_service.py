@@ -50,10 +50,8 @@ from business_ar_api.utils.user_context import UserContext, user_context
 class AuthService:
 
     @classmethod
-    def get_service_client_token(cls):
+    def get_service_client_token(cls, client_id, client_secret):
         token_url = current_app.config.get("AUTH_SVC_URL")
-        client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
-        client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
         timeout = int(current_app.config.get("AUTH_SVC_TIMEOUT", 20))
 
         data = "grant_type=client_credentials"
@@ -98,7 +96,11 @@ class AuthService:
     @classmethod
     def create_entity(cls, entity_json: dict):
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
-        token = AuthService.get_service_client_token()
+        client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
+
+        token = AuthService.get_service_client_token(client_id, client_secret)
+
         if not token:
             raise BusinessException(code="ERR-001")
 

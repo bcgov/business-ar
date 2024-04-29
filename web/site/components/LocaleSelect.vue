@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const { locale, locales } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
+import type { DropdownItem } from '#ui/types'
+const { locale, locales, setLocale } = useI18n()
 
 // create usable array of options to match <UDropdown> type
-const items = computed(() => {
+const items = computed<DropdownItem[][]>(() => {
   const options = locales.value.map((loc) => {
     const isCurrentLocal = loc.code === locale.value
     return {
       label: loc.name || 'N/A',
       icon: isCurrentLocal ? 'i-mdi-check' : '',
-      to: switchLocalePath(loc.code)
+      click: () => setLocale(loc.code)
     }
   })
   return [options]

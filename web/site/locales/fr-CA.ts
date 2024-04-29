@@ -24,7 +24,8 @@ export default {
     useThisAccount: {
       main: 'Utiliser ce Compte',
       aria: 'Utiliser ce Compte, {name}'
-    }
+    },
+    logout: 'se déconnecter'
   },
   currency: {
     cad: 'CAD',

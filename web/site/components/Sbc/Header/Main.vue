@@ -1,18 +1,10 @@
 <script setup lang="ts">
 const { mainLinks, loggedInUserOptions } = useSbcNav()
-// const { t } = useI18n()
-// const localePath = useLocalePath()
-const headerRef = ref<HTMLElement | null>(null)
-const user = useCurrentUser()
-// expose template ref to access properties in parent
-defineExpose({
-  headerRef
-})
+const keycloak = useKeycloak()
 </script>
 <template>
   <header
     id="sbc-main-header"
-    ref="headerRef"
     class="border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
   >
     <nav
@@ -42,8 +34,9 @@ defineExpose({
       </div>
       <div class="flex gap-1">
         <LocaleSelect />
+        <!-- composable authenticated not being reflected correctly -->
         <UDropdown
-          v-if="user"
+          v-if="keycloak.isAuthenticated()"
           :items="loggedInUserOptions"
           :ui="{
             width: '',
@@ -59,12 +52,12 @@ defineExpose({
           >
             <SbcHeaderAccountLabel
               class="hidden md:flex"
-              :username="parseSpecialChars(user.displayName, 'USER')"
+              :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
               account-name=""
             />
             <UAvatar
               class="md:hidden"
-              :alt="parseSpecialChars(user.displayName, 'U')[0].toUpperCase()"
+              :alt="parseSpecialChars(keycloak.kcUser.value.fullName, 'U')[0].toUpperCase()"
               :ui="{
                 background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
                 text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
@@ -76,7 +69,7 @@ defineExpose({
 
           <template #account>
             <SbcHeaderAccountLabel
-              :username="parseSpecialChars(user.displayName, 'USER')"
+              :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
               account-name=""
               theme="dropdown"
             />
