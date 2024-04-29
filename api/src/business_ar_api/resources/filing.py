@@ -55,11 +55,13 @@ from business_ar_api.services import (
     PaymentService,
 )
 
-bp = Blueprint("filing", __name__)
+bp = Blueprint(
+    "filing", __name__, url_prefix=f"/v1/business/<string:identifier>/filings"
+)
 
 
-@bp.route("/<string:identifier>/filings", methods=["GET"])
-@bp.route("/<string:identifier>/filings/<int:filing_id>", methods=["GET"])
+@bp.route("/", methods=["GET"])
+@bp.route("/<int:filing_id>", methods=["GET"])
 @cross_origin(origin="*")
 @jwt.requires_auth
 def get_filings(identifier: str, filing_id: Optional[int] = None):
@@ -87,7 +89,7 @@ def get_filings(identifier: str, filing_id: Optional[int] = None):
         return exception_response(exception)
 
 
-@bp.route("/<string:identifier>/filings", methods=["POST"])
+@bp.route("/", methods=["POST"])
 @cross_origin(origin="*")
 @jwt.requires_auth
 def create_filing(identifier):
@@ -128,7 +130,7 @@ def create_filing(identifier):
             filing.id, invoice_resp.json()["id"]
         )
 
-        return jsonify(filing=FilingService.serialize(filing)), HTTPStatus.CREATED
+        return jsonify(FilingService.serialize(filing)), HTTPStatus.CREATED
 
     except AuthException as authException:
         return exception_response(authException)
@@ -136,7 +138,7 @@ def create_filing(identifier):
         return exception_response(exception)
 
 
-@bp.route("/<string:identifier>/filings/<int:filing_id>/payment", methods=["PUT"])
+@bp.route("/<int:filing_id>/payment", methods=["PUT"])
 @cross_origin(origin="*")
 @jwt.requires_auth
 def update_filing_payment_status(identifier, filing_id):
@@ -162,7 +164,7 @@ def update_filing_payment_status(identifier, filing_id):
         # update filing with payment details
         filing = FilingService.update_payment_data(filing_id, jwt)
 
-        return jsonify(filing=FilingService.serialize(filing)), HTTPStatus.OK
+        return jsonify(FilingService.serialize(filing)), HTTPStatus.OK
 
     except AuthException as authException:
         return exception_response(authException)
