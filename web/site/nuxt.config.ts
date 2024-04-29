@@ -57,7 +57,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // Keys within public, will be also exposed to the client-side
-      addressCompleteKey: process.env.VUE_APP_ADDRESS_COMPLETE_KEY,
+      addressCompleteKey: process.env.NUXT_ADDRESS_COMPLETE_KEY,
       // authApiURL: `${process.env.VUE_APP_AUTH_API_URL || ''}${process.env.VUE_APP_AUTH_API_VERSION || ''}`,
       // authWebURL: process.env.VUE_APP_AUTH_WEB_URL || '',
       // kcURL: process.env.VUE_APP_KEYCLOAK_AUTH_URL || '',
@@ -65,7 +65,7 @@ export default defineNuxtConfig({
       // kcClient: process.env.VUE_APP_KEYCLOAK_CLIENTID || '',
       // ldClientId: process.env.VUE_APP_LD_CLIENT_ID || '',
       // legalApiURL: `${process.env.VUE_APP_LEGAL_API_URL || ''}${process.env.VUE_APP_LEGAL_API_VERSION_2 || ''}`,
-      payApiURL: `${process.env.VUE_APP_PAY_API_URL || ''}${process.env.VUE_APP_PAY_API_VERSION || ''}`,
+      payApiURL: `${process.env.NUXT_PAY_API_URL || ''}${process.env.NUXT_PAY_API_VERSION || ''}`,
       // btrApiURL: `${process.env.VUE_APP_BTR_API_URL || ''}${process.env.VUE_APP_BTR_API_VERSION || ''}`,
       // registryHomeURL: process.env.VUE_APP_REGISTRY_HOME_URL || '',
       // appEnv: `${process.env.VUE_APP_POD_NAMESPACE || 'unknown'}`
@@ -73,7 +73,8 @@ export default defineNuxtConfig({
       keycloakRealm: process.env.NUXT_KEYCLOAK_REALM,
       keycloakClientId: process.env.NUXT_KEYCLOAK_CLIENTID,
       registryHomeURL: process.env.NUXT_APP_REGISTRY_HOME_URL,
-      appURL: process.env.NUXT_APP_URL
+      appURL: process.env.NUXT_APP_URL,
+      barApiUrl: `${process.env.NUXT_BAR_API_URL || ''}${process.env.NUXT_BAR_API_VERSION || ''}`
     }
   },
   vite: {
