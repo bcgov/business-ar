@@ -4,18 +4,16 @@ import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
-const user = useCurrentUser()
 
-console.log(user.value)
 useHead({
   title: t('page.home.title')
 })
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
-const taxInfo: Tax = {
-  gst: 5.00,
-  pst: 7.00
-}
+// const taxInfo: Tax = {
+//   gst: 5.00,
+//   pst: 7.00
+// }
 
 const companyDetails = ref([
   {
@@ -33,34 +31,34 @@ const companyDetails = ref([
 ])
 
 // Define an array of PayFeesWidgetItem objects
-const payFeesWidgetItems: PayFeesWidgetItem[] = [
-  {
-    uiUuid: '123456789',
-    filingFees: 100.00,
-    filingType: 'Annual Report',
-    filingTypeCode: 'AR',
-    futureEffectiveFees: 0,
-    priorityFees: 25.00,
-    processingFees: 10.00,
-    serviceFees: 50.00,
-    tax: taxInfo,
-    total: 185.00,
-    quantity: 1 // Optional field
-  }
-  // {
-  //   uiUuid: '987654321',
-  //   filingFees: 150.00,
-  //   filingType: 'Name Change',
-  //   filingTypeCode: 'NC',
-  //   futureEffectiveFees: 0,
-  //   priorityFees: 30.00,
-  //   processingFees: 15.00,
-  //   serviceFees: 75.00,
-  //   tax: taxInfo,
-  //   total: 270.00,
-  //   quantity: 1 // Optional field
-  // }
-]
+// const payFeesWidgetItems: PayFeesWidgetItem[] = [
+//   {
+//     uiUuid: '123456789',
+//     filingFees: 100.00,
+//     filingType: 'Annual Report',
+//     filingTypeCode: 'AR',
+//     futureEffectiveFees: 0,
+//     priorityFees: 25.00,
+//     processingFees: 10.00,
+//     serviceFees: 50.00,
+//     tax: taxInfo,
+//     total: 185.00,
+//     quantity: 1 // Optional field
+//   }
+// {
+//   uiUuid: '987654321',
+//   filingFees: 150.00,
+//   filingType: 'Name Change',
+//   filingTypeCode: 'NC',
+//   futureEffectiveFees: 0,
+//   priorityFees: 30.00,
+//   processingFees: 15.00,
+//   serviceFees: 75.00,
+//   tax: taxInfo,
+//   total: 270.00,
+//   quantity: 1 // Optional field
+// }
+// ]
 
 const ARData = reactive({
   AGMDate: '',
@@ -111,7 +109,11 @@ const filingData: FilingData[] = [
 // todo: update getting folio number from store when there is this data available
 payFeesWidget.loadFeeTypesAndCharges('custom', filingData)
 
-watchEffect(() => console.log(payFeesWidget.fees))
+onMounted(() => {
+  addBarPayFees()
+})
+
+watchEffect(() => console.log('fees: ', payFeesWidget.fees))
 </script>
 <template>
   <div class="mx-auto mb-0 flex flex-col gap-4 text-left sm:gap-8 md:mb-40">
@@ -155,13 +157,13 @@ watchEffect(() => console.log(payFeesWidget.fees))
           <!-- AGM Date -->
           <span class="col-span-1 col-start-1 row-span-1 row-start-1 font-semibold text-bcGovColor-darkGray">AGM Date</span>
           <UFormGroup name="AGMDate" class="col-span-full col-start-2 row-span-1 row-start-1" help="Format: YYYY-MM-DD" :ui="{ help: 'text-bcGovColor-midGray' }">
-            <SbcInputsDateSelect
+            <!-- <SbcInputsDateSelect
               id="SelectAGMDate"
               :max-date="new Date()"
               placeholder="Select Date"
               variant="bcGov"
               @selection="ARData.AGMDate = dateToString($event!, 'YYYY-MM-DD')"
-            />
+            /> -->
             <!-- :variant="birthDateErrors.length > 0 ? 'error' : 'bcGov'" -->
             <!-- :errors="birthDateErrors" -->
             <!-- @selection="significantIndividual.profile.birthDate = dateToString($event, 'YYYY-MM-DD')" -->
@@ -174,7 +176,7 @@ watchEffect(() => console.log(payFeesWidget.fees))
           </UFormGroup>
         </UForm>
       </UCard>
-      <SbcFeeWidget :fees="payFeesWidgetItems" @submit="arFormRef?.submit()" />
+      <SbcFeeWidget :fees="payFeesWidget.fees" @submit="arFormRef?.submit()" />
     </div>
   </div>
 </template>
