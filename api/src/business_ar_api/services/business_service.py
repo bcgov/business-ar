@@ -54,7 +54,7 @@ class BusinessService:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
         colin_business_identifier = identifier[2:]
-        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/{legal_type}/{colin_business_identifier}"
+        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}"
 
         token = AuthService.get_service_client_token(client_id, client_secret)
 
