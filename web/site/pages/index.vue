@@ -4,7 +4,8 @@ const keycloak = useKeycloak()
 const routeWithoutLocale = useRouteWithoutLocale()
 const busStore = useBusinessStore()
 const route = useRoute()
-console.log(route)
+const localePath = useLocalePath()
+
 useHead({
   title: t('page.home.title')
 })
@@ -15,24 +16,12 @@ definePageMeta({
 
 onMounted(async () => {
   if (!route.query.nanoid) {
-    // do something if no nano id
-    console.log('no nano id')
+    return navigateTo(localePath('/missing-id'))
   } else {
-    // TIG9kz_ykKVo0FMQAH76o
+    // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
     await busStore.getBusinessByNanoId(route.query.nanoid as string)
   }
 })
-
-// const config = useRuntimeConfig()
-// const apiUrl = config.public.barApiUrl
-
-// const { data, error } = await useFetch(apiUrl + '/business/BC0005063')
-// console.log(data.value)
-// console.log(error.value)
-// const { $keycloak } = useNuxtApp()
-// console.log($keycloak?.token)
-
-watchEffect(() => console.log('loading:', busStore.loading))
 </script>
 <template>
   <SbcLoadingSpinner v-if="busStore.loading" />

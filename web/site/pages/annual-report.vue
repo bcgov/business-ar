@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
+import moment from 'moment'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
@@ -10,6 +11,8 @@ const paymentUrl = config.public.paymentPortalUrl
 const busStore = useBusinessStore()
 const accountStore = useSbcAccount()
 
+const arDate = datetimeStringToDateString(moment(new Date(busStore.currentBusiness.lastArDate)).add(1, 'year'))
+console.log(arDate)
 useHead({
   title: t('page.home.title')
 })
@@ -31,7 +34,7 @@ const companyDetails = ref([
   },
   {
     label: 'Date of Annual Report',
-    value: busStore.currentBusiness.lastArDate
+    value: arDate
   }
 ])
 
@@ -86,23 +89,25 @@ const ARSchema = z.object({
 
 type FormSchema = z.output<typeof ARSchema>
 
+console.log(busStore.currentBusiness)
+
 async function submitARForm (event: FormSubmitEvent<FormSchema>) {
   // Do something with event.data
   const { $keycloak } = useNuxtApp()
   const account = useSbcAccount()
-  console.log('form submit', arFormRef.value)
-  console.log(event.data)
-  console.log(event)
-  await $fetch(apiUrl + '/business/BC0005063/filings', {
+  // console.log('form submit', arFormRef.value)
+  // console.log(event.data)
+  // console.log(event)
+  await $fetch(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
     method: 'POST',
     body: {
       filing: {
         header: {
-          filingYear: 2020
+          filingYear: busStore.currentBusiness.nextARYear
         },
         annualReport: {
-          annualGeneralMeetingDate: '2020-01-01',
-          annualReportDate: '2020-12-31'
+          annualGeneralMeetingDate: null,
+          annualReportDate: arDate
         }
       }
     },
@@ -115,6 +120,46 @@ async function submitARForm (event: FormSubmitEvent<FormSchema>) {
     }
   })
 }
+
+// filing
+// :
+// annualReport
+// :
+// annualGeneralMeetingDate
+// :
+// null
+// annualReportDate
+// :
+// "2012-01-24"
+// [[Prototype]]
+// :
+// Object
+// header
+// :
+// completionDate
+// :
+// null
+// filingDate
+// :
+// "2024-04-30T22:16:09.994432+00:00"
+// filingYear
+// :
+// 2012
+// id
+// :
+// 1
+// paymentStatus
+// :
+// null
+// paymentToken
+// :
+// 35807
+// status
+// :
+// "PENDING"
+// submitter
+// :
+// null
 
 async function onError (event: FormErrorEvent) {
   console.log('error: ', event)
@@ -222,9 +267,9 @@ async function affiliateBusinessWithAccount () {
       </UCard>
       <SbcFeeWidget
         :fees="payFeesWidget.fees"
-        @submit="affiliateBusinessWithAccount"
+        @submit="arFormRef?.submit()"
       />
-      <!-- @submit="arFormRef?.submit()"  -->
+      <!-- @submit="affiliateBusinessWithAccount" -->
     </div>
   </div>
 </template>

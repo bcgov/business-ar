@@ -13,6 +13,9 @@ export const useKeycloak = () => {
   }
 
   function logout () {
+    // clear session storage on logout
+    sessionStorage.clear()
+
     return $keycloak.logout({
       redirectUri: `${location.origin}/${locale.value}`
     })
