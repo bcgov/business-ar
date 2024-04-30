@@ -13,7 +13,9 @@ export const useKeycloak = () => {
   }
 
   function logout () {
-    return $keycloak.logout()
+    return $keycloak.logout({
+      redirectUri: `${location.origin}/${locale.value}`
+    })
   }
 
   async function getUserProfile () {
