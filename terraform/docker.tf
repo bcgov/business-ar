@@ -66,16 +66,16 @@ resource docker_container "regapi_container" {
   ]
 }
 
-data "template_file" "firebase_adminsdk_json" {
-  template = file("${path.module}/project-firebase-adminsdk.json")
-  vars = {
-  }
-}
+# data "template_file" "firebase_adminsdk_json" {
+#   template = file("${path.module}/project-firebase-adminsdk.json")
+#   vars = {
+#   }
+# }
 
-resource "local_file" "postgres_script" {
-  content  = data.template_file.firebase_adminsdk_json.rendered
-  filename = "${var.hostRootPath}/data/web/project-firebase-adminsdk.json"
-}
+# resource "local_file" "postgres_script" {
+#   content  = data.template_file.firebase_adminsdk_json.rendered
+#   filename = "${var.hostRootPath}/data/web/project-firebase-adminsdk.json"
+# }
 
 resource docker_image "regweb_image" {
   name = "regweb"
@@ -102,14 +102,14 @@ resource docker_container "regweb_container" {
     name = docker_network.private_network.name
   }
   env = [ 
-    "AUTH_API_KEY=${var.firebase_api_key}",
-    "AUTH_DOMAIN=${var.firebase_auth_domain}",
-    "AUTH_PROJECT_ID=${var.firebase_project_id}",
-    "AUTH_STORAGE_BUCKET=${var.firebase_storage_bucket}",
-    "AUTH_MESSAGING_SENDER_ID=${var.firebase_messaging_sender_id}",
-    "AUTH_APP_ID=${var.firebase_app_id}",
+    "VUE_APP_ADDRESS_COMPLETE_KEY=${var.canada_post_api_key}",
+    "VUE_APP_PAY_API_URL=${var.pay_api_url}",
+    "VUE_APP_PAY_API_VERSION=${var.pay_api_version}",
+    "NUXT_KEYCLOAK_AUTH_URL=${var.auth_url}",
+    "NUXT_KEYCLOAK_REALM=${var.auth_realm}",
+    "NUXT_KEYCLOAK_CLIENTID=${var.nuxt_client_id}",
 
-    "GOOGLE_APPLICATION_CREDENTIALS=/app/config/project-firebase-adminsdk.json",
+    "NUXT_REGISTRY_HOME_URL=${var.registry_home_url}",
   ]
 }
 

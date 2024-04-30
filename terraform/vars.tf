@@ -59,3 +59,31 @@ variable "auth_client_id" {
 variable "auth_client_secret" {
   type = string
 }
+
+variable "canada_post_api_key" {
+  type = string
+  default = ""
+}
+
+variable "pay_api_version" {
+  type = string
+  default = "/api/v1"
+}
+
+variable "auth_url" {
+  type = string
+}
+
+variable "auth_realm" {
+  type = string
+}
+
+variable "registry_home_url"{
+  type = string
+  default = ""
+}
+
+
+variable "nuxt_client_id" {
+  type = string
+}
