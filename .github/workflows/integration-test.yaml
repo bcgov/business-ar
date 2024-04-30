@@ -14,7 +14,6 @@ name: Integration Tests
 #TEST_USER
 #TEST_PASSWORD
 #CANADA_POST_API_KEY
-#PAY_API_VERSION
 #AUTH_URL
 #AUTH_REALM
 #REGISTRY_HOME_URL
@@ -61,7 +60,6 @@ jobs:
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           terraform init
-          mkdir _tmp
 
           #create terraform vars file
           # echo "firebase_api_key=\"${{ secrets.FIREBASE_API_KEY }}\" > terraform.tfvars
