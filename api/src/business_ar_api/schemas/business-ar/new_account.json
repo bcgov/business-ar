@@ -40,11 +40,6 @@
         }
     },
     "required": [
-        "name",
-        "accessType",
-        "typeCode",
-        "mailingAddress",
-        "productSubscriptions",
-        "paymentInfo"
+        "name"
     ]
 }

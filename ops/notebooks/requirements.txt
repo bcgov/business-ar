@@ -1,0 +1,8 @@
+cloud-sql-python-connector[pg8000]
+google.auth
+ipywidgets
+jupysql
+nanoid
+pandas
+python-dotenv
+sqlalchemy

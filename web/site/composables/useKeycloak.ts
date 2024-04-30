@@ -1,12 +1,21 @@
 export const useKeycloak = () => {
   const { $keycloak } = useNuxtApp()
+  const { locale } = useI18n()
 
   function login () {
-    return $keycloak.login({ idpHint: 'bcsc' })
+    console.log('redirect url: ', `${location.origin}/${locale.value}/accounts/choose-existing`)
+    return $keycloak.login(
+      {
+        idpHint: 'bcsc',
+        redirectUri: `${location.origin}/${locale.value}/accounts/choose-existing`
+      }
+    )
   }
 
   function logout () {
-    return $keycloak.logout()
+    return $keycloak.logout({
+      redirectUri: `${location.origin}/${locale.value}`
+    })
   }
 
   async function getUserProfile () {

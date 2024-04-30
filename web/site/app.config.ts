@@ -39,9 +39,27 @@ export default defineAppConfig({
       ring: 'ring-1 ring-gray-200 dark:ring-gray-300/50',
       divide: 'divide-y divide-gray-200 dark:divide-gray-300/50'
     },
+    checkbox: {
+      wrapper: 'flex items-start',
+      base: 'mt-1 mr-2',
+      border: 'border-gray-500',
+      label: 'text-base text-bcGovColor-darkgray font-semibold'
+    },
     divider: {
       border: {
         base: 'flex border-bcGovGray-500 dark:border-gray-300/50'
+      }
+    },
+    formGroup: {
+      label: { base: 'block text-base font-bold py-3 text-gray-900' }
+    },
+    input: {
+      base: 'bg-gray-100 hover:bg-gray-200 h-[56px] border-b-[1px] focus:border-b-2 focus:ring-0',
+      rounded: 'rounded-none rounded-t-md',
+      variant: {
+        bcGov: 'border-gray-700 placeholder-gray-700 focus:border-primary-500 focus:placeholder-primary-500',
+        error: 'border-red-500 focus:border-red-500 placeholder-red-500 focus:placeholder-red-500',
+        primary: 'border-primary-500 placeholder-primary-500 border-b-2'
       }
     },
     pagination: {
@@ -75,6 +93,35 @@ export default defineAppConfig({
           color: 'white',
           class: 'rtl:[&_span:last-child]:rotate-180',
           icon: 'i-heroicons-chevron-right-20-solid'
+        }
+      }
+    },
+    radio: {
+      border: 'border-gray-500'
+    },
+    select: {
+      base: 'bg-gray-100 hover:bg-gray-200 h-[56px] border-b-[1px] focus:border-b-2 focus:ring-0',
+      rounded: 'rounded-none rounded-t-md',
+      variant: {
+        bcGov: 'border-gray-700',
+        error: 'border-red-500'
+      },
+      icon: {
+        base: 'text-gray-700'
+      }
+    },
+    selectMenu: {
+      label: 'text-gray-700',
+      rounded: 'rounded-none',
+      option: {
+        rounded: 'rounded-none',
+        active: 'text-primary-500',
+        selected: 'text-primary-500 bg-gray-100',
+        icon: {
+          active: 'text-primary-500'
+        },
+        selectedIcon: {
+          base: 'text-primary-500'
         }
       }
     },
@@ -121,12 +168,32 @@ export default defineAppConfig({
         }
       }
     },
+    textarea: {
+      base: 'bg-gray-100 hover:bg-gray-200 border-b-[1px] focus:border-b-2 h-20 focus:ring-0 text-gray-900',
+      rounded: 'rounded-none rounded-t-md',
+      variant: {
+        bcGov: 'border-gray-700 placeholder-gray-700 focus:border-primary-500 focus:placeholder-primary-500',
+        error: 'border-red-500 focus:border-red-500 placeholder-red-500 focus:placeholder-red-500'
+      }
+    },
     toggle: {
       active: 'bg-{color}-500 dark:bg-{color}-500',
       inactive: 'bg-gray-200 dark:bg-gray-700',
       ring: 'focus-visible:ring-2 focus-visible:ring-{color}-500 dark:focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-white',
       container: {
         base: 'pointer-events-none relative inline-block rounded-full bg-white dark:bg-white shadow transform ring-0 transition ease-in-out duration-200'
+      }
+    },
+    tooltip: {
+      background: 'bg-gray-700',
+      color: 'text-white',
+      ring: 'ring-1 ring-gray-700',
+      rounded: 'rounded-none',
+      base: 'h-auto text-base p-3',
+      arrow: {
+        base: 'before:w-3 before:h-3',
+        ring: 'before:ring-1 before:ring-gray-700',
+        background: 'before:bg-gray-700'
       }
     },
     verticalNavigation: {

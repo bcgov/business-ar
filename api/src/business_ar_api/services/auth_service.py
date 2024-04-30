@@ -85,6 +85,13 @@ class AuthService:
     def create_user_account(cls, account_details: dict, **kwargs):
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"
+        create_account_payload = {
+            "accessType": "REGULAR",
+            "typeCode": "BASIC",
+            "productSubscriptions": [{"productCode": "BUSINESS"}],
+            "paymentInfo": {"paymentMethod": "DIRECT_PAY"},
+        }
+        create_account_payload["name"] = account_details.get("name")
         new_user_account_details = RestService.post(
             data=account_details,
             endpoint=endpoint,
