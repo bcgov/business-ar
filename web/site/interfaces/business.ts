@@ -1,4 +1,4 @@
-export interface Business {
+export interface BusinessFull {
   businessNumber: string
   corpState: string
   corpStateClass: string
@@ -14,4 +14,11 @@ export interface Business {
   legalType: string
   nextARYear: number
   status: string
+}
+
+export interface BusinessNano {
+  identifier: string
+  legalName: string
+  legalType: string
+  taxId: string | null
 }

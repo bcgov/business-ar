@@ -1,72 +1,65 @@
-import type { Business } from '~/interfaces/business'
-// import { type Org } from '~/interfaces/org'
+import type { BusinessFull, BusinessNano } from '~/interfaces/business'
 export const useBusinessStore = defineStore('sbc-business-store', () => {
-  // const { $keycloak } = useNuxtApp()
-  // const token = $keycloak?.token
-  // const localePath = useLocalePath()
+  const localePath = useLocalePath()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl + '/business'
-  const loading = ref(true)
-  const currentBusiness = ref<Business>({} as Business)
+  const loading = ref<boolean>(true)
+  const currentBusiness = ref<BusinessFull>({} as BusinessFull)
 
-  const corpNumber = computed(() => {
-    if (currentBusiness.value.identifier !== '') {
-      return currentBusiness.value.jurisdiction + currentBusiness.value.identifier
-    } else {
-      return ''
-    }
-  })
-
-  // const currentAccount = ref<Org>({} as Org)
-  // const userAccounts = ref<Org[]>([])
-
+  // get basic business info by nano id
   async function getBusinessByNanoId (id: string) {
     loading.value = true
     try {
-      await $fetch(`${apiUrl}/token/${id}`, {
+      // fetch by provided id
+      await $fetch<BusinessNano>(`${apiUrl}/token/${id}`, {
         async onResponse ({ response }) {
           if (response.ok) {
-            // console.log('nano id: ', response._data)
+            // get full business details by the returned identifier
             await getBusinessDetails(response._data.identifier)
           }
         },
         onResponseError ({ response }) {
-          console.log('failed to get business by nano id')
+          // console error a message form the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
+          console.error(errorMsg)
         }
-      }).then(() => {
-        setTimeout(() => {
-          console.log('in set timeout')
-          loading.value = false
-        }, 1000)
       })
-    } catch (error) {
-      console.error('error: ', error)
+    } catch {
+      // navigate to error page if error getting business by nano id
+      await navigateTo(localePath('/missing-id'))
+    } finally {
+      setTimeout(() => {
+        loading.value = false
+      }, 1000)
     }
   }
 
+  // fetch full business details by identifier
   async function getBusinessDetails (identifier: string) {
-    await $fetch<Business>(`${apiUrl}/${identifier}`, {
-      onResponse ({ response }) {
-        if (response.ok) {
-          currentBusiness.value = response._data.business
-          // console.log(response)
+    try {
+      await $fetch<BusinessFull>(`${apiUrl}/${identifier}`, {
+        onResponse ({ response }) {
+          if (response.ok) {
+            // set currentBusiness if response === 200
+            currentBusiness.value = response._data.business
+          }
+        },
+        onResponseError ({ response }) {
+          // console error a message form the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          console.error(errorMsg)
         }
-      },
-      onResponseError ({ response }) {
-        console.error(response._data.message)
-      }
-    })
-    console.log('business: ', currentBusiness.value)
+      })
+    } catch {
+      // navigate to error page if error getting business by identifier
+      await navigateTo(localePath('/missing-id'))
+    }
   }
 
   return {
-    // currentAccount,
-    // userAccounts,
-    // getUserAccounts,
     getBusinessByNanoId,
     loading,
-    currentBusiness,
-    corpNumber
+    currentBusiness
   }
 },
 { persist: true }
