@@ -1,7 +1,8 @@
-pandas
-sqlalchemy
-google.auth
 cloud-sql-python-connector[pg8000]
-jupysql
+google.auth
 ipywidgets
+jupysql
+nanoid
+pandas
 python-dotenv
+sqlalchemy
