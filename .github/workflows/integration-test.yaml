@@ -62,25 +62,25 @@ jobs:
           terraform init
 
           #create terraform vars file
-          # echo "firebase_api_key=\"${{ secrets.FIREBASE_API_KEY }}\" > terraform.tfvars
-          # echo "firebase_messaging_sender_id=\"${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}\" >> terraform.tfvars
-          # echo "firebase_app_id=\"${{ secrets.FIREBASE_APP_ID }}\" >> terraform.tfvars
+          # echo "firebase_api_key=\"${{ secrets.FIREBASE_API_KEY }}\"" > terraform.tfvars
+          # echo "firebase_messaging_sender_id=\"${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}\"" >> terraform.tfvars
+          # echo "firebase_app_id=\"${{ secrets.FIREBASE_APP_ID }}\"" >> terraform.tfvars
 
-          echo "auth_api_url=\"${{ secrets.AUTH_API_URL }}\" >> terraform.tfvars
-          echo "pay_api_url=\"${{ secrets.PAY_API_URL }}\" >> terraform.tfvars
+          echo "auth_api_url=\"${{ secrets.AUTH_API_URL }}\"" >> terraform.tfvars
+          echo "pay_api_url=\"${{ secrets.PAY_API_URL }}\"" >> terraform.tfvars
 
-          echo "oidc_issuer=\"${{ secrets.OIDC_URL }}\" >> terraform.tfvars
-          echo "oidc_well_known_config=\"${{ secrets.OIDC_URL }}/.well-known/openid-configuration\" >> terraform.tfvars
+          echo "oidc_issuer=\"${{ secrets.OIDC_URL }}\"" >> terraform.tfvars
+          echo "oidc_well_known_config=\"${{ secrets.OIDC_URL }}/.well-known/openid-configuration\"" >> terraform.tfvars
 
-          echo "auth_svc_url=\"${{ secrets.OIDC_URL }}/protocol/openid-connect/token\" >> terraform.tfvars
-          echo "auth_client_id=\"${{ secrets.OIDC_CLIENT }}\" >> terraform.tfvars
-          echo "auth_client_secret=\"${{ secrets.OIDC_CLIENT_SECRET }}\" >> terraform.tfvars
+          echo "auth_svc_url=\"${{ secrets.OIDC_URL }}/protocol/openid-connect/token\"" >> terraform.tfvars
+          echo "auth_client_id=\"${{ secrets.OIDC_CLIENT }}\"" >> terraform.tfvars
+          echo "auth_client_secret=\"${{ secrets.OIDC_CLIENT_SECRET }}\"" >> terraform.tfvars
 
-          echo "canada_post_api_key=\"${{ secrets.CANADA_POST_API_KEY }}\" >> terraform.tfvars
-          echo "auth_url=\"${{ secrets.AUTH_URL }}\" >> terraform.tfvars
-          echo "auth_realm=\"${{ secrets.AUTH_REALM }}\" >> terraform.tfvars
-          echo "registry_home_url=\"${{ secrets.REGISTRY_HOME_URL }}\" >> terraform.tfvars
-          echo "nuxt_client_id=\"${{ secrets.NUXT_CLIENT_ID }}\" >> terraform.tfvars
+          echo "canada_post_api_key=\"${{ secrets.CANADA_POST_API_KEY }}\"" >> terraform.tfvars
+          echo "auth_url=\"${{ secrets.AUTH_URL }}\"" >> terraform.tfvars
+          echo "auth_realm=\"${{ secrets.AUTH_REALM }}\"" >> terraform.tfvars
+          echo "registry_home_url=\"${{ secrets.REGISTRY_HOME_URL }}\"" >> terraform.tfvars
+          echo "nuxt_client_id=\"${{ secrets.NUXT_CLIENT_ID }}\"" >> terraform.tfvars
           #end terraform vars file
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
