@@ -2,7 +2,9 @@
 const { t } = useI18n()
 const keycloak = useKeycloak()
 const routeWithoutLocale = useRouteWithoutLocale()
-
+const busStore = useBusinessStore()
+const route = useRoute()
+console.log(route)
 useHead({
   title: t('page.home.title')
 })
@@ -11,19 +13,38 @@ definePageMeta({
   order: 0
 })
 
+onMounted(async () => {
+  if (!route.query.nanoid) {
+    // do something if no nano id
+    console.log('no nano id')
+  } else {
+    // TIG9kz_ykKVo0FMQAH76o
+    await busStore.getBusinessByNanoId(route.query.nanoid as string)
+  }
+})
+
+// const config = useRuntimeConfig()
+// const apiUrl = config.public.barApiUrl
+
+// const { data, error } = await useFetch(apiUrl + '/business/BC0005063')
+// console.log(data.value)
+// console.log(error.value)
 // const { $keycloak } = useNuxtApp()
 // console.log($keycloak?.token)
+
+watchEffect(() => console.log('loading:', busStore.loading))
 </script>
 <template>
-  <div class="mx-auto flex flex-col items-center gap-4 text-center">
+  <SbcLoadingSpinner v-if="busStore.loading" />
+  <div v-else class="mx-auto flex flex-col items-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
     </h1>
     <UCard class="w-full">
       <div class="flex flex-col text-left text-xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        <span>{{ $t('labels.busName') }}: SOME BUSINESS INC.</span>
-        <span>{{ $t('labels.corpNum') }}: BC123456789</span>
-        <span>{{ $t('labels.busNum') }}: 245678623456</span>
+        <span>{{ $t('labels.busName') }}: {{ busStore.currentBusiness.legalName }}</span>
+        <span>{{ $t('labels.corpNum') }}: {{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
+        <span>{{ $t('labels.busNum') }}: {{ busStore.currentBusiness.businessNumber }}</span>
       </div>
     </UCard>
     <UCard class="w-full">

@@ -59,11 +59,10 @@ export const useSbcAccount = defineStore('sbc-account', () => {
   // }
 
   async function createNewAccount (accountData: any) {
-    // await $fetch(apiUrl, {
-    await $fetch('/api/accounts', {
+    await $fetch(apiUrl, {
       method: 'POST',
       body: {
-        accountData
+        name: 'Test Account 789'
       },
       headers: {
         Authorization: `Bearer ${token}`
@@ -89,6 +88,6 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     selectUserAccount,
     createNewAccount
   }
-}
-//  { persist: true }
+},
+{ persist: true }
 )

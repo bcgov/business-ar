@@ -4,6 +4,11 @@ import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
+const config = useRuntimeConfig()
+const apiUrl = config.public.barApiUrl
+const paymentUrl = config.public.paymentPortalUrl
+const busStore = useBusinessStore()
+const accountStore = useSbcAccount()
 
 useHead({
   title: t('page.home.title')
@@ -18,15 +23,15 @@ const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const companyDetails = ref([
   {
     label: 'Corporation Number',
-    value: 'BC897234132'
+    value: busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier
   },
   {
     label: 'Company Name',
-    value: 'Test Name'
+    value: busStore.currentBusiness.legalName
   },
   {
     label: 'Date of Annual Report',
-    value: 'Some Date'
+    value: busStore.currentBusiness.lastArDate
   }
 ])
 
@@ -83,9 +88,32 @@ type FormSchema = z.output<typeof ARSchema>
 
 async function submitARForm (event: FormSubmitEvent<FormSchema>) {
   // Do something with event.data
+  const { $keycloak } = useNuxtApp()
+  const account = useSbcAccount()
   console.log('form submit', arFormRef.value)
   console.log(event.data)
   console.log(event)
+  await $fetch(apiUrl + '/business/BC0005063/filings', {
+    method: 'POST',
+    body: {
+      filing: {
+        header: {
+          filingYear: 2020
+        },
+        annualReport: {
+          annualGeneralMeetingDate: '2020-01-01',
+          annualReportDate: '2020-12-31'
+        }
+      }
+    },
+    headers: {
+      Authorization: `Bearer ${$keycloak.token}`,
+      'Account-Id': account.currentAccount.id
+    },
+    onResponse ({ response }) {
+      console.log('response: ', response)
+    }
+  })
 }
 
 async function onError (event: FormErrorEvent) {
@@ -114,10 +142,26 @@ onMounted(() => {
 })
 
 watchEffect(() => console.log('fees: ', payFeesWidget.fees))
+
+async function affiliateBusinessWithAccount () {
+  const { $keycloak } = useNuxtApp()
+  await $fetch(`${apiUrl}/user/accounts/${accountStore.currentAccount.id}/affiliate`, {
+    method: 'POST',
+    body: {
+      businessIdentifier: busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier
+    },
+    headers: {
+      Authorization: `Bearer ${$keycloak.token}`
+    },
+    onResponse ({ response }) {
+      console.log(response)
+    }
+  })
+}
 </script>
 <template>
   <div class="mx-auto mb-0 flex flex-col gap-4 text-left sm:gap-8 md:mb-40">
-    <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+    <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <!-- {{ $t('page.home.h1') }} -->
       2023 Annual Report
     </h1>
@@ -126,7 +170,7 @@ watchEffect(() => console.log('fees: ', payFeesWidget.fees))
         class="w-full"
         :ui="{
           header: {
-            base: '',
+            base: 'rounded-t-lg',
             background: 'bg-bcGovColor-gray2',
             padding: 'px-4 py-5 sm:px-6',
           }
@@ -134,7 +178,7 @@ watchEffect(() => console.log('fees: ', payFeesWidget.fees))
       >
         <template #header>
           <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
-            Annual Report for: Test Name
+            Annual Report for: {{ busStore.currentBusiness.legalName }}
           </h2>
         </template>
         <!-- display company details -->
@@ -176,7 +220,11 @@ watchEffect(() => console.log('fees: ', payFeesWidget.fees))
           </UFormGroup>
         </UForm>
       </UCard>
-      <SbcFeeWidget :fees="payFeesWidget.fees" @submit="arFormRef?.submit()" />
+      <SbcFeeWidget
+        :fees="payFeesWidget.fees"
+        @submit="affiliateBusinessWithAccount"
+      />
+      <!-- @submit="arFormRef?.submit()"  -->
     </div>
   </div>
 </template>

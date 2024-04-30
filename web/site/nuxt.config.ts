@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  ssr: true,
+  ssr: false,
   nitro: {
     prerender: {
       routes: []
@@ -74,7 +74,8 @@ export default defineNuxtConfig({
       keycloakClientId: process.env.NUXT_KEYCLOAK_CLIENTID,
       registryHomeURL: process.env.NUXT_APP_REGISTRY_HOME_URL,
       appURL: process.env.NUXT_APP_URL,
-      barApiUrl: `${process.env.NUXT_BAR_API_URL || ''}${process.env.NUXT_BAR_API_VERSION || ''}`
+      barApiUrl: `${process.env.NUXT_BAR_API_URL || ''}${process.env.NUXT_BAR_API_VERSION || ''}`,
+      paymentPortalUrl: process.env.NUXT_PAYMENT_PORTAL_URL
     }
   },
   vite: {
