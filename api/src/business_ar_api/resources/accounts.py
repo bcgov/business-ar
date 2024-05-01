@@ -29,8 +29,8 @@ from business_ar_api.services.schema_service import SchemaService
 bp = Blueprint("KEYS", __name__, url_prefix=f"/v1/user/accounts")
 
 
-@bp.route("", methods=["GET", "OPTIONS"])
-@cross_origin(origins="*", methods=["GET"])
+@bp.route("", methods=["GET"])
+@cross_origin(origin="*")
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def get_user_accounts():
     """Get all accounts of the user."""
@@ -41,8 +41,8 @@ def get_user_accounts():
         return error_response(service_exception.message, service_exception.status_code)
 
 
-@bp.route("", methods=["POST", "OPTIONS"])
-@cross_origin(origins="*", methods=["POST"])
+@bp.route("", methods=["POST"])
+@cross_origin(origin="*")
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def create_user_account():
     """Create a new user account."""
@@ -60,8 +60,8 @@ def create_user_account():
         return error_response(service_exception.message, service_exception.status_code)
 
 
-@bp.route("/<int:account_id>/affiliate", methods=["POST", "OPTIONS"])
-@cross_origin(origins="*", methods=["POST"])
+@bp.route("/<int:account_id>/affiliate", methods=["POST"])
+@cross_origin(origin="*")
 @_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
 def create_and_affiliate_entity(account_id: str):
     """Create a new entity and affiliate it to the account."""
