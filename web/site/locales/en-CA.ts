@@ -80,22 +80,23 @@ export default {
     taxNumber: 'Tax Number',
     busName: 'Business Name',
     corpNum: 'Incorporation Number',
-    busNum: 'Business Number'
+    busNum: 'Business Number',
+    arDate: 'Date of Annual Report'
   },
   page: {
     notFound: {
       h1: 'Page Not Found'
     },
     home: {
-      title: 'Service BC Annual Report - Home',
+      title: 'Home - Service BC Annual Report',
       h1: 'File your BC Annual Report'
     },
     createAccount: {
-      title: 'Service BC Annual Report - Account Creation',
+      title: 'Account Creation - Service BC Annual Report',
       h1: 'Service BC Account Creation'
     },
     existingAccount: {
-      title: 'Service BC Annual Report - Choose Existing Account',
+      title: 'Choose Existing Account - Service BC Annual Report',
       h1: 'Existing Account Found',
       h2: 'Your Existing Accounts',
       existingAccountWarning: 'It looks like you already have an account with BC Registries and Online Services. You can use an existing account to proceed or create a new one.'

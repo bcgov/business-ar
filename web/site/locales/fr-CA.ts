@@ -80,22 +80,23 @@ export default {
     taxNumber: 'Tax Number',
     busName: "Nom de L'entreprise",
     corpNum: 'Numéro de constitution',
-    busNum: "Numéro d'entreprise"
+    busNum: "Numéro d'entreprise",
+    arDate: 'Date du Rapport Annuel'
   },
   page: {
     notFound: {
       h1: 'Page non trouvée'
     },
     home: {
-      title: 'Rapport annuel de Service BC - Accueil',
+      title: 'Accueil - Rapport annuel de Service BC',
       h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
     },
     createAccount: {
-      title: 'Rapport annuel de Service BC - Création de Compte',
+      title: 'Création de Compte - Rapport annuel de Service BC',
       h1: 'Création de compte Service BC'
     },
     existingAccount: {
-      title: 'Rapport annuel de Service BC - Choisissez un Compte Existant',
+      title: 'Choisissez un Compte Existant - Rapport annuel de Service BC',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
       existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de BC Registries and Online Services. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'

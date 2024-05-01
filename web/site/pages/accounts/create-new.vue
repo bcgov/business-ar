@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
-const accountStore = useSbcAccount()
+const accountStore = useAccountStore()
 const accountFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const accountFormErrors = ref<Array<{path: string, message: string}> | null>(null)
 const formLoading = ref(false)

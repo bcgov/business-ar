@@ -4,8 +4,7 @@ import { type SbcCountry } from '~/interfaces/sbc-address'
 const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
-const accountStore = useSbcAccount()
-// console.log(accountStore.userAccounts)
+const accountStore = useAccountStore()
 
 useHead({
   title: t('page.existingAccount.title')
@@ -53,7 +52,7 @@ definePageMeta({
                 {{ account.name }}
               </span>
               <span
-                v-if="account.mailingAddress.length"
+                v-if="account.mailingAddress.length !== 0"
                 :id="`account-address-${account.name}`"
                 class="text-bcGovColor-midGray dark:text-gray-300"
               >

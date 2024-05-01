@@ -1,33 +1,44 @@
 import { type Org } from '~/interfaces/org'
-export const useSbcAccount = defineStore('sbc-account', () => {
+export const useAccountStore = defineStore('sbc-account-store', () => {
+  // config imports
   const { $keycloak } = useNuxtApp()
   const token = $keycloak?.token
   const localePath = useLocalePath()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl + '/user/accounts'
 
+  // store values
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
 
-  // need to add user id to get correct users account
-  async function getUserAccounts () {
-    return await $fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      onResponse ({ response }) {
-        if (response.ok) {
-          userAccounts.value = response._data.orgs
+  // get signed in users accounts
+  async function getUserAccounts (): Promise<{ orgs: Org[] } | undefined> {
+    try {
+      // fetch accounts using token
+      return await $fetch<{ orgs: Org[]}>(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        onResponse ({ response }) {
+          if (response.ok) {
+            // set userAccounts if response === 200
+            userAccounts.value = response._data.orgs
+          }
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          console.error(errorMsg)
         }
-        console.log(response)
-      },
-      onResponseError ({ response }) {
-        console.error(response._data.message)
-      }
-    })
+      })
+    } catch {
+      // navigate to create a new account if fetching accounts fails
+      await navigateTo(localePath('/accounts/create-new'))
+    }
   }
 
-  function selectUserAccount (accountId: number) {
+  // assign existing account as users current account
+  function selectUserAccount (accountId: number): void {
     for (const i in userAccounts.value) {
       if (userAccounts.value[i].id === accountId) {
         currentAccount.value = userAccounts.value[i]
@@ -35,30 +46,8 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     }
   }
 
-  // const data = {
-  //   name: 'Test AR Account 2',
-  //   accessType: 'REGULAR',
-  //   typeCode: 'BASIC',
-  //   productSubscriptions: [
-  //     {
-  //       productCode: 'BUSINESS'
-  //     }
-  //   ],
-  //   mailingAddress: {
-  //     city: 'Victoria',
-  //     country: 'CA',
-  //     region: 'BC',
-  //     deliveryInstructions: 'test',
-  //     postalCode: 'V8W 2C3',
-  //     street: '200-1012 Douglas St',
-  //     streetAdditional: ''
-  //   },
-  //   paymentInfo: {
-  //     paymentMethod: 'DIRECT_PAY'
-  //   }
-  // }
-
-  async function createNewAccount (accountData: any) {
+  // create new account
+  async function createNewAccount (accountData: any): Promise<void> {
     await $fetch(apiUrl, {
       method: 'POST',
       body: {
@@ -68,18 +57,14 @@ export const useSbcAccount = defineStore('sbc-account', () => {
         Authorization: `Bearer ${token}`
       },
       async onResponse ({ response }) {
-        console.log(response._data)
         if (response.ok) {
+          // set userAccounts if response === 200, then navigate to AR filing page
           currentAccount.value = response._data
           await navigateTo(localePath('/annual-report'))
         }
       }
     })
   }
-
-  watch(currentAccount, () => {
-    console.log('current user account: ', currentAccount.value)
-  })
 
   return {
     currentAccount,
@@ -89,5 +74,5 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     createNewAccount
   }
 },
-{ persist: true }
+{ persist: true } // persist store values in session storage
 )

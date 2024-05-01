@@ -1,72 +1,19 @@
 <script setup lang="ts">
 import { z } from 'zod'
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
-import moment from 'moment'
 import { UForm } from '#components'
 // const localePath = useLocalePath()
 const { t } = useI18n()
 const config = useRuntimeConfig()
-const apiUrl = config.public.barApiUrl
 const paymentUrl = config.public.paymentPortalUrl
 const busStore = useBusinessStore()
-const accountStore = useSbcAccount()
+const arStore = useAnnualReportStore()
 
-const arDate = datetimeStringToDateString(moment(new Date(busStore.currentBusiness.lastArDate)).add(1, 'year'))
-console.log(arDate)
 useHead({
   title: t('page.home.title')
 })
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
-// const taxInfo: Tax = {
-//   gst: 5.00,
-//   pst: 7.00
-// }
-
-const companyDetails = ref([
-  {
-    label: 'Corporation Number',
-    value: busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier
-  },
-  {
-    label: 'Company Name',
-    value: busStore.currentBusiness.legalName
-  },
-  {
-    label: 'Date of Annual Report',
-    value: arDate
-  }
-])
-
-// Define an array of PayFeesWidgetItem objects
-// const payFeesWidgetItems: PayFeesWidgetItem[] = [
-//   {
-//     uiUuid: '123456789',
-//     filingFees: 100.00,
-//     filingType: 'Annual Report',
-//     filingTypeCode: 'AR',
-//     futureEffectiveFees: 0,
-//     priorityFees: 25.00,
-//     processingFees: 10.00,
-//     serviceFees: 50.00,
-//     tax: taxInfo,
-//     total: 185.00,
-//     quantity: 1 // Optional field
-//   }
-// {
-//   uiUuid: '987654321',
-//   filingFees: 150.00,
-//   filingType: 'Name Change',
-//   filingTypeCode: 'NC',
-//   futureEffectiveFees: 0,
-//   priorityFees: 30.00,
-//   processingFees: 15.00,
-//   serviceFees: 75.00,
-//   tax: taxInfo,
-//   total: 270.00,
-//   quantity: 1 // Optional field
-// }
-// ]
 
 const ARData = reactive({
   AGMDate: '',
@@ -89,37 +36,26 @@ const ARSchema = z.object({
 
 type FormSchema = z.output<typeof ARSchema>
 
-console.log(busStore.currentBusiness)
-
-async function submitARForm (event: FormSubmitEvent<FormSchema>) {
+async function submitAnnualReport (event: FormSubmitEvent<FormSchema>) {
+  try {
+    // const affiliated = await busStore.affiliateBusinessWithAccount()
+    // if (affiliated) {
+    const arFiling = await arStore.submitAnnualReportFiling(null)
+    console.log(arFiling)
+    // }
+  } catch {
+    // do something if submitting ar fails
+  }
   // Do something with event.data
-  const { $keycloak } = useNuxtApp()
-  const account = useSbcAccount()
   // console.log('form submit', arFormRef.value)
   // console.log(event.data)
-  // console.log(event)
-  await $fetch(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
-    method: 'POST',
-    body: {
-      filing: {
-        header: {
-          filingYear: busStore.currentBusiness.nextARYear
-        },
-        annualReport: {
-          annualGeneralMeetingDate: null,
-          annualReportDate: arDate
-        }
-      }
-    },
-    headers: {
-      Authorization: `Bearer ${$keycloak.token}`,
-      'Account-Id': account.currentAccount.id
-    },
-    onResponse ({ response }) {
-      console.log('response: ', response)
-    }
-  })
 }
+
+// paymentToken
+// :
+// 35814
+
+// naviaget to https://dev.account.bcregistry.gov.bc.ca/makepayment/35807/dev.annualreport.business.bcregistry.gov.bc.ca
 
 // filing
 // :
@@ -169,40 +105,10 @@ async function onError (event: FormErrorEvent) {
 }
 
 const payFeesWidget = usePayFeesWidget()
-const filingData: FilingData[] = [
-  {
-    entityType: 'BC',
-    filingTypeCode: 'ANNBC',
-    futureEffective: false,
-    priority: false,
-    waiveFees: false
-  }
-]
-
-// todo: update getting folio number from store when there is this data available
-payFeesWidget.loadFeeTypesAndCharges('custom', filingData)
 
 onMounted(() => {
   addBarPayFees()
 })
-
-watchEffect(() => console.log('fees: ', payFeesWidget.fees))
-
-async function affiliateBusinessWithAccount () {
-  const { $keycloak } = useNuxtApp()
-  await $fetch(`${apiUrl}/user/accounts/${accountStore.currentAccount.id}/affiliate`, {
-    method: 'POST',
-    body: {
-      businessIdentifier: busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier
-    },
-    headers: {
-      Authorization: `Bearer ${$keycloak.token}`
-    },
-    onResponse ({ response }) {
-      console.log(response)
-    }
-  })
-}
 </script>
 <template>
   <div class="mx-auto mb-0 flex flex-col gap-4 text-left sm:gap-8 md:mb-40">
@@ -227,9 +133,13 @@ async function affiliateBusinessWithAccount () {
           </h2>
         </template>
         <!-- display company details -->
-        <div v-for="item in companyDetails" :key="item.label" class="grid grid-cols-12">
-          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ item.label }}</span>
-          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray md:col-start-7 lg:col-start-5 xl:col-start-4">{{ item.value }}</span>
+        <div class="grid grid-cols-12">
+          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busName') }}</span>
+          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray md:col-start-7 lg:col-start-5 xl:col-start-4">{{ busStore.currentBusiness.legalName }}</span>
+          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.corpNum') }}</span>
+          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray md:col-start-7 lg:col-start-5 xl:col-start-4">{{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
+          <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.arDate') }}</span>
+          <span class="col-span-full whitespace-nowrap text-bcGovColor-midGray md:col-start-7 lg:col-start-5 xl:col-start-4">{{ busStore.nextArDate }}</span>
         </div>
 
         <UDivider class="my-8" />
@@ -240,7 +150,7 @@ async function affiliateBusinessWithAccount () {
           :schema="ARSchema"
           autocomplete="off"
           class="flex flex-col gap-y-4 md:grid md:grid-cols-6 md:gap-y-4"
-          @submit="submitARForm"
+          @submit="submitAnnualReport"
           @error="onError"
         >
           <!-- AGM Date -->
@@ -269,7 +179,6 @@ async function affiliateBusinessWithAccount () {
         :fees="payFeesWidget.fees"
         @submit="arFormRef?.submit()"
       />
-      <!-- @submit="affiliateBusinessWithAccount" -->
     </div>
   </div>
 </template>

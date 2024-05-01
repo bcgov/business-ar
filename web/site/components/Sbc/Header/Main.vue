@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { mainLinks, loggedInUserOptions } = useSbcNav()
 const keycloak = useKeycloak()
-const account = useSbcAccount()
+const account = useAccountStore()
 </script>
 <template>
   <header
