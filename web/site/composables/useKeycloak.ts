@@ -3,7 +3,7 @@ export const useKeycloak = () => {
   const { locale } = useI18n()
 
   function login () {
-    console.log('redirect url: ', `${location.origin}/${locale.value}/accounts/choose-existing`)
+    // console.log('redirect url: ', `${location.origin}/${locale.value}/accounts/choose-existing`)
     return $keycloak.login(
       {
         idpHint: 'bcsc',

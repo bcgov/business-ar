@@ -14,8 +14,6 @@ useHead({
   title: t('page.createAccount.title')
 })
 
-const countries = iscCountriesListSortedByName
-
 const accountDetails = reactive({
   accountName: undefined,
   contact: {
@@ -23,48 +21,7 @@ const accountDetails = reactive({
     phoneExt: undefined,
     email: undefined
   }
-  // address: {
-  //   country: {
-  //     name: 'Canada',
-  //     alpha_2: 'CA'
-  //   },
-  //   line1: undefined,
-  //   line2: undefined,
-  //   city: undefined,
-  //   region: undefined,
-  //   postalCode: undefined
-  // }
 })
-
-// const clearAddressForm = () => {
-//   Object.assign(
-//     accountDetails.address,
-//     { city: '', line1: '', line2: '', locationDescription: '', postalCode: '', region: '', country: { name: accountDetails.address.country.name, alpha_2: accountDetails.address.country.alpha_2 } }
-//   )
-// }
-
-// const changeCountry = () => {
-//   clearAddressForm()
-// }
-
-// const regions = computed(() => {
-//   switch (accountDetails.address.country.alpha_2) {
-//     case 'US':
-//       return countrySubdivisions.us
-//     case 'CA':
-//       return countrySubdivisions.ca
-//     default:
-//       return []
-//   }
-// })
-
-// function addrAutoCompleted (selectedAddr: SbcAddress) {
-//   Object.assign(accountDetails.address, selectedAddr)
-//   // country.value = address.value.country
-//   // addressForm.value.validate()
-//   // emit('update:modelValue', address.value)
-//   console.log(accountDetails)
-// }
 
 const accountSchema = z.object({
   accountName: z.string({ required_error: 'Please enter an Account Name' }).min(2, 'Account Name must be at least 2 characters'),
@@ -73,17 +30,6 @@ const accountSchema = z.object({
     phoneExt: z.string().optional(),
     email: z.string({ required_error: 'Please enter an Email Address' }).email({ message: 'Please enter a valid email address' })
   })
-  // address: z.object({
-  //   country: z.object({ name: z.string(), alpha_2: z.string() }).refine(
-  //     (val: SbcCountry) => { return val.name !== '' }, 'Please select a country'
-  //   ),
-  //   line1: z.string({ required_error: 'Address Line 1 is required' }),
-  //   line2: z.string().optional(),
-  //   city: z.string({ required_error: 'Please enter a City' }).min(2, 'A City must be at least 2 characters long'),
-  //   region: z.string({ required_error: 'Please select a Region' }).min(2, 'A Region must be at least 2 characters long'),
-  //   postalCode: z.string({ required_error: 'Please enter a Postal Code' }).min(4, 'The Postal Code must be at least 4 characters')
-  // })
-  // locationDescription: z.string().optional()
 })
 
 type FormSchema = z.output<typeof accountSchema>
@@ -93,43 +39,15 @@ async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
   // Do something with event.data
   formLoading.value = true
   const fullData = {
-    name: event.data.accountName,
-    accessType: 'REGULAR',
-    typeCode: 'BASIC',
-    productSubscriptions: [
-      {
-        productCode: 'BUSINESS'
-      }
-    ],
-    mailingAddress: {
-      city: '',
-      country: '',
-      region: '',
-      deliveryInstructions: '',
-      postalCode: '',
-      street: '',
-      streetAdditional: ''
-    },
-    paymentInfo: {
-      paymentMethod: 'DIRECT_PAY'
-    }
-    // mailingAddress: {
-    //   city: event.data.address.city,
-    //   country: event.data.address.country.alpha_2,
-    //   region: event.data.address.region,
-    //   deliveryInstructions: 'test',
-    //   postalCode: event.data.address.postalCode,
-    //   street: event.data.address.line1,
-    //   streetAdditional: event.data.address.line2
-    // },
+    name: event.data.accountName
   }
 
   await accountStore.createNewAccount(fullData)
   formLoading.value = false
 
-  console.log('form submit')
-  console.log(event.data)
-  console.log(event)
+  // console.log('form submit')
+  // console.log(event.data)
+  // console.log(event)
 }
 
 async function onError (event: FormErrorEvent) {

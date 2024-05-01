@@ -14,12 +14,17 @@ definePageMeta({
   order: 0
 })
 
+// load business details using route query nano id or navigate to /missing-id
 onMounted(async () => {
   if (!route.query.nanoid) {
     return navigateTo(localePath('/missing-id'))
   } else {
+    try {
     // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
-    await busStore.getBusinessByNanoId(route.query.nanoid as string)
+      await busStore.getBusinessByNanoId(route.query.nanoid as string)
+    } catch {
+      await navigateTo(localePath('/missing-id'))
+    }
   }
 })
 </script>

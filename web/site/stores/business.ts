@@ -3,7 +3,6 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
   const accountStore = useAccountStore()
-  const localePath = useLocalePath()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
 
@@ -30,9 +29,8 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
           console.error(errorMsg)
         }
       })
-    } catch {
-      // navigate to error page if error getting business by nano id
-      await navigateTo(localePath('/missing-id'))
+    } catch (e: any) {
+      throw new Error(e)
     } finally {
       setTimeout(() => {
         loading.value = false
@@ -57,9 +55,8 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
           console.error(errorMsg)
         }
       })
-    } catch {
-      // navigate to error page if error getting business by identifier
-      await navigateTo(localePath('/missing-id'))
+    } catch (e: any) {
+      throw new Error(e)
     }
   }
 
@@ -75,7 +72,6 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
           Authorization: `Bearer ${$keycloak.token}`
         },
         onResponseError ({ response }) {
-          console.log(response)
           // console error a message from the api or a default message
           const errorMsg = response._data.message ?? 'Error retrieving business details.'
           console.error(errorMsg)

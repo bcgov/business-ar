@@ -31,9 +31,8 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
           console.error(errorMsg)
         }
       })
-    } catch {
-      // navigate to create a new account if fetching accounts fails
-      await navigateTo(localePath('/accounts/create-new'))
+    } catch (e: any) {
+      throw new Error(e)
     }
   }
 
