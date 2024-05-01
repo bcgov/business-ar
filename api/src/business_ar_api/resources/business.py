@@ -25,8 +25,8 @@ from business_ar_api.services import BusinessService
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
 
-@bp.route("/token/<string:token>", methods=["GET", "OPTIONS"])
-@cross_origin(origins="*", methods=["GET"])
+@bp.route("/token/<string:token>", methods=["GET"])
+@cross_origin(origin="*")
 def get_business_details_using_token(token):
     """Get business details using nano id."""
     if not token:
@@ -38,8 +38,8 @@ def get_business_details_using_token(token):
     return business.json(), HTTPStatus.OK
 
 
-@bp.route("/<string:identifier>", methods=["GET", "OPTIONS"])
-@cross_origin(origins="*", methods=["GET"])
+@bp.route("/<string:identifier>", methods=["GET"])
+@cross_origin(origin="*")
 def get_business_details(identifier):
     """Get business details from colin"""
     if not identifier:
