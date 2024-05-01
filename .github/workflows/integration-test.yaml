@@ -99,5 +99,5 @@ jobs:
             echo "{\"username\": \"${{secrets.TEST_USER}}\"," >> ./config.json
             echo "\"password\": \"${{secrets.TEST_PASSWORD}}\"" >> ./config.json
             echo "}" >> ./config.json
-            testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url http://ar.example.demo:3000 --params-file ./config.json
+            testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
           working-directory: ./testim #optional
