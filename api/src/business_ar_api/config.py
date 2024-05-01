@@ -70,7 +70,7 @@ class Config:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # API Endpoints
-    PAY_API_URL = os.getenv("PAY_API_URL", "") + os.getenv("PAY_API_VERSION", "") 
+    PAY_API_URL = os.getenv("PAY_API_URL", "") + os.getenv("PAY_API_VERSION", "")
     AUTH_API_URL = os.getenv("AUTH_API_URL", "") + os.getenv("AUTH_API_VERSION", "")
 
     AUTH_SVC_URL = os.getenv("AUTH_SVC_URL")
@@ -102,6 +102,7 @@ class Config:
     AUTH_DOMAIN = os.getenv("AUTH_DOMAIN", "")
     PROJECT_ID = os.getenv("PROJECT_ID", "")
     FIREBASE_AUTH_EMULATOR_HOST = os.getenv("FIREBASE_AUTH_EMULATOR_HOST", "")
+
 
 class Production(Config):
     DEBUG = False

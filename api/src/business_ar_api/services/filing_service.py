@@ -90,6 +90,14 @@ class FilingService:
         return filing
 
     @staticmethod
+    def find_filing_by_status(status: str) -> dict:
+        """
+        Get Filing by Status.
+        """
+        filing = FilingModel.find_filings_by_status(status)
+        return filing
+
+    @staticmethod
     def find_filings_by_business_id(business_id: int) -> dict:
         """
         Get Filing by business id.

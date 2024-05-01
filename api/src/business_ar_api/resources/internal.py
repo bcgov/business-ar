@@ -31,54 +31,45 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""This manages data about a business."""
+"""
+This module defines internal endpoints.
 
-from .base_model import BaseModel
-from .db import db
-from .filing import Filing
+It provides endpoints to create and retrieve filing objects.
+
+"""
+from http import HTTPStatus
+
+from flask import Blueprint, jsonify
+from flask_cors import cross_origin
+
+from business_ar_api.common.auth import jwt
+from business_ar_api.exceptions import exception_response, AuthException
+from business_ar_api.models import Filing as FilingModel
+from business_ar_api.services import BusinessService, FilingService
+
+bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 
 
-class Business(BaseModel):
-    id = db.Column(db.Integer, primary_key=True)
-    legal_name = db.Column("legal_name", db.String(1000), index=True)
-    legal_type = db.Column("legal_type", db.String(10))
-    identifier = db.Column("identifier", db.String(10), index=True)
-    tax_id = db.Column("tax_id", db.String(15), index=True)
-    nano_id = db.Column("nano_id", db.String(25), index=True)
+@bp.route("/filings/<string:status>", methods=["GET"])
+@cross_origin(origin="*")
+@jwt.requires_auth
+def get_filings_by_status(status):
+    """Get the filings with the specified status."""
+    try:
 
-    filings = db.relationship("Filing", lazy="dynamic")
-
-    @classmethod
-    def find_by_nano_id(cls, nano_id: str):
-        """Return a Business by the nano_id."""
-        business = None
-        if nano_id:
-            business = cls.query.filter_by(nano_id=nano_id).one_or_none()
-        return business
-
-    @classmethod
-    def find_by_identifier(cls, identifier: str):
-        """Return a Business by identifier."""
-        business = None
-        if identifier:
-            business = cls.query.filter_by(identifier=identifier).one_or_none()
-        return business
-
-    @classmethod
-    def find_by_id(cls, id: int):
-        """Return a Business by identifier."""
-        business = None
-        if id:
-            business = cls.query.filter_by(id=id).one_or_none()
-        return business
-
-    def json(self):
-        """Return the business json."""
-        business_json = {
-            "legalName": self.legal_name,
-            "legalType": self.legal_type,
-            "identifier": self.identifier,
-            "taxId": self.tax_id,
-        }
-
-        return business_json
+        filings = FilingService.find_filing_by_status(status.upper())
+        filings_res = []
+        for filing in filings:
+            filing_json = FilingService.serialize(filing)
+            business = BusinessService.find_by_internal_id(filing.business_id)
+            filing_json["filing"]["business"] = (
+                BusinessService.get_business_details_from_colin(
+                    business.identifier, business.legal_type
+                )
+            )
+            filings_res.append(filing_json)
+        return jsonify(filings=filings_res), HTTPStatus.OK
+    except AuthException as aex:
+        return exception_response(aex)
+    except Exception as exception:  # noqa: B902
+        return exception_response(exception)
