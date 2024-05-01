@@ -65,7 +65,7 @@ def get_filings_by_status(status):
             filing_json["filing"]["business"] = (
                 BusinessService.get_business_details_from_colin(
                     business.identifier, business.legal_type
-                )
+                ).get("business", {})
             )
             filings_res.append(filing_json)
         return jsonify(filings=filings_res), HTTPStatus.OK
