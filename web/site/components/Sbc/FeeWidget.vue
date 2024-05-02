@@ -22,11 +22,11 @@ const total = computed(() => {
 })
 </script>
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 border border-black">
     <UCard
       data-cy="pay-fees-widget"
       :ui="{
-        base: 'w-full md:w-[282px]',
+        base: 'w-full lg:w-[282px]',
         header:
           {
             base: 'rounded-t-lg',

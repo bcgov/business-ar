@@ -6,7 +6,8 @@ const props = defineProps<{
   maxDate?: Date,
   placeholder?: string,
   variant?: string,
-  errors?: FormError[]
+  errors?: FormError[],
+  disabled?: boolean
 }>()
 
 const emit = defineEmits<{(e: 'selection', value: Date | null): void }>()
@@ -63,6 +64,7 @@ const iconClass = computed(() => {
       :model-value="selectedDateDisplay"
       icon="i-mdi-calendar"
       :placeholder="placeholder || ''"
+      :disabled
       trailing
       type="text"
       :variant="errorMessage ? 'error' : variant || 'bcGov'"

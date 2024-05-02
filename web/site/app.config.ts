@@ -43,7 +43,7 @@ export default defineAppConfig({
       wrapper: 'flex items-start',
       base: 'mt-1 mr-2',
       border: 'border-gray-500',
-      label: 'text-base text-bcGovColor-darkgray font-semibold'
+      label: 'text-base text-bcGovColor-midGray font-normal'
     },
     divider: {
       border: {
