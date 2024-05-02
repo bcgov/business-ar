@@ -1,8 +1,11 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const routeWithoutLocale = useRouteWithoutLocale()
+const config = useRuntimeConfig()
+const baseUrl = config.public.baseUrl
+
 useHead({
-  title: t('page.home.title')
+  title: t('page.missingId.title')
 })
 
 definePageMeta({
@@ -12,7 +15,7 @@ definePageMeta({
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-      Authorization Required
+      {{ $t('page.missingId.h1') }}
     </h1>
     <UCard class="w-full max-w-lg">
       <ContentDoc
@@ -23,6 +26,6 @@ definePageMeta({
         class="prose prose-bcGov text-left"
       />
     </UCard>
-    <UButton label="use nano id" to="http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o" />
+    <UButton label="use nano id" :to="`${baseUrl}en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o`" />
   </div>
 </template>

@@ -78,7 +78,7 @@ export default {
     },
     socialInsuranceNumber: 'Social Insurance Number (SIN)',
     taxNumber: 'Tax Number',
-    busName: "Nom de L'entreprise",
+    busName: "Nom de l'entreprise",
     corpNum: 'Numéro de constitution',
     busNum: "Numéro d'entreprise",
     arDate: 'Date du Rapport Annuel'
@@ -88,18 +88,22 @@ export default {
       h1: 'Page non trouvée'
     },
     home: {
-      title: 'Accueil - Rapport annuel de Service BC',
+      title: 'Accueil - Rapport Annuel de Service BC',
       h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
     },
     createAccount: {
-      title: 'Création de Compte - Rapport annuel de Service BC',
+      title: 'Création de Compte - Rapport Annuel de Service BC',
       h1: 'Création de compte Service BC'
     },
     existingAccount: {
-      title: 'Choisissez un Compte Existant - Rapport annuel de Service BC',
+      title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
       existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de BC Registries and Online Services. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
+    },
+    missingId: {
+      title: 'Autorisation Requise - Rapport Annuel de Service BC',
+      h1: 'Autorisation Requise'
     }
   },
   SbcHeader: {

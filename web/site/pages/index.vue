@@ -35,10 +35,13 @@ onMounted(async () => {
       {{ $t('page.home.h1') }}
     </h1>
     <UCard class="w-full">
-      <div class="flex flex-col text-left text-xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        <span>{{ $t('labels.busName') }}: {{ busStore.currentBusiness.legalName }}</span>
-        <span>{{ $t('labels.corpNum') }}: {{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
-        <span>{{ $t('labels.busNum') }}: {{ busStore.currentBusiness.businessNumber }}</span>
+      <div class="flex grid-cols-6 flex-col text-left sm:grid">
+        <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
+        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.currentBusiness.legalName }}</span>
+        <span class="col-span-2 col-start-1 mt-2 whitespace-nowrap font-semibold text-bcGovColor-darkGray sm:mt-0">{{ $t('labels.corpNum') }}</span>
+        <span class="col-span-full col-start-3 mb-2 whitespace-nowrap text-bcGovColor-midGray sm:mb-0">{{ busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier }}</span>
+        <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busNum') }}</span>
+        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.currentBusiness.businessNumber }}</span>
       </div>
     </UCard>
     <UCard class="w-full">
