@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { isoCountriesList } from '~/utils/isoCountriesList'
-import { type SbcCountry } from '~/interfaces/sbc-address'
 const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
@@ -36,8 +35,8 @@ definePageMeta({
       <ul
         class="flex flex-col divide-y text-left text-bcGovColor-midGray dark:text-white"
       >
-        <li v-for="account in accountStore.userAccounts" :key="account.name" class="flex flex-col items-center gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row">
-          <div class="flex flex-row items-center gap-2 sm:gap-6">
+        <li v-for="account in accountStore.userAccounts" :key="account.name" class="flex flex-col items-start gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
+          <div class="flex flex-row items-center gap-4 sm:gap-6">
             <UAvatar
               :alt="account.name[0]"
               :ui="{
@@ -47,13 +46,13 @@ definePageMeta({
                 rounded: 'rounded-sm'
               }"
             />
-            <div class="flex flex-col text-left">
+            <div class="flex w-full flex-col text-left">
               <span class="text-lg font-semibold text-bcGovColor-darkGray dark:text-white">
                 {{ account.name }}
               </span>
               <span
                 v-if="account.mailingAddress.length !== 0"
-                :id="`account-address-${account.name}`"
+                :id="`account-address-${account.id}`"
                 class="text-bcGovColor-midGray dark:text-gray-300"
               >
                 {{ account.mailingAddress[0].street }},
@@ -67,7 +66,7 @@ definePageMeta({
           <UButton
             class="sm:ml-auto"
             :label="$t('btn.useThisAccount.main')"
-            :aria-describedby="`account-address-${account.name}`"
+            :aria-describedby="account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
             :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
             icon="i-mdi-chevron-right"
             trailing

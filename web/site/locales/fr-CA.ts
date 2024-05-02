@@ -25,7 +25,8 @@ export default {
       main: 'Utiliser ce Compte',
       aria: 'Utiliser ce Compte, {name}'
     },
-    logout: 'se déconnecter'
+    logout: 'se déconnecter',
+    saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel'
   },
   currency: {
     cad: 'CAD',
@@ -93,7 +94,27 @@ export default {
     },
     createAccount: {
       title: 'Création de Compte - Rapport Annuel de Service BC',
-      h1: 'Création de compte Service BC'
+      h1: 'Création de Compte Service BC',
+      h2: 'Détails du Compte',
+      form: {
+        infoSection: {
+          fieldSet: 'Votre Nom',
+          info: "Il s'agit de votre nom légal tel qu'il apparaît sur votre carte BC Services."
+        },
+        accountNameSection: {
+          fieldSet: 'Nom du Compte',
+          accountNameInputLabel: 'Nom du Compte'
+        },
+        contactDetailsSection: {
+          fieldSet: 'Détails du Contact',
+          phoneInputLabel: 'Numéro de téléphone',
+          phoneExtInputLabel: {
+            main: 'Extension (Facultatif)',
+            aria: 'Extension du numéro de téléphone, en option'
+          },
+          emailInputLabel: 'Adresse e-mail'
+        }
+      }
     },
     existingAccount: {
       title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',

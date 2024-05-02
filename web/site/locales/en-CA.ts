@@ -25,7 +25,8 @@ export default {
       main: 'Use this Account',
       aria: 'Use this Account, {name}'
     },
-    logout: 'Log out'
+    logout: 'Log out',
+    saveAccountAndFileAr: 'Save Account & File Annual Report'
   },
   currency: {
     cad: 'CAD',
@@ -93,7 +94,27 @@ export default {
     },
     createAccount: {
       title: 'Account Creation - Service BC Annual Report',
-      h1: 'Service BC Account Creation'
+      h1: 'Service BC Account Creation',
+      h2: 'Account Details',
+      form: {
+        infoSection: {
+          fieldSet: 'Your Name',
+          info: 'This is your legal name as it appears on your BC Services Card.'
+        },
+        accountNameSection: {
+          fieldSet: 'Account Name',
+          accountNameInputLabel: 'Account Name'
+        },
+        contactDetailsSection: {
+          fieldSet: 'Contact Details',
+          phoneInputLabel: 'Phone Number',
+          phoneExtInputLabel: {
+            main: 'Extension (Optional)',
+            aria: 'Phone Number Extension, Optional'
+          },
+          emailInputLabel: 'Email Address'
+        }
+      }
     },
     existingAccount: {
       title: 'Choose Existing Account - Service BC Annual Report',
