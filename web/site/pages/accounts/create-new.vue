@@ -45,8 +45,8 @@ async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
     await accountStore.createNewAccount(data)
 
     await navigateTo(localePath('/annual-report'))
-  } catch {
-    // do something if account creation fails
+  } catch (e) {
+    console.error(e)
   } finally {
     formLoading.value = false
   }

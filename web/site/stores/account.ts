@@ -3,7 +3,6 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
   const token = $keycloak?.token
-  const localePath = useLocalePath()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl + '/user/accounts'
 
@@ -46,23 +45,31 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   }
 
   // create new account
-  async function createNewAccount (accountData: any): Promise<void> {
-    await $fetch(apiUrl, {
-      method: 'POST',
-      body: {
-        name: 'Test Account 789'
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      async onResponse ({ response }) {
-        if (response.ok) {
-          // set userAccounts if response === 200, then navigate to AR filing page
-          currentAccount.value = response._data
-          await navigateTo(localePath('/annual-report'))
+  async function createNewAccount (data: any): Promise<void> {
+    try {
+      await $fetch(apiUrl, {
+        method: 'POST',
+        body: {
+          name: data.name
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        onResponse ({ response }) {
+          if (response.ok) {
+            // set userAccounts if response === 200, then navigate to AR filing page
+            currentAccount.value = response._data
+          }
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          console.error(errorMsg)
         }
-      }
-    })
+      })
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
   return {
