@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e589d5f4-39e4-45d1-a59f-dd1d8602d647",
+		"_postman_id": "da233ef3-d4fe-4856-93c2-9a3d64dc4c00",
 		"name": "business-ar-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31792407"
@@ -272,7 +272,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2020\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2020-01-01\",\n            \"annualReportDate\": \"2020-12-31\"\n        }\n    }\n}",
+					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2020\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2020-01-01\",\n            \"annualReportDate\": \"2020-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -426,6 +426,51 @@
 						"filings",
 						"{{filing_id}}",
 						"payment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Internal filings",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/internal/filings/pending",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"internal",
+						"filings",
+						"pending"
 					]
 				}
 			},

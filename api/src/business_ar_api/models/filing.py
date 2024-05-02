@@ -91,9 +91,14 @@ class Filing(BaseModel):
         return cls.query.filter_by(id=filing_id).one_or_none()
 
     @classmethod
-    def find_filings_by_business_id(cls, id: int) -> Filing | None:
-        """Return the submission by business_identifier."""
+    def find_filings_by_business_id(cls, id: int) -> list[Filing]:
+        """Return filings by business_identifier."""
         return cls.query.filter_by(business_id=id).all()
+
+    @classmethod
+    def find_filings_by_status(cls, status: str) -> list[Filing]:
+        """Return filings by status."""
+        return cls.query.filter_by(status=status).all()
 
 
 class FilingSerializer:
@@ -109,6 +114,7 @@ class FilingSerializer:
         """Return the filing object as a dict."""
         filing_dict = copy.deepcopy(filing.filing_json)
         filing_dict["filing"]["header"]["id"] = filing.id
+        filing_dict["filing"]["header"]["name"] = "annualReport"
         filing_dict["filing"]["header"]["filingYear"] = filing.fiscal_year
         filing_dict["filing"]["header"]["paymentToken"] = filing.invoice_id
         filing_dict["filing"]["header"]["paymentStatus"] = filing.payment_status_code

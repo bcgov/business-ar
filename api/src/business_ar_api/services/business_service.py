@@ -50,6 +50,11 @@ class BusinessService:
         return BusinessModel.find_by_identifier(business_identifier)
 
     @classmethod
+    def find_by_internal_id(cls, business_id: int) -> BusinessModel:
+        """Finds a business by its internal id."""
+        return BusinessModel.find_by_id(business_id)
+
+    @classmethod
     def get_business_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")

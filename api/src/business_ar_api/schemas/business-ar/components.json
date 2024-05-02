@@ -84,7 +84,8 @@
                     "type": "object",
                     "required": [
                         "annualReportDate",
-                        "annualGeneralMeetingDate"
+                        "annualGeneralMeetingDate",
+                        "votedForNoAGM"
                     ],
                     "properties": {
                         "annualGeneralMeetingDate": {
@@ -97,6 +98,10 @@
                         "annualReportDate": {
                             "type": "string",
                             "format": "date"
+                        },
+                        "votedForNoAGM": {
+                            "type": "boolean",
+                            "description": "Unanimously voted to not hold an AGM."
                         }
                     }
                 }
