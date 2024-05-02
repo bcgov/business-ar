@@ -36,66 +36,29 @@ const ARSchema = z.object({
 
 type FormSchema = z.output<typeof ARSchema>
 
+async function handlePayment (payToken: number): Promise<void> {
+  // const returnUrl = encodeURIComponent('http://localhost:3000/en-CA/submitted' + '?filing_id=' + this.filingId)
+  const returnUrl = encodeURIComponent('http://localhost:3000/en-CA/submitted')
+  const payUrl = paymentUrl + payToken + '/' + returnUrl
+  // assume Pay URL is always reachable
+  // otherwise, user will have to retry payment later
+  await navigateTo(payUrl, { external: true })
+}
+
 async function submitAnnualReport (event: FormSubmitEvent<FormSchema>) {
   try {
-    // const affiliated = await busStore.affiliateBusinessWithAccount()
-    // if (affiliated) {
-    const arFiling = await arStore.submitAnnualReportFiling(null)
-    console.log(arFiling)
-    // }
-  } catch {
+    await busStore.affiliateBusinessWithAccount()
+    const paymentToken = await arStore.submitAnnualReportFiling(null)
+    // console.log(paymentToken)
+    handlePayment(paymentToken!)
+  } catch (e: any) {
+    console.log(e)
     // do something if submitting ar fails
   }
   // Do something with event.data
   // console.log('form submit', arFormRef.value)
   // console.log(event.data)
 }
-
-// paymentToken
-// :
-// 35814
-
-// naviaget to https://dev.account.bcregistry.gov.bc.ca/makepayment/35807/dev.annualreport.business.bcregistry.gov.bc.ca
-
-// filing
-// :
-// annualReport
-// :
-// annualGeneralMeetingDate
-// :
-// null
-// annualReportDate
-// :
-// "2012-01-24"
-// [[Prototype]]
-// :
-// Object
-// header
-// :
-// completionDate
-// :
-// null
-// filingDate
-// :
-// "2024-04-30T22:16:09.994432+00:00"
-// filingYear
-// :
-// 2012
-// id
-// :
-// 1
-// paymentStatus
-// :
-// null
-// paymentToken
-// :
-// 35807
-// status
-// :
-// "PENDING"
-// submitter
-// :
-// null
 
 async function onError (event: FormErrorEvent) {
   console.log('error: ', event)

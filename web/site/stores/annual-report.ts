@@ -2,17 +2,17 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
   // config imports
   const { $keycloak } = useNuxtApp()
   const accountStore = useAccountStore()
-  const localePath = useLocalePath()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
   const busStore = useBusinessStore()
 
   // store values
   const loading = ref<boolean>(true)
+  const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
 
-  async function submitAnnualReportFiling (agmDate: string | null) {
+  async function submitAnnualReportFiling (agmDate: string | null): Promise<number> {
     try {
-      return await $fetch(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
+      const response = await $fetch<ArFilingResponse>(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
         method: 'POST',
         body: {
           filing: {
@@ -21,7 +21,8 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
             },
             annualReport: {
               annualGeneralMeetingDate: agmDate,
-              annualReportDate: busStore.nextArDate
+              annualReportDate: busStore.nextArDate,
+              votedForNoAGM: false
             }
           }
         },
@@ -30,18 +31,32 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
           'Account-Id': `${accountStore.currentAccount.id}`
         },
         onResponse ({ response }) {
-          console.log('response: ', response)
+          arFiling.value = response._data
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error submitting annual report filing.'
+          console.error(errorMsg)
         }
       })
-    } catch {
-      // do something if creating the filing fails
+
+      // console.log(response)
+      if (response === undefined) {
+        throw new Error('Could not file annual report.')
+      }
+
+      return response.filing.header.paymentToken
+    } catch (error) {
+      console.error('An error occurred:', error)
+      throw error
     }
   }
 
   return {
     loading,
+    arFiling,
     submitAnnualReportFiling
   }
-}
-// { persist: true } // persist store values in session storage
+},
+{ persist: true }
 )

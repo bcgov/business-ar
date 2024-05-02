@@ -10,6 +10,7 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
   const loading = ref<boolean>(true)
   const currentBusiness = ref<BusinessFull>({} as BusinessFull)
   const nextArDate = ref<string>('')
+  const payStatus = ref<string | null>(null)
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
@@ -61,9 +62,9 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
   }
 
   // affiliate business with account
-  async function affiliateBusinessWithAccount () {
+  async function affiliateBusinessWithAccount (): Promise<void> {
     try {
-      return await $fetch(`${apiUrl}/user/accounts/${accountStore.currentAccount.id}/affiliate`, {
+      await $fetch(`${apiUrl}/user/accounts/${accountStore.currentAccount.id}/affiliate`, {
         method: 'POST',
         body: {
           businessIdentifier: currentBusiness.value.jurisdiction + currentBusiness.value.identifier
@@ -78,16 +79,53 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
         }
       })
     } catch {
-      // do something if account affiliation fails
+      // handle error silently
+    }
+  }
+
+  async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
+    const identifier = currentBusiness.value.jurisdiction + currentBusiness.value.identifier
+    loading.value = true
+    try {
+      const response = await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${$keycloak.token}`
+        },
+        onResponse ({ response }) {
+          if (response.ok) {
+            payStatus.value = response._data.filing.header.paymentStatus
+          }
+          // console.log('res: ', response)
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error updating business payment status.'
+          console.error(errorMsg)
+        }
+      })
+
+      if (response === undefined) {
+        throw new Error('Could not update payment status.')
+      }
+    } catch (error) {
+      console.error('An error occurred:', error)
+      throw error
+    } finally {
+      setTimeout(() => {
+        loading.value = false
+      }, 500)
     }
   }
 
   return {
     getBusinessByNanoId,
     affiliateBusinessWithAccount,
+    updatePaymentStatusForBusiness,
     loading,
     currentBusiness,
-    nextArDate
+    nextArDate,
+    payStatus
   }
 },
 { persist: true } // persist store values in session storage
