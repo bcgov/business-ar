@@ -8,3 +8,8 @@ export interface Error {
   statusCode: number,
   type?: ErrorCode
 }
+
+export interface FormPathError {
+  path: string,
+  message: string
+}

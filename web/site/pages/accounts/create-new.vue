@@ -2,11 +2,10 @@
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { z } from 'zod'
 import { UForm } from '#components'
-// const localePath = useLocalePath()
+const localePath = useLocalePath()
 const { t } = useI18n()
 const accountStore = useAccountStore()
 const accountFormRef = ref<InstanceType<typeof UForm> | null>(null)
-const accountFormErrors = ref<Array<{path: string, message: string}> | null>(null)
 const formLoading = ref(false)
 const keycloak = useKeycloak()
 
@@ -37,43 +36,26 @@ type FormSchema = z.output<typeof accountSchema>
 async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
   // accountFormRef.value.clear()
   // Do something with event.data
-  formLoading.value = true
-  const fullData = {
-    name: event.data.accountName
+  try {
+    formLoading.value = true
+    const data = {
+      name: event.data.accountName
+    }
+
+    await accountStore.createNewAccount(data)
+
+    await navigateTo(localePath('/annual-report'))
+  } catch {
+    // do something if account creation fails
+  } finally {
+    formLoading.value = false
   }
-
-  await accountStore.createNewAccount(fullData)
-  formLoading.value = false
-
-  // console.log('form submit')
-  // console.log(event.data)
-  // console.log(event)
 }
 
-async function onError (event: FormErrorEvent) {
-  console.log('error: ', event)
+function onError (event: FormErrorEvent) {
   const element = document.getElementById(event.errors[0].id)
   element?.focus()
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-}
-
-watch(() => accountFormRef.value?.errors, (newVal) => {
-  accountFormErrors.value = newVal
-  console.log('form errors', accountFormErrors.value)
-}, { deep: true })
-
-interface FormPathError {
-  path: string,
-  message: string
-}
-
-function handleFormInputVariant (path: string): 'error' | 'bcGov' {
-  if (accountFormErrors.value) {
-    const hasError = accountFormErrors.value.some((error: FormPathError) => error.path === path)
-    return hasError ? 'error' : 'bcGov'
-  } else {
-    return 'bcGov'
-  }
 }
 </script>
 <template>
@@ -122,7 +104,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
         <UFormGroup name="accountName" class="col-span-full col-start-2 row-span-1 row-start-1">
           <UInput
             v-model="accountDetails.accountName"
-            :variant="handleFormInputVariant('accountName')"
+            :variant="handleFormInputVariant('accountName', accountFormRef?.errors)"
             :ariaLabel="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             :placeholder="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             class="placeholder:text-bcGovColor-midGray"
@@ -137,7 +119,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
             <UFormGroup name="contact.phone" class="md:flex-1">
               <UInput
                 v-model="accountDetails.contact.phone"
-                :variant="handleFormInputVariant('contact.phone')"
+                :variant="handleFormInputVariant('contact.phone', accountFormRef?.errors)"
                 :placeholder="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
                 :ariaLabel="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
               />
@@ -146,7 +128,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
             <UFormGroup name="contact.phoneExt" class="md:flex-1">
               <UInput
                 v-model="accountDetails.contact.phoneExt"
-                :variant="handleFormInputVariant('contact.phoneExt')"
+                :variant="handleFormInputVariant('contact.phoneExt', accountFormRef?.errors)"
                 :placeholder="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.main')"
                 :ariaLabel="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
               />
@@ -157,7 +139,7 @@ function handleFormInputVariant (path: string): 'error' | 'bcGov' {
         <UFormGroup name="contact.email" class="col-span-full col-start-2 row-span-1 row-start-4">
           <UInput
             v-model="accountDetails.contact.email"
-            :variant="handleFormInputVariant('contact.email')"
+            :variant="handleFormInputVariant('contact.email', accountFormRef?.errors)"
             :placeholder="$t('page.createAccount.form.contactDetailsSection.emailInputLabel')"
             :ariaLabel="$t('page.createAccount.form.contactDetailsSection.emailInputLabel')"
           />
