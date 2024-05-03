@@ -10,7 +10,12 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
   const loading = ref<boolean>(true)
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
 
-  async function submitAnnualReportFiling (agmDate: string | null): Promise<number> {
+  interface ARFiling {
+    agmDate: Date | null,
+    votedForNoAGM: boolean
+  }
+
+  async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number }> {
     try {
       const response = await $fetch<ArFilingResponse>(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
         method: 'POST',
@@ -20,9 +25,9 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
               filingYear: busStore.currentBusiness.nextARYear
             },
             annualReport: {
-              annualGeneralMeetingDate: agmDate,
+              annualGeneralMeetingDate: agmData.agmDate,
               annualReportDate: busStore.nextArDate,
-              votedForNoAGM: false
+              votedForNoAGM: agmData.votedForNoAGM
             }
           }
         },
@@ -32,6 +37,7 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
         },
         onResponse ({ response }) {
           arFiling.value = response._data
+          console.log(arFiling.value)
         },
         onResponseError ({ response }) {
           // console error a message from the api or a default message
@@ -40,12 +46,14 @@ export const useAnnualReportStore = defineStore('sbc-annual-report-store', () =>
         }
       })
 
-      // console.log(response)
       if (response === undefined) {
         throw new Error('Could not file annual report.')
       }
 
-      return response.filing.header.paymentToken
+      const paymentToken = response.filing.header.paymentToken
+      const filingId = response.filing.header.id
+
+      return { paymentToken, filingId }
     } catch (error) {
       console.error('An error occurred:', error)
       throw error

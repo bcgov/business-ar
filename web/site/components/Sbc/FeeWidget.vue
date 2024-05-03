@@ -22,17 +22,26 @@ const total = computed(() => {
 })
 </script>
 <template>
-  <div class="flex flex-col gap-4 border border-black">
+  <div class="flex flex-col gap-4">
     <UCard
       data-cy="pay-fees-widget"
       :ui="{
-        base: 'w-full lg:w-[282px]',
-        header:
-          {
-            base: 'rounded-t-lg',
-            background: 'bg-bcGovColor-header',
-            padding: 'p-4'
-          }
+        base: 'w-full md:w-[282px]',
+        header: {
+          base: 'rounded-t-lg',
+          background: 'bg-bcGovColor-header',
+          padding: 'p-4 sm:px-4'
+        },
+        body: {
+          base: '',
+          background: '',
+          padding: 'p-4 sm:px-4',
+        },
+        footer: {
+          base: '',
+          background: '',
+          padding: 'p-4 sm:px-4',
+        },
       }"
     >
       <template #header>

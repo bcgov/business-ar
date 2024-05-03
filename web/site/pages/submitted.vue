@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 const { t } = useI18n()
+const route = useRoute()
 const busStore = useBusinessStore()
-const arStore = useAnnualReportStore()
 const routeWithoutLocale = useRouteWithoutLocale()
 
 useHead({
@@ -11,7 +11,11 @@ useHead({
 
 onMounted(async () => {
   try {
-    await busStore.updatePaymentStatusForBusiness(arStore.arFiling.filing.header.id)
+    if (!route.query.filing_id) {
+      // do something
+    } else {
+      await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
+    }
   } catch (e) {
     console.error(e)
   }

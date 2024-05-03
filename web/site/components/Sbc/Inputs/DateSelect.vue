@@ -10,7 +10,10 @@ const props = defineProps<{
   disabled?: boolean
 }>()
 
-const emit = defineEmits<{(e: 'selection', value: Date | null): void }>()
+// eslint-disable-next-line func-call-spacing
+const emit = defineEmits<{
+  (e: 'selection', value: Date | null): void
+}>()
 
 // @ts-ignore
 const dateSelectPickerRef: MaybeElementRef = ref(null)
@@ -56,6 +59,10 @@ const iconClass = computed(() => {
   }
   return 'text-gray-700'
 })
+
+defineExpose({
+  updateDate
+})
 </script>
 <template>
   <div>
@@ -76,7 +83,7 @@ const iconClass = computed(() => {
     <SbcDatePicker
       v-if="showDatePicker"
       ref="dateSelectPickerRef"
-      class="absolute z-[100]"
+      class="absolute top-16 z-[100]"
       :default-selected-date="selectedDate"
       :set-max-date="maxDate"
       @selected-date="updateDate($event); showDatePicker = false"

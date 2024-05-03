@@ -80,7 +80,7 @@ watch(() => props.setMinDate, (val) => { minDate.value = val || null })
   }
 
   .dp__menu {
-    border-radius: 0 0 10px 10px;
+    border-radius: 10px;
     height: 329px;
   }
 
