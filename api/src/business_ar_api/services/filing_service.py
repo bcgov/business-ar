@@ -118,9 +118,7 @@ class FilingService:
         Update the filing with the payment details.
         """
         filing = FilingService.find_filing_by_id(filing_id)
-        payment_details = FilingService.get_payment_details_by_invoice_id(
-            filing_id, user_jwt
-        )
+        payment_details = FilingService.get_payment_data(filing_id, user_jwt)
         filing.payment_status_code = payment_details.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
             filing.status = FilingModel.Status.PAID
