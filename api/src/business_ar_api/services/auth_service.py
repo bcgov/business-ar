@@ -101,6 +101,16 @@ class AuthService:
         return new_user_account_details
 
     @classmethod
+    def search_accounts(cls, account_name: str, **kwargs):
+        client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
+
+        token = AuthService.get_service_client_token(client_id, client_secret)
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs?name={account_name.strip()}&validateName=true"
+        accounts = RestService.get(endpoint=endpoint, token=token).json()
+        return accounts
+
+    @classmethod
     def create_entity(cls, entity_json: dict):
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
@@ -135,6 +145,18 @@ class AuthService:
             data=affiliation_payload, endpoint=endpoint, token=user.bearer_token
         ).json()
         return new_entity_details
+
+    @classmethod
+    @user_context
+    def get_account_affiliations(cls, account_id: int, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/affiliations"
+        )
+        affiliations = RestService.get(
+            endpoint=endpoint, token=user.bearer_token
+        ).json()
+        return affiliations
 
     @classmethod
     @user_context

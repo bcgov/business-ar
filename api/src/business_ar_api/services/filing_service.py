@@ -118,6 +118,27 @@ class FilingService:
         Update the filing with the payment details.
         """
         filing = FilingService.find_filing_by_id(filing_id)
+        payment_details = FilingService.get_payment_details_by_invoice_id(
+            filing_id, user_jwt
+        )
+        filing.payment_status_code = payment_details.get("statusCode")
+        if filing.payment_status_code == "COMPLETED":
+            filing.status = FilingModel.Status.PAID
+        filing.save()
+        return filing
+
+    @staticmethod
+    def get_payment_data(filing_id: int, user_jwt: JwtManager) -> dict:
+        """
+        Get the payment from sbc-pay.
+        """
+        filing = FilingService.find_filing_by_id(filing_id)
+        if not filing:
+            raise BusinessException(
+                error=f"Filing with id {filing_id} does not exist.",
+                status_code=HTTPStatus.BAD_REQUEST,
+                message="No filing found.",
+            )
         if not filing.invoice_id:
             raise BusinessException(
                 error=f"Filing with id {filing_id} does not have an invoice.",
@@ -127,8 +148,4 @@ class FilingService:
         payment_details = PaymentService.get_payment_details_by_invoice_id(
             filing.invoice_id, user_jwt
         )
-        filing.payment_status_code = payment_details.get("statusCode")
-        if filing.payment_status_code == "COMPLETED":
-            filing.status = FilingModel.Status.PAID
-        filing.save()
-        return filing
+        return payment_details

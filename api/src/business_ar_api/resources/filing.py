@@ -116,6 +116,16 @@ def create_filing(identifier):
         if not valid:
             return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
 
+        # Affiliate the entity to the account if the affiliation does not exist.
+        affiliations = AuthService.get_account_affiliations(account_id)
+        existing_affiliation = [
+            affiliation
+            for affiliation in affiliations.get("entities")
+            if affiliation.get("businessIdentifier") == identifier
+        ]
+        if not existing_affiliation:
+            AuthService.affiliate_entity_to_account(account_id, identifier)
+
         # Check whether the user has permission to create the filing.
         AuthService.is_authorized(business_identifier=identifier)
 
@@ -165,6 +175,37 @@ def update_filing_payment_status(identifier, filing_id):
         filing = FilingService.update_payment_data(filing_id, jwt)
 
         return jsonify(FilingService.serialize(filing)), HTTPStatus.OK
+
+    except AuthException as authException:
+        return exception_response(authException)
+    except Exception as exception:  # noqa: B902
+        return exception_response(exception)
+
+
+@bp.route("/<int:filing_id>/payment", methods=["GET"])
+@cross_origin(origin="*")
+@jwt.requires_auth
+def get_filing_payment_status(identifier, filing_id):
+    """
+    Get the payment information of a filing by pulling data from sbc-pay.
+
+    Returns:
+        A tuple containing the response JSON and the HTTP status code.
+    """
+    try:
+        if not filing_id:
+            return error_response(
+                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
+            )
+
+        business = BusinessService.find_by_business_identifier(identifier)
+        if not business:
+            return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
+
+        # update filing with payment details
+        payment_details = FilingService.get_payment_data(filing_id, jwt)
+
+        return jsonify(payment_details), HTTPStatus.OK
 
     except AuthException as authException:
         return exception_response(authException)
