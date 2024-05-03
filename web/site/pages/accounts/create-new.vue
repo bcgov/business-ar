@@ -57,6 +57,22 @@ function onError (event: FormErrorEvent) {
   element?.focus()
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
+
+const validate = async (state: any): Promise<FormError[]> => {
+  const errors = []
+  // const name = (event.target as HTMLInputElement).value
+  try {
+    if (!state.accountName) { return [] }
+    const data = await accountStore.checkAccountExists(state.accountName)
+    if (data) {
+      errors.push({ path: 'accountName', message: 'Account Name must be unique' })
+    }
+  } catch {
+    // fail silently
+  }
+  return errors
+}
+
 </script>
 <template>
   <div class="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-8 text-left">
@@ -93,6 +109,7 @@ function onError (event: FormErrorEvent) {
         ref="accountFormRef"
         :state="accountDetails"
         :schema="accountSchema"
+        :validate="validate"
         class="flex flex-col gap-y-4 md:grid md:grid-cols-6 md:gap-y-8"
         @error="onError"
         @submit="submitCreateAccountForm"
@@ -108,6 +125,7 @@ function onError (event: FormErrorEvent) {
             :ariaLabel="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             :placeholder="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             class="placeholder:text-bcGovColor-midGray"
+            @blue="accountFormRef.validate('accountName', { silent: true })"
           />
         </UFormGroup>
 

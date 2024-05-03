@@ -4,7 +4,7 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   const { $keycloak } = useNuxtApp()
   const token = $keycloak?.token
   const config = useRuntimeConfig()
-  const apiUrl = config.public.barApiUrl + '/user/accounts'
+  const apiUrl = config.public.barApiUrl
 
   // store values
   const currentAccount = ref<Org>({} as Org)
@@ -14,7 +14,7 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   async function getUserAccounts (): Promise<{ orgs: Org[] } | undefined> {
     try {
       // fetch accounts using token
-      return await $fetch<{ orgs: Org[]}>(apiUrl, {
+      return await $fetch<{ orgs: Org[]}>(apiUrl + '/user/accounts', {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -47,7 +47,7 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   // create new account
   async function createNewAccount (data: any): Promise<void> {
     try {
-      await $fetch(apiUrl, {
+      await $fetch(apiUrl + '/user/accounts', {
         method: 'POST',
         body: {
           name: data.name
@@ -72,12 +72,32 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
     }
   }
 
+  async function checkAccountExists (name: string) {
+    try {
+      const response = await $fetch(apiUrl + '/accounts', {
+        query: {
+          name
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response) {
+        return response
+      }
+    } catch {
+      // silently handle errors
+    }
+  }
+
   return {
     currentAccount,
     userAccounts,
     getUserAccounts,
     selectUserAccount,
-    createNewAccount
+    createNewAccount,
+    checkAccountExists
   }
 },
 { persist: true } // persist store values in session storage
