@@ -26,7 +26,7 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
         },
         onResponseError ({ response }) {
           // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          const errorMsg = response._data.message ?? 'Error retrieving users accounts.'
           console.error(errorMsg)
         }
       })

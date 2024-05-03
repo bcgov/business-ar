@@ -41,6 +41,7 @@ const account = useAccountStore()
           :items="loggedInUserOptions"
           :ui="{
             width: '',
+            height: 'max-h-60',
             item: {
               disabled:
                 'cursor-text select-text text-bcGovGray-900 dark:text-white opacity-100 font-semibold',

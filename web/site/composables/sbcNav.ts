@@ -5,6 +5,7 @@ export function useSbcNav () {
   const localePath = useLocalePath()
   const { t } = useI18n()
   const keycloak = useKeycloak()
+  const accountStore = useAccountStore()
 
   const mainLinks = computed<DropdownItem[]>(() => {
     return [
@@ -17,20 +18,43 @@ export function useSbcNav () {
   })
 
   const loggedInUserOptions = computed<DropdownItem[][]>(() => {
-    return [
+    const fullOptions: DropdownItem[][] = [
       [
         {
           label: 'Account',
           slot: 'account',
           disabled: true
-        },
-        {
-          label: t('btn.logout'),
-          icon: 'i-mdi-logout',
-          click: () => keycloak.logout()
         }
       ]
     ]
+
+    const accountOptions = accountStore.userAccounts
+      .filter(account => accountStore.currentAccount.id !== account.id)
+      .map(account => ({
+        label: account.name,
+        click: () => accountStore.selectUserAccount(account.id)
+      }))
+
+    if (accountOptions.length > 0) {
+      fullOptions.push([
+        {
+          label: 'Switch Accounts',
+          disabled: true
+        }
+      ])
+      fullOptions.push([
+        ...accountOptions
+      ])
+    }
+
+    fullOptions.push([
+      {
+        label: t('btn.logout'),
+        icon: 'i-mdi-logout',
+        click: () => keycloak.logout()
+      }
+    ])
+    return fullOptions
   })
 
   // const loggedOutUserOptions = computed<DropdownItem[][]>(() => {
