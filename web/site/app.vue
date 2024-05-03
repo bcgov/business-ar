@@ -14,7 +14,7 @@ useHead({
 </script>
 <template>
   <div
-    class="flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
+    class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
   >
     <SbcHeaderMain />
     <NuxtLayout>

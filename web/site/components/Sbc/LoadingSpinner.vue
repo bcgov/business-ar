@@ -1,5 +1,16 @@
+<script setup lang="ts">
+defineProps({
+  overlay: {
+    type: Boolean,
+    default: false
+  }
+})
+</script>
 <template>
   <!-- eslint-disable tailwindcss/no-custom-classname -->
+  <Teleport v-if="overlay" to="body">
+    <div class="absolute left-0 top-0 z-[999] h-screen w-screen bg-gray-100 opacity-50" />
+  </Teleport>
   <svg class="spinner" viewBox="0 0 50 50">
     <circle
       class="path"
@@ -15,8 +26,8 @@
   .spinner {
     position: absolute;
     animation: rotate 1.5s linear infinite;
-    z-index: 2;
-    top: 55%;
+    z-index: 1000;
+    top: 50%;
     left: 50%;
     margin: -37.5px 0 0 -37.5px;
     width: 75px;

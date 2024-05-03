@@ -76,15 +76,13 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
-    // console.log(arFiling)
+    // // console.log(arFiling)
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    // console.log(paymentToken, filingId)
+    // // console.log(paymentToken, filingId)
     await handlePayment(paymentToken, filingId)
   } catch (e: any) {
     console.log(e)
     // do something if submitting ar fails
-  } finally {
-    loading.value = false
   }
 }
 
@@ -112,6 +110,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
+    <SbcLoadingSpinner v-if="loading" overlay />
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
         {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
