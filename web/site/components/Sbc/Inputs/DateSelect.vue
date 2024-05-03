@@ -7,7 +7,8 @@ const props = defineProps<{
   placeholder?: string,
   variant?: string,
   errors?: FormError[],
-  disabled?: boolean
+  disabled?: boolean,
+  arialabel?: string
 }>()
 
 // eslint-disable-next-line func-call-spacing
@@ -66,11 +67,14 @@ defineExpose({
 </script>
 <template>
   <div>
+    <!-- required for UInput aria-label -->
+    <!-- eslint-disable vue/attribute-hyphenation -->
     <UInput
       :ui="{ icon: { base: showDatePicker && !errorMessage ? 'text-primary-500' : iconClass } }"
       :model-value="selectedDateDisplay"
       icon="i-mdi-calendar"
       :placeholder="placeholder || ''"
+      :ariaLabel="arialabel || ''"
       :disabled
       trailing
       type="text"

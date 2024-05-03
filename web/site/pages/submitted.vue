@@ -14,7 +14,7 @@ onMounted(async () => {
     if (!route.query.filing_id) {
       // do something
     } else {
-      await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
+      // await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
     }
   } catch (e) {
     console.error(e)

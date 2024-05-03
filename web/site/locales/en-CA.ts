@@ -26,7 +26,8 @@ export default {
       aria: 'Use this Account, {name}'
     },
     logout: 'Log out',
-    saveAccountAndFileAr: 'Save Account & File Annual Report'
+    saveAccountAndFileAr: 'Save Account & File Annual Report',
+    submitAndPay: 'Submit & Pay'
   },
   currency: {
     cad: 'CAD',
@@ -125,6 +126,25 @@ export default {
     missingId: {
       title: 'Authorization Required - Service BC Annual Report',
       h1: 'Authorization Required'
+    },
+    annualReport: {
+      title: 'File Your BC Annual Report - Service BC Annual Report',
+      h1: '{year} Annual Report',
+      h2: 'Annual Report for: {name}',
+      form: {
+        heldAgm: {
+          question: 'Has your company held an Annual General Meeting?',
+          opt1: 'Yes',
+          opt2: 'We have not held an AGM yet',
+          opt3: 'We voted to not hold an AGM'
+        },
+        agmDate: {
+          placeholder: 'Select Annual General Meeting Date',
+          label: 'Select Annual General Meeting Date',
+          format: 'Format: {format}'
+        },
+        certify: 'I certify all information about the Office Addresses and Current Directors is correct.'
+      }
     }
   },
   widgets: {
@@ -137,7 +157,8 @@ export default {
       serviceFees: 'Service Fees',
       itemLabels: {
         TEST: 'This is test entry',
-        REGSIGIN: 'Significant Individual Change'
+        REGSIGIN: 'Significant Individual Change',
+        ANNBC: 'BC Annual Report'
       }
     }
   },

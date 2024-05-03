@@ -10,13 +10,22 @@ const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
 
 useHead({
-  title: t('page.home.title')
+  title: t('page.annualReport.title')
 })
 
 const options = [
-  { label: 'Yes', value: 'option-1' },
-  { label: 'We have not held an AGM yet', value: 'option-2' },
-  { label: 'We unanimously voted to not hold an AGM', value: 'option-3' }
+  {
+    label: t('page.annualReport.form.heldAgm.opt1'),
+    value: 'option-1'
+  },
+  {
+    label: t('page.annualReport.form.heldAgm.opt2'),
+    value: 'option-2'
+  },
+  {
+    label: t('page.annualReport.form.heldAgm.opt3'),
+    value: 'option-3'
+  }
 ]
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
@@ -95,8 +104,7 @@ onMounted(() => {
   <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        <!-- {{ $t('page.home.h1') }} -->
-        2023 Annual Report
+        {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
       </h1>
       <UCard
         class="w-full"
@@ -110,7 +118,7 @@ onMounted(() => {
       >
         <template #header>
           <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
-            Annual Report for: {{ busStore.currentBusiness.legalName }}
+            {{ $t('page.annualReport.h2', { name: busStore.currentBusiness.legalName }) }}
           </h2>
         </template>
         <!-- display company details -->
@@ -136,11 +144,15 @@ onMounted(() => {
           @submit="submitAnnualReport"
           @error="onError"
         >
-          <!-- class="flex flex-col gap-y-4 md:grid md:grid-cols-6 md:gap-y-4" -->
-          <UFormGroup name="radioGroup" label="Has your company held an Annual General Meeting?">
-            <div
-              class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
+          <!-- TO DO: look into why this label isnt being associated with the radios -->
+          <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
+            <fieldset
+              class="flex flex-col items-start gap-4 lg:flex-row lg:items-center"
             >
+              <!-- need to look into this for a11y more -->
+              <legend class="sr-only">
+                {{ $t('page.annualReport.form.heldAgm.question') }}
+              </legend>
               <URadio
                 v-for="option of options"
                 :key="option.value"
@@ -149,20 +161,21 @@ onMounted(() => {
                 :options="options"
                 :ui="{
                   wrapper: `cursor-pointer relative flex items-center flex-1 w-full p-4 ${selectedRadio === option.value ? 'bg-white border border-bcGovColor-activeBlue' : 'bg-gray-100 hover:bg-gray-200'}`,
-                  label: 'whitespace-nowrap cursor-pointer',
+                  label: 'cursor-pointer sm:whitespace-nowrap',
                 }"
                 @click="handleRadioClick(option.value)"
               />
-            </div>
+            </fieldset>
           </UFormGroup>
 
           <!-- AGM Date -->
-          <UFormGroup name="agmDate" class="mt-4" help="Format: YYYY-MM-DD" :ui="{ help: 'text-bcGovColor-midGray' }">
+          <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format', { format: 'YYYY-MM-DD' })" :ui="{ help: 'text-bcGovColor-midGray' }">
             <SbcInputsDateSelect
               id="SelectAGMDate"
               ref="dateSelectRef"
               :max-date="new Date()"
-              placeholder="Select Annual General Meeting Date"
+              :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
+              :arialabel="$t('page.annualReport.form.agmDate.label')"
               variant="bcGov"
               :disabled="selectedRadio !== 'option-1'"
               @selection="(e) => {
@@ -175,7 +188,7 @@ onMounted(() => {
 
           <!-- certify office address and directors -->
           <UFormGroup name="officeAndDirectorsConfirmed">
-            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" label="I certify all information about the Office Addresses and Current Directors is correct." />
+            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify')" />
           </UFormGroup>
         </UForm>
       </UCard>

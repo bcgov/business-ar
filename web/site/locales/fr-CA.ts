@@ -26,7 +26,8 @@ export default {
       aria: 'Utiliser ce Compte, {name}'
     },
     logout: 'se déconnecter',
-    saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel'
+    saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel',
+    submitAndPay: 'Soumettre et Payer'
   },
   currency: {
     cad: 'CAD',
@@ -125,6 +126,40 @@ export default {
     missingId: {
       title: 'Autorisation Requise - Rapport Annuel de Service BC',
       h1: 'Autorisation Requise'
+    },
+    annualReport: {
+      title: 'Déposez votre rapport annuel en Service BC - Rapport Annuel de Service BC',
+      h1: 'Rapport Annuel {year}',
+      h2: 'Rapport Annuel pour: {name}',
+      form: {
+        heldAgm: {
+          question: 'Votre entreprise a-t-elle tenu une assemblée générale annuelle?',
+          opt1: 'Oui',
+          opt2: "Nous n'avons pas encore tenu d'assemblée générale",
+          opt3: "Nous avons voté pour ne pas tenir d'AGA"
+        },
+        agmDate: {
+          placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
+          label: "Sélectionnez la date de l'assemblée générale annuelle",
+          format: 'Format: {format}'
+        },
+        certify: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.'
+      }
+    }
+  },
+  widgets: {
+    feeSummary: {
+      title: 'Résumé des frais',
+      total: 'Total des frais',
+      noFee: 'Pas de frais',
+      priorityFees: 'Frais prioritaires',
+      futureEffectiveFees: 'Frais effectifs futurs',
+      serviceFees: 'Frais de service',
+      itemLabels: {
+        TEST: 'This is test entry',
+        REGSIGIN: 'Significant Individual Change',
+        ANNBC: 'Rapport Annuel BC'
+      }
     }
   },
   SbcHeader: {
