@@ -2,7 +2,6 @@ import type { BusinessFull, BusinessNano } from '~/interfaces/business'
 export const useBusinessStore = defineStore('sbc-business-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
-  const accountStore = useAccountStore()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
 
@@ -33,9 +32,7 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
     } catch (e: any) {
       throw new Error(e)
     } finally {
-      setTimeout(() => {
-        loading.value = false
-      }, 500)
+      loading.value = false
     }
   }
 
@@ -46,6 +43,7 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
         onResponse ({ response }) {
           if (response.ok) {
             // set store values if response === 200
+            // console.log(response._data)
             currentBusiness.value = response._data.business
             nextArDate.value = addOneYear(response._data.business.lastArDate)
           }
@@ -61,28 +59,7 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
     }
   }
 
-  // affiliate business with account
-  async function affiliateBusinessWithAccount (): Promise<void> {
-    try {
-      await $fetch(`${apiUrl}/user/accounts/${accountStore.currentAccount.id}/affiliate`, {
-        method: 'POST',
-        body: {
-          businessIdentifier: currentBusiness.value.jurisdiction + currentBusiness.value.identifier
-        },
-        headers: {
-          Authorization: `Bearer ${$keycloak.token}`
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
-          console.error(errorMsg)
-        }
-      })
-    } catch {
-      // handle error silently
-    }
-  }
-
+  // ping sbc pay to see if payment went through and return pay status details
   async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
     const identifier = currentBusiness.value.jurisdiction + currentBusiness.value.identifier
     loading.value = true
@@ -93,11 +70,11 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
           Authorization: `Bearer ${$keycloak.token}`
         },
         onResponse ({ response }) {
-          console.log('put request: ', response._data)
+          // console.log('put request: ', response._data)
+          // set pay status var
           if (response.ok) {
-            payStatus.value = response._data.filing.header.paymentStatus
+            payStatus.value = response._data.filing.header.status
           }
-          // console.log('res: ', response)
         },
         onResponseError ({ response }) {
           // console error a message from the api or a default message
@@ -113,15 +90,12 @@ export const useBusinessStore = defineStore('sbc-business-store', () => {
       console.error('An error occurred:', error)
       throw error
     } finally {
-      setTimeout(() => {
-        loading.value = false
-      }, 500)
+      loading.value = false
     }
   }
 
   return {
     getBusinessByNanoId,
-    affiliateBusinessWithAccount,
     updatePaymentStatusForBusiness,
     loading,
     currentBusiness,

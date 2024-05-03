@@ -13,6 +13,12 @@ useHead({
   title: t('page.annualReport.title')
 })
 
+interface ARFiling {
+  agmDate: Date | null,
+  votedForNoAGM: boolean
+}
+
+// options for radio buttons
 const options = [
   {
     label: t('page.annualReport.form.heldAgm.opt1'),
@@ -33,11 +39,13 @@ const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
 const selectedRadio = ref<string>('option-1')
 const loading = ref<boolean>(false)
 
+// form state
 const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
   agmDate: null,
   officeAndDirectorsConfirmed: false
 })
 
+// redirect user to pay screen
 async function handlePayment (payToken: number, filingId: number): Promise<void> {
   const returnUrl = encodeURIComponent(`${baseUrl}${locale.value}/submitted?filing_id=${filingId}`)
   const payUrl = paymentUrl + payToken + '/' + returnUrl
@@ -46,22 +54,21 @@ async function handlePayment (payToken: number, filingId: number): Promise<void>
   await navigateTo(payUrl, { external: true })
 }
 
+// custom validate the form
 const validate = (state: any): FormError[] => {
   const errors = []
+  // if yes to agm, user must input a date
   if (selectedRadio.value === 'option-1' && !state.agmDate) {
     errors.push({ path: 'agmDate', message: 'You must select a date if you held an AGM' })
   }
+  // user must confirm to submit form
   if (!state.officeAndDirectorsConfirmed) {
     errors.push({ path: 'officeAndDirectorsConfirmed', message: 'You must confirm to continue' })
   }
   return errors
 }
 
-interface ARFiling {
-  agmDate: Date | null,
-  votedForNoAGM: boolean
-}
-
+// handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   try {
     loading.value = true
@@ -69,9 +76,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
-    console.log(arFiling)
+    // console.log(arFiling)
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    console.log(paymentToken, filingId)
+    // console.log(paymentToken, filingId)
     await handlePayment(paymentToken, filingId)
   } catch (e: any) {
     console.log(e)
@@ -81,21 +88,24 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
   }
 }
 
+// focus errored field
 function onError (event: FormErrorEvent) {
   const element = document.getElementById(event.errors[0].id)
   element?.focus()
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
+// clear date if switching radio optins
 function handleRadioClick (option: string) {
   if (selectedRadio.value !== option) {
     arFormRef.value?.clear()
-    selectedRadio.value = option
+    selectedRadio.value = option // this allows clicking anywhere in the radio button wrapper, not just the icon or label
     dateSelectRef.value?.updateDate(null)
     arData.agmDate = null
   }
 }
 
+// load fees for fee widget, might move into earlier setup
 onMounted(() => {
   addBarPayFees()
 })
@@ -132,8 +142,6 @@ onMounted(() => {
         </div>
 
         <UDivider class="mb-4 mt-8" />
-
-        <!-- :schema="ARSchema" -->
 
         <UForm
           ref="arFormRef"
@@ -194,7 +202,7 @@ onMounted(() => {
       </UCard>
     </div>
     <SbcFeeWidget
-      class="mt-2"
+      class="sm:mt-2"
       :fees="payFeesWidget.fees"
       @submit="arFormRef?.submit()"
     />

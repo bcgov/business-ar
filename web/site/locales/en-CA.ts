@@ -145,6 +145,10 @@ export default {
         },
         certify: 'I certify all information about the Office Addresses and Current Directors is correct.'
       }
+    },
+    submitted: {
+      title: 'Annual Report Complete - Service BC Annual Report',
+      h1: 'Annual Report Complete'
     }
   },
   widgets: {

@@ -145,6 +145,10 @@ export default {
         },
         certify: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.'
       }
+    },
+    submitted: {
+      title: 'Rapport Annuel Terminé - Rapport Annuel de Service BC',
+      h1: 'Rapport Annuel Terminé'
     }
   },
   widgets: {
