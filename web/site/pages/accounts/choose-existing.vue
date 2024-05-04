@@ -1,23 +1,33 @@
 <script setup lang="ts">
 import { isoCountriesList } from '~/utils/isoCountriesList'
-
 const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
-// console.log(accountStore.userAccounts)
+const loading = ref<boolean>(false)
 useHead({
   title: t('page.existingAccount.title')
 })
 
-definePageMeta({
-  middleware: [
-    'check-accounts'
-  ]
+onMounted(async () => {
+  const localePath = useLocalePath()
+  const account = useAccountStore()
+  try {
+    loading.value = true
+    const accounts = await account.getUserAccounts()
+    if (accounts?.orgs.length === 0 || accounts === undefined) {
+      return navigateTo(localePath('/accounts/create-new'))
+    }
+  } catch {
+    return navigateTo(localePath('/accounts/create-new'))
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center gap-4 text-left sm:gap-8">
+    <SbcLoadingSpinner v-if="loading" overlay />
     <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.existingAccount.h1') }}
     </h1>
