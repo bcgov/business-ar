@@ -1,8 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const routeWithoutLocale = useRouteWithoutLocale()
-const config = useRuntimeConfig()
-const baseUrl = config.public.baseUrl
+const localePath = useLocalePath()
 
 useHead({
   title: t('page.missingId.title')
@@ -26,6 +25,6 @@ definePageMeta({
         class="prose prose-bcGov text-left"
       />
     </UCard>
-    <UButton label="use nano id" :to="`${baseUrl}en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o`" />
+    <UButton label="use nano id" :to="localePath('/?nanoid=TIG9kz_ykKVo0FMQAH76o')" />
   </div>
 </template>
