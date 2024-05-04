@@ -5,7 +5,7 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
-console.log(accountStore.userAccounts)
+// console.log(accountStore.userAccounts)
 useHead({
   title: t('page.existingAccount.title')
 })

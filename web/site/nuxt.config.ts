@@ -48,7 +48,10 @@ export default defineNuxtConfig({
       'en-CA',
       'fr-CA'
     ],
-    contentHead: false
+    contentHead: false,
+    experimental: {
+      clientDB: true
+    }
   },
   colorMode: {
     preference: 'light',

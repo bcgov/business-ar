@@ -5,7 +5,7 @@ const routeWithoutLocale = useRouteWithoutLocale()
 const busStore = useBusinessStore()
 const route = useRoute()
 const localePath = useLocalePath()
-
+console.log(routeWithoutLocale.value)
 useHead({
   title: t('page.home.title')
 })
