@@ -13,7 +13,7 @@ useHead({
   title: t('page.createAccount.title')
 })
 
-const accountDetails = reactive({
+const accountDetails = reactive<NewAccount>({
   accountName: undefined,
   contact: {
     phone: undefined,
@@ -25,7 +25,7 @@ const accountDetails = reactive({
 const accountSchema = z.object({
   accountName: z.string({ required_error: 'Please enter an Account Name' }).min(2, 'Account Name must be at least 2 characters'),
   contact: z.object({
-    phone: z.string({ required_error: 'Please enter a Phone Number' }),
+    phone: z.string({ required_error: 'Please enter a Phone Number' }).min(10, 'Please enter a valid phone number').regex(/^[0-9()/ -]+$/, 'Please enter a valid phone number'),
     phoneExt: z.string().optional(),
     email: z.string({ required_error: 'Please enter an Email Address' }).email({ message: 'Please enter a valid email address' })
   })
@@ -34,15 +34,9 @@ const accountSchema = z.object({
 type FormSchema = z.output<typeof accountSchema>
 
 async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
-  // accountFormRef.value.clear()
-  // Do something with event.data
   try {
     formLoading.value = true
-    const data = {
-      name: event.data.accountName
-    }
-
-    await accountStore.createNewAccount(data)
+    await accountStore.createNewAccount(event.data)
 
     await navigateTo(localePath('/annual-report'))
   } catch (e) {
@@ -58,13 +52,13 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
+// custom validate account name on blur, using debounced on input is giving me issues currently
 const validate = async (state: any): Promise<FormError[]> => {
   const errors = []
-  // const name = (event.target as HTMLInputElement).value
   try {
     if (!state.accountName) { return [] }
     const data = await accountStore.checkAccountExists(state.accountName)
-    if (data) {
+    if (data && data.orgs.length > 0) {
       errors.push({ path: 'accountName', message: 'Account Name must be unique' })
     }
   } catch {

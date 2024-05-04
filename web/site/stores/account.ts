@@ -1,3 +1,4 @@
+import type { NewAccount } from '~/interfaces/account'
 import { type Org } from '~/interfaces/org'
 export const useAccountStore = defineStore('sbc-account-store', () => {
   // config imports
@@ -45,17 +46,23 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
   }
 
   // create new account
-  async function createNewAccount (data: any): Promise<void> {
+  async function createNewAccount (data: NewAccount): Promise<void> {
     try {
       await $fetch(apiUrl + '/user/accounts', {
         method: 'POST',
         body: {
-          name: data.name
+          name: data.accountName,
+          contactPoint: {
+            email: data.contact.email,
+            phone: data.contact.phone,
+            extension: data.contact.phoneExt
+          }
         },
         headers: {
           Authorization: `Bearer ${token}`
         },
         onResponse ({ response }) {
+          console.log(response)
           if (response.ok) {
             // set userAccounts if response === 200, then navigate to AR filing page
             currentAccount.value = response._data
@@ -72,20 +79,19 @@ export const useAccountStore = defineStore('sbc-account-store', () => {
     }
   }
 
-  async function checkAccountExists (name: string) {
+  async function checkAccountExists (name: string): Promise<{ limit: number, orgs: Org[], page: number, total: number} | undefined> {
     try {
-      const response = await $fetch(apiUrl + '/accounts', {
+      return await $fetch<{ limit: number, orgs: Org[], page: number, total: number}>(apiUrl + '/accounts', {
         query: {
           name
         },
         headers: {
           Authorization: `Bearer ${token}`
-        }
+        },
+        onResponse ({
+          response
+        }) { console.log(response) }
       })
-
-      if (response) {
-        return response
-      }
     } catch {
       // silently handle errors
     }

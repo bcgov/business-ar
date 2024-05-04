@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { isoCountriesList } from '~/utils/isoCountriesList'
+
 const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
-
+console.log(accountStore.userAccounts)
 useHead({
   title: t('page.existingAccount.title')
 })
@@ -51,7 +52,7 @@ definePageMeta({
                 {{ account.name }}
               </span>
               <span
-                v-if="account.mailingAddress.length !== 0"
+                v-if="account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
                 :id="`account-address-${account.id}`"
                 class="text-bcGovColor-midGray dark:text-gray-300"
               >

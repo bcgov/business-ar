@@ -12,3 +12,12 @@ export interface Account {
   urlpath: string
   urlorigin: string
 }
+
+export interface NewAccount {
+  accountName: string | undefined
+  contact: {
+    phone: string | undefined
+    email: string | undefined
+    phoneExt?: string | undefined
+  }
+}
