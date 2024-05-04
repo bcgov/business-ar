@@ -5,7 +5,8 @@ const routeWithoutLocale = useRouteWithoutLocale()
 const busStore = useBusinessStore()
 const route = useRoute()
 const localePath = useLocalePath()
-console.log(routeWithoutLocale.value)
+const { locale } = useI18n()
+// console.log(routeWithoutLocale.value)
 useHead({
   title: t('page.home.title')
 })
@@ -27,6 +28,12 @@ onMounted(async () => {
     }
   }
 })
+
+const { data } = await useAsyncData('content-data', () => {
+  return queryContent()
+    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
+    .findOne()
+})
 </script>
 <template>
   <SbcLoadingSpinner v-if="busStore.loading" />
@@ -45,13 +52,14 @@ onMounted(async () => {
       </div>
     </UCard>
     <UCard class="w-full">
-      <ContentDoc
+      <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
+      <!-- <ContentDoc
         :query="{
           path: routeWithoutLocale,
           where: { _locale: $i18n.locale }
         }"
         class="prose prose-bcGov text-left"
-      />
+      /> -->
     </UCard>
     <UButton
       :label="$t('btn.loginBCSC')"

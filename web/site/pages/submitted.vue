@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const busStore = useBusinessStore()
 const routeWithoutLocale = useRouteWithoutLocale()
 
 useHead({
   title: t('page.submitted.title')
+})
+
+const { data } = await useAsyncData('content-data-submitted', () => {
+  return queryContent()
+    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
+    .findOne()
 })
 
 onMounted(async () => {
@@ -36,13 +41,14 @@ onMounted(async () => {
     </h1>
     payment status: {{ busStore.payStatus }}
     <UCard class="w-full">
-      <ContentDoc
+      <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
+      <!-- <ContentDoc
         :query="{
           path: routeWithoutLocale,
           where: { _locale: $i18n.locale }
         }"
         class="prose prose-bcGov text-left"
-      />
+      /> -->
     </UCard>
   </div>
 </template>
