@@ -43,7 +43,8 @@ from .filing import Filing
 __all__ = (
     "db",
     "Business",
-    "ColinEventId" "Filing",
+    "ColinEventId",
+    "Filing",
     "Invitations",
     "User",
     "UserRoles",
