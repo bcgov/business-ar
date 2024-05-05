@@ -37,7 +37,7 @@ def test_find_by_identifier(session):
     business = Business(
         legal_name="Test Business 1",
         legal_type="BC",
-        identifier="BC1217754",
+        identifier="BC1417754",
         tax_id="BN1234567899876",
         nano_id="V1StGXR8_Z5jdHi6B-NyW",
     )
@@ -54,7 +54,7 @@ def test_find_by_nano_id(session):
         legal_type="BC",
         identifier="BC1217755",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-NyR",
+        nano_id="V1StGWE8_Z5jdHi6B-NyR",
     )
     business.save()
     assert business.id is not None

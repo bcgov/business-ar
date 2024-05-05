@@ -36,6 +36,7 @@
 from .base_model import BaseModel
 from .db import db
 from .filing import Filing
+from .invitations import Invitations
 
 
 class Business(BaseModel):
@@ -47,6 +48,7 @@ class Business(BaseModel):
     nano_id = db.Column("nano_id", db.String(25), index=True)
 
     filings = db.relationship("Filing", lazy="dynamic")
+    invitations = db.relationship("Invitations", lazy="dynamic")
 
     @classmethod
     def find_by_nano_id(cls, nano_id: str):

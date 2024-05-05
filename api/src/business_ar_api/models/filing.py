@@ -35,13 +35,14 @@
 from __future__ import annotations
 
 import copy
-from sqlalchemy import desc, func
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
 
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
 from business_ar_api.models.base_model import BaseModel
+from business_ar_api.models.colin_event_id import ColinEventId
 from .db import db
 
 
@@ -74,6 +75,7 @@ class Filing(BaseModel):
     payment_completion_date = db.Column(
         "payment_completion_date", db.DateTime(timezone=True)
     )
+    payment_account = db.Column("payment_account", db.String(30))
 
     # Relationships
     business_id = db.Column("business_id", db.Integer, db.ForeignKey("business.id"))
@@ -84,6 +86,8 @@ class Filing(BaseModel):
         backref=backref("filing_submitter", uselist=False),
         foreign_keys=[submitter_id],
     )
+
+    colin_event_ids = db.relationship("ColinEventId", lazy="select")
 
     @classmethod
     def find_filing_by_id(cls, filing_id: int) -> Filing | None:
@@ -125,5 +129,13 @@ class FilingSerializer:
         )
         if filing.submitter_id:
             filing_dict["filing"]["header"]["submitter"] = filing.submitter.username
+
+        if filing.payment_account:
+            filing_dict["filing"]["header"]["paymentAccount"] = filing.payment_account
+
+        # add colin_event_ids
+        filing_dict["filing"]["header"]["colinIds"] = ColinEventId.get_by_filing_id(
+            filing.id
+        )
 
         return filing_dict
