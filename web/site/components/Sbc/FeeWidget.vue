@@ -27,12 +27,21 @@ const total = computed(() => {
       data-cy="pay-fees-widget"
       :ui="{
         base: 'w-full md:w-[282px]',
-        header:
-          {
-            base: 'rounded-t-lg',
-            background: 'bg-bcGovColor-header',
-            padding: 'p-4'
-          }
+        header: {
+          base: 'rounded-t-lg',
+          background: 'bg-bcGovColor-header',
+          padding: 'p-4 sm:px-4'
+        },
+        body: {
+          base: '',
+          background: '',
+          padding: 'p-4 sm:px-4',
+        },
+        footer: {
+          base: '',
+          background: '',
+          padding: 'p-4 sm:px-4',
+        },
       }"
     >
       <template #header>
@@ -46,8 +55,7 @@ const total = computed(() => {
       >
         <div class="flex items-center justify-between">
           <span class="mr-auto text-sm font-bold text-bcGovColor-darkGray">
-            <!-- {{ $t(`widgets.feeSummary.itemLabels.${fee.filingTypeCode}`) }} -->
-            BC Annual Report
+            {{ $t(`widgets.feeSummary.itemLabels.${fee.filingTypeCode}`) }}
           </span>
           <span class="whitespace-nowrap text-sm font-bold">
             {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.total) }}
@@ -91,7 +99,7 @@ const total = computed(() => {
       </template>
     </UCard>
     <UButton
-      label="Submit & Pay"
+      :label="$t('btn.submitAndPay')"
       block
       @click="$emit('submit')"
     />

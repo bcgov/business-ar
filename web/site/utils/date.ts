@@ -29,3 +29,8 @@ export function datetimeStringToDateString (datetimeString: string) {
   // convert to date and back so that it returns correctly for the timezone
   return (date) ? moment(date).local().format('YYYY-MM-DD') : ''
 }
+
+export function addOneYear (dateString: string) {
+  const date = dateStringToDate(dateString)
+  return moment(date).add(1, 'year').format('YYYY-MM-DD')
+}

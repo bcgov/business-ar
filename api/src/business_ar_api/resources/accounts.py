@@ -22,7 +22,7 @@ from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
-from business_ar_api.services.auth_service import AuthService
+from business_ar_api.services.account_service import AccountService
 from business_ar_api.services.schema_service import SchemaService
 
 bp = Blueprint("KEYS", __name__)
@@ -39,7 +39,7 @@ def search_accounts():
             return error_response(
                 "Please provide account name.", HTTPStatus.BAD_REQUEST
             )
-        return AuthService.search_accounts(account_name=account_name), HTTPStatus.OK
+        return AccountService.search_accounts(account_name=account_name), HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)
 
@@ -50,7 +50,7 @@ def search_accounts():
 def get_user_accounts():
     """Get all accounts of the user."""
     try:
-        return AuthService.get_user_accounts(), HTTPStatus.OK
+        return AccountService.get_user_accounts(), HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)
 
@@ -68,6 +68,11 @@ def create_user_account():
     if not valid:
         return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
     try:
-        return AuthService.create_user_account(json_input), HTTPStatus.OK
+        account_details = AccountService.create_user_account(json_input)
+        account_id = account_details.get("id")
+        AccountService.create_account_contact(
+            account_id, json_input.get("contactPoint")
+        )
+        return account_details, HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)

@@ -1,33 +1,43 @@
+import type { NewAccount } from '~/interfaces/account'
 import { type Org } from '~/interfaces/org'
-export const useSbcAccount = defineStore('sbc-account', () => {
+export const useAccountStore = defineStore('sbc-account-store', () => {
+  // config imports
   const { $keycloak } = useNuxtApp()
   const token = $keycloak?.token
-  const localePath = useLocalePath()
   const config = useRuntimeConfig()
-  const apiUrl = config.public.barApiUrl + '/user/accounts'
+  const apiUrl = config.public.barApiUrl
 
+  // store values
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
 
-  // need to add user id to get correct users account
-  async function getUserAccounts () {
-    return await $fetch(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      onResponse ({ response }) {
-        if (response.ok) {
-          userAccounts.value = response._data.orgs
+  // get signed in users accounts
+  async function getUserAccounts (): Promise<{ orgs: Org[] } | undefined> {
+    try {
+      // fetch accounts using token
+      return await $fetch<{ orgs: Org[]}>(apiUrl + '/user/accounts', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        onResponse ({ response }) {
+          if (response.ok) {
+            // set userAccounts if response === 200
+            userAccounts.value = response._data.orgs
+          }
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving users accounts.'
+          console.error(errorMsg)
         }
-        console.log(response)
-      },
-      onResponseError ({ response }) {
-        console.error(response._data.message)
-      }
-    })
+      })
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
-  function selectUserAccount (accountId: number) {
+  // assign existing account as users current account
+  function selectUserAccount (accountId: number): void {
     for (const i in userAccounts.value) {
       if (userAccounts.value[i].id === accountId) {
         currentAccount.value = userAccounts.value[i]
@@ -35,60 +45,66 @@ export const useSbcAccount = defineStore('sbc-account', () => {
     }
   }
 
-  // const data = {
-  //   name: 'Test AR Account 2',
-  //   accessType: 'REGULAR',
-  //   typeCode: 'BASIC',
-  //   productSubscriptions: [
-  //     {
-  //       productCode: 'BUSINESS'
-  //     }
-  //   ],
-  //   mailingAddress: {
-  //     city: 'Victoria',
-  //     country: 'CA',
-  //     region: 'BC',
-  //     deliveryInstructions: 'test',
-  //     postalCode: 'V8W 2C3',
-  //     street: '200-1012 Douglas St',
-  //     streetAdditional: ''
-  //   },
-  //   paymentInfo: {
-  //     paymentMethod: 'DIRECT_PAY'
-  //   }
-  // }
-
-  async function createNewAccount (accountData: any) {
-    // await $fetch(apiUrl, {
-    await $fetch('/api/accounts', {
-      method: 'POST',
-      body: {
-        accountData
-      },
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      async onResponse ({ response }) {
-        console.log(response._data)
-        if (response.ok) {
-          currentAccount.value = response._data
-          await navigateTo(localePath('/annual-report'))
+  // create new account
+  async function createNewAccount (data: NewAccount): Promise<void> {
+    try {
+      await $fetch(apiUrl + '/user/accounts', {
+        method: 'POST',
+        body: {
+          name: data.accountName,
+          contactPoint: {
+            email: data.contact.email,
+            phone: data.contact.phone,
+            extension: data.contact.phoneExt
+          }
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        onResponse ({ response }) {
+          console.log(response)
+          if (response.ok) {
+            // set userAccounts if response === 200, then navigate to AR filing page
+            currentAccount.value = response._data
+          }
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          console.error(errorMsg)
         }
-      }
-    })
+      })
+    } catch (e: any) {
+      throw new Error(e)
+    }
   }
 
-  watch(currentAccount, () => {
-    console.log('current user account: ', currentAccount.value)
-  })
+  async function checkAccountExists (name: string): Promise<{ limit: number, orgs: Org[], page: number, total: number} | undefined> {
+    try {
+      return await $fetch<{ limit: number, orgs: Org[], page: number, total: number}>(apiUrl + '/accounts', {
+        query: {
+          name
+        },
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        onResponse ({
+          response
+        }) { console.log(response) }
+      })
+    } catch {
+      // silently handle errors
+    }
+  }
 
   return {
     currentAccount,
     userAccounts,
     getUserAccounts,
     selectUserAccount,
-    createNewAccount
+    createNewAccount,
+    checkAccountExists
   }
-}
-//  { persist: true }
+},
+{ persist: true } // persist store values in session storage
 )

@@ -23,7 +23,7 @@ from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.models import Business as BusinessModel
-from business_ar_api.services import AuthService, BusinessService
+from business_ar_api.services import AccountService, BusinessService
 
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
@@ -86,6 +86,6 @@ def create_business_in_auth():
     }
 
     try:
-        return AuthService.create_entity(entity_json), HTTPStatus.CREATED
+        return AccountService.create_entity(entity_json), HTTPStatus.CREATED
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)

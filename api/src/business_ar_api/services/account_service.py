@@ -47,7 +47,7 @@ from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
 
 
-class AuthService:
+class AccountService:
 
     @classmethod
     def get_service_client_token(cls, client_id, client_secret):
@@ -93,7 +93,7 @@ class AuthService:
         }
         create_account_payload["name"] = account_details.get("name")
         new_user_account_details = RestService.post(
-            data=account_details,
+            data=create_account_payload,
             endpoint=endpoint,
             token=user.bearer_token,
             generate_token=False,
@@ -101,12 +101,36 @@ class AuthService:
         return new_user_account_details
 
     @classmethod
+    @user_context
+    def create_account_contact(cls, account_id: int, contact_details: dict, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/contacts"
+        )
+        create_account_contact_payload = {
+            "email": contact_details.get("email"),
+            "phone": contact_details.get("phone"),
+        }
+        if extension := contact_details.get("extension"):
+            create_account_contact_payload["phoneExtension"] = str(extension)
+
+        contact_details = RestService.post(
+            data=create_account_contact_payload,
+            endpoint=endpoint,
+            token=user.bearer_token,
+            generate_token=False,
+        ).json()
+        return contact_details
+
+    @classmethod
     def search_accounts(cls, account_name: str, **kwargs):
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
 
-        token = AuthService.get_service_client_token(client_id, client_secret)
-        endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs?name={account_name.strip()}&validateName=true"
+        token = AccountService.get_service_client_token(client_id, client_secret)
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs?name={account_name.strip()}"
+        )
         accounts = RestService.get(endpoint=endpoint, token=token).json()
         return accounts
 
@@ -116,7 +140,7 @@ class AuthService:
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
 
-        token = AuthService.get_service_client_token(client_id, client_secret)
+        token = AccountService.get_service_client_token(client_id, client_secret)
 
         if not token:
             raise BusinessException(code="ERR-001")

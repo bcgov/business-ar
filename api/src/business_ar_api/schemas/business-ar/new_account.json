@@ -37,9 +37,14 @@
         "paymentInfo": {
             "title": "Payment Info",
             "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/PaymentMethod"
+        },
+        "contactPoint": {
+            "title": "Account Contact Point",
+            "$ref": "https://business_ar.gov.bc.ca/.well_known/schemas/components.json#/definitions/ContactPoint"
         }
     },
     "required": [
-        "name"
+        "name",
+        "contactPoint"
     ]
 }

@@ -6,10 +6,15 @@ const props = defineProps<{
   maxDate?: Date,
   placeholder?: string,
   variant?: string,
-  errors?: FormError[]
+  errors?: FormError[],
+  disabled?: boolean,
+  arialabel?: string
 }>()
 
-const emit = defineEmits<{(e: 'selection', value: Date | null): void }>()
+// eslint-disable-next-line func-call-spacing
+const emit = defineEmits<{
+  (e: 'selection', value: Date | null): void
+}>()
 
 // @ts-ignore
 const dateSelectPickerRef: MaybeElementRef = ref(null)
@@ -55,14 +60,22 @@ const iconClass = computed(() => {
   }
   return 'text-gray-700'
 })
+
+defineExpose({
+  updateDate
+})
 </script>
 <template>
   <div>
+    <!-- required for UInput aria-label -->
+    <!-- eslint-disable vue/attribute-hyphenation -->
     <UInput
       :ui="{ icon: { base: showDatePicker && !errorMessage ? 'text-primary-500' : iconClass } }"
       :model-value="selectedDateDisplay"
       icon="i-mdi-calendar"
       :placeholder="placeholder || ''"
+      :ariaLabel="arialabel || ''"
+      :disabled
       trailing
       type="text"
       :variant="errorMessage ? 'error' : variant || 'bcGov'"
@@ -74,7 +87,7 @@ const iconClass = computed(() => {
     <SbcDatePicker
       v-if="showDatePicker"
       ref="dateSelectPickerRef"
-      class="absolute z-[100]"
+      class="absolute top-16 z-[100]"
       :default-selected-date="selectedDate"
       :set-max-date="maxDate"
       @selected-date="updateDate($event); showDatePicker = false"

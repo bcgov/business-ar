@@ -11,5 +11,5 @@ export const addBarPayFees = async () => {
     }
   )
 
-  return payFeesWidget.addFee(feeInfo)
+  return payFeesWidget.addFee(feeInfo!)
 }

@@ -150,6 +150,27 @@
                     }
                 }
             }
+        },
+        "ContactPoint": {
+            "type": "object",
+            "title": "Contact Point",
+            "required": [
+                "email",
+                "phone"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "phone": {
+                    "type": "string",
+                    "format": "phone"
+                },
+                "extension": {
+                    "type": "number"
+                }
+            }
         }
     }
 }

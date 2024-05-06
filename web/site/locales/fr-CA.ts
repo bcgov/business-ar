@@ -25,7 +25,9 @@ export default {
       main: 'Utiliser ce Compte',
       aria: 'Utiliser ce Compte, {name}'
     },
-    logout: 'se déconnecter'
+    logout: 'se déconnecter',
+    saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel',
+    submitAndPay: 'Soumettre et Payer'
   },
   currency: {
     cad: 'CAD',
@@ -78,27 +80,90 @@ export default {
     },
     socialInsuranceNumber: 'Social Insurance Number (SIN)',
     taxNumber: 'Tax Number',
-    busName: "Nom de L'entreprise",
+    busName: "Nom de l'entreprise",
     corpNum: 'Numéro de constitution',
-    busNum: "Numéro d'entreprise"
+    busNum: "Numéro d'entreprise",
+    arDate: 'Date du Rapport Annuel'
   },
   page: {
     notFound: {
       h1: 'Page non trouvée'
     },
     home: {
-      title: 'Rapport annuel de Service BC - Accueil',
+      title: 'Accueil - Rapport Annuel de Service BC',
       h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
     },
     createAccount: {
-      title: 'Rapport annuel de Service BC - Création de Compte',
-      h1: 'Création de compte Service BC'
+      title: 'Création de Compte - Rapport Annuel de Service BC',
+      h1: 'Création de Compte Service BC',
+      h2: 'Détails du Compte',
+      form: {
+        infoSection: {
+          fieldSet: 'Votre Nom',
+          info: "Il s'agit de votre nom légal tel qu'il apparaît sur votre carte BC Services."
+        },
+        accountNameSection: {
+          fieldSet: 'Nom du Compte',
+          accountNameInputLabel: 'Nom du Compte'
+        },
+        contactDetailsSection: {
+          fieldSet: 'Détails du Contact',
+          phoneInputLabel: 'Numéro de téléphone',
+          phoneExtInputLabel: {
+            main: 'Extension (Facultatif)',
+            aria: 'Extension du numéro de téléphone, en option'
+          },
+          emailInputLabel: 'Adresse e-mail'
+        }
+      }
     },
     existingAccount: {
-      title: 'Rapport annuel de Service BC - Choisissez un Compte Existant',
+      title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
       existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de BC Registries and Online Services. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
+    },
+    missingId: {
+      title: 'Autorisation Requise - Rapport Annuel de Service BC',
+      h1: 'Autorisation Requise'
+    },
+    annualReport: {
+      title: 'Déposez votre rapport annuel en Service BC - Rapport Annuel de Service BC',
+      h1: 'Rapport Annuel {year}',
+      h2: 'Rapport Annuel pour: {name}',
+      form: {
+        heldAgm: {
+          question: 'Votre entreprise a-t-elle tenu une assemblée générale annuelle?',
+          opt1: 'Oui',
+          opt2: "Nous n'avons pas encore tenu d'assemblée générale",
+          opt3: "Nous avons voté pour ne pas tenir d'AGA"
+        },
+        agmDate: {
+          placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
+          label: "Sélectionnez la date de l'assemblée générale annuelle",
+          format: 'Format: {format}'
+        },
+        certify: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.'
+      }
+    },
+    submitted: {
+      title: 'Rapport Annuel Terminé - Rapport Annuel de Service BC',
+      h1: 'Rapport Annuel Terminé'
+    }
+  },
+  widgets: {
+    feeSummary: {
+      title: 'Résumé des frais',
+      total: 'Total des frais',
+      noFee: 'Pas de frais',
+      priorityFees: 'Frais prioritaires',
+      futureEffectiveFees: 'Frais effectifs futurs',
+      serviceFees: 'Frais de service',
+      itemLabels: {
+        TEST: 'This is test entry',
+        REGSIGIN: 'Significant Individual Change',
+        ANNBC: 'Rapport Annuel BC'
+      }
     }
   },
   SbcHeader: {

@@ -32,7 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """This module wraps helper services used by the API."""
-from .auth_service import AuthService
+from .account_service import AccountService
 from .business_service import BusinessService
 from .payment_service import PaymentService
 from .filing_service import FilingService

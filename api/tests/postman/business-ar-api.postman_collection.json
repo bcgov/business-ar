@@ -97,7 +97,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{auth_account_name}}\",\n    \"accessType\": \"REGULAR\",\n    \"typeCode\": \"BASIC\",\n    \"productSubscriptions\": [\n        {\n            \"productCode\": \"BUSINESS\"\n        }\n    ],\n    \"mailingAddress\": {\n        \"city\": \"Victoria\",\n        \"country\": \"CA\",\n        \"region\": \"BC\",\n        \"deliveryInstructions\": \"test\",\n        \"postalCode\": \"V8W 2C3\",\n        \"street\": \"200-1012 Douglas St\",\n        \"streetAdditional\": \"\"\n    },\n    \"paymentInfo\": {\n        \"paymentMethod\": \"DIRECT_PAY\"\n    }\n}",
+					"raw": "{\n    \"name\": \"{{auth_account_name}}\",\n    \"accessType\": \"REGULAR\",\n    \"typeCode\": \"BASIC\",\n    \"productSubscriptions\": [\n        {\n            \"productCode\": \"BUSINESS\"\n        }\n    ],\n    \"mailingAddress\": {\n        \"city\": \"Victoria\",\n        \"country\": \"CA\",\n        \"region\": \"BC\",\n        \"deliveryInstructions\": \"test\",\n        \"postalCode\": \"V8W 2C3\",\n        \"street\": \"200-1012 Douglas St\",\n        \"streetAdditional\": \"\"\n    },\n    \"paymentInfo\": {\n        \"paymentMethod\": \"DIRECT_PAY\"\n    },\n    \"contactPoint\": {\n        \"email\": \"test@abc.com\",\n        \"phone\": \"(123) 456-7895\",\n        \"extension\": 123\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"

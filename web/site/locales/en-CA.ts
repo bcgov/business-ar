@@ -25,7 +25,9 @@ export default {
       main: 'Use this Account',
       aria: 'Use this Account, {name}'
     },
-    logout: 'Log out'
+    logout: 'Log out',
+    saveAccountAndFileAr: 'Save Account & File Annual Report',
+    submitAndPay: 'Submit & Pay'
   },
   currency: {
     cad: 'CAD',
@@ -80,25 +82,73 @@ export default {
     taxNumber: 'Tax Number',
     busName: 'Business Name',
     corpNum: 'Incorporation Number',
-    busNum: 'Business Number'
+    busNum: 'Business Number',
+    arDate: 'Date of Annual Report'
   },
   page: {
     notFound: {
       h1: 'Page Not Found'
     },
     home: {
-      title: 'Service BC Annual Report - Home',
+      title: 'Home - Service BC Annual Report',
       h1: 'File your BC Annual Report'
     },
     createAccount: {
-      title: 'Service BC Annual Report - Account Creation',
-      h1: 'Service BC Account Creation'
+      title: 'Account Creation - Service BC Annual Report',
+      h1: 'Service BC Account Creation',
+      h2: 'Account Details',
+      form: {
+        infoSection: {
+          fieldSet: 'Your Name',
+          info: 'This is your legal name as it appears on your BC Services Card.'
+        },
+        accountNameSection: {
+          fieldSet: 'Account Name',
+          accountNameInputLabel: 'Account Name'
+        },
+        contactDetailsSection: {
+          fieldSet: 'Contact Details',
+          phoneInputLabel: 'Phone Number',
+          phoneExtInputLabel: {
+            main: 'Extension (Optional)',
+            aria: 'Phone Number Extension, Optional'
+          },
+          emailInputLabel: 'Email Address'
+        }
+      }
     },
     existingAccount: {
-      title: 'Service BC Annual Report - Choose Existing Account',
+      title: 'Choose Existing Account - Service BC Annual Report',
       h1: 'Existing Account Found',
       h2: 'Your Existing Accounts',
       existingAccountWarning: 'It looks like you already have an account with BC Registries and Online Services. You can use an existing account to proceed or create a new one.'
+    },
+    missingId: {
+      title: 'Authorization Required - Service BC Annual Report',
+      h1: 'Authorization Required'
+    },
+    annualReport: {
+      title: 'File Your BC Annual Report - Service BC Annual Report',
+      h1: '{year} Annual Report',
+      h2: 'Annual Report for: {name}',
+      form: {
+        heldAgm: {
+          question: 'Has your company held an Annual General Meeting?',
+          opt1: 'Yes',
+          opt2: 'We have not held an AGM yet',
+          opt3: 'We voted to not hold an AGM'
+        },
+        agmDate: {
+          placeholder: 'Select Annual General Meeting Date',
+          label: 'Select Annual General Meeting Date',
+          format: 'Format: {format}'
+        },
+        certify: 'I certify all information about the Office Addresses and Current Directors is correct.'
+      }
+    },
+    submitted: {
+      title: 'Annual Report Complete - Service BC Annual Report',
+      h1: 'Annual Report Complete'
     }
   },
   widgets: {
@@ -111,7 +161,8 @@ export default {
       serviceFees: 'Service Fees',
       itemLabels: {
         TEST: 'This is test entry',
-        REGSIGIN: 'Significant Individual Change'
+        REGSIGIN: 'Significant Individual Change',
+        ANNBC: 'BC Annual Report'
       }
     }
   },

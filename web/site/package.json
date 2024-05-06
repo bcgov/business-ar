@@ -25,6 +25,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@playwright/test": "^1.42.1",
     "@testing-library/vue": "^8.0.3",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/parser": "^7.5.0",
     "@vue/test-utils": "^2.4.5",
     "eslint": "^8.57.0",

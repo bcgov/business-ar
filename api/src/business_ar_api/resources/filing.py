@@ -50,7 +50,7 @@ from business_ar_api.models import User as UserModel
 from business_ar_api.services import (
     SchemaService,
     FilingService,
-    AuthService,
+    AccountService,
     BusinessService,
     PaymentService,
 )
@@ -71,7 +71,7 @@ def get_filings(identifier: str, filing_id: Optional[int] = None):
         if not business:
             return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
 
-        AuthService.is_authorized(business_identifier=identifier)
+        AccountService.is_authorized(business_identifier=identifier)
 
         if filing_id:
             filing = FilingService.find_filing_by_id(filing_id)
@@ -117,17 +117,17 @@ def create_filing(identifier):
             return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
 
         # Affiliate the entity to the account if the affiliation does not exist.
-        affiliations = AuthService.get_account_affiliations(account_id)
+        affiliations = AccountService.get_account_affiliations(account_id)
         existing_affiliation = [
             affiliation
             for affiliation in affiliations.get("entities")
             if affiliation.get("businessIdentifier") == identifier
         ]
         if not existing_affiliation:
-            AuthService.affiliate_entity_to_account(account_id, identifier)
+            AccountService.affiliate_entity_to_account(account_id, identifier)
 
         # Check whether the user has permission to create the filing.
-        AuthService.is_authorized(business_identifier=identifier)
+        AccountService.is_authorized(business_identifier=identifier)
 
         # create filing
         filing = FilingService.create_filing(json_input, business.id, user.id)
@@ -169,7 +169,7 @@ def update_filing_payment_status(identifier, filing_id):
             return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
 
         # Check whether the user has permission to update the filing.
-        AuthService.is_authorized(business_identifier=identifier)
+        AccountService.is_authorized(business_identifier=identifier)
 
         # update filing with payment details
         filing = FilingService.update_payment_data(filing_id, jwt)

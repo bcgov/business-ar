@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { mainLinks, loggedInUserOptions } = useSbcNav()
 const keycloak = useKeycloak()
-const account = useSbcAccount()
+const account = useAccountStore()
 </script>
 <template>
   <header
@@ -41,6 +41,7 @@ const account = useSbcAccount()
           :items="loggedInUserOptions"
           :ui="{
             width: '',
+            height: 'max-h-60',
             item: {
               disabled:
                 'cursor-text select-text text-bcGovGray-900 dark:text-white opacity-100 font-semibold',

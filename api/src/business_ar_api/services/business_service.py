@@ -38,7 +38,7 @@ from flask import current_app
 
 from business_ar_api.exceptions.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
-from business_ar_api.services import AuthService
+from business_ar_api.services import AccountService
 from business_ar_api.services.rest_service import RestService
 
 
@@ -61,7 +61,7 @@ class BusinessService:
         colin_business_identifier = identifier[2:]
         colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}"
 
-        token = AuthService.get_service_client_token(client_id, client_secret)
+        token = AccountService.get_service_client_token(client_id, client_secret)
 
         if not token:
             raise BusinessException(
