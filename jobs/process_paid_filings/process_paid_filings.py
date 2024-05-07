@@ -14,16 +14,17 @@
 """Job to process paid filings.
 """
 import logging
+import json
 import os
-
-import requests
-import sentry_sdk
-from flask import Flask
-from business_ar_api.enums.enum import AuthHeaderType
-from business_ar_api.services import AuthService as AccountService
-from sentry_sdk.integrations.logging import LoggingIntegration
+from typing import List
 
 import config
+import requests
+import sentry_sdk
+from business_ar_api.enums.enum import AuthHeaderType
+from business_ar_api.services import AuthService as AccountService
+from flask import Flask
+from sentry_sdk.integrations.logging import LoggingIntegration
 from utils.logging import setup_logging
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
@@ -97,10 +98,32 @@ def send_filing(
         )
     if not req or req.status_code != 201:
         app.logger.error(f"Filing {filing_id} not created in colin {identifier}.")
-        # raise Exception
         return None
     # if it's an AR containing multiple filings it will have multiple colinIds
     return req.json()["filing"]["header"]["colinIds"]
+
+
+def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str):
+    try:
+        data = {"colinEventIds": colin_ids}
+        req = requests.patch(
+            url=f'{app.config["BUSINESS_AR_API_URL"]}/internal/filings/{filing_id}',
+            data=json.dumps(data),
+            headers={
+                **CONTENT_TYPE_JSON,
+                "Authorization": AuthHeaderType.BEARER.value.format(token),
+            },
+            timeout=TIMEOUT,
+        )
+        if not req or req.status_code != 200:
+            app.logger.error(
+                f"Failed to complete filing {filing_id} with colin id {colin_ids}"
+            )
+    except Exception as exception:
+        app.logger.error(
+            f"Failed to complete filing {filing_id} with colin id {colin_ids}",
+            exception,
+        )
 
 
 def clean_none(dictionary: dict = None):
@@ -131,9 +154,11 @@ def run():
                 filing_id = filing["filing"]["header"]["id"]
                 identifier = filing["filing"]["business"]["identifier"]
 
-                filing['filing']['header']['learEffectiveDate'] = filing['filing']['header']['filingDateTime']
-                if not filing['filing']['header']['certifiedBy']:
-                    filing['filing']['header']['certifiedBy'] = 'Test'
+                filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
+                    "header"
+                ]["filingDateTime"]
+                if not filing["filing"]["header"]["certifiedBy"]:
+                    filing["filing"]["header"]["certifiedBy"] = "Test"
 
                 if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive
@@ -145,13 +170,16 @@ def run():
                     colin_ids = send_filing(
                         app=application, filing=filing, filing_id=filing_id, token=token
                     )
-                    update = None
                     if colin_ids:
-                        update = True
-                    if update:
-                        # pylint: disable=no-member; false positive
-                        application.logger.debug(
-                            f"Successfully updated filing {filing_id}"
+                        application.logger.info(
+                            f"Successfully filed {filing_id}. Colin id {colin_ids}"
+                        )
+                        # Call Patch endpoint to mark the filing as complete.
+                        complete_filing(
+                            app=application,
+                            filing_id=filing_id,
+                            colin_ids=colin_ids,
+                            token=token,
                         )
                     else:
                         corps_with_failed_filing.append(
