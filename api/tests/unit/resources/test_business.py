@@ -15,9 +15,10 @@
 
 Test suite to ensure that the Business endpoints are working as expected.
 """
+from datetime import datetime
 from http import HTTPStatus
 
-from business_ar_api.models import Business
+from business_ar_api.models import Business, Invitations
 
 
 def test_business_look_up_by_nano_id(session, client):
@@ -32,7 +33,18 @@ def test_business_look_up_by_nano_id(session, client):
     business.save()
     assert business.id is not None
 
-    rv = client.get(f"/v1/business/token/{business.nano_id}")
+    invitations = Invitations(
+        recipients="test@abc.com",
+        message="Test Message",
+        sent_date=datetime.now(),
+        token="abcde123",
+        status="SENT",
+        additional_message="Test",
+        business_id=business.id,
+    )
+    invitations.save()
+
+    rv = client.get(f"/v1/business/token/{invitations.token}")
 
     assert rv.status_code == HTTPStatus.OK
     assert rv.json == {
@@ -55,6 +67,6 @@ def test_business_does_not_exist(session, client):
     business.save()
     assert business.id is not None
 
-    rv = client.get(f"/v1/business/token/123")
+    rv = client.get(f"/v1/business/token/etc123")
 
-    assert rv.status_code == HTTPStatus.NOT_FOUND
+    assert rv.status_code == HTTPStatus.BAD_REQUEST

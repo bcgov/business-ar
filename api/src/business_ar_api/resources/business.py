@@ -23,7 +23,8 @@ from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.models import Business as BusinessModel
-from business_ar_api.services import AccountService, BusinessService
+from business_ar_api.models import Invitations as InvitationsModel
+from business_ar_api.services import AccountService, BusinessService, InvitationService
 
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
@@ -35,7 +36,12 @@ def get_business_details_using_token(token):
     if not token:
         return error_response("Please provide token.", HTTPStatus.BAD_REQUEST)
 
-    business: BusinessModel = BusinessModel.find_by_nano_id(token)
+    invitation = InvitationService.find_invitation_by_token(token)
+
+    if not invitation or invitation.status != InvitationsModel.Status.SENT:
+        return error_response("Invalid token.", HTTPStatus.BAD_REQUEST)
+
+    business: BusinessModel = BusinessModel.find_by_id(invitation.business_id)
     if not business:
         return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
     return business.json(), HTTPStatus.OK

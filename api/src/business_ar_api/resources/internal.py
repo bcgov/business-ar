@@ -39,13 +39,12 @@ It provides endpoints to create and retrieve filing objects.
 """
 from http import HTTPStatus
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt
-from business_ar_api.exceptions import exception_response, AuthException
-from business_ar_api.models import Filing as FilingModel
-from business_ar_api.services import BusinessService, FilingService
+from business_ar_api.exceptions import error_response, exception_response, AuthException
+from business_ar_api.services import AccountService, BusinessService, FilingService
 
 bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 
@@ -72,4 +71,36 @@ def get_filings_by_status(status):
     except AuthException as aex:
         return exception_response(aex)
     except Exception as exception:  # noqa: B902
+        return exception_response(exception)
+
+
+@bp.route("/filings/<int:filing_id>", methods=["PATCH"])
+@cross_origin(origin="*")
+@jwt.requires_auth
+def complete_filing(filing_id):
+    """
+    Complete the filing by saving the Colin Ids against the filing and updating the filing status.
+
+    Returns:
+        A tuple containing the response JSON and the HTTP status code.
+    """
+    try:
+        if not filing_id:
+            return error_response(
+                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
+            )
+        json_input = request.get_json()
+
+        filing = FilingService.find_filing_by_id(filing_id)
+        if not filing:
+            return error_response(f"No matching filing.", HTTPStatus.NOT_FOUND)
+
+        # complete filing
+        filing = FilingService.complete_filing(filing_id, json_input)
+
+        return jsonify(FilingService.serialize(filing)), HTTPStatus.OK
+
+    except AuthException as authException:
+        return exception_response(authException)
+    except Exception as exception:
         return exception_response(exception)

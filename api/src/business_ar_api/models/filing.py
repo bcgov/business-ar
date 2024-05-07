@@ -123,12 +123,18 @@ class FilingSerializer:
         filing_dict["filing"]["header"]["paymentToken"] = filing.invoice_id
         filing_dict["filing"]["header"]["paymentStatus"] = filing.payment_status_code
         filing_dict["filing"]["header"]["status"] = filing.status
-        filing_dict["filing"]["header"]["filingDate"] = filing.filing_date.isoformat()
+        filing_dict["filing"]["header"][
+            "filingDateTime"
+        ] = filing.filing_date.isoformat()
+        filing_dict["filing"]["header"]["date"] = filing.filing_date.strftime(
+            "%Y-%m-%d"
+        )
         filing_dict["filing"]["header"]["completionDate"] = (
             filing.completion_date.isoformat() if filing.completion_date else None
         )
         if filing.submitter_id:
             filing_dict["filing"]["header"]["submitter"] = filing.submitter.username
+            filing_dict["filing"]["header"]["certifiedBy"] = filing.submitter.username
 
         if filing.payment_account:
             filing_dict["filing"]["header"]["paymentAccount"] = filing.payment_account

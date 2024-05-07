@@ -62,3 +62,8 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
             if status
             else results.all()
         )
+
+    @classmethod
+    def find_invitation_by_token(cls, token):
+        """Find an AR invitation record that matches the token."""
+        return cls.query.filter_by(token=token).first()

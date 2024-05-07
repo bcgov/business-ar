@@ -36,11 +36,12 @@ This module contains the services necessary for handling Filings,
 including creating a filing. 
 """
 from http import HTTPStatus
+from typing import List
 
 from flask_jwt_oidc import JwtManager
 
 from business_ar_api.exceptions import BusinessException
-from business_ar_api.models import Filing as FilingModel
+from business_ar_api.models import Filing as FilingModel, ColinEventId
 from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import PaymentService
 
@@ -51,7 +52,9 @@ class FilingService:
     """
 
     @staticmethod
-    def create_filing(filing_dict: dict, business_id: int, submitter_id: int) -> dict:
+    def create_filing(
+        filing_dict: dict, business_id: int, submitter_id: int
+    ) -> FilingModel:
         """
         Create Filing. Returns filing model
         """
@@ -65,7 +68,7 @@ class FilingService:
         return filing
 
     @staticmethod
-    def update_filing_invoice_details(filing_id, invoice_id) -> dict:
+    def update_filing_invoice_details(filing_id, invoice_id) -> FilingModel:
         """
         Update filing invoice details.
         """
@@ -76,7 +79,7 @@ class FilingService:
         return filing
 
     @staticmethod
-    def find_filing_by_id(filing_id: int) -> dict:
+    def find_filing_by_id(filing_id: int) -> FilingModel:
         """
         Get Filing by Id.
         """
@@ -90,15 +93,15 @@ class FilingService:
         return filing
 
     @staticmethod
-    def find_filing_by_status(status: str) -> dict:
+    def find_filing_by_status(status: str) -> List[FilingModel]:
         """
         Get Filing by Status.
         """
-        filing = FilingModel.find_filings_by_status(status)
-        return filing
+        filings = FilingModel.find_filings_by_status(status)
+        return filings
 
     @staticmethod
-    def find_filings_by_business_id(business_id: int) -> dict:
+    def find_filings_by_business_id(business_id: int) -> List[FilingModel]:
         """
         Get Filing by business id.
         """
@@ -113,7 +116,7 @@ class FilingService:
         return FilingSerializer.to_dict(filing)
 
     @staticmethod
-    def update_payment_data(filing_id: int, user_jwt: JwtManager) -> dict:
+    def update_payment_data(filing_id: int, user_jwt: JwtManager) -> FilingModel:
         """
         Update the filing with the payment details.
         """
@@ -147,3 +150,16 @@ class FilingService:
             filing.invoice_id, user_jwt
         )
         return payment_details
+
+    @staticmethod
+    def complete_filing(filing_id: int, request_json: dict) -> FilingModel:
+        """
+        Add colin event ids to the filing and update the filing status to complete.
+        """
+        filing = FilingService.find_filing_by_id(filing_id)
+        colin_ids = request_json.get("colinEventIds", [])
+        for colin_id in colin_ids:
+            filing.colin_event_ids.append(ColinEventId(colin_event_id=colin_id))
+        filing.status = FilingModel.Status.COMPLETED
+        filing.save()
+        return filing

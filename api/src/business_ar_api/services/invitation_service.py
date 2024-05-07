@@ -31,10 +31,13 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""This module wraps helper services used by the API."""
-from .account_service import AccountService
-from .business_service import BusinessService
-from .payment_service import PaymentService
-from .filing_service import FilingService
-from .invitation_service import InvitationService
-from .schema_service import SchemaService
+"""Invitation Service."""
+from business_ar_api.models import Invitations as InvitationsModel
+
+
+class InvitationService:
+
+    @classmethod
+    def find_invitation_by_token(cls, token: str) -> InvitationsModel:
+        """Finds an invitation by its token"""
+        return InvitationsModel.find_invitation_by_token(token)

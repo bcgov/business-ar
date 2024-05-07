@@ -331,7 +331,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2021\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2021-01-01\",\n            \"annualReportDate\": \"2021-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
+					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2023\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2023-01-01\",\n            \"annualReportDate\": \"2023-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -577,6 +577,61 @@
 						"internal",
 						"filings",
 						"pending"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Complete Filing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"colinEventIds\": [1]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/business/{{business_identifier}}/filings/{{filing_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"business",
+						"{{business_identifier}}",
+						"filings",
+						"{{filing_id}}"
 					]
 				}
 			},
