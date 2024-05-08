@@ -38,7 +38,7 @@ const { data } = await useAsyncData('content-data', () => {
 })
 </script>
 <template>
-  <SbcLoadingSpinner v-if="busStore.loading" />
+  <SbcLoadingSpinner v-if="busStore.loading" overlay />
   <div v-else class="mx-auto flex flex-col items-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
