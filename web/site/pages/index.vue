@@ -16,16 +16,20 @@ definePageMeta({
 })
 
 // load business details using route query nano id or navigate to /missing-id
-if (!route.query.nanoid) {
-  await navigateTo(localePath('/missing-id'))
-} else {
+onBeforeMount(async () => {
   try {
+    if (!route.query.nanoid) {
+      throw new Error('Missing id to fetch business details')
+    }
     // http://localhost:3000/en-CA?nanoid=TIG9kz_ykKVo0FMQAH76o
     await busStore.getBusinessByNanoId(route.query.nanoid as string)
-  } catch {
-    await navigateTo(localePath('/missing-id'))
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message)
+      await navigateTo(localePath('/missing-id'))
+    }
   }
-}
+})
 
 const { data } = await useAsyncData('content-data', () => {
   return queryContent()

@@ -14,49 +14,46 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
     loading.value = true
-    try {
-      // fetch by provided id
-      await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
-        async onResponse ({ response }) {
-          if (response.ok) {
-            // get full business details by the returned identifier
-            await getBusinessDetails(response._data.identifier)
-          }
-        },
-        onResponseError ({ response }) {
-          // console error a message form the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
-          console.error(errorMsg)
+    // fetch by provided id
+    await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
+      async onResponse ({ response }) {
+        if (response.ok) {
+          // get full business details by the returned identifier
+          await getBusinessDetails(response._data.identifier)
         }
-      })
-    } catch (e: any) {
-      throw new Error(e)
-    } finally {
-      loading.value = false
-    }
+      },
+      onResponseError ({ response }) {
+        // console error a message form the api or a default message
+        const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
+        console.error(errorMsg)
+      }
+    })
+    loading.value = false
   }
 
   // fetch full business details by identifier
   async function getBusinessDetails (identifier: string): Promise<void> {
-    try {
-      await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
-        onResponse ({ response }) {
-          if (response.ok) {
-            // set store values if response === 200
-            // console.log(response._data)
-            currentBusiness.value = response._data.business
-            nextArDate.value = addOneYear(response._data.business.lastArDate)
+    await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
+      onResponse ({ response }) {
+        if (response.ok) {
+          // set store values if response === 200
+          // console.log(response._data)
+          const bus: BusinessFull = response._data.business
+          currentBusiness.value = bus
+          nextArDate.value = addOneYear(bus.lastArDate)
+          // throw error if business already filed an AR for the current year
+          const currentYear = new Date().getFullYear()
+          if (bus.nextARYear < currentYear) {
+            throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
           }
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
-          console.error(errorMsg)
         }
-      })
-    } catch (e: any) {
-      throw new Error(e)
-    }
+      },
+      onResponseError ({ response }) {
+        // console error a message from the api or a default message
+        const errorMsg = response._data.message ?? 'Error retrieving business details.'
+        console.error(errorMsg)
+      }
+    })
   }
 
   // ping sbc pay to see if payment went through and return pay status details

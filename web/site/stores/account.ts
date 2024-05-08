@@ -66,6 +66,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
           if (response.ok) {
             // set userAccounts if response === 200, then navigate to AR filing page
             currentAccount.value = response._data
+            userAccounts.value.push(response._data)
           }
         },
         onResponseError ({ response }) {
