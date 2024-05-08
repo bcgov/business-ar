@@ -19,15 +19,13 @@ const { data } = await useAsyncData('content-data-submitted', () => {
 onMounted(async () => {
   try {
     if (!route.query.filing_id) {
-    // do something
-    } else if (busStore.payStatus === null || busStore.payStatus === '') {
-    // only make request if pay status doesnt already exist
+    // do something if no filing id
+    } else {
+      // check filing status details
       await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
       if (busStore.payStatus && busStore.payStatus !== 'PAID') {
         await navigateTo(localePath('/annual-report'))
       }
-    } else {
-    // do something
     }
   } catch (e) {
     console.error(e)

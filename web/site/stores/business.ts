@@ -68,13 +68,13 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     const identifier = currentBusiness.value.jurisdiction + currentBusiness.value.identifier
     loading.value = true
     try {
-      const response = await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
+      await $fetch<ArFilingResponse>(`${apiUrl}/business/${identifier}/filings/${filingId}/payment`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${$keycloak.token}`
         },
         onResponse ({ response }) {
-          // console.log('put request: ', response._data)
+          console.log('put request: ', response._data)
           // set pay status var
           if (response.ok) {
             payStatus.value = response._data.filing.header.status
@@ -86,11 +86,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           console.error(errorMsg)
         }
       })
-
-      if (response === undefined) {
-        throw new Error('Could not update payment status.')
-      }
     } catch (error) {
+      // do something if error from put request
       console.error('An error occurred:', error)
       throw error
     } finally {
