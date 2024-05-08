@@ -42,8 +42,9 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           currentBusiness.value = bus
           nextArDate.value = addOneYear(bus.lastArDate)
           // throw error if business already filed an AR for the current year
+          // add null check and use business founding date instead of last ar date
           const currentYear = new Date().getFullYear()
-          if (bus.nextARYear > currentYear) {
+          if (new Date(bus.lastArDate).getFullYear() === currentYear) {
             throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
           }
         }
