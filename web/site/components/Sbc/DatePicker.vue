@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
+import { type MaybeElementRef, onClickOutside } from '@vueuse/core'
+const { locale } = useI18n()
 
 // props / emits
 const props = defineProps<{
@@ -8,7 +10,14 @@ const props = defineProps<{
   setMaxDate?: Date
   setMinDate?: Date
 }>()
-const emit = defineEmits<{(e: 'selectedDate', value: Date | null): void }>()
+
+// eslint-disable-next-line func-call-spacing
+const emit = defineEmits<{
+  (e: 'selectedDate', value: Date | null): void,
+  (e: 'clickOutside'): void,
+}>()
+
+const datePickerRef = ref<MaybeElementRef>(null)
 
 // date selection
 const selectedDate: Ref<Date | null> = ref(props.defaultSelectedDate || null)
@@ -21,18 +30,22 @@ watch(() => props.setMaxDate, (val) => { maxDate.value = val || null })
 const minDate: Ref<Date | null> = ref(props.setMinDate || null)
 watch(() => props.setMinDate, (val) => { minDate.value = val || null })
 
+onClickOutside(datePickerRef, () => {
+  emit('clickOutside')
+})
 </script>
 <template>
   <!-- ignore custom class -->
   <!-- eslint-disable-next-line -->
   <div class="bcros-date-picker" :class="{ 'bcros-date-picker__err': error }">
     <VueDatePicker
+      ref="datePickerRef"
       v-model="selectedDate"
       auto-apply
       :action-row="{ showCancel: false, showNow: false, showPreview: false, showSelect: false }"
       calendar-cell-class-name="bcros-date-picker__calendar__day"
       calendar-class-name="bcros-date-picker__calendar"
-      :day-names="['SUN', 'MON','TUE','WED','THU','FRI','SAT']"
+      :locale
       :enable-time-picker="false"
       format="yyyy-MM-dd"
       hide-offset-dates
