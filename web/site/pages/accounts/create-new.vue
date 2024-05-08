@@ -51,6 +51,17 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
+async function findAvailableAccountName (username: string): Promise<string> {
+  let increment = 10
+  while (true) {
+    const data = await accountStore.checkAccountExists(username + increment)
+    if (data && data.orgs.length === 0) {
+      return username + increment
+    }
+    increment += 10
+  }
+}
+
 // custom validate account name on blur, using debounced on input is giving me issues currently
 const validate = async (state: any): Promise<FormError[]> => {
   const errors = []
@@ -66,6 +77,14 @@ const validate = async (state: any): Promise<FormError[]> => {
   return errors
 }
 
+// try to prefill account name on page load
+onBeforeMount(async () => {
+  try {
+    accountDetails.accountName = await findAvailableAccountName(keycloak.kcUser.value.lastName)
+  } catch (error) {
+    console.error((error as Error).message)
+  }
+})
 </script>
 <template>
   <div class="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-8 text-left">
@@ -118,7 +137,6 @@ const validate = async (state: any): Promise<FormError[]> => {
             :ariaLabel="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             :placeholder="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
             class="placeholder:text-bcGovColor-midGray"
-            @blur="accountFormRef.validate('accountName', { silent: true })"
           />
         </UFormGroup>
 

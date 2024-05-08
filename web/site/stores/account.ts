@@ -88,13 +88,26 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         },
         headers: {
           Authorization: `Bearer ${token}`
-        },
-        onResponse ({
-          response
-        }) { console.log(response) }
+        }
       })
     } catch {
       // silently handle errors
+    }
+  }
+
+  // create new account name based on a given string
+  async function findAvailableAccountName (username: string): Promise<string> {
+    let increment = 10
+    while (true) {
+      const data = await checkAccountExists(username + increment)
+      if (data && data.orgs.length === 0) {
+        return username + increment
+      }
+      increment += 10
+      if (increment > 1000) {
+        console.error('Exceeded maximum number of attempts trying to prefill account name.')
+        return ''
+      }
     }
   }
 
@@ -104,7 +117,8 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     getUserAccounts,
     selectUserAccount,
     createNewAccount,
-    checkAccountExists
+    checkAccountExists,
+    findAvailableAccountName
   }
 },
 { persist: true } // persist store values in session storage
