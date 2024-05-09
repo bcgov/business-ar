@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm, SbcInputsDateSelect } from '#components'
-const { t, locale } = useI18n()
-const config = useRuntimeConfig()
-const paymentUrl = config.public.paymentPortalUrl
-const baseUrl = config.public.baseUrl
+const { t } = useI18n()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
@@ -12,11 +9,6 @@ const payFeesWidget = usePayFeesWidget()
 useHead({
   title: t('page.annualReport.title')
 })
-
-interface ARFiling {
-  agmDate: Date | null,
-  votedForNoAGM: boolean
-}
 
 // options for radio buttons
 const options = [
@@ -45,15 +37,6 @@ const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: b
   officeAndDirectorsConfirmed: false
 })
 
-// redirect user to pay screen
-async function handlePayment (payToken: number, filingId: number): Promise<void> {
-  const returnUrl = encodeURIComponent(`${baseUrl}${locale.value}/submitted?filing_id=${filingId}`)
-  const payUrl = paymentUrl + payToken + '/' + returnUrl
-  // assume Pay URL is always reachable
-  // otherwise, user will have to retry payment later
-  await navigateTo(payUrl, { external: true })
-}
-
 // custom validate the form
 const validate = (state: any): FormError[] => {
   const errors = []
@@ -79,7 +62,7 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     // // console.log(arFiling)
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
     // // console.log(paymentToken, filingId)
-    await handlePayment(paymentToken, filingId)
+    await handlePaymentRedirect(paymentToken, filingId)
   } catch (e: any) {
     console.log(e)
     // do something if submitting ar fails

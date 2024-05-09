@@ -18,3 +18,8 @@ export interface ArFilingResponse {
     }
   }
 }
+
+export interface ARFiling {
+  agmDate: Date | null,
+  votedForNoAGM: boolean
+}
