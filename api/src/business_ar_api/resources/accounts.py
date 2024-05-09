@@ -30,7 +30,7 @@ bp = Blueprint("KEYS", __name__)
 
 @bp.route("/v1/accounts", methods=["GET"])
 @cross_origin(origin="*")
-@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+@_jwt.requires_auth
 def search_accounts():
     """Find accounts matching the search criteria."""
     try:
@@ -46,7 +46,7 @@ def search_accounts():
 
 @bp.route("/v1/user/accounts", methods=["GET"])
 @cross_origin(origin="*")
-@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+@_jwt.requires_auth
 def get_user_accounts():
     """Get all accounts of the user."""
     try:
@@ -57,7 +57,7 @@ def get_user_accounts():
 
 @bp.route("/v1/user/accounts", methods=["POST"])
 @cross_origin(origin="*")
-@_jwt.has_one_of_roles([Role.STAFF_MANAGE_ACCOUNTS.value, Role.ACCOUNT_HOLDER.value])
+@_jwt.requires_auth
 def create_user_account():
     """Create a new user account."""
     json_input = request.get_json()
