@@ -38,6 +38,7 @@ import copy
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
+from typing import List
 
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
@@ -89,6 +90,12 @@ class Filing(BaseModel):
 
     colin_event_ids = db.relationship("ColinEventId", lazy="select")
 
+    @property
+    def is_locked(self):
+        if self.status != Filing.Status.DRAFT:
+            return True
+        return False
+
     @classmethod
     def find_filing_by_id(cls, filing_id: int) -> Filing | None:
         """Return the filing by id."""
@@ -103,6 +110,19 @@ class Filing(BaseModel):
     def find_filings_by_status(cls, status: str) -> list[Filing]:
         """Return filings by status."""
         return cls.query.filter_by(status=status).all()
+
+    @classmethod
+    def find_business_filings_by_status(
+        cls, business_id: int, status: List
+    ) -> list[Filing]:
+        """Return filings by business id and status."""
+        query = (
+            db.session.query(Filing)
+            .filter(Filing.business_id == business_id)
+            .filter(Filing.status.in_(status))
+            .order_by(Filing.filing_date.desc())
+        )
+        return query.all()
 
 
 class FilingSerializer:

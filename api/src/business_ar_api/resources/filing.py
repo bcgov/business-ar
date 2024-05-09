@@ -89,9 +89,10 @@ def get_filings(identifier: str, filing_id: Optional[int] = None):
 
 
 @bp.route("/", methods=["POST"])
+@bp.route("/<int:filing_id>", methods=["POST", "PUT"])
 @cross_origin(origin="*")
 @jwt.requires_auth
-def create_filing(identifier):
+def create_filing(identifier, filing_id: Optional[int] = None):
     """
     Create a new filing.
 
@@ -108,7 +109,16 @@ def create_filing(identifier):
         if not business:
             return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
 
-        # TODO: validate payload.
+        # Can edit only a draft filing
+        if filing_id:
+            filing = FilingService.find_filing_by_id(filing_id)
+            if not filing:
+                return error_response(f"No matching filing.", HTTPStatus.NOT_FOUND)
+            if filing.is_locked:
+                return error_response(
+                    f"Filing {filing_id} cannot be edited.", HTTPStatus.BAD_REQUEST
+                )
+
         schema_name = "ar-filing.json"
         schema_service = SchemaService()
         [valid, errors] = schema_service.validate(schema_name, json_input)
@@ -129,21 +139,21 @@ def create_filing(identifier):
         AccountService.is_authorized(business_identifier=identifier)
 
         # create filing
-        filing = FilingService.create_filing(json_input, business.id, user.id)
+        filing = FilingService.save_filing(json_input, business.id, user.id, filing_id)
 
         # create invoice in pay system
         invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json())
 
         # Update the filing with the payment token save it in the db.
         filing = FilingService.update_filing_invoice_details(
-            filing.id, invoice_resp.json()["id"]
+            filing.id, invoice_resp.json()["id"], account_id
         )
 
         return jsonify(FilingService.serialize(filing)), HTTPStatus.CREATED
 
     except AuthException as authException:
         return exception_response(authException)
-    except Exception as exception:  # noqa: B902
+    except Exception as exception:
         return exception_response(exception)
 
 

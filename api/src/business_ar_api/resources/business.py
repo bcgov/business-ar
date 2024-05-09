@@ -15,16 +15,18 @@
 
 from http import HTTPStatus
 
-from flask import Blueprint, request
-from flask_cors import cross_origin
-
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
-from business_ar_api.exceptions.exceptions import ExternalServiceException
+from business_ar_api.exceptions.exceptions import (
+    BusinessException,
+    ExternalServiceException,
+)
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Invitations as InvitationsModel
 from business_ar_api.services import AccountService, BusinessService, InvitationService
+from flask import Blueprint, current_app, jsonify, request
+from flask_cors import cross_origin
 
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
@@ -49,6 +51,7 @@ def get_business_details_using_token(token):
 
 @bp.route("/<string:identifier>", methods=["GET"])
 @cross_origin(origin="*")
+@_jwt.requires_auth
 def get_business_details(identifier):
     """Get business details from colin"""
     if not identifier:
@@ -95,3 +98,23 @@ def create_business_in_auth():
         return AccountService.create_entity(entity_json), HTTPStatus.CREATED
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)
+
+
+@bp.route("/<string:identifier>/tasks", methods=["GET"])
+@cross_origin(origin="*")
+@_jwt.requires_auth
+def get_tasks(identifier):
+    """Returns the next pending task for a business."""
+    try:
+        tasks = BusinessService.get_business_pending_tasks(identifier)
+        return jsonify(tasks=tasks), HTTPStatus.OK
+    except BusinessException as businessExcpetion:
+        return error_response(businessExcpetion.error, businessExcpetion.status_code)
+    except Exception as exception:
+        current_app.logger.error(
+            "Error occured while retrieving pending tasks", exception
+        )
+        return error_response(
+            "Error occured while retrieving pending tasks",
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )

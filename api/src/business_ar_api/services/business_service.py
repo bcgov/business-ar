@@ -34,12 +34,14 @@
 """Business Service."""
 from datetime import date, datetime
 from http import HTTPStatus
-from flask import current_app
 
 from business_ar_api.exceptions.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
+from business_ar_api.models import Filing as FilingModel
+from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import AccountService
 from business_ar_api.services.rest_service import RestService
+from flask import current_app
 
 
 class BusinessService:
@@ -96,3 +98,56 @@ class BusinessService:
             founding_date: date = datetime.fromisoformat(founding_date_string).date()
             next_ar_year = founding_date.year + 1
         return next_ar_year
+
+    @classmethod
+    def get_business_pending_tasks(cls, business_identifier: int) -> dict:
+        tasks = []
+        business = BusinessService.find_by_business_identifier(business_identifier)
+        if not business:
+            raise BusinessException(
+                error="Business not found", status_code=HTTPStatus.NOT_FOUND
+            )
+
+        business_details_dict = BusinessService.get_business_details_from_colin(
+            business.identifier, business.legal_type
+        ).get("business", {})
+
+        # Retrieve filings that are either incomplete, or drafts
+        pending_filings = FilingModel.find_business_filings_by_status(
+            business.id,
+            [
+                FilingModel.Status.DRAFT,
+                FilingModel.Status.PENDING,
+                FilingModel.Status.PAID,
+            ],
+        )
+        # Create a todo item for each pending filing
+        for filing in pending_filings:
+            filing_json = FilingSerializer.to_dict(filing)
+            filing_json["filing"]["business"] = business_details_dict
+            task = {"task": filing_json}
+            tasks.append(task)
+
+        if not tasks:
+            next_ar_year = business_details_dict.get("nextARYear")
+            if next_ar_year and next_ar_year <= datetime.utcnow().year:
+                tasks.append(BusinessService._create_todo(business_details_dict))
+        return tasks
+
+    @classmethod
+    def _create_todo(cls, business_details: dict):
+        """Return a to-do JSON object."""
+
+        todo = {
+            "task": {
+                "todo": {
+                    "business": business_details,
+                    "header": {
+                        "name": "annualReport",
+                        "ARFilingYear": business_details.get("nextARYear"),
+                        "status": "NEW",
+                    },
+                }
+            }
+        }
+        return todo

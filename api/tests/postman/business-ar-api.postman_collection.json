@@ -162,7 +162,7 @@
 			"response": []
 		},
 		{
-			"name": "Create Entity",
+			"name": "Create Business in Auth",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -278,6 +278,51 @@
 			"response": []
 		},
 		{
+			"name": "Get tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/business/{{business_identifier}}/filings",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"business",
+						"{{business_identifier}}",
+						"filings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create Annual Report Filing",
 			"event": [
 				{
@@ -331,7 +376,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2023\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2023-01-01\",\n            \"annualReportDate\": \"2023-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
+					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2022\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2022-01-01\",\n            \"annualReportDate\": \"2022-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -347,6 +392,63 @@
 						"business",
 						"{{business_identifier}}",
 						"filings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Annual Report Filing",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Account-Id",
+						"value": "{{account_id}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"filing\": {\n        \"header\": {\n            \"filingYear\": 2022\n        },\n        \"annualReport\": {\n            \"annualGeneralMeetingDate\": \"2022-01-01\",\n            \"annualReportDate\": \"2022-12-31\",\n            \"votedForNoAGM\": false\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/business/{{business_identifier}}/filings/{{filing_id}}",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"business",
+						"{{business_identifier}}",
+						"filings",
+						"{{filing_id}}"
 					]
 				}
 			},
@@ -623,15 +725,69 @@
 					}
 				},
 				"url": {
-					"raw": "{{api_url}}/business/{{business_identifier}}/filings/{{filing_id}}",
+					"raw": "{{api_url}}/internal/filings/{{filing_id}}",
 					"host": [
 						"{{api_url}}"
 					],
 					"path": [
-						"business",
-						"{{business_identifier}}",
+						"internal",
 						"filings",
 						"{{filing_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Notify",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/internal/filings/{{filing_id}}/notify",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"internal",
+						"filings",
+						"{{filing_id}}",
+						"notify"
 					]
 				}
 			},
