@@ -10,12 +10,14 @@ useHead({
   title: t('page.submitted.title')
 })
 
+// explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
 const { data } = await useAsyncData('content-data-submitted', () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
     .findOne()
 })
 
+// TODO: need to handle if theres no filing id in the route query or if the put request fails
 onMounted(async () => {
   try {
     if (!route.query.filing_id) {

@@ -11,6 +11,13 @@ registerEndpoint('/user/accounts', {
   )
 })
 
+registerEndpoint('/accounts', {
+  method: 'GET',
+  handler: () => (
+    mockedOrgs
+  )
+})
+
 registerEndpoint('/user/accounts', {
   method: 'POST',
   handler: () => (mockNewAccount)
@@ -68,9 +75,14 @@ describe('Account Store Tests', () => {
   })
 
   // skipping for now cause this doesnt change any store values
-  it.skip('can check if am account name is already taken', async () => {
+  it.skip('can check if an account name is already taken', async () => {
     const accountStore = useAccountStore()
 
     await accountStore.checkAccountExists('some name')
+  })
+
+  describe.skip('findAvailableAccountName', () => {
+    it('should return a string with the given username and an increment of 10 when no orgs exist with that name', async () => {
+    })
   })
 })

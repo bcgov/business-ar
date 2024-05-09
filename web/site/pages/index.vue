@@ -15,6 +15,13 @@ definePageMeta({
   order: 0
 })
 
+// explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
+const { data } = await useAsyncData('content-data', () => {
+  return queryContent()
+    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
+    .findOne()
+})
+
 // load business details using route query nano id or navigate to /missing-id
 onBeforeMount(async () => {
   try {
@@ -29,12 +36,6 @@ onBeforeMount(async () => {
       await navigateTo(localePath('/missing-id'))
     }
   }
-})
-
-const { data } = await useAsyncData('content-data', () => {
-  return queryContent()
-    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
-    .findOne()
 })
 </script>
 <template>

@@ -12,6 +12,7 @@ definePageMeta({
   order: 0
 })
 
+// explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
 const { data } = await useAsyncData('content-data-missing-id', () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })

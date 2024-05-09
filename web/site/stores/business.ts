@@ -74,7 +74,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           Authorization: `Bearer ${$keycloak.token}`
         },
         onResponse ({ response }) {
-          console.log('put request: ', response._data)
+          // console.log('put request: ', response._data)
           // set pay status var
           if (response.ok) {
             payStatus.value = response._data.filing.header.status

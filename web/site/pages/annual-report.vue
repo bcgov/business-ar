@@ -30,6 +30,10 @@ const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
 const selectedRadio = ref<string>('option-1')
 const loading = ref<boolean>(false)
+const errorAlert = reactive({
+  title: '',
+  description: ''
+})
 
 // form state
 const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
@@ -55,17 +59,20 @@ const validate = (state: any): FormError[] => {
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   try {
     loading.value = true
+    // set data based off radio button value
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
-    // // console.log(arFiling)
+    // submit filing
     const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    // // console.log(paymentToken, filingId)
+    // redirect to pay with the returned token and filing id
     await handlePaymentRedirect(paymentToken, filingId)
-  } catch (e: any) {
-    console.log(e)
-    // do something if submitting ar fails
+  } catch (e) {
+    // log and display error alert if this fails
+    const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
+    console.error(msg)
+    errorAlert.description = msg
   } finally {
     loading.value = false
   }
@@ -78,7 +85,7 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-// clear date if switching radio optins
+// clear date if switching radio options
 function handleRadioClick (option: string) {
   if (selectedRadio.value !== option) {
     arFormRef.value?.clear()
@@ -88,9 +95,16 @@ function handleRadioClick (option: string) {
   }
 }
 
-// load fees for fee widget, might move into earlier setup
 onBeforeMount(() => {
+  // load fees for fee widget, might move into earlier setup
   addBarPayFees()
+
+  // add payment error message if pay status exists and doesnt equal paid
+  if (busStore.payStatus && busStore.payStatus !== 'PAID') {
+    errorAlert.title = 'Payment Not Complete'
+    errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
+  }
+
   // try to prefill form if a filing exists
   if (Object.keys(arStore.arFiling).length !== 0) {
     const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
@@ -113,9 +127,9 @@ onBeforeMount(() => {
       </h1>
 
       <UAlert
-        v-if="busStore.payStatus && busStore.payStatus !== 'PAID'"
-        title="Payment Not Complete"
-        :description="`Payment not completed, please try again. Pay status: ${busStore.payStatus}`"
+        v-if="errorAlert.title || errorAlert.description"
+        :title="errorAlert.title"
+        :description="errorAlert.description"
         icon="i-mdi-alert"
         color="red"
         variant="subtle"
