@@ -46,11 +46,11 @@ const validate = (state: any): FormError[] => {
   const errors = []
   // if yes to agm, user must input a date
   if (selectedRadio.value === 'option-1' && !state.agmDate) {
-    errors.push({ path: 'agmDate', message: 'You must select a date if you held an AGM' })
+    errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
   }
   // user must confirm to submit form
   if (!state.officeAndDirectorsConfirmed) {
-    errors.push({ path: 'officeAndDirectorsConfirmed', message: 'You must confirm to continue' })
+    errors.push({ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') })
   }
   return errors
 }
@@ -220,7 +220,7 @@ onBeforeMount(() => {
 
           <!-- certify office address and directors -->
           <UFormGroup name="officeAndDirectorsConfirmed">
-            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify')" />
+            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify.question')" />
           </UFormGroup>
         </UForm>
       </UCard>

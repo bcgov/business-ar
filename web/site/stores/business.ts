@@ -48,7 +48,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           }
 
           // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
-          if (!bus.lastArDate || bus.lastArDate === '') {
+          if (!bus.lastArDate) {
             nextArDate.value = addOneYear(bus.foundingDate)
           } else {
             nextArDate.value = addOneYear(bus.lastArDate)

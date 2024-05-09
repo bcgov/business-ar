@@ -104,7 +104,12 @@ export default {
         },
         accountNameSection: {
           fieldSet: 'Account Name',
-          accountNameInputLabel: 'Account Name'
+          accountNameInputLabel: 'Account Name',
+          error: {
+            req: 'Please enter an Account Name',
+            min: 'Account Name must be at least 2 characters',
+            unique: 'Account Name must be unique'
+          }
         },
         contactDetailsSection: {
           fieldSet: 'Contact Details',
@@ -113,7 +118,17 @@ export default {
             main: 'Extension (Optional)',
             aria: 'Phone Number Extension, Optional'
           },
-          emailInputLabel: 'Email Address'
+          emailInputLabel: 'Email Address',
+          error: {
+            phone: {
+              req: 'Please enter a Phone Number',
+              invalid: 'Please enter a valid phone number'
+            },
+            email: {
+              req: 'Please enter an Email Address',
+              invalid: 'Please enter a valid email address'
+            }
+          }
         }
       }
     },
@@ -141,9 +156,13 @@ export default {
         agmDate: {
           placeholder: 'Select Annual General Meeting Date',
           label: 'Select Annual General Meeting Date',
-          format: 'Format: {format}'
+          format: 'Format: {format}',
+          error: 'You must select a date if you held an AGM'
         },
-        certify: 'I certify all information about the Office Addresses and Current Directors is correct.'
+        certify: {
+          question: 'I certify all information about the Office Addresses and Current Directors is correct.',
+          error: 'You must confirm to continue'
+        }
       }
     },
     submitted: {

@@ -23,11 +23,11 @@ const accountDetails = reactive<NewAccount>({
 })
 
 const accountSchema = z.object({
-  accountName: z.string({ required_error: 'Please enter an Account Name' }).min(2, 'Account Name must be at least 2 characters'),
+  accountName: z.string({ required_error: t('page.createAccount.form.accountNameSection.error.req') }).min(2, t('page.createAccount.form.accountNameSection.error.min')),
   contact: z.object({
-    phone: z.string({ required_error: 'Please enter a Phone Number' }).min(10, 'Please enter a valid phone number').regex(/^[0-9()/ -]+$/, 'Please enter a valid phone number'),
+    phone: z.string({ required_error: t('page.createAccount.form.contactDetailsSection.error.phone.req') }).min(10, t('page.createAccount.form.contactDetailsSection.error.phone.invalid')).regex(/^[0-9()/ -]+$/, t('page.createAccount.form.contactDetailsSection.error.phone.invalid')),
     phoneExt: z.string().optional(),
-    email: z.string({ required_error: 'Please enter an Email Address' }).email({ message: 'Please enter a valid email address' })
+    email: z.string({ required_error: t('page.createAccount.form.contactDetailsSection.error.email.req') }).email({ message: t('page.createAccount.form.contactDetailsSection.error.email.invalid') })
   })
 })
 
@@ -51,17 +51,6 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-async function findAvailableAccountName (username: string): Promise<string> {
-  let increment = 10
-  while (true) {
-    const data = await accountStore.checkAccountExists(username + increment)
-    if (data && data.orgs.length === 0) {
-      return username + increment
-    }
-    increment += 10
-  }
-}
-
 // custom validate account name on blur, using debounced on input is giving me issues currently
 const validate = async (state: any): Promise<FormError[]> => {
   const errors = []
@@ -69,7 +58,7 @@ const validate = async (state: any): Promise<FormError[]> => {
     if (!state.accountName) { return [] }
     const data = await accountStore.checkAccountExists(state.accountName)
     if (data && data.orgs.length > 0) {
-      errors.push({ path: 'accountName', message: 'Account Name must be unique' })
+      errors.push({ path: 'accountName', message: t('page.createAccount.form.accountNameSection.error.unique') })
     }
   } catch {
     // fail silently
@@ -80,7 +69,7 @@ const validate = async (state: any): Promise<FormError[]> => {
 // try to prefill account name on page load
 onBeforeMount(async () => {
   try {
-    accountDetails.accountName = await findAvailableAccountName(keycloak.kcUser.value.lastName)
+    accountDetails.accountName = await accountStore.findAvailableAccountName(keycloak.kcUser.value.lastName)
   } catch (error) {
     console.error((error as Error).message)
   }

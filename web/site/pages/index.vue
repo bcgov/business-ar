@@ -6,7 +6,7 @@ const busStore = useBusinessStore()
 const route = useRoute()
 const localePath = useLocalePath()
 const { locale } = useI18n()
-// console.log(routeWithoutLocale.value)
+
 useHead({
   title: t('page.home.title')
 })

@@ -104,7 +104,12 @@ export default {
         },
         accountNameSection: {
           fieldSet: 'Nom du Compte',
-          accountNameInputLabel: 'Nom du Compte'
+          accountNameInputLabel: 'Nom du Compte',
+          error: {
+            req: 'Veuillez entrer un nom de compte',
+            min: 'Le nom du compte doit comporter au moins 2 caractères',
+            unique: 'Le nom du compte doit être unique'
+          }
         },
         contactDetailsSection: {
           fieldSet: 'Détails du Contact',
@@ -113,7 +118,17 @@ export default {
             main: 'Extension (Facultatif)',
             aria: 'Extension du numéro de téléphone, en option'
           },
-          emailInputLabel: 'Adresse e-mail'
+          emailInputLabel: 'Adresse e-mail',
+          error: {
+            phone: {
+              req: 'Veuillez entrer un numéro de téléphone',
+              invalid: "s'il vous plaît entrer un numéro de téléphone valide"
+            },
+            email: {
+              req: "Entrez une adresse mail s'il vous plaît",
+              invalid: "S'il vous plaît, mettez une adresse email valide"
+            }
+          }
         }
       }
     },
@@ -141,9 +156,13 @@ export default {
         agmDate: {
           placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
           label: "Sélectionnez la date de l'assemblée générale annuelle",
-          format: 'Format: {format}'
+          format: 'Format: {format}',
+          error: 'Vous devez sélectionner une date si vous avez tenu une AGA'
         },
-        certify: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.'
+        certify: {
+          question: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
+          error: 'Vous devez confirmer pour continuer'
+        }
       }
     },
     submitted: {
