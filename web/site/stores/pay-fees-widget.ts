@@ -72,16 +72,16 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
 
     for (const filingDataItem of filingData) {
       await payApi.getFeeInfo(filingDataItem)
-        .then(({ data, error }) => {
-          if (error) {
-            console.error(error)
-            const err = {
-              statusCode: error.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR,
-              message: error.message,
-              category: ErrorCategory.FEE_INFO
-            }
-            errors.value.push(err)
-          }
+        .then((data) => {
+          // if (error) {
+          //   console.error(error)
+          //   const err = {
+          //     statusCode: error.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR,
+          //     message: error.message,
+          //     category: ErrorCategory.FEE_INFO
+          //   }
+          //   errors.value.push(err)
+          // }
 
           if (data) {
             feeInfo.value.push([filingDataItem, data])

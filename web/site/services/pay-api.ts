@@ -18,15 +18,11 @@ const getPayFeesApiQueryParams = (filingData: FilingData): PayFeesApiQueryParams
 const getFeeInfoRefs = async (filingData: FilingData) => {
   const url = constructFeeInfoURL(filingData)
   const queryParams = getPayFeesApiQueryParams(filingData)
-  const { data, error } = await useFetchSbc<FeeInfo>(url, { query: queryParams })
-
-  return { data, error }
+  return await useFetchSbc<FeeInfo>(url, { query: queryParams })
 }
 
 const getFeeInfo = async (filingData: FilingData) => {
-  const { data, error } = await getFeeInfoRefs(filingData)
-
-  return { data: data.value, error: error.value }
+  return await getFeeInfoRefs(filingData)
 }
 
 export default {

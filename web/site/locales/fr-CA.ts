@@ -181,7 +181,7 @@ export default {
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',
-        ANNBC: 'Rapport Annuel BC'
+        BCANN: 'Rapport Annuel BC'
       }
     }
   },

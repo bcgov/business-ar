@@ -5,6 +5,7 @@ const { t } = useI18n()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
+const initPage = ref<boolean>(true)
 
 useHead({
   title: t('page.annualReport.title')
@@ -95,31 +96,44 @@ function handleRadioClick (option: string) {
   }
 }
 
-onBeforeMount(() => {
-  // load fees for fee widget, might move into earlier setup
-  addBarPayFees()
+onMounted(async () => {
+  try {
+    initPage.value = true
+    // load fees for fee widget, might move into earlier setup
+    addBarPayFees()
 
-  // add payment error message if pay status exists and doesnt equal paid
-  if (busStore.payStatus && busStore.payStatus !== 'PAID') {
-    errorAlert.title = 'Payment Not Complete'
-    errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
-  }
-
-  // try to prefill form if a filing exists
-  if (Object.keys(arStore.arFiling).length !== 0) {
-    const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
-    const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
-    if (votedForNoAGM) {
-      selectedRadio.value = 'option-3'
-    } else if (!votedForNoAGM && !agmDate) {
-      selectedRadio.value = 'option-2'
-    } else if (agmDate) {
-      arData.agmDate = agmDate
+    try {
+      await busStore.getBusinessDetails(busStore.businessNano.identifier)
+    } catch (e) {
+      console.error((e as Error).message)
     }
+
+    // add payment error message if pay status exists and doesnt equal paid
+    if (busStore.payStatus && busStore.payStatus !== 'PAID') {
+      errorAlert.title = 'Payment Not Complete'
+      errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
+    }
+
+    // try to prefill form if a filing exists
+    if (Object.keys(arStore.arFiling).length !== 0) {
+      const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
+      const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
+      if (votedForNoAGM) {
+        selectedRadio.value = 'option-3'
+      } else if (!votedForNoAGM && !agmDate) {
+        selectedRadio.value = 'option-2'
+      } else if (agmDate) {
+        arData.agmDate = agmDate
+      }
+    }
+  } finally {
+    initPage.value = false
   }
 })
 </script>
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
+  <SbcLoadingSpinner v-if="initPage" overlay />
   <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">

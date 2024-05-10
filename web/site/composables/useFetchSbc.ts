@@ -7,8 +7,7 @@ export const useFetchSbc = <T>(request: string, opts?: any) => {
     Object.assign(opts, {
       headers: {
         Authorization: `Bearer ${token}`
-      },
-      server: false
+      }
     })
   }
   if (!opts.headers['Account-Id']) {
@@ -16,5 +15,5 @@ export const useFetchSbc = <T>(request: string, opts?: any) => {
     opts.headers['Account-Id'] = account.currentAccount?.id
   }
 
-  return useFetch<T>(request, opts)
+  return $fetch<T>(request, opts)
 }
