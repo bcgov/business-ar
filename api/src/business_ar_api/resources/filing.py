@@ -146,7 +146,7 @@ def create_filing(identifier, filing_id: Optional[int] = None):
 
         # Update the filing with the payment token save it in the db.
         filing = FilingService.update_filing_invoice_details(
-            filing.id, invoice_resp.json()["id"], account_id
+            filing.id, invoice_resp.json()
         )
 
         return jsonify(FilingService.serialize(filing)), HTTPStatus.CREATED

@@ -72,15 +72,16 @@ class FilingService:
 
     @staticmethod
     def update_filing_invoice_details(
-        filing_id: int, invoice_id: int, account_id: int
+        filing_id: int, invoice_response: dict
     ) -> FilingModel:
         """
         Update filing invoice details.
         """
         filing = FilingModel.find_filing_by_id(filing_id)
-        filing.invoice_id = invoice_id
+        filing.invoice_id = invoice_response["id"]
         filing.status = FilingModel.Status.PENDING
-        filing.payment_account = account_id
+        filing.payment_account = invoice_response.get("paymentAccount").get("accountId")
+        filing.payment_status_code = invoice_response.get("statusCode")
         filing.save()
         return filing
 
@@ -131,6 +132,9 @@ class FilingService:
         filing.payment_status_code = payment_details.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
             filing.status = FilingModel.Status.PAID
+            filing.payment_completion_date = datetime.fromisoformat(
+                payment_details.get("paymentDate")
+            )
         filing.save()
         return filing
 
