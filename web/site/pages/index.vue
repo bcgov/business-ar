@@ -42,7 +42,7 @@ onBeforeMount(async () => {
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
     </h1>
-    <UCard class="w-full">
+    <UCard class="w-full" data-testid="bus-details-card">
       <div class="flex grid-cols-6 flex-col text-left sm:grid">
         <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
         <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.legalName }}</span>
@@ -52,7 +52,7 @@ onBeforeMount(async () => {
         <span v-if="busStore.businessNano.taxId" class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.taxId }}</span>
       </div>
     </UCard>
-    <UCard class="w-full">
+    <UCard class="w-full" data-testid="content-data">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
     <UButton

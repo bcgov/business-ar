@@ -27,6 +27,13 @@ or
 pnpm test:unit
 ```
 
+Run Vitest Coverage in watch mode for unit tests
+```bash
+pnpm test
+or
+pnpm test:unit:cov
+```
+
 Run Playwright e2e tests in headless mode
 ```bash
 cd business-ar/web/site

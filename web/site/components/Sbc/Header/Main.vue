@@ -6,6 +6,7 @@ const account = useAccountStore()
 <template>
   <header
     id="sbc-main-header"
+    data-testid="sbc-main-header"
     class="border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
   >
     <nav
@@ -34,8 +35,6 @@ const account = useAccountStore()
         />
       </div>
       <div class="flex gap-1">
-        <LocaleSelect />
-        <!-- composable authenticated not being reflected correctly -->
         <ClientOnly>
           <UDropdown
             v-if="keycloak.isAuthenticated()"
@@ -49,9 +48,12 @@ const account = useAccountStore()
               }
             }"
           >
+            <!-- required for UInput aria-label -->
+            <!-- eslint-disable vue/attribute-hyphenation -->
             <UButton
               color="white"
               variant="link"
+              :ariaLabel="$t('btn.accountOptions')"
             >
               <SbcHeaderAccountLabel
                 class="hidden md:flex"
@@ -79,6 +81,7 @@ const account = useAccountStore()
             </template>
           </UDropdown>
         </ClientOnly>
+        <LocaleSelect />
       </div>
     </nav>
   </header>

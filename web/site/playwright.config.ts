@@ -4,9 +4,8 @@ import type { ConfigOptions } from '@nuxt/test-utils/playwright'
 
 const devicesToTest = [
   'Desktop Chrome'
-  // Test against other common browser engines.
   // 'Desktop Firefox',
-  // 'Desktop Safari',
+  // 'Desktop Safari'
   // Test against mobile viewports.
   // 'Pixel 5',
   // 'iPhone 12',
@@ -32,7 +31,7 @@ export default defineConfig<ConfigOptions>({
       rootDir: fileURLToPath(new URL('.', import.meta.url))
     },
     actionTimeout: 0,
-    baseURL: 'http://localhost:3467',
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     screenshot: 'off',
     // do not open browser
@@ -41,6 +40,6 @@ export default defineConfig<ConfigOptions>({
   projects: devicesToTest.map(p => typeof p === 'string' ? ({ name: p, use: devices[p] }) : p),
   webServer: {
     // run dev server before starting tests
-    command: 'pnpm dev --port 3467'
+    command: 'pnpm dev --port 3000'
   }
 })

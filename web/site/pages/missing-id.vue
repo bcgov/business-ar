@@ -24,7 +24,7 @@ const { data } = await useAsyncData('content-data-missing-id', () => {
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.missingId.h1') }}
     </h1>
-    <UCard class="w-full max-w-lg">
+    <UCard class="w-full max-w-lg" data-testid="content-data-missing-id">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
     <UButton label="use nano id" :to="localePath('/?nanoid=TIG9kz_ykKVo0FMQAH76o')" />

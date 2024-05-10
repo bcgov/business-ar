@@ -30,6 +30,7 @@ const links = [
 <template>
   <footer
     id="sbc-main-footer"
+    data-testid="sbc-main-footer"
     class="border-t-2 border-bcGovColor-navDivider bg-bcGovColor-footer p-2 dark:border-t dark:bg-bcGovColor-darkGray"
   >
     <div class="mx-auto flex max-w-[1360px] items-center justify-between">

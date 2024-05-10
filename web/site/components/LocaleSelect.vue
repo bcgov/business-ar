@@ -16,7 +16,7 @@ const items = computed<DropdownItem[][]>(() => {
 })
 </script>
 <template>
-  <UDropdown id="locale-select-dropdown" :items="items" mode="hover">
+  <UDropdown id="locale-select-dropdown" data-testid="locale-select-dropdown" :items="items" mode="hover">
     <UButton
       icon="i-mdi-web"
       :aria-label="$t('LocaleSelect.label')"

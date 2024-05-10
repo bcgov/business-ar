@@ -27,7 +27,8 @@ export default {
     },
     logout: 'Log out',
     saveAccountAndFileAr: 'Save Account & File Annual Report',
-    submitAndPay: 'Submit & Pay'
+    submitAndPay: 'Submit & Pay',
+    accountOptions: 'Account Options Menu'
   },
   currency: {
     cad: 'CAD',
