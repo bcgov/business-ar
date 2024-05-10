@@ -32,8 +32,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   }
 
   // fetch full business details by identifier
-  async function getBusinessDetails (identifier: string): Promise<void> {
-    await $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
+  function getBusinessDetails (identifier: string): Promise<BusinessFull> {
+    return $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
       headers: {
         Authorization: `Bearer ${$keycloak.token}`
       },

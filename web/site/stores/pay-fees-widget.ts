@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { v4 as UUIDv4 } from 'uuid'
-import { StatusCodes } from 'http-status-codes'
+// import { StatusCodes } from 'http-status-codes'
 
 import type { FeeInfo, PayFeesWidgetItem } from '~/interfaces/fees'
 import { type Error } from '~/interfaces/error'
@@ -17,7 +17,7 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
   const feeInfo: Ref<[FilingData, FeeInfo][]> = ref([])
 
   const addFee = (newFee: FeeInfo) => {
-    const index = fees.value.findIndex(fee =>
+    const index = fees.value.findIndex((fee: PayFeesWidgetItem) =>
       fee.filingType === newFee.filingType && fee.filingTypeCode === newFee.filingTypeCode
     )
     if (index === -1) {
@@ -31,7 +31,7 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
   }
 
   const addFeeOrIncreaseCount = (feeToAdd: FeeInfo) => {
-    const fee = fees.value.find(fee =>
+    const fee = fees.value.find((fee: PayFeesWidgetItem) =>
       fee.filingType === feeToAdd.filingType && fee.filingTypeCode === feeToAdd.filingTypeCode
     )
 
@@ -47,7 +47,7 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
   }
 
   const removeFee = (feeToRemove: FeeInfo) => {
-    const index = fees.value.findIndex(fee =>
+    const index = fees.value.findIndex((fee: PayFeesWidgetItem) =>
       fee.filingType === feeToRemove.filingType && fee.filingTypeCode === feeToRemove.filingTypeCode
     )
     if (index > -1) { // only splice array when item is found
@@ -56,7 +56,7 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
   }
 
   const removeFeeOrDecreaseCount = (feeToRemove: FeeInfo) => {
-    const fee = fees.value.find(fee =>
+    const fee = fees.value.find((fee: PayFeesWidgetItem) =>
       fee.filingType === feeToRemove.filingType && fee.filingTypeCode === feeToRemove.filingTypeCode
     )
 
