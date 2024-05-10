@@ -63,9 +63,42 @@ def get_business_details(identifier):
     if not business:
         return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
 
-    business_details = BusinessService.get_business_details_from_colin(
-        business.identifier, business.legal_type
-    )
+    try:
+        business_details = BusinessService.get_business_details_from_colin(
+            business.identifier, business.legal_type
+        )
+    except Exception as exception:
+        current_app.logger.error(
+            "Error while fetching business details from Colin.", exception
+        )
+        return error_response(
+            f"Error while fetching business details from Colin.",
+            HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+
+    # If the call fails do not populate office details in the response.
+    try:
+        business_office_details = (
+            BusinessService.get_business_office_details_from_colin(
+                business.identifier, business.legal_type
+            )
+        )
+        business_details["offices"] = business_office_details
+    except Exception as exception:
+        current_app.logger.error(
+            "Error while fetching business office from Colin.", exception
+        )
+
+    # If the call fails do not populate party details in the response.
+    try:
+        business_party_details = BusinessService.get_business_party_details_from_colin(
+            business.identifier, business.legal_type
+        )
+        business_details["parties"] = business_party_details.get("directors", [])
+    except Exception as exception:
+        current_app.logger.error(
+            "Error while fetching business parties from Colin.", exception
+        )
 
     return business_details, HTTPStatus.OK
 

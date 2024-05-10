@@ -89,6 +89,52 @@ class BusinessService:
         return business_details
 
     @classmethod
+    def get_business_party_details_from_colin(
+        cls, identifier: str, legal_type: str
+    ) -> dict:
+        client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
+        colin_business_identifier = identifier[2:]
+        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/parties"
+
+        token = AccountService.get_service_client_token(client_id, client_secret)
+
+        if not token:
+            raise BusinessException(
+                error="Unable to get a token",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+
+        business_parties = RestService.get(
+            endpoint=colin_api_endpoint, token=token
+        ).json()
+
+        return business_parties
+
+    @classmethod
+    def get_business_office_details_from_colin(
+        cls, identifier: str, legal_type: str
+    ) -> dict:
+        client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
+        colin_business_identifier = identifier[2:]
+        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/office"
+
+        token = AccountService.get_service_client_token(client_id, client_secret)
+
+        if not token:
+            raise BusinessException(
+                error="Unable to get a token",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+
+        business_offices = RestService.get(
+            endpoint=colin_api_endpoint, token=token
+        ).json()
+
+        return business_offices
+
+    @classmethod
     def _get_next_ar_year(cls, business_details: dict) -> int:
         next_ar_year = -1
         last_ar_date_string = business_details.get("business", {}).get(
