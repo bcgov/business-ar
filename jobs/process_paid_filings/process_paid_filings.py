@@ -126,6 +126,22 @@ def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str
         )
 
 
+def send_email(app: Flask, filing_id: str, token: str):
+    try:
+        req = requests.post(
+            url=f'{app.config["BUSINESS_AR_API_URL"]}/internal/filings/{filing_id}/notify',
+            headers={
+                **CONTENT_TYPE_JSON,
+                "Authorization": AuthHeaderType.BEARER.value.format(token),
+            },
+            timeout=TIMEOUT,
+        )
+        if not req or req.status_code != 200:
+            app.logger.error(f"Failed to send email for filing {filing_id}")
+    except Exception as exception:
+        app.logger.error(f"Failed to send email for filing {filing_id}")
+
+
 def clean_none(dictionary: dict = None):
     """Replace all none values with empty string."""
     for key in dictionary.keys():
@@ -179,6 +195,11 @@ def run():
                             app=application,
                             filing_id=filing_id,
                             colin_ids=colin_ids,
+                            token=token,
+                        )
+                        send_email(
+                            app=application,
+                            filing_id=filing_id,
                             token=token,
                         )
                     else:
