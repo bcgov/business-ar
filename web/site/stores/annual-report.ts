@@ -36,7 +36,9 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
           'Account-Id': `${accountStore.currentAccount.id}`
         },
         onResponse ({ response }) {
-          arFiling.value = response._data
+          if (response.ok) {
+            arFiling.value = response._data
+          }
           // console.log(arFiling.value)
         },
         onResponseError ({ response }) {

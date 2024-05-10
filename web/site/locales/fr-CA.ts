@@ -136,7 +136,7 @@ export default {
       title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
-      existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de BC Registries and Online Services. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
+      existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de Service BC Connect. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
     },
     missingId: {
       title: 'Autorisation Requise - Rapport Annuel de Service BC',

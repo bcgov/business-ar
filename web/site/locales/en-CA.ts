@@ -136,7 +136,7 @@ export default {
       title: 'Choose Existing Account - Service BC Annual Report',
       h1: 'Existing Account Found',
       h2: 'Your Existing Accounts',
-      existingAccountWarning: 'It looks like you already have an account with BC Registries and Online Services. You can use an existing account to proceed or create a new one.'
+      existingAccountWarning: 'It looks like you already have an account with Service BC Connect. You can use an existing account to proceed or create a new one.'
     },
     missingId: {
       title: 'Authorization Required - Service BC Annual Report',

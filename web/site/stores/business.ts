@@ -19,7 +19,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       async onResponse ({ response }) {
         if (response.ok) {
           // get full business details by the returned identifier
-          await getBusinessDetails(response._data.identifier)
+          // await getBusinessDetails(response._data.identifier)
         }
       },
       onResponseError ({ response }) {
