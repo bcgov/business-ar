@@ -4,11 +4,22 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
-const loading = ref<boolean>(true)
+const loading = ref<boolean>(false)
 const setAccountLoading = ref<boolean>(false)
 
 useHead({
   title: t('page.existingAccount.title')
+})
+
+// redirect to annual report page if a filing exists already
+definePageMeta({
+  middleware: () => {
+    const arStore = useAnnualReportStore()
+    const { $i18n } = useNuxtApp()
+    if (Object.keys(arStore.arFiling).length !== 0) {
+      return navigateTo(`/${$i18n.locale.value}/annual-report`)
+    }
+  }
 })
 
 async function handleAccountSelect (id: number) {
@@ -20,6 +31,7 @@ async function handleAccountSelect (id: number) {
 
 onBeforeMount(async () => {
   try {
+    loading.value = true
     const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
       return navigateTo(localePath('/accounts/create-new'))

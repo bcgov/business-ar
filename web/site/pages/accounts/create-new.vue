@@ -13,6 +13,17 @@ useHead({
   title: t('page.createAccount.title')
 })
 
+// redirect to annual report page if a filing exists already
+definePageMeta({
+  middleware: () => {
+    const arStore = useAnnualReportStore()
+    const { $i18n } = useNuxtApp()
+    if (Object.keys(arStore.arFiling).length !== 0) {
+      return navigateTo(`/${$i18n.locale.value}/annual-report`)
+    }
+  }
+})
+
 const accountDetails = reactive<NewAccount>({
   accountName: undefined,
   contact: {
