@@ -1,3 +1,4 @@
+import type { ARFiling } from '~/interfaces/ar-filing-response'
 export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
@@ -9,11 +10,6 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   // store values
   const loading = ref<boolean>(true)
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
-
-  interface ARFiling {
-    agmDate: Date | null,
-    votedForNoAGM: boolean
-  }
 
   async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number }> {
     try {

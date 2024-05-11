@@ -7,7 +7,7 @@ export const useKeycloak = () => {
     return $keycloak.login(
       {
         idpHint: 'bcsc',
-        redirectUri: `${location.origin}/${locale.value}/accounts/choose-existing`
+        redirectUri: `${location.origin}/${locale.value}`
       }
     )
   }

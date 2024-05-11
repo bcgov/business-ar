@@ -134,7 +134,7 @@ onMounted(async () => {
 <template>
   <!-- eslint-disable vue/no-multiple-template-root -->
   <SbcLoadingSpinner v-if="initPage" overlay />
-  <div class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
+  <div v-else class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
     <div class="flex w-full flex-1 flex-col gap-6">
       <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
         {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}

@@ -6,6 +6,7 @@ export function useSbcNav () {
   const { t } = useI18n()
   const keycloak = useKeycloak()
   const accountStore = useAccountStore()
+  const arStore = useAnnualReportStore()
 
   const mainLinks = computed<DropdownItem[]>(() => {
     return [
@@ -35,7 +36,7 @@ export function useSbcNav () {
         click: () => accountStore.selectUserAccount(account.id)
       }))
 
-    if (accountOptions.length > 0) {
+    if (accountOptions.length > 0 && (Object.keys(arStore.arFiling).length === 0)) {
       fullOptions.push([
         {
           label: 'Switch Accounts',

@@ -3,6 +3,7 @@ const { t } = useI18n()
 const routeWithoutLocale = useRouteWithoutLocale()
 const localePath = useLocalePath()
 const { locale } = useI18n()
+const nanoid = ref('')
 
 useHead({
   title: t('page.missingId.title')
@@ -27,6 +28,10 @@ const { data } = await useAsyncData('content-data-missing-id', () => {
     <UCard class="w-full max-w-lg" data-testid="content-data-missing-id">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
-    <UButton label="use nano id" :to="localePath('/?nanoid=TIG9kz_ykKVo0FMQAH76o')" />
+    <div class="flex gap-2">
+      <UInput v-model="nanoid" />
+      <!-- TIG9kz_ykKVo0FMQAH76o -->
+      <UButton label="Go" :to="localePath(`/?nanoid=${nanoid}`)" />
+    </div>
   </div>
 </template>
