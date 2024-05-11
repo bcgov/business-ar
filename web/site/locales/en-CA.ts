@@ -164,6 +164,10 @@ export default {
           question: 'I certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
+      },
+      payError: {
+        title: 'Payment Not Complete',
+        description: 'Your payment was not completed, please try again.'
       }
     },
     submitted: {

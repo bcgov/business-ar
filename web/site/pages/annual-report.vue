@@ -109,9 +109,9 @@ onMounted(async () => {
     }
 
     // add payment error message if pay status exists and doesnt equal paid
-    if (busStore.payStatus && busStore.payStatus !== 'PAID') {
-      errorAlert.title = 'Payment Not Complete'
-      errorAlert.description = 'Payment not completed, please try again. Pay status: ' + busStore.payStatus
+    if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
+      errorAlert.title = t('page.annualReport.payError.title')
+      errorAlert.description = t('page.annualReport.payError.description')
     }
 
     // try to prefill form if a filing exists

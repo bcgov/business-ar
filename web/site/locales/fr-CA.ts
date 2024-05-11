@@ -164,6 +164,10 @@ export default {
           question: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
+      },
+      payError: {
+        title: 'Paiement non terminé',
+        description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
       }
     },
     submitted: {
