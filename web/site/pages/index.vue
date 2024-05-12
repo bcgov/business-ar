@@ -36,7 +36,11 @@ onBeforeMount(async () => {
         arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
         await accountStore.getUserAccounts()
         accountStore.selectUserAccount(parseInt(taskValue.filing.header.paymentAccount))
-        await navigateTo(localePath('/annual-report'))
+        if (taskValue.filing.header.status === 'PAID') {
+          await navigateTo(localePath('/submitted'))
+        } else {
+          await navigateTo(localePath('/annual-report'))
+        }
       } else {
         await navigateTo(localePath('/accounts/choose-existing'))
       }

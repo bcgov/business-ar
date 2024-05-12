@@ -46,7 +46,6 @@ onMounted(async () => {
         class="size-10 shrink-0 text-outcomes-approved"
       />
     </h1>
-    payment status: {{ busStore.payStatus }}
     <UCard class="w-full">
       <ContentRenderer :value="data" class="prose prose-bcGov text-left" />
     </UCard>
