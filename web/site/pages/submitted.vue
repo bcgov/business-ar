@@ -21,7 +21,7 @@ const { data } = await useAsyncData('content-data-submitted', () => {
 onMounted(async () => {
   try {
     if (!route.query.filing_id) {
-    // do something if no filing id
+      throw new Error('Missing filing id in url.')
     } else {
       // check filing status details
       await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
@@ -30,7 +30,9 @@ onMounted(async () => {
       }
     }
   } catch (e) {
-    console.error(e)
+    // go back to ar page if no filing id or error in the PUT request
+    console.error((e as Error).message)
+    await navigateTo(localePath('/annual-report'))
   } finally {
     loading.value = false
   }
@@ -38,7 +40,7 @@ onMounted(async () => {
 </script>
 <template>
   <SbcLoadingSpinner v-if="loading" overlay />
-  <div v-else class="mx-auto flex flex-col items-center gap-4 text-center">
+  <div v-else class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
       <UIcon

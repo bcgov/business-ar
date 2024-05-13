@@ -9,6 +9,7 @@ const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const accountStore = useAccountStore()
 const initPage = ref<boolean>(true)
+const reportPaid = ref<boolean>(false)
 
 useHead({
   title: t('page.home.title')
@@ -21,7 +22,13 @@ definePageMeta({
 // explicitly calling this instead of using <ContentDoc /> as its unreliable for pnpm generate
 const { data } = await useAsyncData('content-data', () => {
   return queryContent()
-    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value } })
+    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + '1' } })
+    .findOne()
+})
+
+const { data: arCompleted } = await useAsyncData('content-data-ar-completed', () => {
+  return queryContent()
+    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + '2' } })
     .findOne()
 })
 
@@ -39,9 +46,9 @@ onBeforeMount(async () => {
         await accountStore.getUserAccounts()
         // set the account to the existing filings paymentAccount
         accountStore.selectUserAccount(parseInt(taskValue.filing.header.paymentAccount))
-        // redirect to final page if already paid
+        // display completed state if report has been filed and paid
         if (taskValue.filing.header.status === 'PAID') {
-          await navigateTo(localePath('/submitted'))
+          reportPaid.value = true
         } else { // else redirect to annual-report page if filing wasnt paid
           await navigateTo(localePath('/annual-report'))
         }
@@ -64,7 +71,29 @@ onBeforeMount(async () => {
 </script>
 <template>
   <SbcLoadingSpinner v-if="initPage" overlay />
-  <div v-else class="mx-auto flex flex-col items-center gap-4 text-center">
+  <div v-else-if="reportPaid" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+    <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+      <span>{{ $t('page.submitted.h1') }}</span>
+      <UIcon
+        name="i-mdi-check-circle-outline"
+        class="size-10 shrink-0 text-outcomes-approved"
+      />
+    </h1>
+    <UCard class="w-full" data-testid="bus-details-card">
+      <div class="flex grid-cols-6 flex-col text-left sm:grid">
+        <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
+        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.legalName }}</span>
+        <span class="col-span-2 col-start-1 mt-2 whitespace-nowrap font-semibold text-bcGovColor-darkGray sm:mt-0">{{ $t('labels.corpNum') }}</span>
+        <span class="col-span-full col-start-3 mb-2 whitespace-nowrap text-bcGovColor-midGray sm:mb-0">{{ busStore.businessNano.identifier }}</span>
+        <span v-if="busStore.businessNano.taxId" class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busNum') }}</span>
+        <span v-if="busStore.businessNano.taxId" class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.taxId }}</span>
+      </div>
+    </UCard>
+    <UCard class="w-full" data-testid="content-data">
+      <ContentRenderer :value="arCompleted" class="prose prose-bcGov text-left" />
+    </UCard>
+  </div>
+  <div v-else class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
     </h1>
