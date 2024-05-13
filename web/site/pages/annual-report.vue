@@ -96,26 +96,20 @@ function handleRadioClick (option: string) {
   }
 }
 
-onMounted(async () => {
+onMounted(() => {
   try {
     initPage.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
 
-    try {
-      await busStore.getBusinessDetails(busStore.businessNano.identifier)
-    } catch (e) {
-      console.error((e as Error).message)
-    }
-
-    // add payment error message if pay status exists and doesnt equal paid
-    if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
-      errorAlert.title = t('page.annualReport.payError.title')
-      errorAlert.description = t('page.annualReport.payError.description')
-    }
-
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
+      // add payment error message if pay status exists and doesnt equal paid
+      if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
+        errorAlert.title = t('page.annualReport.payError.title')
+        errorAlert.description = t('page.annualReport.payError.description')
+      }
+
       const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
       const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
       if (votedForNoAGM) {

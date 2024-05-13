@@ -53,6 +53,7 @@ onBeforeMount(async () => {
           await navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
+        await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
         await navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {

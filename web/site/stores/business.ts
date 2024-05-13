@@ -44,6 +44,11 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           const bus: BusinessFull = response._data.business
           currentBusiness.value = bus
 
+          // throw an error if the nextArYear is invalid
+          if (!bus.nextARYear || bus.nextARYear === -1) {
+            throw new Error(`${bus.legalName || 'This business'} is not eligible to file an Annual Report`)
+          }
+
           // throw error if business already filed an AR for the current year
           const currentYear = new Date().getFullYear()
           if (bus.lastArDate && new Date(bus.lastArDate).getFullYear() === currentYear) {
