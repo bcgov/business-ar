@@ -104,7 +104,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         return username + increment
       }
       increment += 10
-      if (increment > 1000) {
+      if (increment > 100) {
         console.error('Exceeded maximum number of attempts trying to prefill account name.')
         return ''
       }

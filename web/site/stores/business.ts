@@ -101,7 +101,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       },
       onResponseError ({ response }) {
         // console error a message form the api or a default message
-        const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
+        const errorMsg = response._data.message ?? 'Error retrieving business tasks.'
         console.error(errorMsg)
       }
     })

@@ -38,6 +38,10 @@ onBeforeMount(async () => {
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
     if ($keycloak.authenticated) {
+      if (route.query.nanoid) { // load new business details if user already logged in and provides a new nano id
+        sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
+        await busStore.getBusinessByNanoId(route.query.nanoid as string)
+      }
       const { task, taskValue } = await busStore.getBusinessTask()
       // if task === 'filing', set store arFiling value
       if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
