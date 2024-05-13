@@ -3,32 +3,26 @@ export default {
     getStarted: 'Commencer',
     goHome: 'Accueil',
     goBack: 'Retourner',
-    downloadSpec: 'Téléchargez la spécification',
-    allProducts: 'Voir les produits',
-    products: 'Produits',
     dashboard: 'Dashboard',
-    sbcConnect: 'Service BC Connect',
-    apiDoc: "Documentation de l'API",
-    createKey: 'Créer une clé',
-    revoke: 'Révoquer',
+    sbcConnect: 'Service Connect CB',
     copy: 'Copier',
     copied: 'Copié!',
     submit: 'Soumettre',
     next: 'Suivant',
     previous: 'Précédent',
-    openMainNav: 'Ouvrir le menu de navigation principal',
-    closeMainNav: 'Fermer le menu de navigation principal',
-    loginBCSC: 'Connectez-vous avec la carte BC Services', // Connexion avec la carte des services BC ?
-    createNewAccount: 'Créer un nouveau compte',
-    createAccount: 'Créer un compte',
+    openMainNav: 'Ouvrir le menu de Navigation Principal',
+    closeMainNav: 'Fermer le menu de Navigation Principal',
+    loginBCSC: 'Connectez-vous avec la Carte Service CB',
+    createNewAccount: 'Créer un Nouveau Compte',
+    createAccount: 'Créer un Compte',
     useThisAccount: {
       main: 'Utiliser ce Compte',
-      aria: 'Utiliser ce Compte, {name}'
+      aria: 'Utiliser le Compte, {name}'
     },
-    logout: 'se déconnecter',
-    saveAccountAndFileAr: 'Enregistrer le compte et déposer le rapport annuel',
+    logout: 'Se Déconnecter',
+    saveAccountAndFileAr: 'Enregistrer le Compte et Déposer le Rapport Annuel',
     submitAndPay: 'Soumettre et Payer',
-    accountOptions: 'Menu Options du compte'
+    accountOptions: "Menu d'options pour Compte"
   },
   currency: {
     cad: 'CAD',
@@ -36,51 +30,51 @@ export default {
   },
   labels: {
     note: 'Note',
-    optional: 'Optional',
-    characters: 'characters',
+    optional: 'Optionnel',
+    characters: 'caractères',
     buttons: {
-      back: 'Back',
-      cancel: 'Cancel',
-      fileNowNoFee: 'File Now (no fee)',
-      reviewConfirm: 'Review and Confirm',
-      save: 'Save',
-      saveExit: 'Save and Resume Later'
+      back: 'Précédent',
+      cancel: 'Annuler',
+      fileNowNoFee: 'Déposer maintenant (sans frais)',
+      reviewConfirm: 'Réviser et Confirmer',
+      save: 'Sauvegarder',
+      saveExit: 'Sauvegarder et Reprendre Plus Tard'
     },
-    birthdate: 'Birthdate',
-    competency: 'Competency',
-    citizenship: 'Citizenship',
-    citizenshipPR: 'Citizenship/Permanent Residency',
-    emailAddress: 'Email Address',
-    fullName: 'Full Legal Name',
-    preferredName: 'Preferred Name',
-    address: 'Address',
-    addressResidential: 'Residential Address',
-    state: 'State',
-    country: 'Country',
-    line1: 'Address Line 1',
-    line2: 'Address Line 2 (Optional)',
-    city: 'City',
-    region: 'Region (Optional)',
-    postalCode: 'Postal Code',
-    locationDescription: 'Location Description (Optional)',
+    birthdate: 'Date de Naissance',
+    competency: 'Compétence',
+    citizenship: 'Citoyenneté',
+    citizenshipPR: 'Citoyenneté/Résidence Permanente',
+    emailAddress: 'Adresse e-mail',
+    fullName: 'Nom Légal Complet',
+    preferredName: 'Nom Préféré',
+    address: 'Adresse',
+    addressResidential: 'Adresse Résidentielle',
+    state: 'État',
+    country: 'Pays',
+    line1: "Ligne d'adresse 1",
+    line2: "Ligne d'adresse 2 (Facultatif)",
+    city: 'Ville',
+    region: 'Région (Facultatif)',
+    postalCode: 'Code Postal',
+    locationDescription: 'Description du Lieu (Facultatif)',
     countryOfCitizenship: {
-      citizen: 'Citizen of Canada',
-      pr: 'Permanent resident of Canada',
-      others: 'Other citizenship(s)',
-      selectAll: 'Select all countries of which this person is a citizen.',
-      placeholder: 'Countries of Citizenship',
-      findCountry: 'Find a Country',
-      select: 'Select',
-      selected: 'Selected'
+      citizen: 'Citoyen du Canada',
+      pr: 'Résident Permanent du Canada',
+      others: 'Autre(s) Nationalité(s)',
+      selectAll: 'Sélectionnez tous les pays dont cette personne est citoyenne.',
+      placeholder: 'Pays de Citoyenneté',
+      findCountry: 'Trouver un Pays',
+      select: 'Sélectionner',
+      selected: 'Sélectionné'
     },
-    findACountry: 'Find a country',
+    findACountry: 'Trouver un Pays',
     services: {
-      bcsc: 'BC Services Card',
+      bcsc: 'la Carte Service CB',
       bceid: 'BCeID',
       idir: 'IDIR'
     },
-    socialInsuranceNumber: 'Social Insurance Number (SIN)',
-    taxNumber: 'Tax Number',
+    socialInsuranceNumber: "Numéro d'assurance sociale",
+    taxNumber: "Numéro d'impot",
     busName: "Nom de l'entreprise",
     corpNum: 'Numéro de constitution',
     busNum: "Numéro d'entreprise",
@@ -88,20 +82,20 @@ export default {
   },
   page: {
     notFound: {
-      h1: 'Page non trouvée'
+      h1: 'Page introuvable'
     },
     home: {
-      title: 'Accueil - Rapport Annuel de Service BC',
+      title: 'Accueil - Rapport Annuel de Service CB',
       h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
     },
     createAccount: {
-      title: 'Création de Compte - Rapport Annuel de Service BC',
-      h1: 'Création de Compte Service BC',
+      title: 'Création de Compte - Rapport Annuel de Service CB',
+      h1: 'Création de Compte Service CB',
       h2: 'Détails du Compte',
       form: {
         infoSection: {
           fieldSet: 'Votre Nom',
-          info: "Il s'agit de votre nom légal tel qu'il apparaît sur votre carte BC Services."
+          info: "Ceci est votre nom légal qu'il apparaît sur votre carte Services CB."
         },
         accountNameSection: {
           fieldSet: 'Nom du Compte',
@@ -117,41 +111,41 @@ export default {
           phoneInputLabel: 'Numéro de téléphone',
           phoneExtInputLabel: {
             main: 'Extension (Facultatif)',
-            aria: 'Extension du numéro de téléphone, en option'
+            aria: 'Extension du numéro de téléphone, Optionionnel'
           },
           emailInputLabel: 'Adresse e-mail',
           error: {
             phone: {
               req: 'Veuillez entrer un numéro de téléphone',
-              invalid: "s'il vous plaît entrer un numéro de téléphone valide"
+              invalid: 'Veuillez entrer un numéro de téléphone valide'
             },
             email: {
-              req: "Entrez une adresse mail s'il vous plaît",
-              invalid: "S'il vous plaît, mettez une adresse email valide"
+              req: "Veuillez entrer une adresse email s'il vous plaît",
+              invalid: 'Veuillez entrer une adresse email valide'
             }
           }
         }
       }
     },
     existingAccount: {
-      title: 'Choisissez un Compte Existant - Rapport Annuel de Service BC',
+      title: 'Choisissez un Compte Existant - Rapport Annuel de Service CB',
       h1: 'Compte Existant Trouvé',
       h2: 'Vos Comptes Existants',
-      existingAccountWarning: 'Il semble que vous ayez déjà un compte auprès de Service BC Connect. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
+      existingAccountWarning: 'Il semble que vous ayez déjà un compte avec Service Connect CB. Vous pouvez utiliser un compte existant pour continuer ou en créer un nouveau.'
     },
     missingId: {
-      title: 'Autorisation Requise - Rapport Annuel de Service BC',
-      h1: 'Autorisation Requise'
+      title: 'Autorisation Requise - Rapport Annuel de Service CB',
+      h1: 'Autorisation Nécessaire'
     },
     annualReport: {
-      title: 'Déposez votre rapport annuel en Service BC - Rapport Annuel de Service BC',
+      title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
       form: {
         heldAgm: {
-          question: 'Votre entreprise a-t-elle tenu une assemblée générale annuelle?',
+          question: "Es'ce que votre enterprise a tenu une assemblée générale annuelle?",
           opt1: 'Oui',
-          opt2: "Nous n'avons pas encore tenu d'assemblée générale",
+          opt2: "Nous n'avons pas encore tenu une AGA",
           opt3: "Nous avons voté pour ne pas tenir d'AGA"
         },
         agmDate: {
@@ -166,12 +160,12 @@ export default {
         }
       },
       payError: {
-        title: 'Paiement non terminé',
+        title: 'Paiement Incomplet',
         description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
       }
     },
     submitted: {
-      title: 'Rapport Annuel Terminé - Rapport Annuel de Service BC',
+      title: 'Rapport Annuel Terminé - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel Terminé'
     }
   },
@@ -186,12 +180,12 @@ export default {
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',
-        BCANN: 'Rapport Annuel BC'
+        BCANN: 'Rapport Annuel CB'
       }
     }
   },
   SbcHeader: {
-    title: 'Service BC Connect',
+    title: 'Service Connect CB',
     logoBtnLabel: 'Accueil', // <img> link aria-label
     navLabel: 'Navigation principale' // <nav> aria-label
   },
@@ -202,13 +196,13 @@ export default {
     privacy: 'Confidentialité',
     ally: 'Accessibilité',
     copyright: "Droits d'auteur",
-    bcApp: 'Une application en ligne BC'
+    bcApp: 'Une application en ligne CB'
   },
   SbcLogo: {
     alt: 'Logo du gouvernement de la Colombie-Britannique' // <img> alt
   },
   LocaleSelect: {
     // aria-label
-    label: 'Sélectionnez une langue, Français, langue actuelle.'
+    label: 'Sélectionnez une langue, langue courante: Français'
   }
 }
