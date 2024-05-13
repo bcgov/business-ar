@@ -54,14 +54,15 @@ class FilingService:
 
     @staticmethod
     def save_filing(
-        filing_dict: dict, business_id: int, submitter_id: int, filing_id=None
+        filing_dict: dict,
+        business_id: int,
+        submitter_id: int,
+        filing: FilingModel = None,
     ) -> FilingModel:
         """
         Create Filing. Returns filing model
         """
-        if filing_id:
-            filing = FilingService.find_filing_by_id(filing_id)
-        else:
+        if not filing:
             filing = FilingModel()
         filing.business_id = business_id
         filing.filing_json = filing_dict

@@ -92,7 +92,13 @@ class Filing(BaseModel):
 
     @property
     def is_locked(self):
-        if self.status != Filing.Status.DRAFT:
+        if self.status in [Filing.Status.PAID, Filing.Status.COMPLETED]:
+            return True
+        return False
+
+    @property
+    def has_invoice(self):
+        if self.invoice_id:
             return True
         return False
 
