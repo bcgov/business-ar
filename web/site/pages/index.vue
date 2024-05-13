@@ -5,7 +5,6 @@ const routeWithoutLocale = useRouteWithoutLocale()
 const route = useRoute()
 const localePath = useLocalePath()
 const { locale } = useI18n()
-const taskStore = useTaskStore()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const accountStore = useAccountStore()
@@ -30,26 +29,32 @@ const { data } = await useAsyncData('content-data', () => {
 onBeforeMount(async () => {
   const { $keycloak } = useNuxtApp()
   try {
+    // get business task is user is logged in (user was redirected after keycloak login)
     if ($keycloak.authenticated) {
-      const { task, taskValue } = await taskStore.getTask()
-      if (task === 'filing') {
+      const { task, taskValue } = await busStore.getBusinessTask()
+      // if task === 'filing', set store arFiling value
+      if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
         arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+        // get users accounts
         await accountStore.getUserAccounts()
+        // set the account to the existing filings paymentAccount
         accountStore.selectUserAccount(parseInt(taskValue.filing.header.paymentAccount))
+        // redirect to final page if already paid
         if (taskValue.filing.header.status === 'PAID') {
           await navigateTo(localePath('/submitted'))
-        } else {
+        } else { // else redirect to annual-report page if filing wasnt paid
           await navigateTo(localePath('/annual-report'))
         }
-      } else {
+      } else { // user is authenticated but theres no existing filing, continue normal flow
         await navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {
+      // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
-    } else {
+    } else { // throw error if no valid nano id
       throw new Error('Missing id to fetch business details')
     }
-  } catch (e) {
+  } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
     console.error((e as Error).message)
     await navigateTo(localePath('/missing-id'))
   } finally {

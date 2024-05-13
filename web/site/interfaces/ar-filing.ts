@@ -7,7 +7,7 @@ export interface ArFilingResponse {
     },
     header: {
       completionDate: null | string
-      filingDate: string
+      filingDateTime: string
       filingYear: number
       id: number
       name: string

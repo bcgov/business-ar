@@ -1,4 +1,4 @@
-import type { ARFiling } from '~/interfaces/ar-filing-response'
+import type { ARFiling } from '~/interfaces/ar-filing'
 export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
@@ -12,50 +12,47 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
 
   async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number }> {
-    try {
-      const response = await $fetch<ArFilingResponse>(apiUrl + `/business/${busStore.currentBusiness.jurisdiction + busStore.currentBusiness.identifier}/filings`, {
-        method: 'POST',
-        body: {
-          filing: {
-            header: {
-              filingYear: busStore.currentBusiness.nextARYear
-            },
-            annualReport: {
-              annualGeneralMeetingDate: agmData.agmDate,
-              annualReportDate: busStore.nextArDate,
-              votedForNoAGM: agmData.votedForNoAGM
-            }
-          }
-        },
-        headers: {
-          Authorization: `Bearer ${$keycloak.token}`,
-          'Account-Id': `${accountStore.currentAccount.id}`
-        },
-        onResponse ({ response }) {
-          if (response.ok) {
-            arFiling.value = response._data
-          }
-          // console.log(arFiling.value)
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error submitting annual report filing.'
-          console.error(errorMsg)
-        }
-      })
-
-      if (response === undefined) {
-        throw new Error('Could not file annual report.')
-      }
-
-      const paymentToken = response.filing.header.paymentToken
-      const filingId = response.filing.header.id
-
-      return { paymentToken, filingId }
-    } catch (error) {
-      console.error('An error occurred:', error)
-      throw error
+    let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
+    // add filing id to end of url if filing exists in the store
+    if (Object.keys(arFiling.value).length !== 0) {
+      apiSuffix += `/${arFiling.value.filing.header.id}`
     }
+
+    const response = await $fetch<ArFilingResponse>(apiUrl + apiSuffix, {
+      method: 'POST',
+      body: {
+        filing: {
+          header: {
+            filingYear: busStore.currentBusiness.nextARYear
+          },
+          annualReport: {
+            annualGeneralMeetingDate: agmData.agmDate,
+            annualReportDate: busStore.nextArDate,
+            votedForNoAGM: agmData.votedForNoAGM
+          }
+        }
+      },
+      headers: {
+        Authorization: `Bearer ${$keycloak.token}`,
+        'Account-Id': `${accountStore.currentAccount.id}`
+      },
+      onResponse ({ response }) {
+        if (response.ok) {
+          arFiling.value = response._data
+        }
+        // console.log(arFiling.value)
+      },
+      onResponseError ({ response }) {
+        // console error a message from the api or a default message
+        const errorMsg = response._data.message ?? 'Error submitting annual report filing.'
+        console.error(errorMsg)
+      }
+    })
+
+    const paymentToken = response.filing.header.paymentToken
+    const filingId = response.filing.header.id
+
+    return { paymentToken, filingId }
   }
 
   return {
