@@ -60,7 +60,9 @@ class BusinessService:
     def get_business_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = identifier[2:]
+        colin_business_identifier = (
+            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        )
         colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
@@ -94,7 +96,9 @@ class BusinessService:
     ) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = identifier[2:]
+        colin_business_identifier = (
+            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        )
         colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/parties"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
@@ -117,7 +121,9 @@ class BusinessService:
     ) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = identifier[2:]
+        colin_business_identifier = (
+            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        )
         colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/office"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
