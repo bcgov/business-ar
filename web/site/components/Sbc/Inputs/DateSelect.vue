@@ -82,7 +82,7 @@ defineExpose({
     />
     <SbcDatePicker
       v-if="showDatePicker"
-      class="absolute top-16 z-[100]"
+      class="absolute z-[100] translate-y-[-120%]"
       :default-selected-date="selectedDate"
       :set-max-date="maxDate"
       @selected-date="updateDate($event); showDatePicker = false"
