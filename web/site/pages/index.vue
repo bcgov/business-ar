@@ -34,15 +34,14 @@ const { data: arCompleted } = await useAsyncData('content-data-ar-completed', ()
 
 // load business details using route query nano id or navigate to /missing-id
 onBeforeMount(async () => {
-  const { $keycloak } = useNuxtApp()
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
-    if ($keycloak.authenticated) {
+    if (keycloak.isAuthenticated()) {
       if (route.query.nanoid) { // load new business details if user already logged in and provides a new nano id
         sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
-      await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
+      // await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
       const { task, taskValue } = await busStore.getBusinessTask()
       // if task === 'filing', set store arFiling value
       if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
@@ -60,7 +59,7 @@ onBeforeMount(async () => {
       } else { // user is authenticated but theres no existing filing, continue normal flow
         await navigateTo(localePath('/accounts/choose-existing'))
       }
-    } else if (!$keycloak.authenticated && route.query.nanoid) {
+    } else if (!keycloak.isAuthenticated() && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
     } else { // throw error if no valid nano id
