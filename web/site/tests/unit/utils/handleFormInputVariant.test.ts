@@ -21,4 +21,10 @@ describe('handleFormInputVariant', () => {
       expect(result).toBe(test[1])
     })
   })
+
+  it('returns bcGov if formErrors is null', () => {
+    const result = handleFormInputVariant('some path', null)
+
+    expect(result).toBe('bcGov')
+  })
 })

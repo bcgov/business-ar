@@ -77,7 +77,7 @@ export const mockedArFilingResponse: ArFilingResponse = {
     },
     header: {
       completionDate: null,
-      filingDate: '2024-04-30',
+      filingDateTime: '2024-04-30',
       filingYear: 2024,
       id: 1,
       name: 'Annual Report',

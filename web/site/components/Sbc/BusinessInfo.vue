@@ -21,7 +21,7 @@ const filteredItems = computed(() => {
           <td class="whitespace-nowrap font-semibold text-bcGovColor-darkGray">
             {{ item.label }}
           </td>
-          <td class="text-wrap border border-black text-bcGovColor-midGray">
+          <td class="text-wrap text-bcGovColor-midGray">
             {{ item.value }}
           </td>
         </tr>

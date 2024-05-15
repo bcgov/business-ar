@@ -1,8 +1,10 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAccountStore } from '#imports'
 import { mockedOrgs, mockNewAccount } from '~/tests/mocks/mockedData'
+
+const fakeApiCall = vi.fn()
 
 registerEndpoint('/user/accounts', {
   method: 'GET',
@@ -13,9 +15,7 @@ registerEndpoint('/user/accounts', {
 
 registerEndpoint('/accounts', {
   method: 'GET',
-  handler: () => (
-    mockedOrgs
-  )
+  handler: fakeApiCall
 })
 
 registerEndpoint('/user/accounts', {
@@ -74,15 +74,45 @@ describe('Account Store Tests', () => {
     expect(accountStore.currentAccount.name).toEqual(mockNewAccount.name)
   })
 
-  // skipping for now cause this doesnt change any store values
-  it.skip('can check if an account name is already taken', async () => {
-    const accountStore = useAccountStore()
+  describe('isAccountNameAvailable', () => {
+    it('returns false if orgs is greater than 0', async () => {
+      fakeApiCall.mockImplementation(() => mockedOrgs)
+      const accountStore = useAccountStore()
+      const accountAvailable = await accountStore.isAccountNameAvailable('some name')
+      expect(accountAvailable).toBe(false)
+    })
 
-    await accountStore.checkAccountExists('some name')
+    it('returns true if orgs === 0', async () => {
+      fakeApiCall.mockImplementation(() => { return { orgs: [] } })
+      const accountStore = useAccountStore()
+      const accountAvailable = await accountStore.isAccountNameAvailable('some name')
+      expect(accountAvailable).toBe(true)
+    })
   })
 
-  describe.skip('findAvailableAccountName', () => {
+  describe('findAvailableAccountName', () => {
     it('should return a string with the given username and an increment of 10 when no orgs exist with that name', async () => {
+      fakeApiCall.mockImplementation(() => { return { orgs: [] } })
+      const accountStore = useAccountStore()
+      const newName = await accountStore.findAvailableAccountName('Test Name')
+
+      expect(newName).toBe('Test Name10')
     })
+  })
+
+  it('can reset the store back to default values', () => {
+    const accountStore = useAccountStore()
+    accountStore.currentAccount = mockedOrgs.orgs[0]
+    accountStore.userAccounts = mockedOrgs.orgs
+
+    // check store has values
+    expect(accountStore.userAccounts.length).toEqual(3)
+    expect(Object.keys(accountStore.currentAccount).length).toBeGreaterThan(0)
+
+    // reset store
+    accountStore.$reset()
+
+    expect(accountStore.userAccounts.length).toEqual(0)
+    expect(Object.keys(accountStore.currentAccount).length).toBe(0)
   })
 })
