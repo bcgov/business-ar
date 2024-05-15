@@ -4,6 +4,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const { $keycloak } = useNuxtApp()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
+  const arStore = useAnnualReportStore()
 
   // store values
   const loading = ref<boolean>(true)
@@ -93,6 +94,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     // assign business store values using response from task endpoint, saves having to make another call to get business details
     if ('filing' in taskValue) {
       assignBusinessStoreValues(taskValue.filing.business)
+      arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
     } else if ('todo' in taskValue) {
       assignBusinessStoreValues(taskValue.todo.business)
     }

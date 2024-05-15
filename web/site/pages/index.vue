@@ -6,7 +6,6 @@ const route = useRoute()
 const localePath = useLocalePath()
 const { locale } = useI18n()
 const busStore = useBusinessStore()
-const arStore = useAnnualReportStore()
 const accountStore = useAccountStore()
 const initPage = ref<boolean>(true)
 const reportPaid = ref<boolean>(false)
@@ -44,7 +43,6 @@ onBeforeMount(async () => {
       const { task, taskValue } = await busStore.getBusinessTask()
       // if task === 'filing', set store arFiling value
       if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
-        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
         // get users accounts
         await accountStore.getUserAccounts()
         // set the account to the existing filings paymentAccount
