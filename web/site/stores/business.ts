@@ -5,6 +5,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
   const arStore = useAnnualReportStore()
+  const accountStore = useAccountStore()
 
   // store values
   const loading = ref<boolean>(true)
@@ -95,6 +96,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     if ('filing' in taskValue) {
       assignBusinessStoreValues(taskValue.filing.business)
       arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+      await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
+      payStatus.value = taskValue.filing.header.status
     } else if ('todo' in taskValue) {
       assignBusinessStoreValues(taskValue.todo.business)
     }

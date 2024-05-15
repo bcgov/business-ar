@@ -111,6 +111,11 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     }
   }
 
+  async function getAndSetAccount (id: string): Promise<void> {
+    await getUserAccounts()
+    selectUserAccount(parseInt(id))
+  }
+
   return {
     currentAccount,
     userAccounts,
@@ -118,7 +123,8 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     selectUserAccount,
     createNewAccount,
     checkAccountExists,
-    findAvailableAccountName
+    findAvailableAccountName,
+    getAndSetAccount
   }
 },
 { persist: true } // persist store values in session storage

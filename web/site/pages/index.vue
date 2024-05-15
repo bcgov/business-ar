@@ -6,9 +6,7 @@ const route = useRoute()
 const localePath = useLocalePath()
 const { locale } = useI18n()
 const busStore = useBusinessStore()
-const accountStore = useAccountStore()
 const initPage = ref<boolean>(true)
-const reportPaid = ref<boolean>(false)
 
 useHead({
   title: t('page.home.title')
@@ -40,17 +38,9 @@ onBeforeMount(async () => {
         sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
-      const { task, taskValue } = await busStore.getBusinessTask()
-      // if task === 'filing', set store arFiling value
-      if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
-        // get users accounts
-        await accountStore.getUserAccounts()
-        // set the account to the existing filings paymentAccount
-        accountStore.selectUserAccount(parseInt(taskValue.filing.header.paymentAccount))
-        // display completed state if report has been filed and paid
-        if (taskValue.filing.header.status === 'PAID') {
-          reportPaid.value = true
-        } else { // else redirect to annual-report page if filing wasnt paid
+      const { task } = await busStore.getBusinessTask()
+      if (task === 'filing') {
+        if (busStore.payStatus !== 'PAID') {
           await navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
@@ -72,7 +62,7 @@ onBeforeMount(async () => {
 </script>
 <template>
   <SbcLoadingSpinner v-if="initPage" overlay />
-  <div v-else-if="reportPaid" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+  <div v-else-if="busStore.payStatus === 'PAID'" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
       <UIcon
