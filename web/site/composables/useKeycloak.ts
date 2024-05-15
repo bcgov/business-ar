@@ -7,7 +7,7 @@ export const useKeycloak = () => {
     return $keycloak.login(
       {
         idpHint: 'bcsc',
-        redirectUri: `${location.origin}/${locale.value}/accounts/choose-existing`
+        redirectUri: `${location.origin}/${locale.value}`
       }
     )
   }
@@ -21,13 +21,14 @@ export const useKeycloak = () => {
     })
   }
 
-  async function getUserProfile () {
-    if ($keycloak && $keycloak.authenticated) {
-      return await $keycloak.loadUserProfile()
-    } else {
-      return null
-    }
-  }
+  // not currently needed
+  // async function getUserProfile () {
+  //   if ($keycloak && $keycloak.authenticated) {
+  //     return await $keycloak.loadUserProfile()
+  //   } else {
+  //     return null
+  //   }
+  // }
 
   function isAuthenticated () {
     if (!$keycloak) {
@@ -55,7 +56,7 @@ export const useKeycloak = () => {
   return {
     login,
     logout,
-    getUserProfile,
+    // getUserProfile,
     isAuthenticated,
     kcUser
   }

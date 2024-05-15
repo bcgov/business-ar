@@ -2,12 +2,13 @@
 import { type PayFeesWidgetItem } from '~/interfaces/fees'
 
 const props = defineProps({
-  fees: { type: Array<PayFeesWidgetItem>, required: true }
+  fees: { type: Array<PayFeesWidgetItem>, required: true },
+  isLoading: { type: Boolean, default: false }
 })
 
 defineEmits(['submit']) // fix typing ?
 
-const hasEmptyFees = computed(() => !props.fees?.length)
+// const hasEmptyFees = computed(() => !props.fees?.length)
 
 const displayCanadianDollars = (amount: number) => {
   if (!amount) {
@@ -54,11 +55,19 @@ const total = computed(() => {
         class="flex flex-col gap-2"
       >
         <div class="flex items-center justify-between">
-          <span class="mr-auto text-sm font-bold text-bcGovColor-darkGray">
+          <span class="mr-auto text-sm font-normal text-bcGovColor-darkGray">
             {{ $t(`widgets.feeSummary.itemLabels.${fee.filingTypeCode}`) }}
           </span>
           <span class="whitespace-nowrap text-sm font-bold">
-            {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.total) }}
+            {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.filingFees) }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="mr-auto text-sm font-normal text-bcGovColor-darkGray">
+            {{ $t(`widgets.feeSummary.serviceFees`) }}
+          </span>
+          <span class="whitespace-nowrap text-sm font-bold">
+            {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.serviceFees) }}
           </span>
         </div>
       <!-- <span v-if="fee.quantity > 1" class="float-right ml-2 text-sm font-normal text-gray-400">
@@ -100,6 +109,7 @@ const total = computed(() => {
     </UCard>
     <UButton
       :label="$t('btn.submitAndPay')"
+      :loading="isLoading"
       block
       @click="$emit('submit')"
     />

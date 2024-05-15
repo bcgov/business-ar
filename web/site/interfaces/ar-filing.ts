@@ -7,7 +7,7 @@ export interface ArFilingResponse {
     },
     header: {
       completionDate: null | string
-      filingDate: string
+      filingDateTime: string
       filingYear: number
       id: number
       name: string
@@ -17,4 +17,9 @@ export interface ArFilingResponse {
       submitter: null | string
     }
   }
+}
+
+export interface ARFiling {
+  agmDate: Date | null,
+  votedForNoAGM: boolean
 }

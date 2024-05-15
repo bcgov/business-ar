@@ -5,16 +5,34 @@ const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
 const loading = ref<boolean>(false)
+const setAccountLoading = ref<boolean>(false)
+
 useHead({
   title: t('page.existingAccount.title')
 })
 
-onMounted(async () => {
-  const localePath = useLocalePath()
-  const account = useAccountStore()
+// redirect to annual report page if a filing exists already
+definePageMeta({
+  middleware: () => {
+    const arStore = useAnnualReportStore()
+    const { $i18n } = useNuxtApp()
+    if (Object.keys(arStore.arFiling).length !== 0) {
+      return navigateTo(`/${$i18n.locale.value}/annual-report`)
+    }
+  }
+})
+
+async function handleAccountSelect (id: number) {
+  setAccountLoading.value = true
+  accountStore.selectUserAccount(id)
+  await navigateTo(localePath('/annual-report'))
+  setAccountLoading.value = false
+}
+
+onBeforeMount(async () => {
   try {
     loading.value = true
-    const accounts = await account.getUserAccounts()
+    const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
       return navigateTo(localePath('/accounts/create-new'))
     }
@@ -39,57 +57,58 @@ onMounted(async () => {
         </p>
       </div>
     </UCard>
-    <h2 class="self-start text-xl font-semibold text-bcGovColor-darkGray dark:text-white">
-      {{ $t('page.existingAccount.h2') }} ({{ accountStore.userAccounts?.length || 0 }})
-    </h2>
-    <UCard class="max-h-96 w-full overflow-auto">
-      <ul
-        class="flex flex-col divide-y text-left text-bcGovColor-midGray dark:text-white"
-      >
-        <li v-for="account in accountStore.userAccounts" :key="account.name" class="flex flex-col items-start gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
-          <div class="flex flex-row items-center gap-4 sm:gap-6">
-            <UAvatar
-              :alt="account.name[0]"
-              :ui="{
-                background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
-                text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
-                placeholder: 'font-semibold leading-none text-white truncate dark:text-bcGovColor-darkGray text-xl',
-                rounded: 'rounded-sm'
-              }"
-            />
-            <div class="flex w-full flex-col text-left">
-              <span class="text-lg font-semibold text-bcGovColor-darkGray dark:text-white">
-                {{ account.name }}
-              </span>
-              <span
-                v-if="account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
-                :id="`account-address-${account.id}`"
-                class="text-bcGovColor-midGray dark:text-gray-300"
-              >
-                {{ account.mailingAddress[0].street }},
-                {{ account.mailingAddress[0].city }},
-                {{ account.mailingAddress[0].region }}
-                {{ account.mailingAddress[0].postalCode }},
-                {{ isoCountriesList.find((country: SbcCountry) => country.alpha_2 === account.mailingAddress[0].country)?.name || account.mailingAddress[0].country }}
-              </span>
+    <ClientOnly>
+      <h2 class="self-start text-xl font-semibold text-bcGovColor-darkGray dark:text-white">
+        {{ $t('page.existingAccount.h2') }} ({{ accountStore.userAccounts?.length || 0 }})
+      </h2>
+      <UCard class="max-h-96 w-full overflow-auto">
+        <ul
+          class="flex flex-col divide-y text-left text-bcGovColor-midGray dark:text-white"
+        >
+          <li v-for="account in accountStore.userAccounts" :key="account.name" class="flex flex-col items-start gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center">
+            <div class="flex flex-row items-center gap-4 sm:gap-6">
+              <UAvatar
+                :alt="account.name[0]"
+                :ui="{
+                  background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
+                  text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
+                  placeholder: 'font-semibold leading-none text-white truncate dark:text-bcGovColor-darkGray text-xl',
+                  rounded: 'rounded-sm'
+                }"
+              />
+              <div class="flex w-full flex-col text-left">
+                <span class="text-lg font-semibold text-bcGovColor-darkGray dark:text-white">
+                  {{ account.name }}
+                </span>
+                <span
+                  v-if="account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
+                  :id="`account-address-${account.id}`"
+                  class="text-bcGovColor-midGray dark:text-gray-300"
+                >
+                  {{ account.mailingAddress[0].street }},
+                  {{ account.mailingAddress[0].city }},
+                  {{ account.mailingAddress[0].region }}
+                  {{ account.mailingAddress[0].postalCode }},
+                  {{ isoCountriesList.find((country: SbcCountry) => country.alpha_2 === account.mailingAddress[0].country)?.name || account.mailingAddress[0].country }}
+                </span>
+              </div>
             </div>
-          </div>
-          <UButton
-            class="sm:ml-auto"
-            :label="$t('btn.useThisAccount.main')"
-            :aria-describedby="account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
-            :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
-            icon="i-mdi-chevron-right"
-            trailing
-            :block="isSmallScreen"
-            @click="() => {
-              accountStore.selectUserAccount(account.id)
-              return navigateTo(localePath('/annual-report'))
-            }"
-          />
-        </li>
-      </ul>
-    </UCard>
+            <UButton
+              class="sm:ml-auto"
+              :label="$t('btn.useThisAccount.main')"
+              :aria-describedby="account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
+              :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
+              icon="i-mdi-chevron-right"
+              trailing
+              :disabled="setAccountLoading"
+              :block="isSmallScreen"
+              :loading="setAccountLoading && account.id === accountStore.currentAccount.id"
+              @click="handleAccountSelect(account.id)"
+            />
+          </li>
+        </ul>
+      </UCard>
+    </ClientOnly>
     <UButton
       :to="localePath('/accounts/create-new')"
       variant="outline"

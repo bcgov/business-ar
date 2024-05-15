@@ -55,7 +55,7 @@ class PaymentService:
         SVC_URL = current_app.config.get("PAY_API_URL")
         SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
         CREATE_INVOICE_PAYLOAD = {
-            "filingInfo": {"filingTypes": [{"filingTypeCode": "ANNBC"}]},
+            "filingInfo": {"filingTypes": [{"filingTypeCode": "BCANN"}]},
             "businessInfo": {},
         }
         payload = deepcopy(CREATE_INVOICE_PAYLOAD)

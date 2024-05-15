@@ -89,9 +89,10 @@ def get_filings(identifier: str, filing_id: Optional[int] = None):
 
 
 @bp.route("/", methods=["POST"])
+@bp.route("/<int:filing_id>", methods=["POST", "PUT"])
 @cross_origin(origin="*")
 @jwt.requires_auth
-def create_filing(identifier):
+def create_filing(identifier, filing_id: Optional[int] = None):
     """
     Create a new filing.
 
@@ -108,42 +109,62 @@ def create_filing(identifier):
         if not business:
             return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
 
-        # TODO: validate payload.
         schema_name = "ar-filing.json"
         schema_service = SchemaService()
         [valid, errors] = schema_service.validate(schema_name, json_input)
         if not valid:
             return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
 
+        filing = None
+        # Get the existing filing.
+        if filing_id:
+            filing = FilingService.find_filing_by_id(filing_id)
+            if filing.is_locked:
+                return error_response(
+                    f"Completed or paid filing cannot be modified.",
+                    HTTPStatus.BAD_REQUEST,
+                )
+
         # Affiliate the entity to the account if the affiliation does not exist.
-        affiliations = AccountService.get_account_affiliations(account_id)
-        existing_affiliation = [
-            affiliation
-            for affiliation in affiliations.get("entities")
-            if affiliation.get("businessIdentifier") == identifier
-        ]
-        if not existing_affiliation:
-            AccountService.affiliate_entity_to_account(account_id, identifier)
+        # If the invoice is already created, the account cannot be changed.
+        if not filing or not filing.has_invoice:
+            entity_json = {
+                "businessIdentifier": business.identifier,
+                "name": business.legal_name,
+                "corpTypeCode": business.legal_type,
+            }
+            AccountService.find_or_create_entity(entity_json)
+            affiliations = AccountService.get_account_affiliations(account_id)
+            existing_affiliation = [
+                affiliation
+                for affiliation in affiliations.get("entities")
+                if affiliation.get("businessIdentifier") == identifier
+            ]
+            if not existing_affiliation:
+                AccountService.affiliate_entity_to_account(account_id, identifier)
 
         # Check whether the user has permission to create the filing.
         AccountService.is_authorized(business_identifier=identifier)
 
         # create filing
-        filing = FilingService.create_filing(json_input, business.id, user.id)
+        filing = FilingService.save_filing(json_input, business.id, user.id, filing)
 
-        # create invoice in pay system
-        invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json())
+        # create invoice in pay system if the invoice does not exist for the filing.
+        if not filing.invoice_id:
+            invoice_resp = PaymentService.create_invoice(
+                account_id, jwt, business.json()
+            )
 
-        # Update the filing with the payment token save it in the db.
-        filing = FilingService.update_filing_invoice_details(
-            filing.id, invoice_resp.json()["id"]
-        )
+            # Update the filing with the payment token save it in the db.
+            filing = FilingService.update_filing_invoice_details(
+                filing.id, invoice_resp.json()
+            )
 
         return jsonify(FilingService.serialize(filing)), HTTPStatus.CREATED
 
     except AuthException as authException:
         return exception_response(authException)
-    except Exception as exception:  # noqa: B902
+    except Exception as exception:
         return exception_response(exception)
 
 

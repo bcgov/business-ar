@@ -36,6 +36,7 @@ This module contains the services necessary for handling Filings,
 including creating a filing. 
 """
 from http import HTTPStatus
+from datetime import datetime
 from typing import List
 
 from flask_jwt_oidc import JwtManager
@@ -52,29 +53,36 @@ class FilingService:
     """
 
     @staticmethod
-    def create_filing(
-        filing_dict: dict, business_id: int, submitter_id: int
+    def save_filing(
+        filing_dict: dict,
+        business_id: int,
+        submitter_id: int,
+        filing: FilingModel = None,
     ) -> FilingModel:
         """
         Create Filing. Returns filing model
         """
-        filing = FilingModel()
+        if not filing:
+            filing = FilingModel()
         filing.business_id = business_id
         filing.filing_json = filing_dict
         filing.submitter_id = submitter_id
-        filing.invoice_id = None
         filing.fiscal_year = filing_dict["filing"]["header"]["filingYear"]
         filing.save()
         return filing
 
     @staticmethod
-    def update_filing_invoice_details(filing_id, invoice_id) -> FilingModel:
+    def update_filing_invoice_details(
+        filing_id: int, invoice_response: dict
+    ) -> FilingModel:
         """
         Update filing invoice details.
         """
         filing = FilingModel.find_filing_by_id(filing_id)
-        filing.invoice_id = invoice_id
+        filing.invoice_id = invoice_response["id"]
         filing.status = FilingModel.Status.PENDING
+        filing.payment_account = invoice_response.get("paymentAccount").get("accountId")
+        filing.payment_status_code = invoice_response.get("statusCode")
         filing.save()
         return filing
 
@@ -125,6 +133,9 @@ class FilingService:
         filing.payment_status_code = payment_details.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
             filing.status = FilingModel.Status.PAID
+            filing.payment_completion_date = datetime.fromisoformat(
+                payment_details.get("paymentDate")
+            )
         filing.save()
         return filing
 
@@ -161,5 +172,6 @@ class FilingService:
         for colin_id in colin_ids:
             filing.colin_event_ids.append(ColinEventId(colin_event_id=colin_id))
         filing.status = FilingModel.Status.COMPLETED
+        filing.completion_date = datetime.utcnow()
         filing.save()
         return filing

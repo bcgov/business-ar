@@ -2025,7 +2025,7 @@ export const iscCountriesListSortedByName = isoCountriesList.toSorted(
     if (c1.name < c2.name) {
       return -1
     }
-    if (c1 > c2) {
+    if (c1.name > c2.name) {
       return 1
     }
     return 0

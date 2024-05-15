@@ -16,11 +16,7 @@ const emit = defineEmits<{
   (e: 'selection', value: Date | null): void
 }>()
 
-// @ts-ignore
-const dateSelectPickerRef: MaybeElementRef = ref(null)
 const showDatePicker = ref(false)
-
-onClickOutside(dateSelectPickerRef, () => { showDatePicker.value = false })
 
 const selectedDate: Ref<Date | null> = ref(props.initialDate || null)
 watch(() => selectedDate.value, val => emit('selection', val))
@@ -86,11 +82,11 @@ defineExpose({
     />
     <SbcDatePicker
       v-if="showDatePicker"
-      ref="dateSelectPickerRef"
       class="absolute top-16 z-[100]"
       :default-selected-date="selectedDate"
       :set-max-date="maxDate"
       @selected-date="updateDate($event); showDatePicker = false"
+      @click-outside="showDatePicker = false"
     />
     <div class="mt-2 text-sm text-red-500">
       {{ errorMessage }}

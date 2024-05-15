@@ -68,6 +68,9 @@ class Config:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = int(os.getenv("JWT_OIDC_JWKS_CACHE_TIMEOUT"))
     except:  # pylint:disable=bare-except # noqa: B901, E722
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
+    JWT_OIDC_USERNAME = os.getenv("JWT_OIDC_USERNAME", "username")
+    JWT_OIDC_FIRSTNAME = os.getenv("JWT_OIDC_FIRSTNAME", "firstname")
+    JWT_OIDC_LASTNAME = os.getenv("JWT_OIDC_LASTNAME", "lastname")
 
     # API Endpoints
     PAY_API_URL = os.getenv("PAY_API_URL", "") + os.getenv("PAY_API_VERSION", "")
@@ -82,6 +85,12 @@ class Config:
     COLIN_API_SVC_CLIENT_SECRET = os.getenv("COLIN_API_SVC_CLIENT_SECRET")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    DASHBOARD_URL = os.getenv("DASHBOARD_URL")
+    EMAIL_TEMPLATE_PATH = os.getenv("EMAIL_TEMPLATE_PATH")
+    NOTIFY_API_URL = os.getenv("NOTIFY_API_URL")
+
+    LEGISLATIVE_TIMEZONE = os.getenv("LEGISLATIVE_TIMEZONE", "America/Vancouver")
 
     DB_USER = os.getenv("DATABASE_USERNAME", "")
     DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "")

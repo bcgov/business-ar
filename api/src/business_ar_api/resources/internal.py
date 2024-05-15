@@ -39,19 +39,24 @@ It provides endpoints to create and retrieve filing objects.
 """
 from http import HTTPStatus
 
-from flask import Blueprint, jsonify, request
-from flask_cors import cross_origin
-
 from business_ar_api.common.auth import jwt
-from business_ar_api.exceptions import error_response, exception_response, AuthException
-from business_ar_api.services import AccountService, BusinessService, FilingService
+from business_ar_api.enums.enum import Role
+from business_ar_api.exceptions import AuthException, error_response, exception_response
+from business_ar_api.services import (
+    AccountService,
+    BusinessService,
+    FilingService,
+    NotificationService,
+)
+from flask import Blueprint, current_app, jsonify, request
+from flask_cors import cross_origin
 
 bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 
 
 @bp.route("/filings/<string:status>", methods=["GET"])
 @cross_origin(origin="*")
-@jwt.requires_auth
+@jwt.has_one_of_roles([Role.SYSTEM.value])
 def get_filings_by_status(status):
     """Get the filings with the specified status."""
     try:
@@ -76,7 +81,7 @@ def get_filings_by_status(status):
 
 @bp.route("/filings/<int:filing_id>", methods=["PATCH"])
 @cross_origin(origin="*")
-@jwt.requires_auth
+@jwt.has_one_of_roles([Role.SYSTEM.value])
 def complete_filing(filing_id):
     """
     Complete the filing by saving the Colin Ids against the filing and updating the filing status.
@@ -103,4 +108,34 @@ def complete_filing(filing_id):
     except AuthException as authException:
         return exception_response(authException)
     except Exception as exception:
+        return exception_response(exception)
+
+
+@bp.route("/filings/<int:filing_id>/notify", methods=["POST"])
+@cross_origin(origin="*")
+@jwt.has_one_of_roles([Role.SYSTEM.value])
+def send_notifications(filing_id):
+    """
+    Send notifications about a filing.
+
+    Returns:
+        A tuple containing the response JSON and the HTTP status code.
+    """
+    try:
+        if not filing_id:
+            return error_response(
+                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
+            )
+
+        filing = FilingService.find_filing_by_id(filing_id)
+        if not filing:
+            return error_response(f"No matching filing.", HTTPStatus.NOT_FOUND)
+
+        NotificationService.send_filing_complete_email(filing_id)
+        return {}, HTTPStatus.OK
+    except AuthException as authException:
+        current_app.logger.error("Error in send_notifications", authException)
+        return exception_response(authException)
+    except Exception as exception:
+        current_app.logger.error("Error in send_notifications", exception)
         return exception_response(exception)

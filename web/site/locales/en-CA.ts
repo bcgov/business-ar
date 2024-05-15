@@ -3,14 +3,8 @@ export default {
     getStarted: 'Get Started',
     goHome: 'Go Home',
     goBack: 'Go Back',
-    downloadSpec: 'Download the specification',
-    allProducts: 'View all products',
-    products: 'Products',
     dashboard: 'Dashboard',
     sbcConnect: 'Service BC Connect',
-    apiDoc: 'API documentation',
-    createKey: 'Create Key',
-    revoke: 'Revoke',
     copy: 'Copy',
     copied: 'Copied!',
     submit: 'Submit',
@@ -27,7 +21,8 @@ export default {
     },
     logout: 'Log out',
     saveAccountAndFileAr: 'Save Account & File Annual Report',
-    submitAndPay: 'Submit & Pay'
+    submitAndPay: 'Submit & Pay',
+    accountOptions: 'Account Options Menu'
   },
   currency: {
     cad: 'CAD',
@@ -104,7 +99,12 @@ export default {
         },
         accountNameSection: {
           fieldSet: 'Account Name',
-          accountNameInputLabel: 'Account Name'
+          accountNameInputLabel: 'Account Name',
+          error: {
+            req: 'Please enter an Account Name',
+            min: 'Account Name must be at least 2 characters',
+            unique: 'Account Name must be unique'
+          }
         },
         contactDetailsSection: {
           fieldSet: 'Contact Details',
@@ -113,7 +113,17 @@ export default {
             main: 'Extension (Optional)',
             aria: 'Phone Number Extension, Optional'
           },
-          emailInputLabel: 'Email Address'
+          emailInputLabel: 'Email Address',
+          error: {
+            phone: {
+              req: 'Please enter a Phone Number',
+              invalid: 'Please enter a valid phone number'
+            },
+            email: {
+              req: 'Please enter an Email Address',
+              invalid: 'Please enter a valid email address'
+            }
+          }
         }
       }
     },
@@ -121,7 +131,7 @@ export default {
       title: 'Choose Existing Account - Service BC Annual Report',
       h1: 'Existing Account Found',
       h2: 'Your Existing Accounts',
-      existingAccountWarning: 'It looks like you already have an account with BC Registries and Online Services. You can use an existing account to proceed or create a new one.'
+      existingAccountWarning: 'It looks like you already have an account with Service BC Connect. You can use an existing account to proceed or create a new one.'
     },
     missingId: {
       title: 'Authorization Required - Service BC Annual Report',
@@ -141,9 +151,17 @@ export default {
         agmDate: {
           placeholder: 'Select Annual General Meeting Date',
           label: 'Select Annual General Meeting Date',
-          format: 'Format: {format}'
+          format: 'Format: {format}',
+          error: 'You must select a date if you held an AGM'
         },
-        certify: 'I certify all information about the Office Addresses and Current Directors is correct.'
+        certify: {
+          question: 'I certify all information about the Office Addresses and Current Directors is correct.',
+          error: 'You must confirm to continue'
+        }
+      },
+      payError: {
+        title: 'Payment Not Complete',
+        description: 'Your payment was not completed, please try again.'
       }
     },
     submitted: {
@@ -162,7 +180,7 @@ export default {
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',
-        ANNBC: 'BC Annual Report'
+        BCANN: 'BC Annual Report'
       }
     }
   },

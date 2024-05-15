@@ -1,9 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { mockParsedToken } from '~/tests/mocks/mockedKeycloak'
 import { useKeycloak } from '~/composables/useKeycloak'
-
-const mockLogin = vi.fn().mockImplementation(() => {})
 
 mockNuxtImport('useI18n', () => {
   return () => (
@@ -23,68 +20,86 @@ mockNuxtImport('useI18n', () => {
   )
 })
 
-// const { mockUseNuxtApp } = vi.hoisted(() => {
-//   return {
-//     mockUseNuxtApp: vi.fn().mockImplementation(() => {
-//       return {
-//         $keycloak: 'test'
-//       }
-//     })
-//   }
-// })
-
-// mockNuxtImport('useNuxtApp', () => {
-//   return mockUseNuxtApp
-// })
-
-describe.skip('useKeycloak', () => {
-  const keycloak = useKeycloak()
-  // const testToken = 'qjduwe'
-  // const testTokenRefresh = 'qjduwwewvwe'
-  // const testTokenId = '12322frwr'
-  // const mockLogout = vi.fn().mockImplementation(() => {})
-
-  // beforeEach(() => {
-  // vi.stubGlobal('useNuxtApp', () => ({
-  //   $keycloak: {
-  //     login: mockLogin,
-  //     logout: vi.fn(),
-  //     loadUserProfile: vi.fn(),
-  //     authenticated: false,
-  //     tokenParsed: mockParsedToken
-  //   }
-  // }))
-  // })
-
-  it('handles login', () => {
-    keycloak.login()
-    console.log(keycloak)
-
-    // expect(mockLogin).toHaveBeenCalledOnce()
-  })
-
-  // it('returns kcUser object', () => {
-  //   expect(keycloak.kcUser.value).toEqual({
-  //     firstName: mockParsedToken.firstname,
-  //     lastName: mockParsedToken.lastname,
-  //     fullName: mockParsedToken.name,
-  //     userName: mockParsedToken.username,
-  //     email: mockParsedToken.email,
-  //     keycloakGuid: mockParsedToken.sub,
-  //     loginSource: mockParsedToken.loginSource,
-  //     roles: mockParsedToken.realm_access.roles
+describe('useKeycloak', () => {
+  // vi.mock('keycloak-js', () => {
+  //   return vi.fn().mockImplementation(() => {
+  //     return {
+  //       init: vi.fn(),
+  //       login: vi.fn(),
+  //       logout: vi.fn(),
+  //       authenticated: true
+  //     }
   //   })
   // })
 
-  // it.skip('handles logout', async () => {
-  //   const logoutUrl = 'http://logout'
-  //   // setup
-  //   keycloak.syncSessionStorage()
-  //   expect(mockLogout).toBeCalledTimes(0)
-  //   // logout
-  //   await keycloak.logout(logoutUrl)
-  //   // check keycloak logout was called with redirec
-  //   expect(mockLogout).toBeCalledTimes(1)
-  //   expect(mockLogout).toBeCalledWith({ redirectUri: logoutUrl })
-  // })
+  it('handles login', () => {
+    // const mockUserProfile = { /* mock user profile data */ }
+    // const keycloakMock = {
+    //   init: vi.fn(),
+    //   login: vi.fn(),
+    //   logout: vi.fn(),
+    //   authenticated: true,
+    //   loadUserProfile: vi.fn().mockResolvedValue(mockUserProfile)
+    // }
+    // get imports
+    const { $keycloak } = useNuxtApp()
+    const { locale } = useI18n()
+
+    // call function
+    const keycloak = useKeycloak()
+    keycloak.login()
+
+    // assert
+    expect($keycloak.login).toHaveBeenCalledOnce()
+    expect($keycloak.login).toHaveBeenCalledWith({
+      idpHint: 'bcsc',
+      redirectUri: `${location.origin}/${locale.value}/accounts/choose-existing`
+    })
+  })
+
+  it('handles logout', () => {
+    // mock sessionStorage.clear()
+    const sessionStorageClearMock = vi.spyOn(window.sessionStorage, 'clear')
+    // get imports
+    const { $keycloak } = useNuxtApp()
+    const { locale } = useI18n()
+
+    // call function
+    const keycloak = useKeycloak()
+    keycloak.logout()
+
+    // assert
+    expect($keycloak.logout).toHaveBeenCalledOnce()
+    expect($keycloak.logout).toHaveBeenCalledWith({
+      redirectUri: `${location.origin}/${locale.value}`
+    })
+    // logout should also clear session storage
+    expect(sessionStorageClearMock).toHaveBeenCalledOnce()
+  })
+
+  it('returns the authenticated value', () => {
+    // get imports
+    const keycloak = useKeycloak()
+
+    // assert
+    expect(keycloak.isAuthenticated()).toEqual(true)
+  })
+
+  it('returns a kcUser object', () => {
+    // get imports
+    const keycloak = useKeycloak()
+
+    // assert
+    expect(keycloak.kcUser).toBeDefined()
+    expect(keycloak.kcUser.value).toEqual({
+      firstName: 'First',
+      lastName: 'Last',
+      fullName: 'First Last',
+      keycloakGuid: '123456',
+      userName: 'Username',
+      email: 'test@email.com',
+      loginSource: 'BCSC',
+      roles: ['role1', 'role2']
+    })
+  })
 })

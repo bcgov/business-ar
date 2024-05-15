@@ -32,12 +32,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """Manages Auth service interactions."""
-import requests
 from http import HTTPStatus
-from flask import current_app
 
-from business_ar_api.enums.enum import AuthHeaderType
-from business_ar_api.enums.enum import ContentType
+import requests
+from business_ar_api.enums.enum import AuthHeaderType, ContentType
 from business_ar_api.exceptions.exceptions import (
     AuthException,
     BusinessException,
@@ -45,6 +43,8 @@ from business_ar_api.exceptions.exceptions import (
 )
 from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
+from flask import current_app
+from requests.exceptions import HTTPError
 
 
 class AccountService:
@@ -123,6 +123,19 @@ class AccountService:
         return contact_details
 
     @classmethod
+    @user_context
+    def get_account_contact(cls, account_id: int, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = (
+            f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/contacts"
+        )
+        contact_details = RestService.get(
+            endpoint=endpoint,
+            token=user.bearer_token,
+        ).json()
+        return contact_details
+
+    @classmethod
     def search_accounts(cls, account_name: str, **kwargs):
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
@@ -151,6 +164,34 @@ class AccountService:
             token=token,
         ).json()
         return new_entity_details
+
+    @classmethod
+    def find_or_create_entity(cls, entity_json: dict):
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
+        client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
+
+        token = AccountService.get_service_client_token(client_id, client_secret)
+
+        if not token:
+            raise BusinessException(code="ERR-001")
+        try:
+            entity = RestService.get(
+                endpoint=f"{endpoint}/{entity_json.get('businessIdentifier')}",
+                token=token,
+            ).json()
+            return entity
+        except HTTPError as exception:
+            if exception.response.status_code == HTTPStatus.NOT_FOUND:
+                current_app.logger.info(
+                    f"Creating entity {entity_json.get('businessIdentifier')} in Auth"
+                )
+                new_entity_details = RestService.post(
+                    data=entity_json,
+                    endpoint=endpoint,
+                    token=token,
+                ).json()
+                return new_entity_details
 
     @classmethod
     @user_context

@@ -6,6 +6,7 @@ const account = useAccountStore()
 <template>
   <header
     id="sbc-main-header"
+    data-testid="sbc-main-header"
     class="border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
   >
     <nav
@@ -34,49 +35,53 @@ const account = useAccountStore()
         />
       </div>
       <div class="flex gap-1">
-        <LocaleSelect />
-        <!-- composable authenticated not being reflected correctly -->
-        <UDropdown
-          v-if="keycloak.isAuthenticated()"
-          :items="loggedInUserOptions"
-          :ui="{
-            width: '',
-            height: 'max-h-60',
-            item: {
-              disabled:
-                'cursor-text select-text text-bcGovGray-900 dark:text-white opacity-100 font-semibold',
-            }
-          }"
-        >
-          <UButton
-            color="white"
-            variant="link"
+        <ClientOnly>
+          <UDropdown
+            v-if="keycloak.isAuthenticated()"
+            :items="loggedInUserOptions"
+            :ui="{
+              width: '',
+              height: 'max-h-60',
+              item: {
+                disabled:
+                  'cursor-text select-text text-bcGovGray-900 dark:text-white opacity-100 font-semibold',
+              }
+            }"
           >
-            <SbcHeaderAccountLabel
-              class="hidden md:flex"
-              :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
-              :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
-            />
-            <UAvatar
-              class="md:hidden"
-              :alt="parseSpecialChars(keycloak.kcUser.value.fullName, 'U')[0].toUpperCase()"
-              :ui="{
-                background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
-                text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
-                placeholder: 'font-semibold leading-none text-white truncate dark:text-bcGovColor-darkGray text-xl',
-                rounded: 'rounded-sm'
-              }"
-            />
-          </UButton>
+            <!-- required for UInput aria-label -->
+            <!-- eslint-disable vue/attribute-hyphenation -->
+            <UButton
+              color="white"
+              variant="link"
+              :ariaLabel="$t('btn.accountOptions')"
+            >
+              <SbcHeaderAccountLabel
+                class="hidden md:flex"
+                :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
+                :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
+              />
+              <UAvatar
+                class="md:hidden"
+                :alt="parseSpecialChars(keycloak.kcUser.value.fullName, 'U')[0].toUpperCase()"
+                :ui="{
+                  background: 'bg-bcGovBlue-300 dark:bg-[#E0E7ED]',
+                  text: 'font-semibold leading-none text-white dark:text-bcGovColor-darkGray truncate',
+                  placeholder: 'font-semibold leading-none text-white truncate dark:text-bcGovColor-darkGray text-xl',
+                  rounded: 'rounded-sm'
+                }"
+              />
+            </UButton>
 
-          <template #account>
-            <SbcHeaderAccountLabel
-              :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
-              :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
-              theme="dropdown"
-            />
-          </template>
-        </UDropdown>
+            <template #account>
+              <SbcHeaderAccountLabel
+                :username="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER')"
+                :account-name="account.currentAccount.name ? parseSpecialChars(account.currentAccount.name, 'ACCOUNT') : ''"
+                theme="dropdown"
+              />
+            </template>
+          </UDropdown>
+        </ClientOnly>
+        <LocaleSelect />
       </div>
     </nav>
   </header>

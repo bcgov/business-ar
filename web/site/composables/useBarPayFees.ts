@@ -4,7 +4,7 @@ export const addBarPayFees = async () => {
   const feeInfo = await payFeesWidget.getFeeInfo(
     {
       entityType: 'BC',
-      filingTypeCode: 'ANNBC',
+      filingTypeCode: 'BCANN',
       futureEffective: false,
       priority: false,
       waiveFees: false
