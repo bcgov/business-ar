@@ -67,8 +67,8 @@ const validate = async (state: any): Promise<FormError[]> => {
   const errors = []
   try {
     if (!state.accountName) { return [] }
-    const data = await accountStore.checkAccountExists(state.accountName)
-    if (data && data.orgs.length > 0) {
+    const accountAvailable = await accountStore.isAccountNameAvailable(state.accountName)
+    if (!accountAvailable) {
       errors.push({ path: 'accountName', message: t('page.createAccount.form.accountNameSection.error.unique') })
     }
   } catch {

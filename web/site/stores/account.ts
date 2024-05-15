@@ -80,9 +80,9 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     }
   }
 
-  async function checkAccountExists (name: string): Promise<{ limit: number, orgs: Org[], page: number, total: number} | undefined> {
+  async function isAccountNameAvailable (name: string): Promise<boolean> {
     try {
-      return await $fetch<{ limit: number, orgs: Org[], page: number, total: number}>(apiUrl + '/accounts', {
+      const response = await $fetch<{ limit: number, orgs: Org[], page: number, total: number}>(apiUrl + '/accounts', {
         query: {
           name
         },
@@ -90,8 +90,14 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
           Authorization: `Bearer ${token}`
         }
       })
+
+      if (response && response.orgs.length > 0) {
+        return false
+      } else {
+        return true
+      }
     } catch {
-      // silently handle errors
+      return false
     }
   }
 
@@ -99,8 +105,8 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   async function findAvailableAccountName (username: string): Promise<string> {
     let increment = 10
     while (true) {
-      const data = await checkAccountExists(username + increment)
-      if (data && data.orgs.length === 0) {
+      const accountAvailable = await isAccountNameAvailable(username + increment)
+      if (accountAvailable) {
         return username + increment
       }
       increment += 10
@@ -127,7 +133,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     getUserAccounts,
     selectUserAccount,
     createNewAccount,
-    checkAccountExists,
+    isAccountNameAvailable,
     findAvailableAccountName,
     getAndSetAccount,
     $reset
