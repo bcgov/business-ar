@@ -21,26 +21,7 @@ mockNuxtImport('useI18n', () => {
 })
 
 describe('useKeycloak', () => {
-  // vi.mock('keycloak-js', () => {
-  //   return vi.fn().mockImplementation(() => {
-  //     return {
-  //       init: vi.fn(),
-  //       login: vi.fn(),
-  //       logout: vi.fn(),
-  //       authenticated: true
-  //     }
-  //   })
-  // })
-
   it('handles login', () => {
-    // const mockUserProfile = { /* mock user profile data */ }
-    // const keycloakMock = {
-    //   init: vi.fn(),
-    //   login: vi.fn(),
-    //   logout: vi.fn(),
-    //   authenticated: true,
-    //   loadUserProfile: vi.fn().mockResolvedValue(mockUserProfile)
-    // }
     // get imports
     const { $keycloak } = useNuxtApp()
     const { locale } = useI18n()
@@ -53,13 +34,13 @@ describe('useKeycloak', () => {
     expect($keycloak.login).toHaveBeenCalledOnce()
     expect($keycloak.login).toHaveBeenCalledWith({
       idpHint: 'bcsc',
-      redirectUri: `${location.origin}/${locale.value}/accounts/choose-existing`
+      redirectUri: `${location.origin}/${locale.value}`
     })
   })
 
   it('handles logout', () => {
-    // mock sessionStorage.clear()
-    const sessionStorageClearMock = vi.spyOn(window.sessionStorage, 'clear')
+    const { resetPiniaStoresMock } = vi.hoisted(() => ({ resetPiniaStoresMock: vi.fn() }))
+    mockNuxtImport('resetPiniaStores', () => resetPiniaStoresMock)
     // get imports
     const { $keycloak } = useNuxtApp()
     const { locale } = useI18n()
@@ -73,8 +54,8 @@ describe('useKeycloak', () => {
     expect($keycloak.logout).toHaveBeenCalledWith({
       redirectUri: `${location.origin}/${locale.value}`
     })
-    // logout should also clear session storage
-    expect(sessionStorageClearMock).toHaveBeenCalledOnce()
+    // logout should also clear pinia stores
+    expect(resetPiniaStoresMock).toHaveBeenCalledOnce()
   })
 
   it('returns the authenticated value', () => {

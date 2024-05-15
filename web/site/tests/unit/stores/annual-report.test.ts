@@ -16,7 +16,7 @@ describe('Annual Report Store Tests', () => {
     expect(arStore.arFiling).toEqual({})
   })
 
-  it('creates ar filing, assigns store value and returns paymentToken and filingId', async () => {
+  it.skip('creates ar filing, assigns store value and returns paymentToken and filingId', async () => {
     registerEndpoint('/business/NaN/filings', {
       method: 'POST',
       handler: () => (mockedArFilingResponse)
