@@ -13,8 +13,8 @@ export const useKeycloak = () => {
   }
 
   function logout () {
-    // clear session storage on logout
-    sessionStorage.clear()
+    // clear pinia stores on logout
+    resetPiniaStores()
 
     return $keycloak.logout({
       redirectUri: `${location.origin}/${locale.value}`

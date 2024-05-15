@@ -116,6 +116,11 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     selectUserAccount(parseInt(id))
   }
 
+  function $reset () {
+    currentAccount.value = {} as Org
+    userAccounts.value = []
+  }
+
   return {
     currentAccount,
     userAccounts,
@@ -124,7 +129,8 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     createNewAccount,
     checkAccountExists,
     findAvailableAccountName,
-    getAndSetAccount
+    getAndSetAccount,
+    $reset
   }
 },
 { persist: true } // persist store values in session storage

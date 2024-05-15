@@ -105,10 +105,19 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     return { task, taskValue }
   }
 
+  function $reset () {
+    loading.value = true
+    currentBusiness.value = {} as BusinessFull
+    businessNano.value = {} as BusinessNano
+    nextArDate.value = ''
+    payStatus.value = null
+  }
+
   return {
     getBusinessByNanoId,
     updatePaymentStatusForBusiness,
     getBusinessTask,
+    $reset,
     loading,
     currentBusiness,
     businessNano,

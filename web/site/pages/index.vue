@@ -20,8 +20,7 @@ onBeforeMount(async () => {
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
       if (route.query.nanoid) { // load new business details if user already logged in and provides a new nano id
-        resetPiniaStores()
-        sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
+        resetPiniaStores() // reset state when loading a new business
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
       const { task } = await busStore.getBusinessTask()
