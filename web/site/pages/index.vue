@@ -49,7 +49,7 @@ onBeforeMount(async () => {
   <!-- eslint-disable vue/no-multiple-template-root -->
   <SbcLoadingSpinner v-if="initPage" overlay />
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!initPage" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!initPage" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <!-- show different h1 depending on pay status -->
     <h1 v-if="busStore.payStatus === 'PAID'" class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
@@ -62,15 +62,14 @@ onBeforeMount(async () => {
       {{ $t('page.home.h1') }}
     </h1>
     <!-- show business details -->
-    <UCard class="w-full" data-testid="bus-details-card">
-      <div class="flex grid-cols-6 flex-col text-left sm:grid">
-        <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
-        <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.legalName }}</span>
-        <span class="col-span-2 col-start-1 mt-2 whitespace-nowrap font-semibold text-bcGovColor-darkGray sm:mt-0">{{ $t('labels.corpNum') }}</span>
-        <span class="col-span-full col-start-3 mb-2 whitespace-nowrap text-bcGovColor-midGray sm:mb-0">{{ busStore.businessNano.identifier }}</span>
-        <span v-if="busStore.businessNano.taxId" class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray ">{{ $t('labels.busNum') }}</span>
-        <span v-if="busStore.businessNano.taxId" class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.taxId }}</span>
-      </div>
+    <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
+      <SbcBusinessInfo
+        :items="[
+          { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+          { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+          { label: $t('labels.busNum'), value: busStore.businessNano.taxId },
+        ]"
+      />
     </UCard>
     <!-- show data from nuxt content -->
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
