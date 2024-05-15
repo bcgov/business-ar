@@ -41,7 +41,6 @@ onBeforeMount(async () => {
         sessionStorage.clear() // clear session storage so new business doesnt use pre-exisiting values
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
-      // await busStore.getBusinessDetails(busStore.businessNano.identifier) // load full business details immediately (if this fails, user cant continue)
       const { task, taskValue } = await busStore.getBusinessTask()
       // if task === 'filing', set store arFiling value
       if (task === 'filing' && 'filing' in taskValue) { // this means user has tried to file an ar previously
@@ -101,7 +100,7 @@ onBeforeMount(async () => {
     <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}
     </h1>
-    <UCard class="w-full" data-testid="bus-details-card">
+    <UCard class="w-full max-w-4xl" data-testid="bus-details-card">
       <div class="flex grid-cols-6 flex-col text-left sm:grid">
         <span class="col-span-2 col-start-1 whitespace-nowrap font-semibold text-bcGovColor-darkGray">{{ $t('labels.busName') }}</span>
         <span class="col-span-full col-start-3 whitespace-nowrap text-bcGovColor-midGray">{{ busStore.businessNano.legalName }}</span>

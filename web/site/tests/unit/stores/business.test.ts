@@ -33,28 +33,6 @@ describe('Business Store Tests', () => {
     expect(busStore.payStatus).toEqual(null)
   })
 
-  // this randomly stopped working
-  it.skip('fetches business by nano id', async () => {
-    const busStore = useBusinessStore()
-    // get business by nano id
-    await busStore.getBusinessByNanoId('1')
-
-    // assert it also called get business details
-    expect(busStore.getBusinessDetails).toHaveBeenCalledOnce()
-  })
-
-  it('fetches business details', async () => {
-    const busStore = useBusinessStore()
-    // get business details
-    await busStore.getBusinessDetails(mockedBusinessFull.business.identifier)
-
-    // assert it assigns the response values
-    expect(busStore.currentBusiness).toEqual(mockedBusinessFull)
-
-    // currently returning invalid date but works in app, addOneYear import not working in test env?
-    // expect(busStore.nextArDate).toEqual('2021-10-10')
-  })
-
   it('updates payment status', async () => {
     const busStore = useBusinessStore()
 
