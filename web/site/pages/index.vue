@@ -64,6 +64,7 @@ onBeforeMount(async () => {
     <!-- show business details -->
     <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
       <SbcBusinessInfo
+        break-value="sm"
         :items="[
           { label: $t('labels.busName'), value: busStore.businessNano.legalName },
           { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
