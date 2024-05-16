@@ -5,10 +5,15 @@ const { t } = useI18n()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
-const initPage = ref<boolean>(true)
+const loadStore = useLoadingStore()
+loadStore.pageLoading = true
 
 useHead({
   title: t('page.annualReport.title')
+})
+
+definePageMeta({
+  middleware: ['filing-paid', 'require-account']
 })
 
 // options for radio buttons
@@ -96,9 +101,8 @@ function handleRadioClick (option: string) {
   }
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   try {
-    initPage.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
 
@@ -121,123 +125,123 @@ onMounted(() => {
       }
     }
   } finally {
-    initPage.value = false
+    loadStore.pageLoading = false
   }
 })
 </script>
 <template>
-  <!-- eslint-disable vue/no-multiple-template-root -->
-  <SbcLoadingSpinner v-if="initPage" overlay />
-  <div v-else class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
-    <div class="flex w-full flex-1 flex-col gap-6">
-      <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
-      </h1>
+  <ClientOnly>
+    <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
+      <div class="flex w-full flex-1 flex-col gap-6">
+        <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+          {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
+        </h1>
 
-      <UAlert
-        v-if="errorAlert.title || errorAlert.description"
-        :title="errorAlert.title"
-        :description="errorAlert.description"
-        icon="i-mdi-alert"
-        color="red"
-        variant="subtle"
-        :ui="{
-          title: 'text-base text-bcGovColor-midGray font-semibold',
-          description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
-        }"
-      />
-
-      <UCard
-        class="w-full"
-        :ui="{
-          header: {
-            base: 'rounded-t-lg',
-            background: 'bg-bcGovColor-gray2',
-            padding: 'px-4 py-5 sm:px-6',
-          }
-        }"
-      >
-        <template #header>
-          <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
-            {{ $t('page.annualReport.h2', { name: busStore.currentBusiness.legalName }) }}
-          </h2>
-        </template>
-
-        <SbcBusinessInfo
-          break-value="lg"
-          :items="[
-            { label: $t('labels.busName'), value: busStore.businessNano.legalName },
-            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
-            { label: $t('labels.arDate'), value: busStore.nextArDate },
-          ]"
+        <UAlert
+          v-if="errorAlert.title || errorAlert.description"
+          :title="errorAlert.title"
+          :description="errorAlert.description"
+          icon="i-mdi-alert"
+          color="red"
+          variant="subtle"
+          :ui="{
+            title: 'text-base text-bcGovColor-midGray font-semibold',
+            description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
+          }"
         />
 
-        <UDivider class="mb-4 mt-8" />
-
-        <UForm
-          ref="arFormRef"
-          :state="arData"
-          :validate="validate"
-          autocomplete="off"
-          class="space-y-6"
-          @submit="submitAnnualReport"
-          @error="onError"
+        <UCard
+          class="w-full"
+          :ui="{
+            header: {
+              base: 'rounded-t-lg',
+              background: 'bg-bcGovColor-gray2',
+              padding: 'px-4 py-5 sm:px-6',
+            }
+          }"
         >
-          <!-- TO DO: look into why this label isnt being associated with the radios -->
-          <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
-            <fieldset
-              class="flex flex-col items-start gap-4 lg:flex-row lg:items-center"
-            >
-              <!-- need to look into this for a11y more -->
-              <legend class="sr-only">
-                {{ $t('page.annualReport.form.heldAgm.question') }}
-              </legend>
-              <URadio
-                v-for="option of options"
-                :key="option.value"
-                v-bind="option"
-                v-model="selectedRadio"
-                :options="options"
-                :ui="{
-                  wrapper: `cursor-pointer relative flex items-center flex-1 w-full p-4 ${selectedRadio === option.value ? 'bg-white border border-bcGovColor-activeBlue' : 'bg-gray-100 hover:bg-gray-200'}`,
-                  label: 'cursor-pointer sm:whitespace-nowrap',
-                }"
-                @click="handleRadioClick(option.value)"
+          <template #header>
+            <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
+              {{ $t('page.annualReport.h2', { name: busStore.currentBusiness.legalName }) }}
+            </h2>
+          </template>
+
+          <SbcBusinessInfo
+            break-value="lg"
+            :items="[
+              { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+              { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+              { label: $t('labels.arDate'), value: busStore.nextArDate },
+            ]"
+          />
+
+          <UDivider class="mb-4 mt-8" />
+
+          <UForm
+            ref="arFormRef"
+            :state="arData"
+            :validate="validate"
+            autocomplete="off"
+            class="space-y-6"
+            @submit="submitAnnualReport"
+            @error="onError"
+          >
+            <!-- TO DO: look into why this label isnt being associated with the radios -->
+            <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
+              <fieldset
+                class="flex flex-col items-start gap-4 lg:flex-row lg:items-center"
+              >
+                <!-- need to look into this for a11y more -->
+                <legend class="sr-only">
+                  {{ $t('page.annualReport.form.heldAgm.question') }}
+                </legend>
+                <URadio
+                  v-for="option of options"
+                  :key="option.value"
+                  v-bind="option"
+                  v-model="selectedRadio"
+                  :options="options"
+                  :ui="{
+                    wrapper: `cursor-pointer relative flex items-center flex-1 w-full p-4 ${selectedRadio === option.value ? 'bg-white border border-bcGovColor-activeBlue' : 'bg-gray-100 hover:bg-gray-200'}`,
+                    label: 'cursor-pointer sm:whitespace-nowrap',
+                  }"
+                  @click="handleRadioClick(option.value)"
+                />
+              </fieldset>
+            </UFormGroup>
+
+            <!-- AGM Date -->
+            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format', { format: 'YYYY-MM-DD' })" :ui="{ help: 'text-bcGovColor-midGray' }">
+              <SbcInputsDateSelect
+                id="SelectAGMDate"
+                ref="dateSelectRef"
+                :max-date="new Date()"
+                :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
+                :arialabel="$t('page.annualReport.form.agmDate.label')"
+                :initial-date="arData.agmDate ? new Date(arData.agmDate) : undefined"
+                variant="bcGov"
+                :disabled="selectedRadio !== 'option-1'"
+                @selection="(e) => {
+                  arFormRef?.clear()
+                  arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
               />
-            </fieldset>
-          </UFormGroup>
+            </UFormGroup>
 
-          <!-- AGM Date -->
-          <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format', { format: 'YYYY-MM-DD' })" :ui="{ help: 'text-bcGovColor-midGray' }">
-            <SbcInputsDateSelect
-              id="SelectAGMDate"
-              ref="dateSelectRef"
-              :max-date="new Date()"
-              :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
-              :arialabel="$t('page.annualReport.form.agmDate.label')"
-              :initial-date="arData.agmDate ? new Date(arData.agmDate) : undefined"
-              variant="bcGov"
-              :disabled="selectedRadio !== 'option-1'"
-              @selection="(e) => {
-                arFormRef?.clear()
-                arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
-            />
-          </UFormGroup>
+            <UDivider />
 
-          <UDivider />
-
-          <!-- certify office address and directors -->
-          <UFormGroup name="officeAndDirectorsConfirmed">
-            <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify.question')" />
-          </UFormGroup>
-        </UForm>
-      </UCard>
+            <!-- certify office address and directors -->
+            <UFormGroup name="officeAndDirectorsConfirmed">
+              <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify.question')" />
+            </UFormGroup>
+          </UForm>
+        </UCard>
+      </div>
+      <SbcFeeWidget
+        class="sm:mt-2"
+        :fees="payFeesWidget.fees"
+        :is-loading="loading"
+        @submit="arFormRef?.submit()"
+      />
     </div>
-    <SbcFeeWidget
-      class="sm:mt-2"
-      :fees="payFeesWidget.fees"
-      :is-loading="loading"
-      @submit="arFormRef?.submit()"
-    />
-  </div>
+  </ClientOnly>
 </template>

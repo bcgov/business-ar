@@ -4,7 +4,8 @@ const keycloak = useKeycloak()
 const route = useRoute()
 const localePath = useLocalePath()
 const busStore = useBusinessStore()
-const initPage = ref<boolean>(true)
+const loadStore = useLoadingStore()
+loadStore.pageLoading = true
 
 useHead({
   title: t('page.home.title')
@@ -41,39 +42,39 @@ onBeforeMount(async () => {
     console.error((e as Error).message)
     await navigateTo(localePath('/missing-id'))
   } finally {
-    initPage.value = false
+    loadStore.pageLoading = false
   }
 })
 </script>
 <template>
-  <!-- eslint-disable vue/no-multiple-template-root -->
-  <SbcLoadingSpinner v-if="initPage" overlay />
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!initPage" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
-    <!-- show different h1 depending on pay status -->
-    <h1 v-if="busStore.payStatus === 'PAID'" class="flex items-center justify-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-      <span>{{ $t('page.submitted.h1') }}</span>
-      <span class="flex items-center justify-center">
-        <UIcon
-          name="i-mdi-check-circle-outline"
-          class="size-10 text-outcomes-approved"
+  <div v-show="!loadStore.pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
+    <ClientOnly>
+      <!-- show different h1 depending on pay status -->
+      <h1 v-if="busStore.payStatus === 'PAID'" class="flex w-fit items-center justify-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+        <span>{{ $t('page.submitted.h1') }}</span>
+        <span class="flex items-center justify-center">
+          <UIcon
+            name="i-mdi-check-circle-outline"
+            class="size-10 text-outcomes-approved"
+          />
+        </span>
+      </h1>
+      <h1 v-else class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+        {{ $t('page.home.h1') }}
+      </h1>
+      <!-- show business details -->
+      <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
+        <SbcBusinessInfo
+          break-value="sm"
+          :items="[
+            { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+            { label: $t('labels.busNum'), value: busStore.businessNano.taxId },
+          ]"
         />
-      </span>
-    </h1>
-    <h1 v-else class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-      {{ $t('page.home.h1') }}
-    </h1>
-    <!-- show business details -->
-    <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
-      <SbcBusinessInfo
-        break-value="sm"
-        :items="[
-          { label: $t('labels.busName'), value: busStore.businessNano.legalName },
-          { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
-          { label: $t('labels.busNum'), value: busStore.businessNano.taxId },
-        ]"
-      />
-    </UCard>
+      </UCard>
+    </ClientOnly>
     <!-- show data from nuxt content -->
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
     <SbcNuxtContentCard v-show="busStore.payStatus !== 'PAID'" id="initial" route-suffix="1" />
