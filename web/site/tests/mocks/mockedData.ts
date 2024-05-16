@@ -115,3 +115,110 @@ export const mockedBusinessFull = {
     status: 'some status'
   }
 }
+
+export const mockedBusinessFullInvalidArYear = {
+  business: {
+    businessNumber: '234653465',
+    corpState: 'some state',
+    corpStateClass: 'some class',
+    email: 'some email',
+    foundingDate: 'some date',
+    goodStanding: true,
+    identifier: '123456789',
+    jurisdiction: 'BC',
+    lastAgmDate: null,
+    lastArDate: '2020-10-10',
+    lastLedgerTimestamp: '',
+    legalName: 'Test Business Inc',
+    legalType: 'BC',
+    nextARYear: -1,
+    status: 'some status'
+  }
+}
+
+export const mockedBusinessFullAlreadyFiled = {
+  business: {
+    businessNumber: '234653465',
+    corpState: 'some state',
+    corpStateClass: 'some class',
+    email: 'some email',
+    foundingDate: 'some date',
+    goodStanding: true,
+    identifier: '123456789',
+    jurisdiction: 'BC',
+    lastAgmDate: null,
+    lastArDate: '2024-10-10',
+    lastLedgerTimestamp: '',
+    legalName: 'Test Business Inc',
+    legalType: 'BC',
+    nextARYear: 2025,
+    status: 'some status'
+  }
+}
+
+export const mockedBusinessFullNoLastArDate = {
+  business: {
+    businessNumber: '234653465',
+    corpState: 'some state',
+    corpStateClass: 'some class',
+    email: 'some email',
+    foundingDate: '2020-10-10',
+    goodStanding: true,
+    identifier: '123456789',
+    jurisdiction: 'BC',
+    lastAgmDate: null,
+    lastArDate: '',
+    lastLedgerTimestamp: '',
+    legalName: 'Test Business Inc',
+    legalType: 'BC',
+    nextARYear: 2025,
+    status: 'some status'
+  }
+}
+
+export const mockedFilingTask = {
+  tasks: [
+    {
+      task: {
+        filing: {
+          business: mockedBusinessFull.business,
+          annualReport: {
+            annualGeneralMeetingDate: null,
+            annualReportDate: '2020-10-10',
+            votedForNoAGM: false
+          },
+          header: {
+            certifiedBy: null,
+            colinIds: [],
+            completionDate: null,
+            date: '2024-10-10',
+            filingDateTime: '2024-10-10',
+            filingYear: '2024',
+            id: '1',
+            name: 'some name',
+            paymentAccount: '123',
+            paymentStatus: null,
+            paymentToken: 123,
+            status: 'PAID',
+            submitter: null
+          }
+        }
+      }
+    }
+  ]
+}
+
+export const mockedTodoTask = {
+  tasks: [{
+    task: {
+      todo: {
+        business: mockedBusinessFull.business,
+        header: {
+          ARFilingYear: 2021,
+          name: 'Some Name',
+          status: 'NEW'
+        }
+      }
+    }
+  }]
+}
