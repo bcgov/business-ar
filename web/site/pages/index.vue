@@ -51,12 +51,14 @@ onBeforeMount(async () => {
   <!-- must use v-show for nuxt content to prerender correctly -->
   <div v-show="!initPage" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <!-- show different h1 depending on pay status -->
-    <h1 v-if="busStore.payStatus === 'PAID'" class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+    <h1 v-if="busStore.payStatus === 'PAID'" class="flex items-center justify-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
-      <UIcon
-        name="i-mdi-check-circle-outline"
-        class="size-10 shrink-0 text-outcomes-approved"
-      />
+      <span class="flex items-center justify-center">
+        <UIcon
+          name="i-mdi-check-circle-outline"
+          class="size-10 text-outcomes-approved"
+        />
+      </span>
     </h1>
     <h1 v-else class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       {{ $t('page.home.h1') }}

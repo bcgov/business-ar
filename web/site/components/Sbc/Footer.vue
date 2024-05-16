@@ -2,7 +2,8 @@
 const links = [
   {
     label: 'SbcFooter.home',
-    to: '/'
+    to: 'https://www.bcregistry.gov.bc.ca',
+    target: '_blank'
   },
   {
     label: 'SbcFooter.disclaimer',

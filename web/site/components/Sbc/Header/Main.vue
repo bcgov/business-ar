@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { mainLinks, loggedInUserOptions } = useSbcNav()
+const { loggedInUserOptions } = useSbcNav()
 const keycloak = useKeycloak()
 const account = useAccountStore()
 </script>
@@ -13,26 +13,9 @@ const account = useAccountStore()
       class="m-auto flex w-full max-w-[1360px] items-center justify-between"
       :aria-label="$t('SbcHeader.navLabel')"
     >
-      <div class="flex items-center gap-1">
-        <NuxtLinkLocale
-          to="/"
-          tabindex="-1"
-          aria-hidden="true"
-          class="mr-2"
-        >
-          <SbcLogo />
-        </NuxtLinkLocale>
-        <UButton
-          v-for="link in mainLinks"
-          :key="link.to"
-          class="hidden lg:block"
-          :label="link.label"
-          :to="link.to"
-          color="white"
-          variant="link"
-          size="lg"
-          active-class="underline"
-        />
+      <div class="flex items-center gap-6">
+        <SbcLogo />
+        <span class="text-lg font-semibold text-white"> {{ $t('btn.sbcConnect') }} </span>
       </div>
       <div class="flex gap-1">
         <ClientOnly>
