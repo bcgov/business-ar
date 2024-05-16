@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// simplify displaying nuxt content, dont need to call useAsyncData + query content each time
+// matches whatever the current route and locale are where the component is mounted
+// must use v-show if conditionally rendering content, wont be prerendered with v-if
 const { locale } = useI18n()
 const routeWithoutLocale = useRouteWithoutLocale()
 

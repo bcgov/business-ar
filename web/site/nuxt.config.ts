@@ -4,7 +4,10 @@ export default defineNuxtConfig({
   ssr: true,
   nitro: {
     prerender: {
-      routes: []
+      routes: [
+        '/en-CA/submitted',
+        '/fr-CA/submitted'
+      ]
     }
   },
   modules: [

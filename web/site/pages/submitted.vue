@@ -31,8 +31,9 @@ onMounted(async () => {
 })
 </script>
 <template>
+  <!-- eslint-disable vue/no-multiple-template-root -->
   <SbcLoadingSpinner v-if="loading" overlay />
-  <div v-else class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!loading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
       <span>{{ $t('page.submitted.h1') }}</span>
       <UIcon
