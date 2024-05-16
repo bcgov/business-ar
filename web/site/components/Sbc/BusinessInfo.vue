@@ -15,13 +15,13 @@ const filteredItems = computed(() => {
 <template>
   <div class="text-left">
     <!-- Desktop/Tablet View -->
-    <table class="-mx-4 hidden w-max table-fixed border-separate border-spacing-x-4 sm:block">
+    <table class="hidden w-fit table-auto border-separate sm:block">
       <tbody v-for="item in filteredItems" :key="item.label">
         <tr>
-          <td class="whitespace-nowrap font-semibold text-bcGovColor-darkGray">
+          <td class="whitespace-nowrap align-top font-semibold text-bcGovColor-darkGray">
             {{ item.label }}
           </td>
-          <td class="text-wrap text-bcGovColor-midGray">
+          <td class="text-wrap break-words pl-4 align-top text-bcGovColor-midGray">
             {{ item.value }}
           </td>
         </tr>
@@ -33,7 +33,7 @@ const filteredItems = computed(() => {
       :key="item.label"
       class="flex flex-col sm:hidden"
     >
-      <span class="whitespace-nowrap font-semibold text-bcGovColor-darkGray">
+      <span class="font-semibold text-bcGovColor-darkGray">
         {{ item.label }}
       </span>
       <span class="mb-4 text-bcGovColor-midGray last:mb-0">

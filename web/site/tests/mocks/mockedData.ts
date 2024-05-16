@@ -222,3 +222,29 @@ export const mockedTodoTask = {
     }
   }]
 }
+
+const mockTax: Tax = {
+  gst: 5,
+  pst: 7
+}
+
+export const mockFeeInfo: FeeInfo = {
+  filingFees: 100,
+  filingType: 'Example Filing Type',
+  filingTypeCode: 'FTC001',
+  futureEffectiveFees: 50,
+  priorityFees: 25,
+  processingFees: 30,
+  serviceFees: 20,
+  tax: mockTax,
+  total: 260
+}
+
+export const mockFilingData: FilingData = {
+  filingDescription: 'Example Filing Description',
+  filingTypeCode: 'FTC001',
+  entityType: 'Example Entity Type',
+  waiveFees: false,
+  priority: true,
+  futureEffective: false
+}
