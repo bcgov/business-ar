@@ -2,6 +2,7 @@
   "name": "business-ar-ui",
   "private": true,
   "type": "module",
+  "version": "1.0.0",
   "scripts": {
     "build-check": "nuxt build",
     "build": "nuxt generate",
