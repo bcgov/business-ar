@@ -70,7 +70,7 @@ export default defineNuxtConfig({
       barApiUrl: `${process.env.NUXT_BAR_API_URL || ''}${process.env.NUXT_BAR_API_VERSION || ''}`,
       paymentPortalUrl: process.env.NUXT_PAYMENT_PORTAL_URL,
       baseUrl: process.env.NUXT_BASE_URL,
-      environment: process.env.NUXT_ENVIRONMENT ? `${process.env.NUXT_ENVIRONMENT} v${process.env.npm_package_version}` : undefined
+      environment: process.env.NUXT_ENVIRONMENT_HEADER ? `${process.env.NUXT_ENVIRONMENT_HEADER} v${process.env.npm_package_version}` : undefined
     }
   },
   vite: {
