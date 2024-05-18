@@ -15,7 +15,7 @@ definePageMeta({
 })
 
 // TODO: need to handle if theres no filing id in the route query or if the put request fails
-onBeforeMount(async () => {
+onMounted(async () => {
   try {
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')

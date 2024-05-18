@@ -23,7 +23,7 @@ async function handleAccountSelect (id: number) {
   setAccountLoading.value = false
 }
 
-onBeforeMount(async () => {
+onMounted(async () => {
   try {
     const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {

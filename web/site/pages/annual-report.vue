@@ -101,11 +101,10 @@ function handleRadioClick (option: string) {
   }
 }
 
-onBeforeMount(() => {
+onMounted(() => {
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
-
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid

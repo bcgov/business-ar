@@ -73,7 +73,7 @@ const validate = async (state: any): Promise<FormError[]> => {
 }
 
 // try to prefill account name on page load
-onBeforeMount(async () => {
+onMounted(async () => {
   try {
     accountDetails.accountName = await accountStore.findAvailableAccountName(keycloak.kcUser.value.lastName)
   } catch (error) {

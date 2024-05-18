@@ -4,6 +4,7 @@ const keycloak = useKeycloak()
 const route = useRoute()
 const localePath = useLocalePath()
 const busStore = useBusinessStore()
+const accountStore = useAccountStore()
 const loadStore = useLoadingStore()
 loadStore.pageLoading = true
 
@@ -15,11 +16,11 @@ definePageMeta({
   order: 0
 })
 
-// load business details using route query nano id or navigate to /missing-id
-onBeforeMount(async () => {
+onMounted(async () => {
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
+      await accountStore.updateUserProfile()
       if (route.query.nanoid) { // load new business details if user already logged in and provides a new nano id
         resetPiniaStores() // reset state when loading a new business
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
