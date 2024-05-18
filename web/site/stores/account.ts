@@ -11,13 +11,25 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
 
+  async function getToken (): Promise<string | undefined> {
+    return await $keycloak
+      .updateToken(-1)
+      .then((_refreshed) => {
+        return $keycloak.token
+      })
+      .catch((error) => {
+        console.error(`Failed to get session token: ${error}`)
+        return undefined
+      })
+  }
+
   // get signed in users accounts
   async function getUserAccounts (): Promise<{ orgs: Org[] } | undefined> {
     try {
-      // fetch accounts using token
+      const newToken = await getToken()
       return await $fetch<{ orgs: Org[]}>(apiUrl + '/user/accounts', {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${newToken}`
         },
         onResponse ({ response }) {
           if (response.ok) {
@@ -47,6 +59,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
   // create new account
   async function createNewAccount (data: NewAccount): Promise<void> {
+    const newToken = await getToken()
     try {
       await $fetch(apiUrl + '/user/accounts', {
         method: 'POST',
@@ -59,7 +72,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
           }
         },
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${newToken}`
         },
         onResponse ({ response }) {
           // console.log(response)
@@ -71,7 +84,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         },
         onResponseError ({ response }) {
           // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          const errorMsg = response._data.message ?? 'Error trying to create a new account.'
           console.error(errorMsg)
         }
       })
@@ -127,6 +140,24 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     userAccounts.value = []
   }
 
+  async function updateUserProfile ():Promise<void> {
+    try {
+      await $fetch(apiUrl + '/users', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${$keycloak.token}`
+        },
+        onResponseError ({ response }) {
+          // console error a message from the api or a default message
+          const errorMsg = response._data.message ?? 'Error retrieving business details.'
+          console.error(errorMsg)
+        }
+      })
+    } catch (e: any) {
+      throw new Error(e)
+    }
+  }
+
   return {
     currentAccount,
     userAccounts,
@@ -136,6 +167,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     isAccountNameAvailable,
     findAvailableAccountName,
     getAndSetAccount,
+    updateUserProfile,
     $reset
   }
 },

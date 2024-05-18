@@ -53,9 +53,22 @@ export const useKeycloak = () => {
     return {} as KCUser
   })
 
+  async function getToken (): Promise<string | undefined> {
+    return await $keycloak
+      .updateToken(30)
+      .then((_refreshed) => {
+        return $keycloak.token
+      })
+      .catch((error) => {
+        console.error(`Failed to get session token: ${error}`)
+        return undefined
+      })
+  }
+
   return {
     login,
     logout,
+    getToken,
     // getUserProfile,
     isAuthenticated,
     kcUser

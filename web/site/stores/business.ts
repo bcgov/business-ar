@@ -16,7 +16,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
-    loading.value = true
     // fetch by provided id
     await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
       onResponse ({ response }) {
@@ -30,7 +29,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         console.error(errorMsg)
       }
     })
-    loading.value = false
   }
 
   function assignBusinessStoreValues (bus: BusinessFull) {
@@ -94,9 +92,13 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
     // assign business store values using response from task endpoint, saves having to make another call to get business details
     if ('filing' in taskValue) {
+      await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
+      // throw error if user does not own account of the in progress filing
+      if (!accountStore.userAccounts.some(account => account.id === parseInt(taskValue.filing.header.paymentAccount))) {
+        throw new Error('Access Denied: Your account does not have permission to complete this task.')
+      }
       assignBusinessStoreValues(taskValue.filing.business)
       arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
-      await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
       payStatus.value = taskValue.filing.header.status
     } else if ('todo' in taskValue) {
       assignBusinessStoreValues(taskValue.todo.business)
