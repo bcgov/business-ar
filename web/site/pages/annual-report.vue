@@ -2,6 +2,7 @@
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm, SbcInputsDateSelect } from '#components'
 const { t } = useI18n()
+const localePath = useLocalePath()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
@@ -71,9 +72,15 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
     // submit filing
-    const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    // redirect to pay with the returned token and filing id
-    await handlePaymentRedirect(paymentToken, filingId)
+    const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
+
+    console.log(payStatus)
+    if (payStatus === 'PAID') {
+      await navigateTo(localePath(`/submitted?filing_id=${filingId}`))
+    } else {
+      // redirect to pay with the returned token and filing id
+      await handlePaymentRedirect(paymentToken, filingId)
+    }
   } catch (e) {
     // log and display error alert if this fails
     const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
