@@ -78,7 +78,16 @@ export default {
     busName: "Nom de l'entreprise",
     corpNum: 'Numéro de constitution',
     busNum: "Numéro d'entreprise",
-    arDate: 'Date du Rapport Annuel'
+    arDate: 'Date du Rapport Annuel',
+    name: 'Nom', // TODO: start review
+    mailingAddress: 'Adresse Postale',
+    deliveryAddress: 'Adresse de Livraison',
+    effectiveDates: "Dates d'Effet",
+    apptDate: '{date} à actuel',
+    sameAsMailAddress: "Identique à l'Adresse Postale",
+    registeredOffice: 'Siège Social',
+    recordsOffice: 'Bureau des Archives',
+    office: 'Bureau' // TODO: end review
   },
   page: {
     notFound: {
@@ -171,12 +180,12 @@ export default {
   },
   widgets: {
     feeSummary: {
-      title: 'Résumé des frais',
-      total: 'Total des frais',
+      title: 'Résumé des Frais',
+      total: 'Total des Frais',
       noFee: 'Pas de frais',
       priorityFees: 'Frais prioritaires',
       futureEffectiveFees: 'Frais effectifs futurs',
-      serviceFees: 'Frais de service',
+      serviceFees: 'Frais de Service',
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',

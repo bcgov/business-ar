@@ -78,7 +78,16 @@ export default {
     busName: 'Business Name',
     corpNum: 'Incorporation Number',
     busNum: 'Business Number',
-    arDate: 'Date of Annual Report'
+    arDate: 'Date of Annual Report',
+    name: 'Name',
+    mailingAddress: 'Mailing Address',
+    deliveryAddress: 'Delivery Address',
+    effectiveDates: 'Effective Dates',
+    apptDate: '{date} to current',
+    sameAsMailAddress: 'Same as Mailing Address',
+    registeredOffice: 'Registered Office',
+    recordsOffice: 'Records Office',
+    office: 'Office'
   },
   page: {
     notFound: {
