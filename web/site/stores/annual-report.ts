@@ -38,7 +38,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
       },
       onResponse ({ response }) {
         if (response.ok) {
-          console.log(response)
+          // console.log(response)
           arFiling.value = response._data
         }
         // console.log(arFiling.value)
