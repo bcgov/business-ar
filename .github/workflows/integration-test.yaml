@@ -1,5 +1,7 @@
 name: Integration Tests
 
+#Note: This workflow requires OP_CONNECT_URL, OP_CONNECT_TOKEN if you want to use one pass. otherwise all must be in secrets
+
 #required variables
 #TESTIM_PROJECT
 #TESTIM_USER
@@ -38,9 +40,16 @@ jobs:
         shell: bash
     steps:
       - uses: actions/checkout@v4
+      # Install 1password cli tool
+      - name: Install 1password cli tool
+        uses: bcgov/bcregistry-sre/.github/actions/install-1pass@main
+
       - name: terraform
         env:
           TERRAFORM_VERSION: "1.8.0"
+          OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
+          OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
+          APP_ENV: ${{ env.ENVIRONMENT }}
         run: |
           export WD=`pwd`
           cd /tmp
@@ -53,7 +62,7 @@ jobs:
           docker build . -t regapi:latest
           cd $WD/web/site
           docker build . -t regweb:latest
-          cd $WD/terraform
+          cd $WD/test/terraform
           mkdir _tmp
           chmod -R 777 _tmp
           
@@ -61,26 +70,41 @@ jobs:
           echo "127.0.0.1 ar.example.demo" | sudo tee -a /etc/hosts
           terraform init
 
+          get_var() {
+            # $1 is op location
+            # $2 is variable name
+            # $3 is optional append after variable populate
+            echo "::add-mask::$(op get $1 || echo "${{ secrets[format('{0}_A', $2)] }}$3" || echo "${{ vars[format('{0}_A', $2)] }}$3" )"
+          }
+
           #create terraform vars file
           # echo "firebase_api_key=\"${{ secrets.FIREBASE_API_KEY }}\"" > terraform.tfvars
           # echo "firebase_messaging_sender_id=\"${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}\"" >> terraform.tfvars
           # echo "firebase_app_id=\"${{ secrets.FIREBASE_APP_ID }}\"" >> terraform.tfvars
 
-          echo "auth_api_url=\"${{ secrets.AUTH_API_URL }}\"" >> terraform.tfvars
-          echo "pay_api_url=\"${{ secrets.PAY_API_URL }}\"" >> terraform.tfvars
+          echo "auth_api_url=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "AUTH_API_URL"`\"" >> terraform.tfvars
+          echo "pay_api_url=\"`get_var "op://API/$APP_ENV/pay-api/PAY_API_URL" "PAY_API_URL"`\"" >> terraform.tfvars
 
-          echo "oidc_issuer=\"${{ secrets.OIDC_URL }}\"" >> terraform.tfvars
-          echo "oidc_well_known_config=\"${{ secrets.OIDC_URL }}/.well-known/openid-configuration\"" >> terraform.tfvars
+          echo "oidc_issuer=\"`get_var "op://keycloak/$APP_ENV/jwt-base/JWT_OIDC_ISSUER" "OIDC_URL"`\"" >> terraform.tfvars
+          echo "oidc_well_known_config=\`get_var "op://keycloak/$APP_ENV/jwt-base/JWT_OIDC_WELL_KNOWN_CONFIG" "OIDC_URL" "/.well-known/openid-configuration"`\"" >> terraform.tfvars
 
-          echo "auth_svc_url=\"${{ secrets.OIDC_URL }}/protocol/openid-connect/token\"" >> terraform.tfvars
-          echo "auth_client_id=\"${{ secrets.OIDC_CLIENT }}\"" >> terraform.tfvars
-          echo "auth_client_secret=\"${{ secrets.OIDC_CLIENT_SECRET }}\"" >> terraform.tfvars
+          echo "auth_svc_url=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_AUTH_TOKEN_URL" "OIDC_URL" "/protocol/openid-connect/token"`\"" >> terraform.tfvars
+          echo "auth_client_id=\"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_ID" "OIDC_CLIENT"`\"" >> terraform.tfvars
+          echo "auth_client_secret=\"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_SECRET" "OIDC_CLIENT_SECRET"`\"" >> terraform.tfvars
 
-          echo "canada_post_api_key=\"${{ secrets.CANADA_POST_API_KEY }}\"" >> terraform.tfvars
-          echo "auth_url=\"${{ secrets.AUTH_URL }}\"" >> terraform.tfvars
-          echo "auth_realm=\"${{ secrets.AUTH_REALM }}\"" >> terraform.tfvars
-          echo "registry_home_url=\"${{ secrets.REGISTRY_HOME_URL }}\"" >> terraform.tfvars
-          echo "nuxt_client_id=\"${{ secrets.NUXT_CLIENT_ID }}\"" >> terraform.tfvars
+          #echo "canada_post_api_key=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "CANADA_POST_API_KEY"`\"" >> terraform.tfvars
+          echo "auth_url=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_AUTH_BASE_URL" "AUTH_URL"`\"" >> terraform.tfvars
+          echo "auth_realm=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "AUTH_REALM"`\"" >> terraform.tfvars
+          echo "registry_home_url=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
+          echo "nuxt_client_id=\`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
+
+          #May 22
+          echo "hostname = \"http://127.0.0.1\"" >> terraform.tfvars
+          echo "colin_api_url = \"`get_var "op://API/$APP_ENV/colin-api-entity/COLIN_API_URL" "COLIN_API_URL"`"" >> terraform.tfvars
+          echo "colin_client_id = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_ID" "COLIN_CLIENT_ID"`\"" >> terraform.tfvars
+          echo "colin_client_secret = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_SECRET" "COLIN_CLIENT_SECRET"`\"" >> terraform.tfvars
+          echo "dashboard_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "DASHBOARD_URL"`\"" >> terraform.tfvars
+          echo "notify_api_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "NOTIFY_API_URL"`\"" >> terraform.tfvars
           #end terraform vars file
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
@@ -89,15 +113,21 @@ jobs:
         uses: coactions/setup-xvfb@v1
         with:
           run: npm i -g @testim/testim-cli
-          working-directory: ./testim #optional
+          working-directory: ./test/testim #optional
 
       - name: test
         uses: coactions/setup-xvfb@v1
         with:
           run: |
+            get_var() {
+              # $1 is op location
+              # $2 is variable name
+              # $3 is optional append after variable populate
+              echo "::add-mask::$(op get $1 || echo "${{ secrets[format('{0}_A', $2)] }}$3" || echo "${{ vars[format('{0}_A', $2)] }}$3" )"
+            }
             echo "{" > ./config.json
-            echo "{\"username\": \"${{secrets.TEST_USER}}\"," >> ./config.json
-            echo "\"password\": \"${{secrets.TEST_PASSWORD}}\"" >> ./config.json
+            echo "{\"username\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_USER"`\"," >> ./config.json
+            echo "\"password\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_PASSWORD"`\"" >> ./config.json
             echo "}" >> ./config.json
-            testim --token "${{ secrets.TESTIM_TOKEN }}" --project "${{ vars.TESTIM_PROJECT }}" --use-local-chrome-driver --user ${{ vars.TESTIM_USER }} --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
+            testim --token "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_TOKEN"`" --project "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_PROJECT"`" --use-local-chrome-driver --user "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_USER"`" --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
           working-directory: ./testim #optional
