@@ -103,7 +103,7 @@ jobs:
 
           #May 22
           echo "hostname = \"http://127.0.0.1\"" >> terraform.tfvars
-          echo "colin_api_url = \"`get_var "op://API/$APP_ENV/colin-api-entity/COLIN_API_URL" "COLIN_API_URL"`"" >> terraform.tfvars
+          echo "colin_api_url = \"`get_var "op://API/$APP_ENV/colin-api-entity/COLIN_API_URL" "COLIN_API_URL"`\"" >> terraform.tfvars
           echo "colin_client_id = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_ID" "COLIN_CLIENT_ID"`\"" >> terraform.tfvars
           echo "colin_client_secret = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_SECRET" "COLIN_CLIENT_SECRET"`\"" >> terraform.tfvars
           echo "dashboard_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "DASHBOARD_URL"`\"" >> terraform.tfvars
