@@ -1,8 +1,18 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { vi, describe, expect, it, beforeEach } from 'vitest'
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
 import { setActivePinia, createPinia } from 'pinia'
 import { useBusinessStore } from '#imports'
-import { mockedBusinessNano, mockedBusinessFull, mockedArFilingResponse } from '~/tests/mocks/mockedData'
+import {
+  mockedBusinessNano,
+  mockedBusinessFull,
+  mockedBusinessFullInvalidArYear,
+  mockedArFilingResponse,
+  mockedBusinessFullAlreadyFiled,
+  mockedBusinessFullNoLastArDate,
+  mockedFilingTask,
+  mockedTodoTask,
+  mockedOrgs
+} from '~/tests/mocks/mockedData'
 
 registerEndpoint('/business/token/1', {
   method: 'GET',
@@ -14,9 +24,22 @@ registerEndpoint(`/business/${mockedBusinessNano.identifier}`, {
   handler: () => ({ business: { ...mockedBusinessFull } })
 })
 
-registerEndpoint('/business/NaN/filings/12/payment', {
+registerEndpoint('/business/undefined/filings/12/payment', {
   method: 'PUT',
   handler: () => (mockedArFilingResponse)
+})
+
+const fakeApiCall = vi.fn()
+registerEndpoint('/business/undefined/tasks', {
+  method: 'GET',
+  handler: fakeApiCall
+})
+
+registerEndpoint('/user/accounts', {
+  method: 'GET',
+  handler: () => (
+    mockedOrgs
+  )
 })
 
 describe('Business Store Tests', () => {
@@ -33,26 +56,39 @@ describe('Business Store Tests', () => {
     expect(busStore.payStatus).toEqual(null)
   })
 
-  // this randomly stopped working
-  it.skip('fetches business by nano id', async () => {
+  it('can get and assign business nano value', async () => {
     const busStore = useBusinessStore()
-    // get business by nano id
     await busStore.getBusinessByNanoId('1')
 
-    // assert it also called get business details
-    expect(busStore.getBusinessDetails).toHaveBeenCalledOnce()
+    expect(busStore.businessNano).toEqual(mockedBusinessNano)
   })
 
-  it('fetches business details', async () => {
-    const busStore = useBusinessStore()
-    // get business details
-    await busStore.getBusinessDetails(mockedBusinessFull.business.identifier)
+  describe('assignBusinessStoreValues', () => {
+    it('assigns values correctly for a business with valid data', () => {
+      const busStore = useBusinessStore()
 
-    // assert it assigns the response values
-    expect(busStore.currentBusiness).toEqual(mockedBusinessFull)
+      busStore.assignBusinessStoreValues(mockedBusinessFull.business)
 
-    // currently returning invalid date but works in app, addOneYear import not working in test env?
-    // expect(busStore.nextArDate).toEqual('2021-10-10')
+      expect(busStore.currentBusiness).toEqual(mockedBusinessFull.business)
+      expect(busStore.nextArDate).toEqual('2021-10-10') // Assuming addOneYear function adds 1 year to foundingDate
+    })
+
+    it('throws an error for a business with invalid nextARYear', () => {
+      const busStore = useBusinessStore()
+      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullInvalidArYear.business)).toThrowError('Test Business Inc is not eligible to file an Annual Report')
+    })
+
+    it('throws an error if business has already filed an AR for the current year', () => {
+      const busStore = useBusinessStore()
+      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullAlreadyFiled.business)).toThrowError('Business has already filed an Annual Report for 2024')
+    })
+
+    it('uses founding date for nextArDate if no lastArDate', () => {
+      const busStore = useBusinessStore()
+      busStore.assignBusinessStoreValues(mockedBusinessFullNoLastArDate.business)
+
+      expect(busStore.nextArDate).toEqual('2021-10-10')
+    })
   })
 
   it('updates payment status', async () => {
@@ -62,5 +98,54 @@ describe('Business Store Tests', () => {
 
     // assert it assigns the response values
     expect(busStore.payStatus).toEqual('Submitted')
+  })
+
+  describe('getBusinessTask', () => {
+    it('fetches business task with filing and assigns values', async () => {
+      fakeApiCall.mockImplementation(() => mockedFilingTask)
+      const busStore = useBusinessStore()
+      const arStore = useAnnualReportStore()
+      const { task, taskValue } = await busStore.getBusinessTask()
+
+      expect(task).toEqual('filing')
+      expect(taskValue).toEqual(mockedFilingTask.tasks[0].task)
+      // side effects
+      expect(busStore.payStatus).toBe('PAID')
+      expect(arStore.arFiling).toEqual({ filing: { header: mockedFilingTask.tasks[0].task.filing.header, annualReport: mockedFilingTask.tasks[0].task.filing.annualReport } })
+    })
+
+    it('fetches business task with todo and assigns values', async () => {
+      fakeApiCall.mockImplementation(() => mockedTodoTask)
+      const busStore = useBusinessStore()
+      const arStore = useAnnualReportStore()
+      const { task, taskValue } = await busStore.getBusinessTask()
+
+      expect(task).toEqual('todo')
+      expect(taskValue).toEqual(mockedTodoTask.tasks[0].task)
+      // side effects
+      expect(busStore.payStatus).toBe(null)
+      expect(arStore.arFiling).toEqual({})
+    })
+
+    it('can reset the store values', () => {
+      const busStore = useBusinessStore()
+      busStore.loading = false
+      busStore.currentBusiness = mockedBusinessFull.business
+      busStore.businessNano = mockedBusinessNano
+      busStore.nextArDate = '2020-10-10'
+      busStore.payStatus = 'PAID'
+
+      expect(Object.keys(busStore.currentBusiness).length).toBeGreaterThan(0)
+      expect(Object.keys(busStore.businessNano).length).toBeGreaterThan(0)
+
+      // reset store
+      busStore.$reset()
+
+      expect(Object.keys(busStore.currentBusiness).length).toBe(0)
+      expect(Object.keys(busStore.businessNano).length).toBe(0)
+      expect(busStore.loading).toEqual(true)
+      expect(busStore.nextArDate).toEqual('')
+      expect(busStore.payStatus).toEqual(null)
+    })
   })
 })

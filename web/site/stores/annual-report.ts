@@ -55,10 +55,16 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
     return { paymentToken, filingId }
   }
 
+  function $reset () {
+    loading.value = true
+    arFiling.value = {} as ArFilingResponse
+  }
+
   return {
     loading,
     arFiling,
-    submitAnnualReportFiling
+    submitAnnualReportFiling,
+    $reset
   }
 },
 { persist: true }

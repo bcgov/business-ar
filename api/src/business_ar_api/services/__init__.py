@@ -38,4 +38,5 @@ from .payment_service import PaymentService
 from .filing_service import FilingService
 from .invitation_service import InvitationService
 from .notification_service import NotificationService
+from .report_service import ReportService
 from .schema_service import SchemaService

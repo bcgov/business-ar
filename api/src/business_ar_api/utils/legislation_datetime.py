@@ -68,3 +68,28 @@ class LegislationDatetime:
         """Return the date in legislation timezone as a string."""
         date_time = LegislationDatetime.as_legislation_timezone(date_time)
         return date_time.strftime("%Y-%m-%d")
+
+    @staticmethod
+    def now() -> datetime:
+        """Construct a datetime using the legislation timezone."""
+        return datetime.now().astimezone(
+            pytz.timezone(current_app.config.get("LEGISLATIVE_TIMEZONE"))
+        )
+
+    @staticmethod
+    def format_as_report_string(date_time: datetime) -> str:
+        """Return a datetime string in this format (eg: `August 5, 2021 at 11:00 am Pacific time`)."""
+        # ensure is set to correct timezone
+        date_time = LegislationDatetime.as_legislation_timezone(date_time)
+        hour = date_time.strftime("%I").lstrip("0")
+        # %p provides locale value: AM, PM (en_US); am, pm (de_DE); So forcing it to be lower in any case
+        am_pm = date_time.strftime("%p").lower()
+        date_time_str = date_time.strftime(
+            f"%B %-d, %Y at {hour}:%M {am_pm} Pacific time"
+        )
+        return date_time_str
+
+    @staticmethod
+    def as_utc_timezone_datetime(datetime_string: str) -> datetime:
+        """Return a datetime adjusted to the legislation timezone from a date object."""
+        return datetime.fromisoformat(datetime_string)

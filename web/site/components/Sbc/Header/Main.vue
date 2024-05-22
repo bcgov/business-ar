@@ -1,38 +1,23 @@
 <script setup lang="ts">
-const { mainLinks, loggedInUserOptions } = useSbcNav()
+const { loggedInUserOptions } = useSbcNav()
 const keycloak = useKeycloak()
 const account = useAccountStore()
+const environment = useRuntimeConfig().public.environment
 </script>
 <template>
   <header
     id="sbc-main-header"
     data-testid="sbc-main-header"
-    class="border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
+    class="relative border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
   >
+    <span v-if="environment" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl text-gray-300 opacity-50">{{ environment }}</span>
     <nav
       class="m-auto flex w-full max-w-[1360px] items-center justify-between"
       :aria-label="$t('SbcHeader.navLabel')"
     >
-      <div class="flex items-center gap-1">
-        <NuxtLinkLocale
-          to="/"
-          tabindex="-1"
-          aria-hidden="true"
-          class="mr-2"
-        >
-          <SbcLogo />
-        </NuxtLinkLocale>
-        <UButton
-          v-for="link in mainLinks"
-          :key="link.to"
-          class="hidden lg:block"
-          :label="link.label"
-          :to="link.to"
-          color="white"
-          variant="link"
-          size="lg"
-          active-class="underline"
-        />
+      <div class="flex items-center gap-6">
+        <SbcLogo />
+        <span class="text-lg font-semibold text-white"> {{ $t('btn.sbcConnect') }} </span>
       </div>
       <div class="flex gap-1">
         <ClientOnly>

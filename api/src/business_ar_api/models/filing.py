@@ -130,6 +130,11 @@ class Filing(BaseModel):
         )
         return query.all()
 
+    @classmethod
+    def get_filing_by_payment_token(cls, payment_token: str) -> Filing:
+        """Return filings by payment token."""
+        return cls.query.filter_by(invoice_id=payment_token).one_or_none()
+
 
 class FilingSerializer:
     """Serializer for filings. Can convert to dict, string from filing model."""
@@ -161,6 +166,18 @@ class FilingSerializer:
         if filing.submitter_id:
             filing_dict["filing"]["header"]["submitter"] = filing.submitter.username
             filing_dict["filing"]["header"]["certifiedBy"] = filing.submitter.username
+            certified_by_display_name = ""
+            if filing.submitter.firstname:
+                certified_by_display_name = (
+                    f"{certified_by_display_name}{filing.submitter.firstname} "
+                )
+            if filing.submitter.lastname:
+                certified_by_display_name = (
+                    f"{certified_by_display_name}{filing.submitter.lastname}"
+                )
+            filing_dict["filing"]["header"][
+                "certifiedByDisplayName"
+            ] = certified_by_display_name
 
         if filing.payment_account:
             filing_dict["filing"]["header"]["paymentAccount"] = filing.payment_account

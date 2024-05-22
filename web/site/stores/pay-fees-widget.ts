@@ -107,6 +107,13 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
             return undefined
           }
 
+  function $reset () {
+    errors.value = []
+    fees.value = []
+    folioNumber.value = ''
+    feeInfo.value = []
+  }
+
   return {
     errors,
     fees,
@@ -117,6 +124,7 @@ export const usePayFeesWidget = defineStore('bar-payFeeWidget', () => {
     addFeeOrIncreaseCount,
     removeFee,
     removeFeeOrDecreaseCount,
-    getFeeInfo
+    getFeeInfo,
+    $reset
   }
 })

@@ -195,6 +195,23 @@ class AccountService:
 
     @classmethod
     @user_context
+    def update_user_profile(cls, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users"
+        try:
+            response = RestService.post(
+                endpoint=endpoint, token=user.bearer_token
+            ).json()
+            return response
+        except HTTPError as exception:
+            current_app.logger.error("Error while creating user roles", exception)
+            raise ExternalServiceException(
+                error="Error while creating user roles",
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            )
+
+    @classmethod
+    @user_context
     def affiliate_entity_to_account(
         cls, account_id: int, business_identifier: str, **kwargs
     ):

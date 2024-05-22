@@ -4,6 +4,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const { $keycloak } = useNuxtApp()
   const config = useRuntimeConfig()
   const apiUrl = config.public.barApiUrl
+  const arStore = useAnnualReportStore()
+  const accountStore = useAccountStore()
 
   // store values
   const loading = ref<boolean>(true)
@@ -14,7 +16,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
-    loading.value = true
     // fetch by provided id
     await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
       onResponse ({ response }) {
@@ -28,47 +29,28 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         console.error(errorMsg)
       }
     })
-    loading.value = false
   }
 
-  // fetch full business details by identifier
-  function getBusinessDetails (identifier: string): Promise<BusinessFull> {
-    return $fetch<BusinessFull>(`${apiUrl}/business/${identifier}`, {
-      headers: {
-        Authorization: `Bearer ${$keycloak.token}`
-      },
-      onResponse ({ response }) {
-        if (response.ok) {
-          // set store values if response === 200
-          // console.log(response._data)
-          const bus: BusinessFull = response._data.business
-          currentBusiness.value = bus
+  function assignBusinessStoreValues (bus: BusinessFull) {
+    currentBusiness.value = bus
 
-          // throw an error if the nextArYear is invalid
-          if (!bus.nextARYear || bus.nextARYear === -1) {
-            throw new Error(`${bus.legalName || 'This business'} is not eligible to file an Annual Report`)
-          }
+    // throw an error if the nextArYear is invalid
+    if (!bus.nextARYear || bus.nextARYear === -1) {
+      throw new Error(`${bus.legalName || 'This business'} is not eligible to file an Annual Report`)
+    }
 
-          // throw error if business already filed an AR for the current year
-          const currentYear = new Date().getFullYear()
-          if (bus.lastArDate && new Date(bus.lastArDate).getFullYear() === currentYear) {
-            throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
-          }
+    // throw error if business already filed an AR for the current year
+    const currentYear = new Date().getFullYear()
+    if (bus.lastArDate && new Date(bus.lastArDate).getFullYear() === currentYear) {
+      throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
+    }
 
-          // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
-          if (!bus.lastArDate) {
-            nextArDate.value = addOneYear(bus.foundingDate)
-          } else {
-            nextArDate.value = addOneYear(bus.lastArDate)
-          }
-        }
-      },
-      onResponseError ({ response }) {
-        // console error a message from the api or a default message
-        const errorMsg = response._data.message ?? 'Error retrieving business details.'
-        console.error(errorMsg)
-      }
-    })
+    // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
+    if (!bus.lastArDate) {
+      nextArDate.value = addOneYear(bus.foundingDate)
+    } else {
+      nextArDate.value = addOneYear(bus.lastArDate)
+    }
   }
 
   // ping sbc pay to see if payment went through and return pay status details
@@ -107,14 +89,38 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
     const taskValue = response.tasks[0].task
     const task = Object.getOwnPropertyNames(taskValue)[0]
+
+    // assign business store values using response from task endpoint, saves having to make another call to get business details
+    if ('filing' in taskValue) {
+      await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
+      // throw error if user does not own account of the in progress filing
+      if (!accountStore.userAccounts.some(account => account.id === parseInt(taskValue.filing.header.paymentAccount))) {
+        throw new Error('Access Denied: Your account does not have permission to complete this task.')
+      }
+      assignBusinessStoreValues(taskValue.filing.business)
+      arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+      payStatus.value = taskValue.filing.header.status
+    } else if ('todo' in taskValue) {
+      assignBusinessStoreValues(taskValue.todo.business)
+    }
+
     return { task, taskValue }
+  }
+
+  function $reset () {
+    loading.value = true
+    currentBusiness.value = {} as BusinessFull
+    businessNano.value = {} as BusinessNano
+    nextArDate.value = ''
+    payStatus.value = null
   }
 
   return {
     getBusinessByNanoId,
-    getBusinessDetails,
     updatePaymentStatusForBusiness,
     getBusinessTask,
+    assignBusinessStoreValues,
+    $reset,
     loading,
     currentBusiness,
     businessNano,
