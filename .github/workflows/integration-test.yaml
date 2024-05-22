@@ -74,7 +74,10 @@ jobs:
             # $1 is op location
             # $2 is variable name
             # $3 is optional append after variable populate
-            echo "::add-mask::$(op get $1 || echo "${{ secrets["$2"] }}$3" || echo "${{ vars["$2"] }}$3" )"
+            OP_LOC = $1
+            VAR_NAME = $2
+            VAR_APPEND = $3
+            echo "::add-mask::$(op get $OP_LOC || echo "${{ secrets[${VAR_NAME}] }}$VAR_APPEND" || echo "${{ vars[${VAR_NAME}] }}$VAR_APPEND" )"
           }
 
           #create terraform vars file
