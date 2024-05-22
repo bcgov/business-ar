@@ -145,6 +145,7 @@ jobs:
               # $1 is op location
               # $2 is variable name
               # $3 is optional append after variable populate
+              echo "GET_VAR: $1 $2 $3"
               export OP_LOC=$1
               echo "GET VAR: $1, $OP_LOC"
               export VAR_NAME=$2
