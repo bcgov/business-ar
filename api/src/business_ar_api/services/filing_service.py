@@ -87,6 +87,10 @@ class FilingService:
             filing.payment_completion_date = datetime.fromisoformat(
                 invoice_response.get("paymentDate")
             )
+        elif filing.payment_status_code == "APPROVED":
+            filing.payment_status_code = "COMPLETED"
+            filing.status = FilingModel.Status.PAID
+            filing.payment_completion_date = datetime.utcnow()
         else:
             filing.status = FilingModel.Status.PENDING
         filing.save()

@@ -150,7 +150,7 @@ develop = false
 flask = "^3.0.3"
 flask-babel = "^3.1.0"
 flask-cors = "^4.0.0"
-flask-jwt-oidc = "^0.3.0"
+flask-jwt-oidc = "^0.7.0"
 flask-migrate = "^4.0.4"
 flask-sqlalchemy = "^3.1.1"
 gunicorn = "^21.2.0"
@@ -166,7 +166,7 @@ sentry-sdk = "^1.44.1"
 type = "git"
 url = "https://github.com/bcgov/business-ar.git"
 reference = "main"
-resolved_reference = "8ccb3a7bd69d010d99ba5552c63605038c3d8181"
+resolved_reference = "10c141a82cea94b40666af0a9faeb2ee8efe3354"
 subdirectory = "api"
 
 [[package]]
@@ -428,20 +428,20 @@ Flask = ">=0.9"
 
 [[package]]
 name = "flask-jwt-oidc"
-version = "0.3.0"
-description = "Flask_JWT_OIDC"
+version = "0.7.0"
+description = "Opinionated flask oidc client"
 optional = false
-python-versions = "*"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "flask_jwt_oidc-0.3.0-py3-none-any.whl", hash = "sha256:c2a62ecb463a506155fabf70fd20684830213f4e48aa98cd7abd48f253e8ad18"},
-    {file = "flask_jwt_oidc-0.3.0.tar.gz", hash = "sha256:5859015847fa44f291082555fdf6ca986294f6c57166f9ea9da2a2b3fdda5138"},
+    {file = "flask_jwt_oidc-0.7.0-py3-none-any.whl", hash = "sha256:0fec097ea0557fe315ca576f4c9a795c874bf28ae62b21eadf4626c5c5ca9029"},
+    {file = "flask_jwt_oidc-0.7.0.tar.gz", hash = "sha256:ba90e3557e931b1c5cbd37fb2ddc462a525f74e2a85aa7d684a733e68fa9a3e4"},
 ]
 
 [package.dependencies]
-cachelib = "*"
-flask = "*"
-python-jose = "*"
-six = "*"
+cachelib = ">=0.13.0,<0.14.0"
+Flask = ">=2"
+python-jose = ">=3.3.0,<4.0.0"
+six = ">=1.16.0,<2.0.0"
 
 [[package]]
 name = "flask-migrate"
@@ -1879,4 +1879,4 @@ tomli = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12.2"
-content-hash = "345aac5f55aa105c03d1bbc04c56ea81578d0d74e572385ecf3508bb9cfd4b82"
+content-hash = "9cf1519966c844ac047f553de031e091d391824f5423e3f3f70c53bf0381a4ec"
