@@ -74,7 +74,7 @@ jobs:
             # $1 is op location
             # $2 is variable name
             # $3 is optional append after variable populate
-            echo "::add-mask::$(op get $1 || echo "${{ secrets[format('{0}_A', "$2")] }}$3" || echo "${{ vars[format('{0}_A', "$2")] }}$3" )"
+            echo "::add-mask::$(op get $1 || echo "${{ secrets["$2"] }}$3" || echo "${{ vars["$2"] }}$3" )"
           }
 
           #create terraform vars file
@@ -123,7 +123,7 @@ jobs:
               # $1 is op location
               # $2 is variable name
               # $3 is optional append after variable populate
-              echo "::add-mask::$(op get $1 || echo "${{ secrets[format('{0}_A', "$2")] }}$3" || echo "${{ vars[format('{0}_A', "$2")] }}$3" )"
+              echo "::add-mask::$(op get $1 || echo "${{ secrets[$2] }}$3" || echo "${{ vars[$2] }}$3" )"
             }
             echo "{" > ./config.json
             echo "{\"username\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_USER"`\"," >> ./config.json
