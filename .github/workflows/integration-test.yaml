@@ -77,7 +77,7 @@ jobs:
             OP_LOC = $1
             VAR_NAME = $2
             VAR_APPEND = $3
-            echo "::add-mask::$(op get $OP_LOC || echo "${{ secrets[${VAR_NAME}] }}$VAR_APPEND" || echo "${{ vars[${VAR_NAME}] }}$VAR_APPEND" )"
+            echo "::add-mask::$(op get $OP_LOC || echo "${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" || echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" )"
           }
 
           #create terraform vars file
@@ -129,7 +129,7 @@ jobs:
               OP_LOC = $1
               VAR_NAME = $2
               VAR_APPEND = $3
-              echo "::add-mask::$(op get $OP_LOC || echo "${{ secrets[${VAR_NAME}] }}$VAR_APPEND" || echo "${{ vars[${VAR_NAME}] }}$VAR_APPEND" )"
+              echo "::add-mask::$(op get $OP_LOC || echo "${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" || echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" )"
             }
             echo "{" > ./config.json
             echo "{\"username\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_USER"`\"," >> ./config.json
