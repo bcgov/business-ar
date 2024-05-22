@@ -145,9 +145,12 @@ jobs:
               # $1 is op location
               # $2 is variable name
               # $3 is optional append after variable populate
-              OP_LOC = $1
-              VAR_NAME = $2
-              VAR_APPEND = $3
+              export OP_LOC=$1
+              echo "GET VAR: $1, $OP_LOC"
+              export VAR_NAME=$2
+              echo "GET VAR: $2, $VAR_NAME"
+              export VAR_APPEND=$3
+              echo "GET VAR: $3, $VAR_APPEND"
               echo "::add-mask::$(op read "$OP_LOC" || echo "${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" || echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" )"
             }
             echo "{" > ./config.json
