@@ -61,7 +61,7 @@ jobs:
           TERRAFORM_VERSION: "1.8.0"
           OP_CONNECT_HOST: ${{ secrets.OP_CONNECT_URL }}
           OP_CONNECT_TOKEN: ${{ secrets.OP_CONNECT_TOKEN }}
-          APP_ENV: ${{ env.ENVIRONMENT }}
+          APP_ENV: ${{ github.event.inputs.target }}
         run: |
           export WD=`pwd`
           cd /tmp
