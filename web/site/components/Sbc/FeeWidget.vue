@@ -27,7 +27,7 @@ const total = computed(() => {
     <UCard
       data-cy="pay-fees-widget"
       :ui="{
-        base: 'w-full md:w-[282px]',
+        base: 'w-full min-w-[230px] lg:w-[282px]',
         header: {
           base: 'rounded-t-lg',
           background: 'bg-bcGovColor-header',

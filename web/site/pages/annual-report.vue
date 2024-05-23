@@ -3,6 +3,7 @@ import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
 import { UForm, UCheckbox, SbcInputsDateSelect } from '#components'
 const { t } = useI18n()
 const localePath = useLocalePath()
+const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
@@ -160,7 +161,7 @@ onMounted(async () => {
 <template>
   <ClientOnly>
     <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
-      <div class="flex w-full flex-1 flex-col gap-6">
+      <div class="flex w-full flex-col gap-6">
         <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
           {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
         </h1>
@@ -204,7 +205,7 @@ onMounted(async () => {
             <!-- TODO: look into why this label isnt being associated with the radios -->
             <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
               <fieldset
-                class="flex flex-col items-start gap-4 lg:flex-row lg:items-center"
+                class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
               >
                 <!-- need to look into this for a11y more -->
                 <legend class="sr-only">
@@ -226,7 +227,7 @@ onMounted(async () => {
             </UFormGroup>
 
             <!-- AGM Date -->
-            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format', { format: 'YYYY-MM-DD' })" :ui="{ help: 'text-bcGovColor-midGray' }">
+            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format')" :ui="{ help: 'text-bcGovColor-midGray' }">
               <SbcInputsDateSelect
                 id="SelectAGMDate"
                 ref="dateSelectRef"
@@ -278,8 +279,13 @@ onMounted(async () => {
             <UCheckbox
               ref="checkboxRef"
               v-model="arData.officeAndDirectorsConfirmed"
-              :label="$t('page.annualReport.form.certify.question')"
-            />
+            >
+              <template #label>
+                <span>{{ $t('words.i') }}</span>
+                <span class="mx-1 font-semibold">{{ parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale) }}</span>
+                <span>{{ $t('page.annualReport.form.certify.question') }}</span>
+              </template>
+            </UCheckbox>
           </UFormGroup>
         </SbcPageSectionCard>
       </div>

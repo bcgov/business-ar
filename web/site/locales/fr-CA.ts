@@ -89,6 +89,9 @@ export default {
     recordsOffice: 'Bureau des Archives',
     office: 'Bureau' // TODO: end review
   },
+  words: {
+    i: 'Je'
+  },
   page: {
     notFound: {
       h1: 'Page introuvable'
@@ -153,7 +156,7 @@ export default {
       reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
       form: {
         heldAgm: {
-          question: "Es'ce que votre enterprise a tenu une assemblée générale annuelle?",
+          question: "Es'ce que votre entreprise a tenu une assemblée générale annuelle?",
           opt1: 'Oui',
           opt2: "Nous n'avons pas encore tenu une AGA",
           opt3: "Nous avons voté pour ne pas tenir d'AGA"
@@ -161,11 +164,11 @@ export default {
         agmDate: {
           placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
           label: "Sélectionnez la date de l'assemblée générale annuelle",
-          format: 'Format: {format}',
+          format: 'Format: AAAA-MM-JJ',
           error: 'Vous devez sélectionner une date si vous avez tenu une AGA'
         },
         certify: {
-          question: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
+          question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
       },

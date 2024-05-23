@@ -89,6 +89,9 @@ export default {
     recordsOffice: 'Records Office',
     office: 'Office'
   },
+  words: {
+    i: 'I'
+  },
   page: {
     notFound: {
       h1: 'Page Not Found'
@@ -161,11 +164,11 @@ export default {
         agmDate: {
           placeholder: 'Select Annual General Meeting Date',
           label: 'Select Annual General Meeting Date',
-          format: 'Format: {format}',
+          format: 'Format: YYYY-MM-DD',
           error: 'You must select a date if you held an AGM'
         },
         certify: {
-          question: 'I certify all information about the Office Addresses and Current Directors is correct.',
+          question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
       },
