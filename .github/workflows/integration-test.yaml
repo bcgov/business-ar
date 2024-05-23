@@ -89,9 +89,9 @@ jobs:
             export OP_LOC="$1"
             echo "::set-env name=OP_LOC::\"$1\""
             export VAR_NAME="$2"
-            echo "::set-env name=VAR_NAME::\"$VAR_NAME\""
+            echo "::set-env name=VAR_NAME::\"$2\""
             export VAR_APPEND="$3"
-            echo "::set-env name=VAR_APPEND::\"$VAR_APPEND\""
+            echo "::set-env name=VAR_APPEND::\"$3\""
             export OP_VAL="`op read "$OP_LOC"`"
             echo "123env123 $1 $2 $3 ${{env.OP_LOC}} ${{env.VAR_NAME}} ${{env.VAR_APPEND}}"
           }
