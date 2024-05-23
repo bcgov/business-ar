@@ -150,6 +150,8 @@ jobs:
           echo "notify_api_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "NOTIFY_API_URL"`\"" >> terraform.tfvars
           echo "18"
           #end terraform vars file
+          
+          cat terraform.tfvars
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
