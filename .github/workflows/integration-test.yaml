@@ -98,6 +98,7 @@ jobs:
                 echo "::add-mask::$VAR_VAL"
               else
                 echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
+              fi
             fi
           }
 
