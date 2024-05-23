@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  ssr: false,
+  ssr: true,
   routeRules: {
     '/': { redirect: '/en-CA' }
   },
@@ -43,10 +43,10 @@ export default defineNuxtConfig({
       'en-CA',
       'fr-CA'
     ],
-    contentHead: false,
-    experimental: {
-      clientDB: true
-    }
+    contentHead: false
+    // experimental: {
+    //   clientDB: true
+    // }
   },
   colorMode: {
     preference: 'light',
