@@ -133,8 +133,8 @@ jobs:
           echo "10"
           echo "registry_home_url=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
           echo "11"
-          echo "nuxt_client_id=\`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
-          echo "12"
+          echo "nuxt_client_id=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
+          echo "12`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`"
 
           #May 22
           echo "hostname = \"http://127.0.0.1\"" >> terraform.tfvars
