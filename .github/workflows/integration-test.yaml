@@ -93,12 +93,13 @@ jobs:
             if [ -n "$OP_VAL" ]; then
               echo "::add-mask::${OP_VAL}"
             else
-              export VAR_VAL="${{ secrets[env.VAR_NAME] }}$VAR_APPEND"
-              if [ -n "$VAR_VAL" ]; then
-                echo "::add-mask::$VAR_VAL"
-              else
-                echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
-              fi
+              echo "${{env.VAR_NAME}}"
+              # export VAR_VAL="${{ secrets[env.VAR_NAME] }}$VAR_APPEND"
+              # if [ -n "$VAR_VAL" ]; then
+              #   echo "::add-mask::$VAR_VAL"
+              # else
+              #   echo "${{ vars[env.VAR_NAME)] }}$VAR_APPEND"
+              # fi
             fi
           }
 
