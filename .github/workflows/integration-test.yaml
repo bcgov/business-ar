@@ -115,7 +115,7 @@ jobs:
 
           echo "oidc_issuer=\"`get_var "op://keycloak/$APP_ENV/jwt-base/JWT_OIDC_ISSUER" "OIDC_URL"`\"" >> terraform.tfvars
           echo "3"
-          echo "oidc_well_known_config=\`get_var "op://keycloak/$APP_ENV/jwt-base/JWT_OIDC_WELL_KNOWN_CONFIG" "OIDC_URL" "/.well-known/openid-configuration"`\"" >> terraform.tfvars
+          echo "oidc_well_known_config=\"`get_var "op://keycloak/$APP_ENV/jwt-base/JWT_OIDC_WELL_KNOWN_CONFIG" "OIDC_URL" "/.well-known/openid-configuration"`\"" >> terraform.tfvars
           echo "4"
 
           echo "auth_svc_url=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_AUTH_TOKEN_URL" "OIDC_URL" "/protocol/openid-connect/token"`\"" >> terraform.tfvars
