@@ -34,7 +34,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: "Deploy To"
+        description: "Environment to use (OP)"
         required: true
         default: "DEV"
         type: choice
@@ -89,7 +89,16 @@ jobs:
             export OP_LOC="$1"
             export VAR_NAME="$2"
             export VAR_APPEND="$3"
-            echo "::add-mask::$(op read "$OP_LOC" || echo "${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" || echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND" )"
+            export OP_VAL="`op read "$OP_LOC"`"
+            if [ -n "$OP_VAL" ]; then
+              echo "::add-mask::$OP_VAL"
+            else
+              export VAR_VAL="${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
+              if [ -n "$VAR_VAL" ]; then
+                echo "::add-mask::$VAR_VAL"
+              else
+                echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
+            fi
           }
 
           #create terraform vars file
