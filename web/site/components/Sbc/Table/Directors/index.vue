@@ -26,14 +26,16 @@ const columns = [
 
 // only show parties with role of director
 // map into key/value pair for table
-const parties = props.directors
-  .filter(party => party.roles.some(role => role.roleType === 'Director'))
-  .map(party => ({
-    name: `${party.officer.firstName} ${party.officer.middleInitial} ${party.officer.lastName}`,
-    mailingAddress: party.mailingAddress,
-    deliveryAddress: party.deliveryAddress,
-    effectiveDates: t('labels.apptDate', { date: datetimeStringToDateString(party.roles[0].appointmentDate) })
-  }))
+const parties = computed(() => {
+  return props.directors
+    .filter(party => party.roles.some(role => role.roleType === 'Director'))
+    .map(party => ({
+      name: `${party.officer.firstName} ${party.officer.middleInitial} ${party.officer.lastName}`,
+      mailingAddress: party.mailingAddress,
+      deliveryAddress: party.deliveryAddress,
+      effectiveDates: t('labels.apptDate', { date: datetimeStringToDateString(party.roles[0].appointmentDate) })
+    }))
+})
 </script>
 <template>
   <UTable :rows="parties" :columns>

@@ -23,18 +23,20 @@ const columns = [
   }
 ]
 
-const addresses = [
-  {
-    name: t('labels.registeredOffice'),
-    mailingAddress: props.offices.registeredOffice.mailingAddress,
-    deliveryAddress: props.offices.registeredOffice.deliveryAddress
-  },
-  {
-    name: t('labels.recordsOffice'),
-    mailingAddress: props.offices.recordsOffice.mailingAddress,
-    deliveryAddress: props.offices.recordsOffice.deliveryAddress
-  }
-]
+const addresses = computed(() => {
+  return [
+    {
+      name: t('labels.registeredOffice'),
+      mailingAddress: props.offices.registeredOffice.mailingAddress,
+      deliveryAddress: props.offices.registeredOffice.deliveryAddress
+    },
+    {
+      name: t('labels.recordsOffice'),
+      mailingAddress: props.offices.recordsOffice.mailingAddress,
+      deliveryAddress: props.offices.recordsOffice.deliveryAddress
+    }
+  ]
+})
 </script>
 <template>
   <UTable :rows="addresses" :columns>
