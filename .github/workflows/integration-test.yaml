@@ -91,11 +91,11 @@ jobs:
             export VAR_APPEND="$3"
             export OP_VAL="`op read "$OP_LOC"`"
             if [ -n "$OP_VAL" ]; then
-              echo "::add-mask::$OP_VAL"
+              echo "::add-mask::${OP_VAL}"
             else
               export VAR_VAL="${{ secrets[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
               if [ -n "$VAR_VAL" ]; then
-                echo "::add-mask::$VAR_VAL"
+                echo "::add-mask::{$VAR_VAL}"
               else
                 echo "${{ vars[format('{0}_A', env.VAR_NAME)] }}$VAR_APPEND"
               fi
@@ -134,6 +134,7 @@ jobs:
           echo "registry_home_url=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
           echo "11"
           echo "nuxt_client_id=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
+          echo "12`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`"
 
           #May 22
           echo "hostname = \"http://127.0.0.1\"" >> terraform.tfvars
@@ -149,8 +150,6 @@ jobs:
           echo "notify_api_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "NOTIFY_API_URL"`\"" >> terraform.tfvars
           echo "18"
           #end terraform vars file
-
-          cat terraform.tfvars
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
