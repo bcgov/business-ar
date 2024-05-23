@@ -150,6 +150,7 @@ export default {
       title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
+      reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
       form: {
         heldAgm: {
           question: "Es'ce que votre enterprise a tenu une assemblée générale annuelle?",

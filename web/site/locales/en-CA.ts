@@ -150,6 +150,7 @@ export default {
       title: 'File Your BC Annual Report - Service BC Annual Report',
       h1: '{year} Annual Report',
       h2: 'Annual Report for: {name}',
+      reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
       form: {
         heldAgm: {
           question: 'Has your company held an Annual General Meeting?',
