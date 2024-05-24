@@ -8,9 +8,9 @@ parser = argparse.ArgumentParser(
                     prog='get_var',
                     description='gets a variable from op or environment')
 
-parser.add_argument('op_loc')
-parser.add_argument('var_name')
-parser.add_argument('var_append')
+parser.add_argument('op_loc', required=True)
+parser.add_argument('var_name', required=True)
+parser.add_argument('var_append', required=False)
 
 args = parser.parse_args()
 
