@@ -35,6 +35,7 @@
 This module contains the services necessary for handling notifications.
 """
 import base64
+import re
 from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
@@ -43,12 +44,9 @@ import requests
 from business_ar_api.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
-from business_ar_api.services import (
-    AccountService,
-    BusinessService,
-    FilingService,
-    PaymentService,
-)
+from business_ar_api.services import (AccountService, BusinessService,
+                                      FilingService)
+from business_ar_api.services.report_service import ReportService
 from business_ar_api.utils.legislation_datetime import LegislationDatetime
 from flask import current_app
 from jinja2 import Template
@@ -150,6 +148,29 @@ class NotificationService:
                     }
                 )
                 attach_order += 1
+            report_service = ReportService()
+            filing_type = "annualReport"
+            filing_pdf = report_service.generate_report(filing.id, filing_type)
+            filing_pdf_encoded = base64.b64encode(filing_pdf.get_data())
+            file_name = filing_type[0].upper() + " ".join(
+                re.findall("[a-zA-Z][^A-Z]*", filing_type[1:])
+            )
+            if (
+                ar_date := filing.filing_json["filing"]
+                .get(filing_type, {})
+                .get("annualReportDate")
+            ):
+                file_name = f"{ar_date[:4]} {file_name}"
+
+            pdfs.append(
+                {
+                    "fileName": f"{file_name}.pdf",
+                    "fileBytes": filing_pdf_encoded.decode("utf-8"),
+                    "fileUrl": "",
+                    "attachOrder": str(attach_order),
+                }
+            )
+            attach_order += 1
         return pdfs
 
     @staticmethod
