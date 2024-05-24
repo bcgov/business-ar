@@ -76,6 +76,7 @@ jobs:
         uses: bcgov/bcregistry-sre/.github/actions/install-1pass@main
 
       - name: terraform
+        id: terraform
         env:
           TERRAFORM_VERSION: "1.8.0"
         run: |
@@ -138,6 +139,13 @@ jobs:
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
+          #for later steps
+          echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TEST_USER"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_PASSWORD=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TEST_PASSWORD"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_TOKEN=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_TOKEN"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_PROJECT=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_PROJECT"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_USER"`" >> "$GITHUB_OUTPUT"
+
       - name: testim install
         uses: coactions/setup-xvfb@v1
         with:
@@ -146,17 +154,17 @@ jobs:
 
       - name: test
         uses: coactions/setup-xvfb@v1
+        env:
+          T_USER: ${{ steps.terraform.outputs.TEST_STEP_USER }}
+          T_PASSWORD: ${{ steps.terraform.outputs.TEST_STEP_PASSWORD }}
+          TIM_TOKEN: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_TOKEN }}
+          TIM_USER: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_USER }}
+          TIM_PROJECT: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_PROJECT }}
         with:
           working-directory: ./test/testim #optional
           run: |
-            chmod ugo+x ../get_var.py
-            get_var(){
-              export OUTPUT=`../get_var.py $1 $2 $3`
-              echo "::add-mask::$OUTPUT" >> /dev/null
-              echo $OUTPUT
-            }
             echo "{" > ./config.json
-            echo "{\"username\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_USER"`\"," >> ./config.json
-            echo "\"password\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_PASSWORD"`\"" >> ./config.json
+            echo "{\"username\": \"$T_USER\"," >> ./config.json
+            echo "\"password\": \"$T_PASSWORD\"" >> ./config.json
             echo "}" >> ./config.json
-            testim --token "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_TOKEN"`" --project "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_PROJECT"`" --use-local-chrome-driver --user "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_USER"`" --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
+            testim --token "$TIM_TOKEN" --project "$TIM_PROJECT" --use-local-chrome-driver --user "$TIM_USER" --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
