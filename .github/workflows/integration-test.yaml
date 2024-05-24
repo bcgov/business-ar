@@ -133,11 +133,11 @@ jobs:
           echo "auth_client_id=\"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_ID" "OIDC_CLIENT"`\"" >> terraform.tfvars
           echo "auth_client_secret=\"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_SECRET" "OIDC_CLIENT_SECRET"`\"" >> terraform.tfvars
 
-          #echo "canada_post_api_key=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "CANADA_POST_API_KEY"`\"" >> terraform.tfvars
+          #echo "canada_post_api_key=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "CANADA_POST_API_KEY"`\"" >> terraform.tfvars
           echo "auth_url=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_AUTH_BASE_URL" "AUTH_URL"`\"" >> terraform.tfvars
-          echo "auth_realm=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "AUTH_REALM"`\"" >> terraform.tfvars
-          echo "registry_home_url=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
-          echo "nuxt_client_id=\"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
+          echo "auth_realm=\"`get_var ""op://keycloak/$APP_ENV/base/KEYCLOAK_REALMNAME" "AUTH_REALM"`\"" >> terraform.tfvars
+          echo "registry_home_url=\"`get_var "op://web-url/$APP_ENV/registry/REGISTRY_HOME_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
+          echo "nuxt_client_id=\"`get_var "op://keycloak/$APP_ENV/bar-web/UI_KEYCLOAK_RESOURCE_NAME" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
 
           #May 22
           echo "hostname = \"http://127.0.0.1\"" >> terraform.tfvars
@@ -151,11 +151,11 @@ jobs:
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
           #for later steps
-          echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TEST_USER"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_PASSWORD=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TEST_PASSWORD"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_TOKEN=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_TOKEN"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_PROJECT=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_PROJECT"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_YET" "TESTIM_USER"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_PASSWORD=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_PASSWORD"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_TOKEN=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_TOKEN"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_PROJECT=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_PROJECT"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_USER"`" >> "$GITHUB_OUTPUT"
 
       - name: testim install
         uses: coactions/setup-xvfb@v1
