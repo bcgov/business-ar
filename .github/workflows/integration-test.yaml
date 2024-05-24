@@ -68,7 +68,7 @@ jobs:
       AUTH_REALM: ${{secrets.AUTH_REALM}}
       REGISTRY_HOME_URL: ${{secrets.REGISTRY_HOME_URL}}
       NUXT_CLIENT_ID: ${{secrets.NUXT_CLIENT_ID}}
-      TESTIM_TOKEN: ${{vars.TESTIM_TOKEN}}
+      TESTIM_TOKEN: ${{secrets.TESTIM_TOKEN}}
       TESTIM_PROJECT: ${{vars.TESTIM_PROJECT}}
       TESTIM_USER: ${{vars.TESTIM_USER}}
       COLIN_API_URL: ${{secrets.COLIN_API_URL}}
@@ -151,11 +151,11 @@ jobs:
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
           #for later steps
-          echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_PASSWORD=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_PASSWORD"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_TOKEN=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_TOKEN"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_PROJECT=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_PROJECT"`" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_USER"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_USER=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`\"" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_PASSWORD=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_PASSWORD"`\"" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_TOKEN=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_TOKEN"`\"" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_PROJECT=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_PROJECT"`\"" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_USER=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_USER"`\"" >> "$GITHUB_OUTPUT"
 
       - name: testim install
         uses: coactions/setup-xvfb@v1
