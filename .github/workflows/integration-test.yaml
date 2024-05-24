@@ -153,7 +153,7 @@ jobs:
             chmod ugo+x ../get_var.py
             get_var(){
               export OUTPUT=`../get_var.py $1 $2 $3`
-              echo "::add-mask::$OUTPUT"
+              echo "::add-mask::$OUTPUT" >> /dev/null
               echo $OUTPUT
             }
             echo "{" > ./config.json
