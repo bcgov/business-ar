@@ -5,7 +5,7 @@ const props = defineProps<{
   offices: {
     recordsOffice: Office
     registeredOffice: Office
-  }
+  } | undefined
 }>()
 
 const columns = [
@@ -24,6 +24,7 @@ const columns = [
 ]
 
 const addresses = computed(() => {
+  if (!props.offices) { return [] }
   return [
     {
       name: t('labels.registeredOffice'),

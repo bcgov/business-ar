@@ -2,7 +2,7 @@
 const { t } = useI18n()
 
 const props = defineProps<{
-  directors: Party[]
+  directors: Party[] | undefined
 }>()
 
 const columns = [
@@ -27,6 +27,7 @@ const columns = [
 // only show parties with role of director
 // map into key/value pair for table
 const parties = computed(() => {
+  if (!props.directors) { return [] }
   return props.directors
     .filter(party => party.roles.some(role => role.roleType === 'Director'))
     .map(party => ({
