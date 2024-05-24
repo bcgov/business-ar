@@ -17,6 +17,7 @@ args = parser.parse_args()
 envCp = os.environ.copy()
 
 result = ""
+out = ""
 try:
   result = subprocess.Popen(["op", "read", args.op_loc], stdout = subprocess.PIPE, env=envCp)
 except Exception:
@@ -24,9 +25,12 @@ except Exception:
 
 
 if result:
-  print(result.stdout.strip().decode())
+  out, err = result.communicate()
+  if out:
+    print(out.strip().decode())
 
-if args.var_append:
-  print(os.environ[args.var_name] + args.var_append)
-
-print(os.environ[args.var_name])
+if not(result) and not(out):
+  if args.var_append:
+    print(os.environ[args.var_name] + args.var_append)
+  else:
+    print(os.environ[args.var_name])
