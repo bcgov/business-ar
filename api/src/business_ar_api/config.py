@@ -88,8 +88,13 @@ class Config:
 
     DASHBOARD_URL = os.getenv("DASHBOARD_URL")
     EMAIL_TEMPLATE_PATH = os.getenv("EMAIL_TEMPLATE_PATH")
-    NOTIFY_API_URL = os.getenv("NOTIFY_API_URL")
-    REPORT_SVC_URL = os.getenv("REPORT_SVC_URL")
+    NOTIFY_API_URL = os.getenv("NOTIFY_API_URL") \
+                    + os.getenv("NOTIFY_API_VERSION", "") \
+                    + "notify/"
+    REPORT_SVC_URL = os.getenv("REPORT_API_URL") \
+                    + os.getenv("REPORT_API_VERSION", "") \
+                    + "/reports"
+
     REPORT_TEMPLATE_PATH = os.getenv("REPORT_PATH", "report-templates")
 
     LEGISLATIVE_TIMEZONE = os.getenv("LEGISLATIVE_TIMEZONE", "America/Vancouver")
