@@ -101,7 +101,7 @@ jobs:
           chmod ugo+x ../get_var.py
 
           get_var(){
-            export OUTPUT=`get_var.py.py $1 $2 $3`
+            export OUTPUT=`../get_var.py $1 $2 $3`
             echo "::add-mask::$OUTPUT"
             echo $OUTPUT
           }
@@ -152,7 +152,7 @@ jobs:
           run: |
             chmod ugo+x ../get_var.py
             get_var(){
-              export OUTPUT=`get_var.py.py $1 $2 $3`
+              export OUTPUT=`../get_var.py $1 $2 $3`
               echo "::add-mask::$OUTPUT"
               echo $OUTPUT
             }
