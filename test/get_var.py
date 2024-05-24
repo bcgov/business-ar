@@ -29,7 +29,7 @@ if result:
   if out:
     print(out.strip().decode())
 
-if not(result) and not(out):
+if not(result) or not(out):
   if args.var_append:
     print(os.environ[args.var_name] + args.var_append)
   else:
