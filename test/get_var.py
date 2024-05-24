@@ -34,3 +34,5 @@ if not(result) and not(out):
     print(os.environ[args.var_name] + args.var_append)
   else:
     print(os.environ[args.var_name])
+
+print("Done")
