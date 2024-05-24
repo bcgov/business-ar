@@ -21,6 +21,12 @@ name: Integration Tests
 #REGISTRY_HOME_URL
 #NUXT_CLIENT_ID
 
+#COLIN_API_URL
+#COLIN_CLIENT_ID
+#COLIN_CLIENT_SECRET
+#DASHBOARD_URL
+#NOTIFY_API_URL
+
 #May be needed in future
 #FIREBASE_API_KEY
 #FIREBASE_MESSAGING_SENDER_ID
@@ -65,6 +71,11 @@ jobs:
       TESTIM_TOKEN: ${{vars.TESTIM_TOKEN}}
       TESTIM_PROJECT: ${{vars.TESTIM_PROJECT}}
       TESTIM_USER: ${{vars.TESTIM_USER}}
+      COLIN_API_URL: ${{secrets.COLIN_API_URL}}
+      COLIN_CLIENT_ID: ${{secrets.COLIN_CLIENT_ID}}
+      COLIN_CLIENT_SECRET: ${{secrets.COLIN_CLIENT_SECRET}}
+      DASHBOARD_URL: ${{secrets.DASHBOARD_URL}}
+      NOTIFY_API_URL: ${{secrets.NOTIFY_API_URL}}
     runs-on: ubuntu-latest
     defaults:
       run:
