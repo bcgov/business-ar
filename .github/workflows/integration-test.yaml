@@ -135,8 +135,6 @@ jobs:
           echo "dashboard_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "DASHBOARD_URL"`\"" >> terraform.tfvars
           echo "notify_api_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "NOTIFY_API_URL"`\"" >> terraform.tfvars
           #end terraform vars file
-          
-          cat terraform.tfvars
 
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
@@ -149,6 +147,7 @@ jobs:
       - name: test
         uses: coactions/setup-xvfb@v1
         with:
+          working-directory: ./test/testim #optional
           run: |
             chmod ugo+x ../get_var.py
             get_var(){
@@ -161,4 +160,3 @@ jobs:
             echo "\"password\": \"`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TEST_PASSWORD"`\"" >> ./config.json
             echo "}" >> ./config.json
             testim --token "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_TOKEN"`" --project "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_PROJECT"`" --use-local-chrome-driver --user "`get_var "op://API/$APP_ENV/auth-api/AUTH_API_URL" "TESTIM_USER"`" --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
-          working-directory: ./testim #optional
