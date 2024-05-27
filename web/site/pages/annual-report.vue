@@ -161,9 +161,7 @@ if (import.meta.client) {
   <ClientOnly>
     <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
       <div class="flex w-full flex-col gap-6">
-        <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-          {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
-        </h1>
+        <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
 
         <UAlert
           v-if="errorAlert.title || errorAlert.description"

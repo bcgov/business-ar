@@ -43,9 +43,10 @@ if (import.meta.client) {
 <template>
   <ClientOnly>
     <div class="mx-auto flex flex-col items-center gap-4 text-left sm:gap-8">
-      <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.existingAccount.h1') }}
-      </h1>
+      <SbcPageSectionH1
+        :heading="$t('page.existingAccount.h1')"
+        class="self-start"
+      />
       <UCard class="w-full max-w-5xl border border-bcGovColor-navDivider bg-[#FFF7E3]">
         <div class="flex items-center gap-2">
           <p class="text-bcGovColor-midGray dark:text-gray-300">
