@@ -23,7 +23,7 @@ async function handleAccountSelect (id: number) {
   setAccountLoading.value = false
 }
 
-onMounted(async () => {
+async function initPage () {
   try {
     const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
@@ -34,7 +34,12 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
+
+// init page in setup lifecycle
+if (import.meta.client) {
+  initPage()
+}
 </script>
 <template>
   <ClientOnly>

@@ -18,7 +18,6 @@ useHead({
   <div
     class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
   >
-    <!-- <NuxtLoadingIndicator /> -->
     <SbcLoadingSpinner v-if="loadStore.pageLoading" overlay />
     <SbcHeaderMain />
     <NuxtLayout>

@@ -16,7 +16,8 @@ definePageMeta({
   order: 0
 })
 
-if (import.meta.client) {
+// init page function to be able to return navigateTo instead of await, smoother UX
+async function initPage () {
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
@@ -28,23 +29,28 @@ if (import.meta.client) {
       const { task } = await busStore.getBusinessTask()
       if (task === 'filing') { // TODO: figure out why combining the if statements always returns false
         if (busStore.payStatus !== 'PAID') {
-          await navigateTo(localePath('/annual-report'))
+          return navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
-        await navigateTo(localePath('/accounts/choose-existing'))
+        return navigateTo(localePath('/accounts/choose-existing'))
       }
+      loadStore.pageLoading = false // only set false if not navigating to new page
     } else if (!keycloak.isAuthenticated() && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
+      loadStore.pageLoading = false // only set false if not navigating to new page
     } else { // throw error if no valid nano id
-      throw new Error('Missing id to fetch business details')
+      throw new Error('Missing token to fetch business details')
     }
   } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
     console.error((e as Error).message)
-    await navigateTo(localePath('/missing-id'))
-  } finally {
-    loadStore.pageLoading = false
+    return navigateTo(localePath('/missing-id'))
   }
+}
+
+// init page in setup lifecycle
+if (import.meta.client) {
+  initPage()
 }
 </script>
 <template>
@@ -64,7 +70,10 @@ if (import.meta.client) {
           />
         </span>
       </SbcPageSectionH1>
-      <SbcPageSectionH1 :heading="$t('page.home.h1')" />
+      <SbcPageSectionH1
+        v-else
+        :heading="$t('page.home.h1')"
+      />
 
       <!-- show business details -->
       <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
