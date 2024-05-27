@@ -151,11 +151,11 @@ jobs:
           terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
 
           #for later steps
-          echo "TEST_STEP_USER=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`\"" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_PASSWORD=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_PASSWORD"`\"" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_TOKEN=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_TOKEN"`\"" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_PROJECT=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_PROJECT"`\"" >> "$GITHUB_OUTPUT"
-          echo "TEST_STEP_TESTIM_USER=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_USER"`\"" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_PASSWORD=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_PASSWORD"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_TOKEN=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_TOKEN"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_PROJECT=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_PROJECT"`" >> "$GITHUB_OUTPUT"
+          echo "TEST_STEP_TESTIM_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TESTIM_USER"`" >> "$GITHUB_OUTPUT"
 
       - name: testim install
         uses: coactions/setup-xvfb@v1
@@ -168,12 +168,9 @@ jobs:
         env:
           T_USER: ${{ steps.terraform.outputs.TEST_STEP_USER }}
           T_PASSWORD: ${{ steps.terraform.outputs.TEST_STEP_PASSWORD }}
-          TIM_TOKEN2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_TOKEN }}
-          TIM_USER2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_USER }}
-          TIM_PROJECT2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_PROJECT }}
-          TIM_TOKEN: ${{secrets.TESTIM_TOKEN}}
-          TIM_PROJECT: ${{vars.TESTIM_PROJECT}}
-          TIM_USER: ${{vars.TESTIM_USER}}
+          TIM_TOKEN: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_TOKEN }}
+          TIM_USER: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_USER }}
+          TIM_PROJECT: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_PROJECT }}
         with:
           working-directory: ./test/testim #optional
           run: |
