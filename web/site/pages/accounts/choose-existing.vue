@@ -44,7 +44,6 @@ onMounted(async () => {
       </h1>
       <UCard class="w-full max-w-5xl border border-bcGovColor-navDivider bg-[#FFF7E3]">
         <div class="flex items-center gap-2">
-          <UIcon name="i-mdi-alert" class="mx-2 size-6 shrink-0 text-bcGovColor-caution" />
           <p class="text-bcGovColor-midGray dark:text-gray-300">
             <span class="font-semibold">{{ $t('labels.note') }}: </span>{{ $t('page.existingAccount.existingAccountWarning') }}
           </p>

@@ -78,7 +78,19 @@ export default {
     busName: "Nom de l'entreprise",
     corpNum: 'Numéro de constitution',
     busNum: "Numéro d'entreprise",
-    arDate: 'Date du Rapport Annuel'
+    arDate: 'Date du Rapport Annuel',
+    name: 'Nom', // TODO: start review
+    mailingAddress: 'Adresse Postale',
+    deliveryAddress: 'Adresse de Livraison',
+    effectiveDates: "Dates d'Effet",
+    apptDate: '{date} à actuel',
+    sameAsMailAddress: "Identique à l'Adresse Postale",
+    registeredOffice: 'Siège Social',
+    recordsOffice: 'Bureau des Archives',
+    office: 'Bureau' // TODO: end review
+  },
+  words: {
+    i: 'Je'
   },
   page: {
     notFound: {
@@ -141,9 +153,10 @@ export default {
       title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
+      reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
       form: {
         heldAgm: {
-          question: "Es'ce que votre enterprise a tenu une assemblée générale annuelle?",
+          question: "Es'ce que votre entreprise a tenu une assemblée générale annuelle?",
           opt1: 'Oui',
           opt2: "Nous n'avons pas encore tenu une AGA",
           opt3: "Nous avons voté pour ne pas tenir d'AGA"
@@ -151,11 +164,11 @@ export default {
         agmDate: {
           placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
           label: "Sélectionnez la date de l'assemblée générale annuelle",
-          format: 'Format: {format}',
+          format: 'Format: AAAA-MM-JJ',
           error: 'Vous devez sélectionner une date si vous avez tenu une AGA'
         },
         certify: {
-          question: 'Je certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
+          question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
       },
@@ -171,12 +184,12 @@ export default {
   },
   widgets: {
     feeSummary: {
-      title: 'Résumé des frais',
-      total: 'Total des frais',
+      title: 'Résumé des Frais',
+      total: 'Total des Frais',
       noFee: 'Pas de frais',
       priorityFees: 'Frais prioritaires',
       futureEffectiveFees: 'Frais effectifs futurs',
-      serviceFees: 'Frais de service',
+      serviceFees: 'Frais de Service',
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',

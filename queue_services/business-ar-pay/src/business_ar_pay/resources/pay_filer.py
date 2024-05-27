@@ -134,7 +134,7 @@ def get_payment_token(ce: SimpleCloudEvent):
     # TODO move to common enums for ce.type = bc.registry.payment
     if (
         (ce.type == "bc.registry.payment")
-        and (data := ce.data.get("paymentToken"))
+        and (data := ce.data)
         and isinstance(data, dict)
     ):
         converted = dict_keys_to_snake_case(data)

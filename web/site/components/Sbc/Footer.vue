@@ -35,7 +35,7 @@ const links = [
     class="border-t-2 border-bcGovColor-navDivider bg-bcGovColor-footer p-2 dark:border-t dark:bg-bcGovColor-darkGray"
   >
     <div class="mx-auto flex max-w-[1360px] items-center justify-between">
-      <nav :aria-label="$t('SbcFooter.navLabel')" class="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
+      <nav :aria-label="$t('SbcFooter.navLabel')" class="flex flex-col gap-1 md:flex-row md:items-center md:gap-4">
         <NuxtLink
           v-for="link in links"
           :key="link.to"

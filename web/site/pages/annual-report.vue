@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
-import { UForm, SbcInputsDateSelect } from '#components'
+import { UForm, UCheckbox, SbcInputsDateSelect } from '#components'
 const { t } = useI18n()
+const localePath = useLocalePath()
+const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
@@ -33,6 +35,7 @@ const options = [
 ]
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
+const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
 const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
 const selectedRadio = ref<string>('option-1')
 const loading = ref<boolean>(false)
@@ -40,6 +43,7 @@ const errorAlert = reactive({
   title: '',
   description: ''
 })
+const showCheckboxHelp = ref(false)
 
 // form state
 const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
@@ -54,9 +58,16 @@ const validate = (state: any): FormError[] => {
   if (selectedRadio.value === 'option-1' && !state.agmDate) {
     errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
   }
-  // user must confirm to submit form
+  // set error to confirm checkbox
   if (!state.officeAndDirectorsConfirmed) {
     errors.push({ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') })
+    // display help message
+    showCheckboxHelp.value = true
+    if (errors.length === 1) { // only scroll into view if its the only error
+      const element = document.getElementById(checkboxRef.value?.inputId)
+      element?.focus()
+      element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
   }
   return errors
 }
@@ -71,9 +82,13 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       votedForNoAGM: selectedRadio.value === 'option-3'
     }
     // submit filing
-    const { paymentToken, filingId } = await arStore.submitAnnualReportFiling(arFiling)
-    // redirect to pay with the returned token and filing id
-    await handlePaymentRedirect(paymentToken, filingId)
+    const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
+    if (payStatus === 'PAID') {
+      await navigateTo(localePath(`/submitted?filing_id=${filingId}`))
+    } else {
+      // redirect to pay with the returned token and filing id
+      await handlePaymentRedirect(paymentToken, filingId)
+    }
   } catch (e) {
     // log and display error alert if this fails
     const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
@@ -101,10 +116,25 @@ function handleRadioClick (option: string) {
   }
 }
 
-onMounted(() => {
+// set/unset checkbox error text after interacting with the checkbox
+watch(
+  () => arData.officeAndDirectorsConfirmed,
+  (newVal) => {
+    if (newVal === true) {
+      showCheckboxHelp.value = false
+    } else {
+      showCheckboxHelp.value = true
+    }
+  }
+)
+
+// TODO use business details from api call for address and directors
+
+onMounted(async () => {
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
+    await busStore.getFullBusinessDetails()
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
@@ -130,8 +160,8 @@ onMounted(() => {
 </script>
 <template>
   <ClientOnly>
-    <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-8 md:flex-row">
-      <div class="flex w-full flex-1 flex-col gap-6">
+    <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
+      <div class="flex w-full flex-col gap-6">
         <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
           {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
         </h1>
@@ -149,22 +179,9 @@ onMounted(() => {
           }"
         />
 
-        <UCard
-          class="w-full"
-          :ui="{
-            header: {
-              base: 'rounded-t-lg',
-              background: 'bg-bcGovColor-gray2',
-              padding: 'px-4 py-5 sm:px-6',
-            }
-          }"
+        <SbcPageSectionCard
+          :heading="$t('page.annualReport.h2', { name: busStore.currentBusiness.legalName })"
         >
-          <template #header>
-            <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
-              {{ $t('page.annualReport.h2', { name: busStore.currentBusiness.legalName }) }}
-            </h2>
-          </template>
-
           <SbcBusinessInfo
             break-value="lg"
             :items="[
@@ -185,10 +202,10 @@ onMounted(() => {
             @submit="submitAnnualReport"
             @error="onError"
           >
-            <!-- TO DO: look into why this label isnt being associated with the radios -->
+            <!-- TODO: look into why this label isnt being associated with the radios -->
             <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
               <fieldset
-                class="flex flex-col items-start gap-4 lg:flex-row lg:items-center"
+                class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
               >
                 <!-- need to look into this for a11y more -->
                 <legend class="sr-only">
@@ -210,7 +227,7 @@ onMounted(() => {
             </UFormGroup>
 
             <!-- AGM Date -->
-            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format', { format: 'YYYY-MM-DD' })" :ui="{ help: 'text-bcGovColor-midGray' }">
+            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format')" :ui="{ help: 'text-bcGovColor-midGray' }">
               <SbcInputsDateSelect
                 id="SelectAGMDate"
                 ref="dateSelectRef"
@@ -225,15 +242,52 @@ onMounted(() => {
                   arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
               />
             </UFormGroup>
-
-            <UDivider />
-
-            <!-- certify office address and directors -->
-            <UFormGroup name="officeAndDirectorsConfirmed">
-              <UCheckbox v-model="arData.officeAndDirectorsConfirmed" :label="$t('page.annualReport.form.certify.question')" />
-            </UFormGroup>
           </UForm>
-        </UCard>
+        </SbcPageSectionCard>
+
+        <h2 class="text-lg font-semibold text-bcGovColor-darkGray">
+          {{ $t('page.annualReport.reviewAndConfirm') }}
+        </h2>
+
+        <SbcPageSectionCard
+          heading="Addresses"
+          heading-icon="i-mdi-map-marker"
+          heading-level="h3"
+        >
+          <SbcTableAddress :offices="busStore.fullDetails.offices" />
+        </SbcPageSectionCard>
+
+        <SbcPageSectionCard
+          heading="Directors"
+          heading-icon="i-mdi-account-multiple-plus"
+          heading-level="h3"
+        >
+          <SbcTableDirectors :directors="busStore.fullDetails.parties" />
+        </SbcPageSectionCard>
+
+        <SbcPageSectionCard
+          heading="Confirm"
+          heading-icon="i-mdi-text-box-check"
+          heading-level="h3"
+        >
+          <UFormGroup
+            :ui="{
+              help: 'mt-2 text-red-500',
+            }"
+            :help="showCheckboxHelp ? $t('page.annualReport.form.certify.error') : ''"
+          >
+            <UCheckbox
+              ref="checkboxRef"
+              v-model="arData.officeAndDirectorsConfirmed"
+            >
+              <template #label>
+                <span>{{ $t('words.i') }}</span>
+                <span class="mx-1 font-semibold">{{ parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale) }}</span>
+                <span>{{ $t('page.annualReport.form.certify.question') }}</span>
+              </template>
+            </UCheckbox>
+          </UFormGroup>
+        </SbcPageSectionCard>
       </div>
       <SbcFeeWidget
         class="sm:mt-2"

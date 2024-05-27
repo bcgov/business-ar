@@ -18,14 +18,15 @@ import json
 import os
 from typing import List
 
-import config
 import requests
 import sentry_sdk
 from business_ar_api.enums.enum import AuthHeaderType
-from business_ar_api.services import AuthService as AccountService
+from business_ar_api.services import AccountService
 from flask import Flask
 from sentry_sdk.integrations.logging import LoggingIntegration
-from utils.logging import setup_logging
+
+from .config import CONFIGURATION
+from .utils.logging import setup_logging
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
@@ -37,7 +38,7 @@ TIMEOUT = 20
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
-    app.config.from_object(config.CONFIGURATION[run_mode])
+    app.config.from_object(CONFIGURATION[run_mode])
     # Configure Sentry
     if app.config.get("SENTRY_DSN", None):
         sentry_sdk.init(dsn=app.config.get("SENTRY_DSN"), integrations=[SENTRY_LOGGING])
@@ -69,7 +70,7 @@ def get_filings(app: Flask = None, token: str = None):
     )
     if not req or req.status_code != 200:
         app.logger.error(
-            f"Failed to collect filings from legal-api. {req} {req.json()} {req.status_code}"
+            f"Failed to collect filings from legal-api. {req} {req.status_code}"
         )
         raise Exception  # pylint: disable=broad-exception-raised
     return req.json()
@@ -214,7 +215,3 @@ def run():
         except Exception as err:  # noqa: B902
             # pylint: disable=no-member; false positive
             application.logger.error(err)
-
-
-if __name__ == "__main__":
-    run()

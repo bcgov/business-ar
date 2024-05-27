@@ -1,4 +1,4 @@
-import type { BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
+import type { Business, BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
@@ -10,6 +10,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // store values
   const loading = ref<boolean>(true)
   const currentBusiness = ref<BusinessFull>({} as BusinessFull)
+  const fullDetails = ref<Business>({} as Business)
   const businessNano = ref<BusinessNano>({} as BusinessNano)
   const nextArDate = ref<string>('')
   const payStatus = ref<string | null>(null)
@@ -29,6 +30,10 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         console.error(errorMsg)
       }
     })
+  }
+
+  async function getFullBusinessDetails (): Promise<void> {
+    fullDetails.value = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, 'get', 'token')
   }
 
   function assignBusinessStoreValues (bus: BusinessFull) {
@@ -113,6 +118,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     businessNano.value = {} as BusinessNano
     nextArDate.value = ''
     payStatus.value = null
+    fullDetails.value = {} as Business
   }
 
   return {
@@ -120,12 +126,14 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     updatePaymentStatusForBusiness,
     getBusinessTask,
     assignBusinessStoreValues,
+    getFullBusinessDetails,
     $reset,
     loading,
     currentBusiness,
     businessNano,
     nextArDate,
-    payStatus
+    payStatus,
+    fullDetails
   }
 },
 { persist: true } // persist store values in session storage

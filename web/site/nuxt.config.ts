@@ -2,13 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: true,
-  nitro: {
-    prerender: {
-      routes: [
-        '/en-CA/submitted',
-        '/fr-CA/submitted'
-      ]
-    }
+  routeRules: {
+    '/': { redirect: '/en-CA' }
   },
   modules: [
     '@nuxtjs/eslint-module',
@@ -18,9 +13,6 @@ export default defineNuxtConfig({
   extends: ['@daxiom/sbc-nuxt-assets-layer'],
   imports: {
     dirs: ['stores', 'composables', 'enums', 'interfaces', 'types', 'utils']
-  },
-  routeRules: {
-    '/': { redirect: '/en-CA' }
   },
   i18n: {
     locales: [
@@ -52,6 +44,9 @@ export default defineNuxtConfig({
       'fr-CA'
     ],
     contentHead: false
+    // experimental: {
+    //   clientDB: true
+    // }
   },
   colorMode: {
     preference: 'light',
@@ -70,7 +65,8 @@ export default defineNuxtConfig({
       barApiUrl: `${process.env.NUXT_BAR_API_URL || ''}${process.env.NUXT_BAR_API_VERSION || ''}`,
       paymentPortalUrl: process.env.NUXT_PAYMENT_PORTAL_URL,
       baseUrl: process.env.NUXT_BASE_URL,
-      environment: process.env.NUXT_ENVIRONMENT_HEADER ? `${process.env.NUXT_ENVIRONMENT_HEADER} v${process.env.npm_package_version}` : undefined
+      environment: process.env.NUXT_ENVIRONMENT_HEADER ? `${process.env.NUXT_ENVIRONMENT_HEADER} v${process.env.npm_package_version}` : undefined,
+      ldClientId: process.env.NUXT_LD_CLIENT_ID || ''
     }
   },
   vite: {

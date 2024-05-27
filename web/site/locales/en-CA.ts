@@ -78,7 +78,19 @@ export default {
     busName: 'Business Name',
     corpNum: 'Incorporation Number',
     busNum: 'Business Number',
-    arDate: 'Date of Annual Report'
+    arDate: 'Date of Annual Report',
+    name: 'Name',
+    mailingAddress: 'Mailing Address',
+    deliveryAddress: 'Delivery Address',
+    effectiveDates: 'Effective Dates',
+    apptDate: '{date} to current',
+    sameAsMailAddress: 'Same as Mailing Address',
+    registeredOffice: 'Registered Office',
+    recordsOffice: 'Records Office',
+    office: 'Office'
+  },
+  words: {
+    i: 'I'
   },
   page: {
     notFound: {
@@ -141,6 +153,7 @@ export default {
       title: 'File Your BC Annual Report - Service BC Annual Report',
       h1: '{year} Annual Report',
       h2: 'Annual Report for: {name}',
+      reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
       form: {
         heldAgm: {
           question: 'Has your company held an Annual General Meeting?',
@@ -151,11 +164,11 @@ export default {
         agmDate: {
           placeholder: 'Select Annual General Meeting Date',
           label: 'Select Annual General Meeting Date',
-          format: 'Format: {format}',
+          format: 'Format: YYYY-MM-DD',
           error: 'You must select a date if you held an AGM'
         },
         certify: {
-          question: 'I certify all information about the Office Addresses and Current Directors is correct.',
+          question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
       },
