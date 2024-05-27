@@ -8,7 +8,6 @@ const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
 const loadStore = useLoadingStore()
-loadStore.pageLoading = true
 
 useHead({
   title: t('page.annualReport.title')
@@ -128,10 +127,10 @@ watch(
   }
 )
 
-// TODO use business details from api call for address and directors
-
-onMounted(async () => {
+if (import.meta.client) {
+  console.log('setting up ar page')
   try {
+    // loadStore.pageLoading = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
     await busStore.getFullBusinessDetails()
@@ -156,7 +155,34 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
+// onMounted(async () => {
+//   try {
+//     // load fees for fee widget, might move into earlier setup
+//     addBarPayFees()
+//     await busStore.getFullBusinessDetails()
+//     // try to prefill form if a filing exists
+//     if (Object.keys(arStore.arFiling).length !== 0) {
+//       // add payment error message if pay status exists and doesnt equal paid
+//       if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
+//         errorAlert.title = t('page.annualReport.payError.title')
+//         errorAlert.description = t('page.annualReport.payError.description')
+//       }
+
+//       const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
+//       const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
+//       if (votedForNoAGM) {
+//         selectedRadio.value = 'option-3'
+//       } else if (!votedForNoAGM && !agmDate) {
+//         selectedRadio.value = 'option-2'
+//       } else if (agmDate) {
+//         arData.agmDate = agmDate
+//       }
+//     }
+//   } finally {
+//     loadStore.pageLoading = false
+//   }
+// })
 </script>
 <template>
   <ClientOnly>

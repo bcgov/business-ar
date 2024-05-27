@@ -16,11 +16,10 @@ definePageMeta({
   middleware: ['filing-paid', 'filing-in-progress']
 })
 
-async function handleAccountSelect (id: number) {
+function handleAccountSelect (id: number) {
   setAccountLoading.value = true
   accountStore.selectUserAccount(id)
-  await navigateTo(localePath('/annual-report'))
-  setAccountLoading.value = false
+  return navigateTo(localePath('/annual-report'))
 }
 
 async function initPage () {

@@ -14,8 +14,7 @@ definePageMeta({
   middleware: ['filing-paid', 'require-account']
 })
 
-// TODO: need to handle if theres no filing id in the route query or if the put request fails
-onMounted(async () => {
+if (import.meta.client) {
   try {
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')
@@ -33,7 +32,7 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
 </script>
 <template>
   <div v-show="!loadStore.pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
