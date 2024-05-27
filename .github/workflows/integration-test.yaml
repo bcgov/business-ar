@@ -168,9 +168,12 @@ jobs:
         env:
           T_USER: ${{ steps.terraform.outputs.TEST_STEP_USER }}
           T_PASSWORD: ${{ steps.terraform.outputs.TEST_STEP_PASSWORD }}
-          TIM_TOKEN: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_TOKEN }}
-          TIM_USER: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_USER }}
-          TIM_PROJECT: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_PROJECT }}
+          TIM_TOKEN2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_TOKEN }}
+          TIM_USER2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_USER }}
+          TIM_PROJECT2: ${{ steps.terraform.outputs.TEST_STEP_TESTIM_PROJECT }}
+          TIM_TOKEN: ${{secrets.TESTIM_TOKEN}}
+          TIM_PROJECT: ${{vars.TESTIM_PROJECT}}
+          TIM_USER: ${{vars.TESTIM_USER}}
         with:
           working-directory: ./test/testim #optional
           run: |
