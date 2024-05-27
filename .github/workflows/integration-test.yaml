@@ -174,4 +174,4 @@ jobs:
         with:
           working-directory: ./test/testim #optional
           run: |
-            testim --token $TESTIM_TOKEN --project $TESTIM_PROJECT --use-local-chrome-driver --user $TESTIM_USER --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config2.json
+            testim --token $TESTIM_TOKEN --project $TESTIM_PROJECT --use-local-chrome-driver --user $TESTIM_USER --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
