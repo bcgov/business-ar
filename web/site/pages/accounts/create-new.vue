@@ -87,9 +87,10 @@ if (import.meta.client) {
 <template>
   <ClientOnly>
     <div class="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-8 text-left">
-      <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.createAccount.h1') }}
-      </h1>
+      <SbcPageSectionH1
+        class="self-start"
+        :heading="$t('page.createAccount.h1')"
+      />
       <SbcPageSectionCard
         :heading="$t('page.createAccount.h2')"
       >

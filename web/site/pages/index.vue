@@ -16,7 +16,7 @@ definePageMeta({
   order: 0
 })
 
-onMounted(async () => {
+if (import.meta.client) {
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
@@ -45,14 +45,17 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
 </script>
 <template>
   <!-- must use v-show for nuxt content to prerender correctly -->
   <div v-show="!loadStore.pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>
       <!-- show different h1 depending on pay status -->
-      <h1 v-if="busStore.payStatus === 'PAID'" class="flex w-fit items-center justify-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+      <SbcPageSectionH1
+        v-if="busStore.payStatus === 'PAID'"
+        class="flex w-fit items-center justify-center gap-2"
+      >
         <span>{{ $t('page.submitted.h1') }}</span>
         <span class="flex items-center justify-center">
           <UIcon
@@ -60,10 +63,9 @@ onMounted(async () => {
             class="size-10 text-outcomes-approved"
           />
         </span>
-      </h1>
-      <h1 v-else class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.home.h1') }}
-      </h1>
+      </SbcPageSectionH1>
+      <SbcPageSectionH1 :heading="$t('page.home.h1')" />
+
       <!-- show business details -->
       <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
         <SbcBusinessInfo
