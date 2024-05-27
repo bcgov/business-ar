@@ -178,4 +178,5 @@ jobs:
             echo "{\"username\": \"$T_USER\"," >> ./config.json
             echo "\"password\": \"$T_PASSWORD\"" >> ./config.json
             echo "}" >> ./config.json
+            cat ./config.json
             testim --token $TESTIM_TOKEN --project $TESTIM_PROJECT --use-local-chrome-driver --user $TESTIM_USER --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
