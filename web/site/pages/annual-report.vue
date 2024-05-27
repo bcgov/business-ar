@@ -73,6 +73,9 @@ const validate = (state: any): FormError[] => {
 
 // handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
+  arStore.errors = [] // reset errors
+  errorAlert.title = ''
+  errorAlert.description = ''
   try {
     loading.value = true
     // set data based off radio button value
@@ -88,11 +91,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       // redirect to pay with the returned token and filing id
       await handlePaymentRedirect(paymentToken, filingId)
     }
-  } catch (e) {
-    // log and display error alert if this fails
-    const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
-    console.error(msg)
-    errorAlert.description = msg
+  } catch {
+    // display error
+    errorAlert.description = arStore.errors[0].message
   } finally {
     loading.value = false
   }
@@ -127,10 +128,9 @@ watch(
   }
 )
 
+// init page state
 if (import.meta.client) {
-  console.log('setting up ar page')
   try {
-    // loadStore.pageLoading = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
     await busStore.getFullBusinessDetails()
@@ -156,33 +156,6 @@ if (import.meta.client) {
     loadStore.pageLoading = false
   }
 }
-// onMounted(async () => {
-//   try {
-//     // load fees for fee widget, might move into earlier setup
-//     addBarPayFees()
-//     await busStore.getFullBusinessDetails()
-//     // try to prefill form if a filing exists
-//     if (Object.keys(arStore.arFiling).length !== 0) {
-//       // add payment error message if pay status exists and doesnt equal paid
-//       if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
-//         errorAlert.title = t('page.annualReport.payError.title')
-//         errorAlert.description = t('page.annualReport.payError.description')
-//       }
-
-//       const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
-//       const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
-//       if (votedForNoAGM) {
-//         selectedRadio.value = 'option-3'
-//       } else if (!votedForNoAGM && !agmDate) {
-//         selectedRadio.value = 'option-2'
-//       } else if (agmDate) {
-//         arData.agmDate = agmDate
-//       }
-//     }
-//   } finally {
-//     loadStore.pageLoading = false
-//   }
-// })
 </script>
 <template>
   <ClientOnly>
