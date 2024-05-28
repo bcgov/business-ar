@@ -247,7 +247,7 @@ if (import.meta.client) {
         </h2>
 
         <SbcPageSectionCard
-          heading="Addresses"
+          :heading="$t('words.addresses')"
           heading-icon="i-mdi-map-marker"
           heading-level="h3"
         >
@@ -255,7 +255,7 @@ if (import.meta.client) {
         </SbcPageSectionCard>
 
         <SbcPageSectionCard
-          heading="Directors"
+          :heading="$t('words.directors')"
           heading-icon="i-mdi-account-multiple-plus"
           heading-level="h3"
         >
@@ -263,7 +263,7 @@ if (import.meta.client) {
         </SbcPageSectionCard>
 
         <SbcPageSectionCard
-          heading="Confirm"
+          :heading="$t('words.confirm')"
           heading-icon="i-mdi-text-box-check"
           heading-level="h3"
         >

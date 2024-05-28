@@ -90,7 +90,10 @@ export default {
     office: 'Office'
   },
   words: {
-    i: 'I'
+    i: 'I',
+    addresses: 'Addresses',
+    directors: 'Directors',
+    confirm: 'Confirm'
   },
   page: {
     notFound: {

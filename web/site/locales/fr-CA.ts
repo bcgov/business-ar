@@ -87,10 +87,13 @@ export default {
     sameAsMailAddress: "Identique à l'Adresse Postale",
     registeredOffice: 'Siège Social',
     recordsOffice: 'Bureau des Archives',
-    office: 'Bureau' // TODO: end review
+    office: 'Bureau'
   },
   words: {
-    i: 'Je'
+    i: 'Je',
+    addresses: 'Adresses',
+    directors: 'Directeurs',
+    confirm: 'Confirmer' // TODO: end review
   },
   page: {
     notFound: {
