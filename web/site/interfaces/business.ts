@@ -64,6 +64,8 @@ export interface BusinessTask {
   tasks: Array<{ task: BusinessTodoTask | BusinessFilingTask }>
 }
 
+export type BusinessTaskName = 'filing' | 'todo' | 'none' | 'initial'
+
 export interface Address {
   actions: any[]
   addressCity: string

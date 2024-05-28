@@ -1,4 +1,4 @@
-import type { Business, BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
+import type { Business, BusinessFull, BusinessNano, BusinessTask, BusinessTaskName } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const { $keycloak } = useNuxtApp()
@@ -14,6 +14,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const businessNano = ref<BusinessNano>({} as BusinessNano)
   const nextArDate = ref<string>('')
   const payStatus = ref<string | null>(null)
+  const businessTask = ref<BusinessTaskName>('initial')
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
@@ -80,7 +81,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     })
   }
 
-  async function getBusinessTask (): Promise<{ task: string; taskValue: BusinessTodoTask | BusinessFilingTask }> {
+  async function getBusinessTask (): Promise<{ task: string | null, taskValue: BusinessTodoTask | BusinessFilingTask | null }> {
     const response = await $fetch<BusinessTask>(`${apiUrl}/business/${businessNano.value.identifier}/tasks`, {
       headers: {
         Authorization: `Bearer ${$keycloak.token}`
@@ -92,8 +93,15 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       }
     })
 
-    const taskValue = response.tasks[0].task
-    const task = Object.getOwnPropertyNames(taskValue)[0]
+    // handle case where theres no tasks available (filings complete up to date)
+    if (response.tasks.length === 0) {
+      businessTask.value = 'none'
+      return { task: null, taskValue: null }
+    }
+
+    const taskValue = response.tasks[0].task // assign task value
+    const taskName = Object.getOwnPropertyNames(taskValue)[0] // assign task name
+    businessTask.value = taskName as 'filing' | 'todo' // set store value
 
     // assign business store values using response from task endpoint, saves having to make another call to get business details
     if ('filing' in taskValue) {
@@ -109,7 +117,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       assignBusinessStoreValues(taskValue.todo.business)
     }
 
-    return { task, taskValue }
+    return { task: taskName, taskValue }
   }
 
   function $reset () {
@@ -119,6 +127,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     nextArDate.value = ''
     payStatus.value = null
     fullDetails.value = {} as Business
+    businessTask.value = 'initial'
   }
 
   return {
@@ -133,7 +142,8 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     businessNano,
     nextArDate,
     payStatus,
-    fullDetails
+    fullDetails,
+    businessTask
   }
 },
 { persist: true } // persist store values in session storage
