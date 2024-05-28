@@ -182,7 +182,7 @@ if (import.meta.client) {
           <SbcBusinessInfo
             break-value="lg"
             :items="[
-              { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+              { label: $t('labels.busName'), value: busStore.currentBusiness.legalName },
               { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
               { label: $t('labels.arDate'), value: busStore.nextArDate },
             ]"
