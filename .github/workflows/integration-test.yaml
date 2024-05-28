@@ -26,6 +26,7 @@ name: Integration Tests
 #COLIN_CLIENT_SECRET
 #DASHBOARD_URL
 #NOTIFY_API_URL
+#REPORT_API_URL
 
 #May be needed in future
 #FIREBASE_API_KEY
@@ -76,6 +77,7 @@ jobs:
       COLIN_CLIENT_SECRET: ${{secrets.COLIN_CLIENT_SECRET}}
       DASHBOARD_URL: ${{secrets.DASHBOARD_URL}}
       NOTIFY_API_URL: ${{secrets.NOTIFY_API_URL}}
+      REPORT_API_URL: ${{secrets.REPORT_API_URL}}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -144,11 +146,14 @@ jobs:
           echo "colin_api_url = \"`get_var "op://API/$APP_ENV/colin-api-entity/COLIN_API_URL" "COLIN_API_URL"`\"" >> terraform.tfvars
           echo "colin_client_id = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_ID" "COLIN_CLIENT_ID"`\"" >> terraform.tfvars
           echo "colin_client_secret = \"`get_var "op://keycloak/$APP_ENV/entity-service-account/ENTITY_SERVICE_ACCOUNT_CLIENT_SECRET" "COLIN_CLIENT_SECRET"`\"" >> terraform.tfvars
-          echo "dashboard_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "DASHBOARD_URL"`\"" >> terraform.tfvars
-          echo "notify_api_url = \"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "NOTIFY_API_URL"`\"" >> terraform.tfvars
+          echo "dashboard_url = \"`get_var "op://web-url/$APP_ENV/registry/REGISTRY_HOME_URL" "DASHBOARD_URL"`\"" >> terraform.tfvars
+          echo "notify_api_url = \"`get_var "op://API/$APP_ENV/notify-api/NOTIFY_API_URL" "NOTIFY_API_URL"`\"" >> terraform.tfvars
+          
+          #May 28
+          echo "report_api_url = \"`get_var "op://API/$APP_ENV/report-api/REPORT_API_URL" "REPORT_API_URL"`\"" >> terraform.tfvars
           #end terraform vars file
 
-          terraform apply -var hostRootPath=`pwd`/_tmp -auto-approve
+          terraform apply -var hostRootPath=`pwd`/_tmp -var init=true -auto-approve
 
           #for later steps
           echo "TEST_STEP_USER=`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "TEST_USER"`" >> "$GITHUB_OUTPUT"

@@ -28,3 +28,7 @@ colin_client_secret = "client-secret"
 
 dashboard_url = "http://dashboard_url"
 notify_api_url = "http://notify_url"
+notify_api_version = "/api/v1"
+
+report_api_url = "http://report_url"
+report_api_version = "/api/v1"

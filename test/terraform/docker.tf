@@ -62,6 +62,9 @@ locals {
     "DASHBOARD_URL=${var.dashboard_url}",
     "EMAIL_TEMPLATE_PATH=src/business_ar_api/email_templates",
     "NOTIFY_API_URL=${var.notify_api_url}",
+    "NOTIFY_API_VERSION=${var.notify_api_version}",
+    "REPORT_API_URL=${var.report_api_url}",
+    "REPORT_API_VERSION=${var.report_api_version}",
   ]
 }
 

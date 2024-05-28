@@ -127,3 +127,17 @@ variable "dashboard_url" {
 variable "notify_api_url" {
   type = string
 }
+
+variable "notify_api_version" {
+  type = string
+  default = "/api/v1"
+}
+
+variable "report_api_url" {
+  type = string
+}
+
+variable "report_api_version" {
+  type = string
+  default = "/api/v1"
+}
