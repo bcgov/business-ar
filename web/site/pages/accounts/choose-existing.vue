@@ -16,14 +16,13 @@ definePageMeta({
   middleware: ['filing-paid', 'filing-in-progress']
 })
 
-async function handleAccountSelect (id: number) {
+function handleAccountSelect (id: number) {
   setAccountLoading.value = true
   accountStore.selectUserAccount(id)
-  await navigateTo(localePath('/annual-report'))
-  setAccountLoading.value = false
+  return navigateTo(localePath('/annual-report'))
 }
 
-onMounted(async () => {
+async function initPage () {
   try {
     const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
@@ -34,14 +33,20 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
+
+// init page in setup lifecycle
+if (import.meta.client) {
+  initPage()
+}
 </script>
 <template>
   <ClientOnly>
     <div class="mx-auto flex flex-col items-center gap-4 text-left sm:gap-8">
-      <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.existingAccount.h1') }}
-      </h1>
+      <SbcPageSectionH1
+        :heading="$t('page.existingAccount.h1')"
+        class="self-start"
+      />
       <UCard class="w-full max-w-5xl border border-bcGovColor-navDivider bg-[#FFF7E3]">
         <div class="flex items-center gap-2">
           <p class="text-bcGovColor-midGray dark:text-gray-300">

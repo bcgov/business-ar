@@ -43,7 +43,7 @@ async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
   try {
     formLoading.value = true
     await accountStore.createNewAccount(event.data)
-    await navigateTo(localePath('/annual-report'))
+    return navigateTo(localePath('/annual-report'))
   } catch (e) {
     console.error(e)
   } finally {
@@ -73,37 +73,27 @@ const validate = async (state: any): Promise<FormError[]> => {
 }
 
 // try to prefill account name on page load
-onMounted(async () => {
+if (import.meta.client) {
   try {
-    accountDetails.accountName = await accountStore.findAvailableAccountName(keycloak.kcUser.value.lastName)
+    const name = parseSpecialChars(keycloak.kcUser.value.fullName, '') // parse name if special chars
+    accountDetails.accountName = await accountStore.findAvailableAccountName(name) // find account name using users name
   } catch (error) {
     console.error((error as Error).message)
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
 </script>
 <template>
   <ClientOnly>
     <div class="mx-auto flex w-full max-w-[1360px] flex-col items-center gap-8 text-left">
-      <h1 class="self-start text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.createAccount.h1') }}
-      </h1>
-      <UCard
-        class="w-full"
-        :ui="{
-          header: {
-            base: '',
-            background: 'bg-bcGovColor-gray2',
-            padding: 'px-4 py-5 sm:px-6',
-          }
-        }"
+      <SbcPageSectionH1
+        class="self-start"
+        :heading="$t('page.createAccount.h1')"
+      />
+      <SbcPageSectionCard
+        :heading="$t('page.createAccount.h2')"
       >
-        <template #header>
-          <h2 class="font-semibold text-bcGovColor-darkGray dark:text-white">
-            {{ $t('page.createAccount.h2') }}
-          </h2>
-        </template>
         <!-- display current users name -->
         <div class="flex flex-col gap-y-4 md:grid md:grid-cols-6">
           <span class="col-span-1 col-start-1 font-semibold text-bcGovColor-darkGray">{{ $t('page.createAccount.form.infoSection.fieldSet') }}</span>
@@ -184,7 +174,7 @@ onMounted(async () => {
             </div>
           </div>
         </UForm>
-      </UCard>
+      </SbcPageSectionCard>
     </div>
   </ClientOnly>
 </template>

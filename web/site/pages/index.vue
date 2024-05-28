@@ -16,7 +16,8 @@ definePageMeta({
   order: 0
 })
 
-onMounted(async () => {
+// init page function to be able to return navigateTo instead of await, smoother UX
+async function initPage () {
   try {
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
@@ -28,31 +29,39 @@ onMounted(async () => {
       const { task } = await busStore.getBusinessTask()
       if (task === 'filing') { // TODO: figure out why combining the if statements always returns false
         if (busStore.payStatus !== 'PAID') {
-          await navigateTo(localePath('/annual-report'))
+          return navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
-        await navigateTo(localePath('/accounts/choose-existing'))
+        return navigateTo(localePath('/accounts/choose-existing'))
       }
+      loadStore.pageLoading = false // only set false if not navigating to new page
     } else if (!keycloak.isAuthenticated() && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
+      loadStore.pageLoading = false // only set false if not navigating to new page
     } else { // throw error if no valid nano id
-      throw new Error('Missing id to fetch business details')
+      throw new Error('Missing token to fetch business details')
     }
   } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
     console.error((e as Error).message)
-    await navigateTo(localePath('/missing-id'))
-  } finally {
-    loadStore.pageLoading = false
+    return navigateTo(localePath('/missing-id'))
   }
-})
+}
+
+// init page in setup lifecycle
+if (import.meta.client) {
+  initPage()
+}
 </script>
 <template>
   <!-- must use v-show for nuxt content to prerender correctly -->
   <div v-show="!loadStore.pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>
       <!-- show different h1 depending on pay status -->
-      <h1 v-if="busStore.payStatus === 'PAID'" class="flex w-fit items-center justify-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+      <SbcPageSectionH1
+        v-if="busStore.payStatus === 'PAID'"
+        class="flex w-fit items-center justify-center gap-2"
+      >
         <span>{{ $t('page.submitted.h1') }}</span>
         <span class="flex items-center justify-center">
           <UIcon
@@ -60,10 +69,12 @@ onMounted(async () => {
             class="size-10 text-outcomes-approved"
           />
         </span>
-      </h1>
-      <h1 v-else class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.home.h1') }}
-      </h1>
+      </SbcPageSectionH1>
+      <SbcPageSectionH1
+        v-else
+        :heading="$t('page.home.h1')"
+      />
+
       <!-- show business details -->
       <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
         <SbcBusinessInfo

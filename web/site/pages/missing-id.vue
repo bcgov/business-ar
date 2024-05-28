@@ -15,11 +15,7 @@ definePageMeta({
 </script>
 <template>
   <div class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
-    <ClientOnly>
-      <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        {{ $t('page.missingId.h1') }}
-      </h1>
-    </ClientOnly>
+    <SbcPageSectionH1 :heading="$t('page.missingId.h1')" />
     <SbcNuxtContentCard id="missing-id" />
     <!-- this is only for dev to enter nano ids -->
     <div class="flex gap-2">

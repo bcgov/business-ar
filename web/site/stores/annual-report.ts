@@ -10,6 +10,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   // store values
   const loading = ref<boolean>(true)
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
+  const errors = ref<Array<{ message: string, statusCode: number }>>([])
 
   async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
     let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
@@ -44,9 +45,14 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         // console.log(arFiling.value)
       },
       onResponseError ({ response }) {
-        // console error a message from the api or a default message
-        const errorMsg = response._data.message ?? 'Error submitting annual report filing.'
+        let errorMsg = response._data.message ?? 'Could not complete filing or payment request, please try again.'
         console.error(errorMsg)
+        if (response.status !== 400) {
+          errorMsg = 'Could not complete filing or payment request, please try again.'
+        }
+        errors.value.push(
+          { message: errorMsg, statusCode: response.status }
+        )
       }
     })
 
@@ -60,11 +66,13 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   function $reset () {
     loading.value = true
     arFiling.value = {} as ArFilingResponse
+    errors.value = []
   }
 
   return {
     loading,
     arFiling,
+    errors,
     submitAnnualReportFiling,
     $reset
   }

@@ -44,8 +44,12 @@ import requests
 from business_ar_api.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
-from business_ar_api.services import (AccountService, BusinessService,
-                                      FilingService)
+from business_ar_api.services import (
+    AccountService,
+    BusinessService,
+    FilingService,
+    InvitationService,
+)
 from business_ar_api.services.report_service import ReportService
 from business_ar_api.utils.legislation_datetime import LegislationDatetime
 from flask import current_app
@@ -99,6 +103,12 @@ class NotificationService:
         for contact in contact_details.get("contacts"):
             if email := contact.get("email"):
                 recipients_list.append(email)
+        if not recipients_list:
+            active_invitations = InvitationService.find_active_invitation_by_business(
+                business.id
+            )
+            if active_invitations:
+                recipients_list.append(active_invitations[0].recipients)
         if recipients_list:
             recipients = ",".join(recipients_list)
         else:

@@ -41,3 +41,10 @@ class InvitationService:
     def find_invitation_by_token(cls, token: str) -> InvitationsModel:
         """Finds an invitation by its token"""
         return InvitationsModel.find_invitation_by_token(token)
+
+    @classmethod
+    def find_active_invitation_by_business(cls, business_id: int) -> InvitationsModel:
+        """Finds active invitations for a business."""
+        return InvitationsModel.find_invitations_by_business_id(
+            business_id, InvitationsModel.Status.SENT
+        )

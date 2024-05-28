@@ -14,8 +14,7 @@ definePageMeta({
   middleware: ['filing-paid', 'require-account']
 })
 
-// TODO: need to handle if theres no filing id in the route query or if the put request fails
-onMounted(async () => {
+async function initPage () {
   try {
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')
@@ -23,29 +22,30 @@ onMounted(async () => {
       // check filing status details
       await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
       if (busStore.payStatus && busStore.payStatus !== 'PAID') {
-        await navigateTo(localePath('/annual-report'))
+        return navigateTo(localePath('/annual-report'))
       }
+      loadStore.pageLoading = false
     }
   } catch (e) {
     // go back to ar page if no filing id or error in the PUT request
     console.error((e as Error).message)
-    await navigateTo(localePath('/annual-report'))
-  } finally {
-    loadStore.pageLoading = false
+    return navigateTo(localePath('/annual-report'))
   }
-})
+}
+
+if (import.meta.client) {
+  initPage()
+}
 </script>
 <template>
   <div v-show="!loadStore.pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
-    <ClientOnly>
-      <h1 class="flex items-center gap-2 text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-        <span>{{ $t('page.submitted.h1') }}</span>
-        <UIcon
-          name="i-mdi-check-circle-outline"
-          class="size-10 shrink-0 text-outcomes-approved"
-        />
-      </h1>
-    </ClientOnly>
+    <SbcPageSectionH1 class="flex items-center gap-2">
+      <span>{{ $t('page.submitted.h1') }}</span>
+      <UIcon
+        name="i-mdi-check-circle-outline"
+        class="size-10 shrink-0 text-outcomes-approved"
+      />
+    </SbcPageSectionH1>
     <SbcNuxtContentCard id="submitted" />
   </div>
 </template>

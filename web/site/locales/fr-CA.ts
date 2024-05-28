@@ -131,6 +131,7 @@ export default {
               req: 'Veuillez entrer un numéro de téléphone',
               invalid: 'Veuillez entrer un numéro de téléphone valide'
             },
+            phoneExt: 'Veuillez entrer une extension valide', // TODO: review
             email: {
               req: "Veuillez entrer une adresse email s'il vous plaît",
               invalid: 'Veuillez entrer une adresse email valide'

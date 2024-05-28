@@ -8,7 +8,6 @@ const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
 const loadStore = useLoadingStore()
-loadStore.pageLoading = true
 
 useHead({
   title: t('page.annualReport.title')
@@ -74,6 +73,9 @@ const validate = (state: any): FormError[] => {
 
 // handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
+  arStore.errors = [] // reset errors
+  errorAlert.title = ''
+  errorAlert.description = ''
   try {
     loading.value = true
     // set data based off radio button value
@@ -89,11 +91,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       // redirect to pay with the returned token and filing id
       await handlePaymentRedirect(paymentToken, filingId)
     }
-  } catch (e) {
-    // log and display error alert if this fails
-    const msg = (e as Error).message ?? 'Could not complete filing or payment request, please try again.'
-    console.error(msg)
-    errorAlert.description = msg
+  } catch {
+    // display error
+    errorAlert.description = arStore.errors[0].message
   } finally {
     loading.value = false
   }
@@ -128,9 +128,8 @@ watch(
   }
 )
 
-// TODO use business details from api call for address and directors
-
-onMounted(async () => {
+// init page state
+if (import.meta.client) {
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
@@ -156,15 +155,13 @@ onMounted(async () => {
   } finally {
     loadStore.pageLoading = false
   }
-})
+}
 </script>
 <template>
   <ClientOnly>
     <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
       <div class="flex w-full flex-col gap-6">
-        <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
-          {{ $t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear}) }}
-        </h1>
+        <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
 
         <UAlert
           v-if="errorAlert.title || errorAlert.description"
