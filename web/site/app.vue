@@ -18,7 +18,9 @@ useHead({
   <div
     class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
   >
-    <SbcLoadingSpinner v-if="loadStore.pageLoading" overlay />
+    <ClientOnly>
+      <SbcLoadingSpinner v-if="loadStore.pageLoading" overlay />
+    </ClientOnly>
     <SbcHeaderMain />
     <NuxtLayout>
       <NuxtPage />

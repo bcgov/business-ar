@@ -39,7 +39,11 @@ const parties = computed(() => {
 })
 </script>
 <template>
-  <UTable :rows="parties" :columns>
+  <UTable
+    :rows="parties"
+    :columns
+    :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: $t('page.annualReport.noDirectors') }"
+  >
     <template #mailingAddress-data="{ row }">
       <SbcAddressDisplay :address="row.mailingAddress" />
     </template>

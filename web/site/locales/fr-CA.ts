@@ -87,10 +87,13 @@ export default {
     sameAsMailAddress: "Identique à l'Adresse Postale",
     registeredOffice: 'Siège Social',
     recordsOffice: 'Bureau des Archives',
-    office: 'Bureau' // TODO: end review
+    office: 'Bureau'
   },
   words: {
-    i: 'Je'
+    i: 'Je',
+    addresses: 'Adresses',
+    directors: 'Directeurs',
+    confirm: 'Confirmer' // TODO: end review
   },
   page: {
     notFound: {
@@ -176,7 +179,9 @@ export default {
       payError: {
         title: 'Paiement Incomplet',
         description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
-      }
+      },
+      noAddresses: 'Aucune adresse trouvée',
+      noDirectors: 'Aucun réalisateur trouvé'
     },
     submitted: {
       title: 'Rapport Annuel Terminé - Rapport Annuel de Service CB',

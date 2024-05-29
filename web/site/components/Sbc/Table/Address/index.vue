@@ -40,7 +40,11 @@ const addresses = computed(() => {
 })
 </script>
 <template>
-  <UTable :rows="addresses" :columns>
+  <UTable
+    :rows="addresses"
+    :columns
+    :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: $t('page.annualReport.noAddresses') }"
+  >
     <template #mailingAddress-data="{ row }">
       <SbcAddressDisplay :address="row.mailingAddress" />
     </template>

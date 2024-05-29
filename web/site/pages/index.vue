@@ -26,7 +26,16 @@ async function initPage () {
         resetPiniaStores() // reset state when loading a new business
         await busStore.getBusinessByNanoId(route.query.nanoid as string)
       }
+
+      // fetch next business task
       const { task } = await busStore.getBusinessTask()
+
+      // handle case where there are no tasks available (filings up to date)
+      if (task === null) {
+        loadStore.pageLoading = false // only set false if not navigating to new page
+        return
+      }
+
       if (task === 'filing') { // TODO: figure out why combining the if statements always returns false
         if (busStore.payStatus !== 'PAID') {
           return navigateTo(localePath('/annual-report'))
@@ -91,11 +100,13 @@ if (import.meta.client) {
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
     <SbcNuxtContentCard v-show="busStore.payStatus !== 'PAID'" id="initial" route-suffix="1" />
     <SbcNuxtContentCard v-show="busStore.payStatus === 'PAID'" id="report-completed" route-suffix="2" />
-    <UButton
-      v-if="busStore.payStatus !== 'PAID'"
-      :label="$t('btn.loginBCSC')"
-      icon="i-mdi-card-account-details-outline"
-      @click="keycloak.login"
-    />
+    <ClientOnly>
+      <UButton
+        v-if="!keycloak.isAuthenticated()"
+        :label="$t('btn.loginBCSC')"
+        icon="i-mdi-card-account-details-outline"
+        @click="keycloak.login"
+      />
+    </ClientOnly>
   </div>
 </template>

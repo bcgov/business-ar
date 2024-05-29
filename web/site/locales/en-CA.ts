@@ -90,7 +90,10 @@ export default {
     office: 'Office'
   },
   words: {
-    i: 'I'
+    i: 'I',
+    addresses: 'Addresses',
+    directors: 'Directors',
+    confirm: 'Confirm'
   },
   page: {
     notFound: {
@@ -176,7 +179,9 @@ export default {
       payError: {
         title: 'Payment Not Complete',
         description: 'Your payment was not completed, please try again.'
-      }
+      },
+      noAddresses: 'No addresses found',
+      noDirectors: 'No directors found'
     },
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
