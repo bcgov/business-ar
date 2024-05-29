@@ -116,6 +116,24 @@ function handleRadioClick (option: string) {
   }
 }
 
+function handleRadioKeydown (event: KeyboardEvent) {
+  const currentIndex = options.findIndex(option => option.value === selectedRadio.value)
+
+  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+    const nextIndex = (currentIndex + 1) % options.length
+    selectedRadio.value = options[nextIndex].value
+    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
+    radioElement?.focus()
+    event.preventDefault()
+  } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+    const prevIndex = (currentIndex - 1 + options.length) % options.length
+    selectedRadio.value = options[prevIndex].value
+    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
+    radioElement?.focus()
+    event.preventDefault()
+  }
+}
+
 // set/unset checkbox error text after interacting with the checkbox
 watch(
   () => arData.officeAndDirectorsConfirmed,
@@ -202,9 +220,10 @@ if (import.meta.client) {
             <!-- TODO: look into why this label isnt being associated with the radios -->
             <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
               <fieldset
+                role="radioGroup"
                 class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
+                @keydown="handleRadioKeydown"
               >
-                <!-- need to look into this for a11y more -->
                 <legend class="sr-only">
                   {{ $t('page.annualReport.form.heldAgm.question') }}
                 </legend>
