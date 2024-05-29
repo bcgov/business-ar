@@ -8,6 +8,7 @@ const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
 const loadStore = useLoadingStore()
+loadStore.pageLoading = true
 
 useHead({
   title: t('page.annualReport.title')
@@ -50,33 +51,33 @@ const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: b
   officeAndDirectorsConfirmed: false
 })
 
-// custom validate the form
+// validate the date field and show error if the 'Yes' radio is selected
 const validate = (state: any): FormError[] => {
   const errors = []
   // if yes to agm, user must input a date
   if (selectedRadio.value === 'option-1' && !state.agmDate) {
     errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
   }
-  // set error to confirm checkbox
-  if (!state.officeAndDirectorsConfirmed) {
-    errors.push({ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') })
-    // display help message
-    showCheckboxHelp.value = true
-    if (errors.length === 1) { // only scroll into view if its the only error
-      const element = document.getElementById(checkboxRef.value?.inputId)
-      element?.focus()
-      element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }
   return errors
 }
 
 // handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
+  arFormRef.value?.clear() // reset form errors
   arStore.errors = [] // reset errors
   errorAlert.title = ''
   errorAlert.description = ''
   try {
+    // check if confirmation checkbox was selected
+    if (!arData.officeAndDirectorsConfirmed) {
+      showCheckboxHelp.value = true // display error message
+      if (arFormRef.value?.errors.length === 0) { // only scroll into view if no other errors
+        const element = document.getElementById(checkboxRef.value?.inputId)
+        element?.focus()
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return // cancel form submission if not checked
+    }
     loading.value = true
     // set data based off radio button value
     const arFiling: ARFiling = {
@@ -86,7 +87,7 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     // submit filing
     const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
     if (payStatus === 'PAID') {
-      await navigateTo(localePath(`/submitted?filing_id=${filingId}`))
+      return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
     } else {
       // redirect to pay with the returned token and filing id
       await handlePaymentRedirect(paymentToken, filingId)
@@ -116,17 +117,19 @@ function handleRadioClick (option: string) {
   }
 }
 
+// handle arrow key events on radio group (default behaviour not working as expected)
 function handleRadioKeydown (event: KeyboardEvent) {
-  const currentIndex = options.findIndex(option => option.value === selectedRadio.value)
+  const currentIndex = options.findIndex(option => option.value === selectedRadio.value) // get index of previously focused radio
 
+  // move focus through radio group and set selected value
   if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-    const nextIndex = (currentIndex + 1) % options.length
+    const nextIndex = (currentIndex + 1) % options.length // wrap focus if focus from last radio
     selectedRadio.value = options[nextIndex].value
     const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
     radioElement?.focus()
     event.preventDefault()
   } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-    const prevIndex = (currentIndex - 1 + options.length) % options.length
+    const prevIndex = (currentIndex - 1 + options.length) % options.length // wrap focus if focus from first radio
     selectedRadio.value = options[prevIndex].value
     const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
     radioElement?.focus()
@@ -174,6 +177,8 @@ if (import.meta.client) {
     loadStore.pageLoading = false
   }
 }
+
+// fix premature validation of final checkbox
 </script>
 <template>
   <ClientOnly>
