@@ -1,40 +1,44 @@
-import type { NitroFetchRequest, AvailableRouterMethod } from 'nitropack'
+import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
 
-type Headers = 'all' | 'token' | 'account'
+type BarApiOptions<R extends NitroFetchRequest = NitroFetchRequest> = NitroFetchOptions<R>;
 
-export const useBarApi = async <T>(endpoint: string, method: AvailableRouterMethod<NitroFetchRequest> = 'get', headers?: Headers): Promise<T> => {
+type Credentials = 'all' | 'token' | 'account'
+
+export const useBarApi = <T>(
+  endpoint: string,
+  options: BarApiOptions = {},
+  credentials?: Credentials
+): Promise<T> => {
   const apiUrl = useRuntimeConfig().public.barApiUrl
   const accountStore = useAccountStore()
-
   const { $keycloak } = useNuxtApp()
-  async function getToken (): Promise<string | undefined> {
-    return await $keycloak
-      .updateToken(-1)
-      .then((_refreshed) => {
-        return $keycloak.token
-      })
-      .catch((error) => {
-        console.error(`Failed to get session token: ${error}`)
-        return undefined
-      })
-  }
-
-  const fullHeaders: Record<string, string> = {}
-
-  // Add Authorization header if required
-  if (headers === 'all' || headers === 'token') {
-    const token = await getToken()
-    fullHeaders.Authorization = `Bearer ${token}`
-  }
-
-  // Add 'Account-Id' header if required
-  if (headers === 'all' || headers === 'account') {
-    fullHeaders['Account-Id'] = accountStore.currentAccount.id.toString()
-  }
+  const token = $keycloak.token
 
   return $fetch<T>(apiUrl + endpoint, {
-    method,
-    headers: fullHeaders,
+    ...options,
+    onRequest ({ options }) {
+      if (credentials) {
+        const headers = options.headers ||= {}
+
+        // Helper function to set headers correctly based on their type
+        const setHeader = (key: string, value: string) => {
+          if (Array.isArray(headers)) {
+            headers.push([key, value])
+          } else if (headers instanceof Headers) {
+            headers.set(key, value)
+          } else {
+            headers[key] = value
+          }
+        }
+
+        if (credentials === 'all' || credentials === 'token') {
+          setHeader('Authorization', `Bearer ${token}`)
+        }
+        if (credentials === 'all' || credentials === 'account') {
+          setHeader('Account-Id', accountStore.currentAccount.id.toString())
+        }
+      }
+    },
     onResponseError ({ response }) {
       console.error(response)
     }
