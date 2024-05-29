@@ -255,7 +255,7 @@ if (import.meta.client) {
                 :max-date="new Date()"
                 :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
                 :arialabel="$t('page.annualReport.form.agmDate.label')"
-                :initial-date="arData.agmDate ? new Date(arData.agmDate) : undefined"
+                :initial-date="arData.agmDate ? dateStringToDate(arData.agmDate) : undefined"
                 variant="bcGov"
                 :disabled="selectedRadio !== 'option-1'"
                 @selection="(e) => {
