@@ -105,6 +105,10 @@ describe('Business Store Tests', () => {
       fakeApiCall.mockImplementation(() => mockedFilingTask)
       const busStore = useBusinessStore()
       const arStore = useAnnualReportStore()
+      const accountStore = useAccountStore()
+      accountStore.userAccounts = mockedOrgs.orgs
+      console.log(mockedFilingTask.tasks[0].task)
+      console.log(accountStore.userAccounts)
       const { task, taskValue } = await busStore.getBusinessTask()
 
       expect(task).toEqual('filing')

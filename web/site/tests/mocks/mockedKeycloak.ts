@@ -11,7 +11,8 @@ const mockParsedToken = {
   email: 'test@email.com',
   sub: '123456',
   loginSource: 'BCSC',
-  realm_access: { roles: ['role1', 'role2'] }
+  realm_access: { roles: ['role1', 'role2'] },
+  roles: ['public_user']
 }
 // export const mockedLogin = vi.fn()
 export const mockUpdateToken = vi.fn(() => Promise.resolve(true))

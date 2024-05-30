@@ -38,7 +38,7 @@ export const mockedOrgs = {
       created: 'created3',
       createdBy: 'createdBy3',
       hasApiAccess: true,
-      id: 3,
+      id: 123,
       isBusinessAccount: true,
       mailingAddress: [{ city: 'City3', country: 'Country3', postalCode: 'PostalCode3', region: 'Region3', street: 'Street3', streetAdditional: 'StreetAdditional3' }],
       modified: 'modified3',
@@ -82,6 +82,7 @@ export const mockedArFilingResponse: ArFilingResponse = {
       id: 1,
       name: 'Annual Report',
       paymentStatus: 'PAID',
+      paymentAccount: '1',
       paymentToken: 123456,
       status: 'Submitted',
       submitter: null
@@ -98,7 +99,7 @@ export const mockedBusinessNano: BusinessNano = {
 
 export const mockedBusinessFull = {
   business: {
-    businessNumber: '234653465',
+    taxId: '234653465',
     corpState: 'some state',
     corpStateClass: 'some class',
     email: 'some email',
@@ -118,7 +119,7 @@ export const mockedBusinessFull = {
 
 export const mockedBusinessFullInvalidArYear = {
   business: {
-    businessNumber: '234653465',
+    taxId: '234653465',
     corpState: 'some state',
     corpStateClass: 'some class',
     email: 'some email',
@@ -138,7 +139,7 @@ export const mockedBusinessFullInvalidArYear = {
 
 export const mockedBusinessFullAlreadyFiled = {
   business: {
-    businessNumber: '234653465',
+    taxId: '234653465',
     corpState: 'some state',
     corpStateClass: 'some class',
     email: 'some email',
@@ -158,7 +159,7 @@ export const mockedBusinessFullAlreadyFiled = {
 
 export const mockedBusinessFullNoLastArDate = {
   business: {
-    businessNumber: '234653465',
+    taxId: '234653465',
     corpState: 'some state',
     corpStateClass: 'some class',
     email: 'some email',
