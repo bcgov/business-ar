@@ -14,11 +14,14 @@ const mockParsedToken = {
   realm_access: { roles: ['role1', 'role2'] }
 }
 // export const mockedLogin = vi.fn()
+export const mockUpdateToken = vi.fn(() => Promise.resolve(true))
 
 export const mockedKeycloak: Partial<Keycloak> = {
   init: vi.fn(),
   login: vi.fn(),
   logout: vi.fn(),
+  updateToken: mockUpdateToken,
   authenticated: true,
-  tokenParsed: mockParsedToken
+  tokenParsed: mockParsedToken,
+  token: '123'
 }
