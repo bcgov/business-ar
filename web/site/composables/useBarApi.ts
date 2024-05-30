@@ -1,3 +1,4 @@
+// inspired by https://nuxt.com/docs/guide/recipes/custom-usefetch
 import type { NitroFetchRequest, NitroFetchOptions } from 'nitropack'
 
 type BarApiOptions<R extends NitroFetchRequest = NitroFetchRequest> = NitroFetchOptions<R>;
