@@ -75,6 +75,7 @@ resource docker_container "regapi_container" {
     internal = 8080
     external = 8080
   }
+  restart = "on-failure"
 
   depends_on = [ docker_container.postgres_container ]
   networks_advanced {
@@ -114,6 +115,7 @@ resource docker_image "regweb_image" {
 resource docker_container "regweb_container" {
   name = "regweb"
   image = docker_image.regweb_image.image_id
+  restart = "on-failure"
   ports {
     internal = 3000
     external = 3000
