@@ -1,9 +1,8 @@
 export const useKeycloak = () => {
-  const { $keycloak } = useNuxtApp()
-  const { locale } = useI18n()
+  const { $keycloak, $i18n } = useNuxtApp()
+  const locale = ref($i18n.locale.value)
 
   function login () {
-    // console.log('redirect url: ', `${location.origin}/${locale.value}/accounts/choose-existing`)
     return $keycloak.login(
       {
         idpHint: 'bcsc',
@@ -53,9 +52,10 @@ export const useKeycloak = () => {
     return {} as KCUser
   })
 
-  async function getToken (): Promise<string | undefined> {
+  async function getToken (forceRefresh = false): Promise<string | undefined> {
+    const minValidity = forceRefresh ? -1 : 30
     return await $keycloak
-      .updateToken(30)
+      .updateToken(minValidity)
       .then((_refreshed) => {
         return $keycloak.token
       })
