@@ -14,6 +14,7 @@ export interface BusinessFull {
   legalType: string
   nextARYear: number
   status: string
+  invitationEmail: string
 }
 
 export interface BusinessNano {
