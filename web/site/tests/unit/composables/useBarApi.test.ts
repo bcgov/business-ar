@@ -116,12 +116,11 @@ describe('useBarApi', () => {
     const fetchCall = _fetch.mock.calls[0]
     const fetchOptions = fetchCall[1]
 
-    const errorResponse = { status: 500, data: 'error' }
+    const errorResponse = { status: 500 }
     fetchOptions.onResponseError({ response: errorResponse })
 
-    expect(consoleErrorSpy).toBeCalledWith(errorResponse)
-
-    consoleErrorSpy.mockRestore()
+    // 500 error returns generic error message
+    expect(consoleErrorSpy).toBeCalledWith('Internal Server Error, please try again later or contact us for assistance.')
   })
 
   it('can add other options', async () => {
