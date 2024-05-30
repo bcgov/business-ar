@@ -46,7 +46,17 @@ def get_business_details_using_token(token):
     business: BusinessModel = BusinessModel.find_by_id(invitation.business_id)
     if not business:
         return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
-    return business.json(), HTTPStatus.OK
+    business_json = business.json()
+    business_details_from_colin = BusinessService.get_business_details_from_colin(
+        business.identifier, business.legal_type, business.id
+    )
+    business_json["legalName"] = business_details_from_colin.get("business").get(
+        "legalName"
+    )
+    business_json["status"] = business_details_from_colin.get("business").get(
+        "corpState"
+    )
+    return business_json, HTTPStatus.OK
 
 
 @bp.route("/<string:identifier>", methods=["GET"])
