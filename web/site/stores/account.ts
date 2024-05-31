@@ -4,6 +4,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   // store values
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
+  const keycloak = useKeycloak()
 
   // get signed in users accounts
   async function getUserAccounts (): Promise<{ orgs: Org[] }> {
@@ -11,7 +12,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')
-      //   await keycloak.getToken(true)
+      await keycloak.getToken(true) // force refresh
       // }
 
       const response = await useBarApi<{ orgs: Org[] }>(
@@ -44,7 +45,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')
-      //   await keycloak.getToken(true)
+      await keycloak.getToken(true) // force refresh
       // }
 
       const response = await useBarApi<Org>(
