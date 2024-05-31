@@ -5,5 +5,6 @@ export enum AlertCategory {
   FEE_INFO = 'fee-info',
   USER_INFO = 'user-info',
   SIGNIFICANT_INDIVIDUAL = 'significiant-individual',
-  FUTURE_FILING = 'future-filing'
+  FUTURE_FILING = 'future-filing',
+  INVALID_NEXT_AR_YEAR = 'invalid-next-ar-year'
 }

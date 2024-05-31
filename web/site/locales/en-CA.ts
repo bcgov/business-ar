@@ -3,6 +3,10 @@ export default {
     'future-filing': {
       title: '',
       description: 'The next Annual Report for this company is not due until {date}. Please file the Annual Report on or after that date.'
+    },
+    'invalid-next-ar-year': {
+      title: 'Invalid Annual Report Year',
+      description: 'The next Annual Report year is invalid or missing.'
     }
   },
   btn: {

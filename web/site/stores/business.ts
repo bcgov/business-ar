@@ -6,6 +6,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const apiUrl = config.public.barApiUrl
   const arStore = useAnnualReportStore()
   const accountStore = useAccountStore()
+  const alertStore = useAlertStore()
 
   // store values
   const loading = ref<boolean>(true)
@@ -42,13 +43,11 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
     // throw an error if the nextArYear is invalid
     if (!bus.nextARYear || bus.nextARYear === -1) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.INVALID_NEXT_AR_YEAR
+      })
       throw new Error(`${bus.legalName || 'This business'} is not eligible to file an Annual Report`)
-    }
-
-    // throw error if business already filed an AR for the current year
-    const currentYear = new Date().getFullYear()
-    if (bus.lastArDate && new Date(bus.lastArDate).getFullYear() === currentYear) {
-      throw new Error(`Business has already filed an Annual Report for ${currentYear}`)
     }
 
     // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
@@ -56,6 +55,15 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       nextArDate.value = addOneYear(bus.foundingDate)
     } else {
       nextArDate.value = addOneYear(bus.lastArDate)
+    }
+
+    // throw error if next ar date is in the future
+    if (new Date(nextArDate.value) > new Date()) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.FUTURE_FILING
+      })
+      throw new Error(`Annual Report not due until ${nextArDate.value}`)
     }
   }
 
@@ -93,6 +101,9 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       }
     })
 
+    await getFullBusinessDetails()
+    assignBusinessStoreValues(fullDetails.value.business)
+
     // handle case where theres no tasks available (filings complete up to date)
     if (response.tasks.length === 0) {
       businessTask.value = 'none'
@@ -110,12 +121,13 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       if (!accountStore.userAccounts.some(account => account.id === parseInt(taskValue.filing.header.paymentAccount))) {
         throw new Error('Access Denied: Your account does not have permission to complete this task.')
       }
-      assignBusinessStoreValues(taskValue.filing.business)
+      // assignBusinessStoreValues(taskValue.filing.business)
       arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
       payStatus.value = taskValue.filing.header.status
-    } else if ('todo' in taskValue) {
-      assignBusinessStoreValues(taskValue.todo.business)
     }
+    // else if ('todo' in taskValue) {
+    //   assignBusinessStoreValues(taskValue.todo.business)
+    // }
 
     return { task: taskName, taskValue }
   }

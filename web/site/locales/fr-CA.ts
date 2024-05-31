@@ -3,6 +3,10 @@ export default {
     'future-filing': {
       title: '',
       description: "Le prochain Rapport Annuel de cette entreprise n'est pas dû avant le {date}. Veuillez déposer le Rapport Annuel à partir de cette date."
+    },
+    'invalid-next-ar-year': {
+      title: 'Année de Rapport Annuel invalide',
+      description: "L'année suivante du Rapport Annuel est invalide ou manquante."
     }
   },
   btn: {
