@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const alertStore = useAlertStore()
+const busStore = useBusinessStore()
 const props = defineProps<{
     showOnCategory: string | string[]
   }>()
@@ -12,8 +13,8 @@ const showAlert = computed(() => {
 <template>
   <UAlert
     v-if="showAlert.length > 0"
-    :title="showAlert[0].title"
-    :description="showAlert[0].description"
+    :title="$t(`alerts.${showAlert[0].category}.title`)"
+    :description="$t(`alerts.${showAlert[0].category}.description`, { date: busStore.nextArDate })"
     class="text-left"
     icon="i-mdi-alert"
     color="red"

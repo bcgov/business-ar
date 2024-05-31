@@ -1,4 +1,10 @@
 export default {
+  alerts: { // TODO: review alert messages
+    'future-filing': {
+      title: '',
+      description: "Le prochain Rapport Annuel de cette entreprise n'est pas dû avant le {date}. Veuillez déposer le Rapport Annuel à partir de cette date."
+    }
+  },
   btn: {
     getStarted: 'Commencer',
     goHome: 'Accueil',

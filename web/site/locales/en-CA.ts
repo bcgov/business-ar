@@ -1,4 +1,10 @@
 export default {
+  alerts: {
+    'future-filing': {
+      title: '',
+      description: 'The next Annual Report for this company is not due until {date}. Please file the Annual Report on or after that date.'
+    }
+  },
   btn: {
     getStarted: 'Get Started',
     goHome: 'Go Home',
