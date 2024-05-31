@@ -5,8 +5,13 @@ export const useAlertStore = defineStore('bar-sbc-alert-store', () => {
     alerts.value = []
   }
 
+  function addAlert (alert: Alert) {
+    alerts.value.push(alert)
+  }
+
   return {
     alerts,
+    addAlert,
     $reset
   }
 },
