@@ -38,6 +38,7 @@ from .base import bp as base_endpoint
 from .business import bp as business_bp
 from .filing import bp as filings_bp
 from .internal import bp as internal_bp
+from .meta import bp as meta_bp
 from .reports import bp as reports_bp
 from .user import bp as user_bp
 
@@ -55,5 +56,6 @@ def register_endpoints(app: Flask):
     app.register_blueprint(business_bp)
     app.register_blueprint(filings_bp)
     app.register_blueprint(internal_bp)
+    app.register_blueprint(meta_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(reports_bp)

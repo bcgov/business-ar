@@ -31,62 +31,42 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Tests for the business resource.
+"""Tests to assure the meta end-point.
 
-Test suite to ensure that the Business endpoints are working as expected.
+Test-Suite to ensure that the /meta endpoint is working as expected.
 """
-from datetime import datetime
-from http import HTTPStatus
-
-from business_ar_api.models import Business, Invitations
+from importlib.metadata import version
 
 
-def test_business_look_up_by_nano_id(session, client):
-    """Assert that a Business can be looked up using the nano id."""
-    business = Business(
-        legal_name="Test Business 1",
-        legal_type="BC",
-        identifier="BC1217715",
-        tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-12T",
-    )
-    business.save()
-    assert business.id is not None
+def test_meta_no_commit_hash(client):
+    """Assert that the endpoint returns just the services __version__."""
+    from flask import __version__ as framework_version
 
-    invitations = Invitations(
-        recipients="test@abc.com",
-        message="Test Message",
-        sent_date=datetime.now(),
-        token="abcde123",
-        status="SENT",
-        additional_message="Test",
-        business_id=business.id,
-    )
-    invitations.save()
+    PACKAGE_NAME = "business_ar_api"
+    ver = version(PACKAGE_NAME)
 
-    rv = client.get(f"/v1/business/token/{invitations.token}")
+    rv = client.get("/api/v1/meta/info")
 
-    assert rv.status_code == HTTPStatus.OK
+    assert rv.status_code == 200
     assert rv.json == {
-        "legalName": business.legal_name,
-        "legalType": business.legal_type,
-        "identifier": business.identifier,
-        "taxId": business.tax_id,
+        "API": f"{PACKAGE_NAME}/{ver}",
+        "FrameWork": f"{framework_version}",
     }
 
 
-def test_business_does_not_exist(session, client):
-    """Assert that error is returned."""
-    business = Business(
-        legal_name="Test Business 4",
-        legal_type="BC",
-        identifier="BC1215715",
-        tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdBj7B-12T",
-    )
-    business.save()
-    assert business.id is not None
+def test_meta_with_commit_hash(monkeypatch, client):
+    """Assert that the endpoint return __version__ and the last git hash used to build the services image."""
+    from flask import __version__ as framework_version
 
-    rv = client.get(f"/v1/business/token/etc123")
+    PACKAGE_NAME = "business_ar_api"
+    ver = version(PACKAGE_NAME)
 
-    assert rv.status_code == HTTPStatus.BAD_REQUEST
+    commit_hash = "deadbeef_ha"
+    monkeypatch.setenv("VCS_REF", commit_hash)
+
+    rv = client.get("/api/v1/meta/info")
+    assert rv.status_code == 200
+    assert rv.json == {
+        "API": f"{PACKAGE_NAME}/{ver}-{commit_hash}",
+        "FrameWork": f"{framework_version}",
+    }
