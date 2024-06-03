@@ -9,8 +9,13 @@ export const useAlertStore = defineStore('bar-sbc-alert-store', () => {
     alerts.value.push(alert)
   }
 
+  const hasAlerts = computed(() => {
+    return alerts.value.length > 0
+  })
+
   return {
     alerts,
+    hasAlerts,
     addAlert,
     $reset
   }

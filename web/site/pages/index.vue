@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const keycloak = useKeycloak()
+const { $keycloak } = useNuxtApp()
 const route = useRoute()
 const localePath = useLocalePath()
 const busStore = useBusinessStore()
@@ -28,7 +29,7 @@ async function initPage () {
     loadStore.pageLoading = true
     alertStore.$reset()
     // get business task is user is logged in (user was redirected after keycloak login)
-    if (keycloak.isAuthenticated()) {
+    if ($keycloak.authenticated) {
       await accountStore.updateUserProfile()
       if (route.query.nanoid) { // load new business details if user already logged in and provides a new nano id
         resetPiniaStores() // reset state when loading a new business
@@ -51,8 +52,8 @@ async function initPage () {
       } else { // user is authenticated but theres no existing filing, continue normal flow
         return navigateTo(localePath('/accounts/choose-existing'))
       }
-      loadStore.pageLoading = false // only set false if not navigating to new page
-    } else if (!keycloak.isAuthenticated() && route.query.nanoid) {
+      // loadStore.pageLoading = false // only set false if not navigating to new page
+    } else if (!$keycloak.authenticated && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
       loadStore.pageLoading = false // only set false if not navigating to new page
@@ -93,7 +94,7 @@ if (import.meta.client) {
       />
 
       <!-- show business details -->
-      <UCard v-if="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
+      <UCard v-show="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
         <SbcBusinessInfo
           break-value="sm"
           :items="[
@@ -107,10 +108,10 @@ if (import.meta.client) {
     <!-- show data from nuxt content -->
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
     <SbcNuxtContentCard v-show="!keycloak.isAuthenticated()" id="initial" route-suffix="1" />
-    <!-- <SbcNuxtContentCard v-show="busStore.payStatus === 'PAID'" id="report-completed" route-suffix="2" /> -->
+    <SbcNuxtContentCard v-show="keycloak.isAuthenticated() && alertStore.hasAlerts" id="error" route-suffix="2" />
     <ClientOnly>
       <UButton
-        v-if="!keycloak.isAuthenticated() && alertStore.alerts.length === 0"
+        v-if="!keycloak.isAuthenticated() && !alertStore.hasAlerts"
         :label="$t('btn.loginBCSC')"
         icon="i-mdi-card-account-details-outline"
         @click="keycloak.login"
