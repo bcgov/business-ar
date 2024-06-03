@@ -61,10 +61,11 @@ async function initPage () {
         severity: 'error',
         category: AlertCategory.MISSING_TOKEN
       })
+      console.error('Missing token to fetch business details')
       throw new Error('Missing token to fetch business details')
     }
-  } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
-    console.error((e as Error).message)
+  } catch { // log error and redirect if no nano id or any of the previous calls fail
+    // console.error((e as Error).message)
     loadStore.pageLoading = false
   }
 }
@@ -78,34 +79,19 @@ if (import.meta.client) {
   <!-- must use v-show for nuxt content to prerender correctly -->
   <div v-show="!loadStore.pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>
-      <!-- show different h1 depending on pay status -->
-      <SbcPageSectionH1
-        v-if="busStore.payStatus === 'PAID'"
-        class="flex w-fit items-center justify-center gap-2"
-      >
-        <span>{{ $t('page.submitted.h1') }}</span>
-        <span class="flex items-center justify-center">
-          <UIcon
-            name="i-mdi-check-circle-outline"
-            class="size-10 text-outcomes-approved"
-          />
-        </span>
-      </SbcPageSectionH1>
-      <SbcPageSectionH1
-        v-else
-        :heading="$t('page.home.h1')"
-      />
+      <SbcPageSectionH1 :heading="$t('page.home.h1')" />
 
       <SbcAlert
         :show-on-category="[
           AlertCategory.FUTURE_FILING,
           AlertCategory.INVALID_NEXT_AR_YEAR,
-          AlertCategory.MISSING_TOKEN
+          AlertCategory.MISSING_TOKEN,
+          AlertCategory.INTERNAL_SERVER_ERROR
         ]"
       />
 
       <!-- show business details -->
-      <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
+      <UCard v-if="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
         <SbcBusinessInfo
           break-value="sm"
           :items="[
@@ -127,7 +113,11 @@ if (import.meta.client) {
         icon="i-mdi-card-account-details-outline"
         @click="keycloak.login"
       />
-      <div class="flex gap-2" @keydown.enter.prevent="useNanoId">
+      <div
+        v-if="useRuntimeConfig().public.environment !== undefined"
+        class="flex gap-2"
+        @keydown.enter.prevent="useNanoId"
+      >
         <UInput v-model="nanoid" placeholder="Enter a nano id" variant="bcGov" />
         <UButton label="Go" @click="useNanoId" />
       </div>

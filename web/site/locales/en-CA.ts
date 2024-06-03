@@ -11,6 +11,10 @@ export default {
     'missing-token': {
       title: '',
       description: 'Missing token to retrieve business details.'
+    },
+    'internal-server-error': {
+      title: '',
+      description: 'Internal server error, please try again later or contact us for assistance.'
     }
   },
   btn: {

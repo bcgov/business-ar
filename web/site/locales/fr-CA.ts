@@ -11,6 +11,10 @@ export default {
     'missing-token': {
       title: '',
       description: "Jeton manquant pour récupérer les détails de l'entreprise."
+    },
+    'internal-server-error': {
+      title: '',
+      description: "Erreur de serveur interne, veuillez réessayer plus tard ou contactez-nous pour obtenir de l'aide."
     }
   },
   btn: {
