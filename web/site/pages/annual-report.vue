@@ -154,7 +154,7 @@ if (import.meta.client) {
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
-    await busStore.getFullBusinessDetails()
+    // await busStore.getFullBusinessDetails()
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
