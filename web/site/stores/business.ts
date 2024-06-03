@@ -1,9 +1,6 @@
 import type { Business, BusinessFull, BusinessNano, BusinessTask, BusinessTaskName } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
-  const { $keycloak } = useNuxtApp()
-  const config = useRuntimeConfig()
-  const apiUrl = config.public.barApiUrl
   const arStore = useAnnualReportStore()
   const accountStore = useAccountStore()
   const alertStore = useAlertStore()
@@ -19,23 +16,17 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
-    // fetch by provided id
-    await $fetch<BusinessNano>(`${apiUrl}/business/token/${id}`, {
-      onResponse ({ response }) {
-        if (response.ok) {
-          businessNano.value = response._data
-        }
-      },
-      onResponseError ({ response }) {
-        // console error a message form the api or a default message
-        const errorMsg = response._data.message ?? 'Error retrieving business by nano id.'
-        console.error(errorMsg)
-      }
-    })
+    const response = await useBarApi<BusinessNano>(`/business/token/${id}`)
+    if (response) {
+      businessNano.value = response
+    }
   }
 
   async function getFullBusinessDetails (): Promise<void> {
-    fullDetails.value = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
+    const response = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
+    if (response) {
+      fullDetails.value = response
+    }
   }
 
   function assignBusinessStoreValues (bus: BusinessFull) {
@@ -69,37 +60,25 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // ping sbc pay to see if payment went through and return pay status details
   async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
-    await $fetch<ArFilingResponse>(`${apiUrl}/business/${businessNano.value.identifier}/filings/${filingId}/payment`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${$keycloak.token}`
-      },
-      onResponse ({ response }) {
-        // console.log('put request: ', response._data)
-        // set pay status var
-        if (response.ok) {
-          payStatus.value = response._data.filing.header.status
-        }
-      },
-      onResponseError ({ response }) {
-        // console error a message from the api or a default message
-        const errorMsg = response._data.message ?? 'Error updating business payment status.'
-        console.error(errorMsg)
-      }
-    })
+    const response = await useBarApi<ArFilingResponse>(
+      `/business/${businessNano.value.identifier}/filings/${filingId}/payment`,
+      { method: 'PUT' },
+      'token',
+      'Error updating business payment status.'
+    )
+
+    if (response) {
+      payStatus.value = response.filing.header.status
+    }
   }
 
   async function getBusinessTask (): Promise<{ task: string | null, taskValue: BusinessTodoTask | BusinessFilingTask | null }> {
-    const response = await $fetch<BusinessTask>(`${apiUrl}/business/${businessNano.value.identifier}/tasks`, {
-      headers: {
-        Authorization: `Bearer ${$keycloak.token}`
-      },
-      onResponseError ({ response }) {
-        // console error a message form the api or a default message
-        const errorMsg = response._data.message ?? 'Error retrieving business tasks.'
-        console.error(errorMsg)
-      }
-    })
+    const response = await useBarApi<BusinessTask>(
+      `/business/${businessNano.value.identifier}/tasks`,
+      {},
+      'token',
+      'Error retrieving business tasks.'
+    )
 
     await getFullBusinessDetails()
     assignBusinessStoreValues(fullDetails.value.business)
@@ -125,9 +104,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
       payStatus.value = taskValue.filing.header.status
     }
-    // else if ('todo' in taskValue) {
-    //   assignBusinessStoreValues(taskValue.todo.business)
-    // }
 
     return { task: taskName, taskValue }
   }

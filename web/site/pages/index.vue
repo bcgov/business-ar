@@ -6,7 +6,13 @@ const localePath = useLocalePath()
 const busStore = useBusinessStore()
 const accountStore = useAccountStore()
 const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const alertStore = useAlertStore()
+
+const nanoid = ref('')
+async function useNanoId () {
+  await navigateTo(localePath(`/?nanoid=${nanoid.value}`))
+  await initPage()
+}
 
 useHead({
   title: t('page.home.title')
@@ -19,6 +25,8 @@ definePageMeta({
 // init page function to be able to return navigateTo instead of await, smoother UX
 async function initPage () {
   try {
+    loadStore.pageLoading = true
+    alertStore.$reset()
     // get business task is user is logged in (user was redirected after keycloak login)
     if (keycloak.isAuthenticated()) {
       await accountStore.updateUserProfile()
@@ -49,11 +57,15 @@ async function initPage () {
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
       loadStore.pageLoading = false // only set false if not navigating to new page
     } else { // throw error if no valid nano id
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.MISSING_TOKEN
+      })
       throw new Error('Missing token to fetch business details')
     }
   } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
     console.error((e as Error).message)
-    return navigateTo(localePath('/missing-id'))
+    loadStore.pageLoading = false
   }
 }
 
@@ -84,6 +96,14 @@ if (import.meta.client) {
         :heading="$t('page.home.h1')"
       />
 
+      <SbcAlert
+        :show-on-category="[
+          AlertCategory.FUTURE_FILING,
+          AlertCategory.INVALID_NEXT_AR_YEAR,
+          AlertCategory.MISSING_TOKEN
+        ]"
+      />
+
       <!-- show business details -->
       <UCard class="w-full overflow-x-auto" data-testid="bus-details-card">
         <SbcBusinessInfo
@@ -98,8 +118,8 @@ if (import.meta.client) {
     </ClientOnly>
     <!-- show data from nuxt content -->
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
-    <SbcNuxtContentCard v-show="busStore.payStatus !== 'PAID'" id="initial" route-suffix="1" />
-    <SbcNuxtContentCard v-show="busStore.payStatus === 'PAID'" id="report-completed" route-suffix="2" />
+    <SbcNuxtContentCard v-show="!keycloak.isAuthenticated()" id="initial" route-suffix="1" />
+    <!-- <SbcNuxtContentCard v-show="busStore.payStatus === 'PAID'" id="report-completed" route-suffix="2" /> -->
     <ClientOnly>
       <UButton
         v-if="!keycloak.isAuthenticated()"
@@ -107,6 +127,10 @@ if (import.meta.client) {
         icon="i-mdi-card-account-details-outline"
         @click="keycloak.login"
       />
+      <div class="flex gap-2" @keydown.enter.prevent="useNanoId">
+        <UInput v-model="nanoid" placeholder="Enter a nano id" variant="bcGov" />
+        <UButton label="Go" @click="useNanoId" />
+      </div>
     </ClientOnly>
   </div>
 </template>

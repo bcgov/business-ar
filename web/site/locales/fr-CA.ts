@@ -7,6 +7,10 @@ export default {
     'invalid-next-ar-year': {
       title: 'Année de Rapport Annuel invalide',
       description: "L'année suivante du Rapport Annuel est invalide ou manquante."
+    },
+    'missing-token': {
+      title: '',
+      description: "Jeton manquant pour récupérer les détails de l'entreprise."
     }
   },
   btn: {

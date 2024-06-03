@@ -7,6 +7,10 @@ export default {
     'invalid-next-ar-year': {
       title: 'Invalid Annual Report Year',
       description: 'The next Annual Report year is invalid or missing.'
+    },
+    'missing-token': {
+      title: '',
+      description: 'Missing token to retrieve business details.'
     }
   },
   btn: {

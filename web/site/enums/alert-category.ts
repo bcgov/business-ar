@@ -6,5 +6,6 @@ export enum AlertCategory {
   USER_INFO = 'user-info',
   SIGNIFICANT_INDIVIDUAL = 'significiant-individual',
   FUTURE_FILING = 'future-filing',
-  INVALID_NEXT_AR_YEAR = 'invalid-next-ar-year'
+  INVALID_NEXT_AR_YEAR = 'invalid-next-ar-year',
+  MISSING_TOKEN = 'missing-token'
 }
