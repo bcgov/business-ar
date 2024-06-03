@@ -7,6 +7,7 @@ const localePath = useLocalePath()
 const busStore = useBusinessStore()
 const accountStore = useAccountStore()
 const loadStore = useLoadingStore()
+loadStore.pageLoading = true
 const alertStore = useAlertStore()
 
 const nanoid = ref(route.query.nanoid || '')
@@ -67,6 +68,7 @@ async function initPage () {
     }
   } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
     console.error((e as Error).message)
+  } finally {
     loadStore.pageLoading = false
   }
 }

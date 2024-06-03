@@ -12,5 +12,7 @@ const displayEmail = computed(() => {
 })
 </script>
 <template>
-  <span class="not-prose font-semibold">{{ displayEmail }}</span>
+  <ClientOnly>
+    <span class="not-prose font-semibold">{{ displayEmail }}</span>
+  </ClientOnly>
 </template>

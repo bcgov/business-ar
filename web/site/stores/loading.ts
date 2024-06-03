@@ -1,8 +1,8 @@
 export const useLoadingStore = defineStore('bar-sbc-loading-store', () => {
-  const pageLoading = ref<boolean>(false)
+  const pageLoading = ref<boolean>(true)
 
   function $reset () {
-    pageLoading.value = false
+    pageLoading.value = true
   }
 
   return {

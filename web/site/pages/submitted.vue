@@ -11,7 +11,7 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['filing-paid', 'require-account']
+  middleware: ['require-account']
 })
 
 async function initPage () {
@@ -21,7 +21,7 @@ async function initPage () {
     } else {
       // check filing status details
       await busStore.updatePaymentStatusForBusiness(route.query.filing_id as string)
-      if (busStore.payStatus && busStore.payStatus !== 'PAID') {
+      if (busStore.payStatus !== 'PAID') {
         return navigateTo(localePath('/annual-report'))
       }
       loadStore.pageLoading = false
