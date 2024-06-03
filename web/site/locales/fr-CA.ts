@@ -15,6 +15,18 @@ export default {
     'internal-server-error': {
       title: '',
       description: "Erreur de serveur interne, veuillez réessayer plus tard ou contactez-nous pour obtenir de l'aide."
+    },
+    'invalid-token': {
+      title: 'Jeton Invalide',
+      description: "Erreur lors de la récupération des détails de l'entreprise avec le jeton fourni."
+    },
+    'business-details': {
+      title: '',
+      description: "Erreur lors de la récupération des détails de l'entreprise."
+    },
+    'account-access': {
+      title: 'Accès Refusé',
+      desciption: "Votre compte n'est pas autorisé à effectuer cette tâche."
     }
   },
   btn: {

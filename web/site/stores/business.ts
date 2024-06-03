@@ -26,14 +26,22 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         severity: 'error',
         category: AlertCategory.INVALID_TOKEN
       })
-      throw new Error(e)
+      throw e
     }
   }
 
   async function getFullBusinessDetails (): Promise<void> {
-    const response = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
-    if (response) {
-      fullDetails.value = response
+    try {
+      const response = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
+      if (response) {
+        fullDetails.value = response
+      }
+    } catch (e) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.BUSINESS_DETAILS
+      })
+      throw e
     }
   }
 
@@ -81,39 +89,53 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   }
 
   async function getBusinessTask (): Promise<{ task: string | null, taskValue: BusinessTodoTask | BusinessFilingTask | null }> {
-    const response = await useBarApi<BusinessTask>(
-      `/business/${businessNano.value.identifier}/tasks`,
-      {},
-      'token',
-      'Error retrieving business tasks.'
-    )
+    try {
+      const response = await useBarApi<BusinessTask>(
+        `/business/${businessNano.value.identifier}/tasks`,
+        {},
+        'token',
+        'Error retrieving business tasks.'
+      )
 
-    await getFullBusinessDetails()
-    assignBusinessStoreValues(fullDetails.value.business)
+      await getFullBusinessDetails()
+      assignBusinessStoreValues(fullDetails.value.business)
 
-    // handle case where theres no tasks available (filings complete up to date)
-    if (response.tasks.length === 0) {
-      businessTask.value = 'none'
-      return { task: null, taskValue: null }
-    }
-
-    const taskValue = response.tasks[0].task // assign task value
-    const taskName = Object.getOwnPropertyNames(taskValue)[0] // assign task name
-    businessTask.value = taskName as 'filing' | 'todo' // set store value
-
-    // assign business store values using response from task endpoint, saves having to make another call to get business details
-    if ('filing' in taskValue) {
-      await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
-      // throw error if user does not own account of the in progress filing
-      if (!accountStore.userAccounts.some(account => account.id === parseInt(taskValue.filing.header.paymentAccount))) {
-        throw new Error('Access Denied: Your account does not have permission to complete this task.')
+      // handle case where theres no tasks available (filings complete up to date)
+      if (response.tasks.length === 0) {
+        businessTask.value = 'none'
+        return { task: null, taskValue: null }
       }
-      // assignBusinessStoreValues(taskValue.filing.business)
-      arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
-      payStatus.value = taskValue.filing.header.status
-    }
 
-    return { task: taskName, taskValue }
+      const taskValue = response.tasks[0].task // assign task value
+      const taskName = Object.getOwnPropertyNames(taskValue)[0] // assign task name
+      businessTask.value = taskName as 'filing' | 'todo' // set store value
+
+      // assign business store values using response from task endpoint, saves having to make another call to get business details
+      if ('filing' in taskValue) {
+        await accountStore.getAndSetAccount(taskValue.filing.header.paymentAccount)
+        // throw error if user does not own account of the in progress filing
+        if (!accountStore.userAccounts.some(account => account.id === parseInt(taskValue.filing.header.paymentAccount))) {
+          alertStore.addAlert({
+            severity: 'error',
+            category: AlertCategory.ACCOUNT_ACCESS
+          })
+          throw new Error('Access Denied: Your account does not have permission to complete this task.')
+        }
+        // assignBusinessStoreValues(taskValue.filing.business)
+        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+        payStatus.value = taskValue.filing.header.status
+      }
+      return { task: taskName, taskValue }
+    } catch (e) {
+      // add general error alert if the error is not access denied
+      if (!(e instanceof Error && e.message.includes('Access Denied'))) {
+        alertStore.addAlert({
+          severity: 'error',
+          category: AlertCategory.BUSINESS_DETAILS
+        })
+      }
+      throw e
+    }
   }
 
   function $reset () {

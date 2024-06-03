@@ -9,5 +9,6 @@ export enum AlertCategory {
   INVALID_NEXT_AR_YEAR = 'invalid-next-ar-year',
   MISSING_TOKEN = 'missing-token',
   INTERNAL_SERVER_ERROR = 'internal-server-error',
-  INVALID_TOKEN = 'invalid-token'
+  INVALID_TOKEN = 'invalid-token',
+  BUSINESS_DETAILS = 'business-details',
 }

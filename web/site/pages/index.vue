@@ -8,7 +8,7 @@ const accountStore = useAccountStore()
 const loadStore = useLoadingStore()
 const alertStore = useAlertStore()
 
-const nanoid = ref('')
+const nanoid = ref(route.query.nanoid || '')
 async function useNanoId () {
   await navigateTo(localePath(`/?nanoid=${nanoid.value}`))
   await initPage()
@@ -64,8 +64,8 @@ async function initPage () {
       console.error('Missing token to fetch business details')
       throw new Error('Missing token to fetch business details')
     }
-  } catch { // log error and redirect if no nano id or any of the previous calls fail
-    // console.error((e as Error).message)
+  } catch (e) { // log error and redirect if no nano id or any of the previous calls fail
+    console.error((e as Error).message)
     loadStore.pageLoading = false
   }
 }
@@ -87,7 +87,8 @@ if (import.meta.client) {
           AlertCategory.INVALID_NEXT_AR_YEAR,
           AlertCategory.MISSING_TOKEN,
           AlertCategory.INTERNAL_SERVER_ERROR,
-          AlertCategory.INVALID_TOKEN
+          AlertCategory.INVALID_TOKEN,
+          AlertCategory.BUSINESS_DETAILS
         ]"
       />
 

@@ -19,6 +19,14 @@ export default {
     'invalid-token': {
       title: 'Invalid Token',
       description: 'Error retrieving business details with the provided token.'
+    },
+    'business-details': {
+      title: '',
+      description: 'Error retrieving business details.'
+    },
+    'account-access': {
+      title: 'Access Denied',
+      desciption: 'Your account does not have permission to complete this task.'
     }
   },
   btn: {
