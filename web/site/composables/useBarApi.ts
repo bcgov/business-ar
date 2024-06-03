@@ -25,6 +25,7 @@ export const useBarApi = <T>(
 ): Promise<T> => {
   const apiUrl = useRuntimeConfig().public.barApiUrl
   const accountStore = useAccountStore()
+  const alertStore = useAlertStore()
   const { $keycloak } = useNuxtApp()
   const token = $keycloak.token
 
@@ -58,6 +59,10 @@ export const useBarApi = <T>(
     },
     onResponseError ({ response }) {
       if (response.status === 500) { // specifically handle 500 error
+        alertStore.addAlert({
+          severity: 'error',
+          category: AlertCategory.INTERNAL_SERVER_ERROR
+        })
         console.error('Internal Server Error, please try again later or contact us for assistance.')
       } else {
         // use error message from the API or the default error message
