@@ -86,7 +86,8 @@ if (import.meta.client) {
           AlertCategory.FUTURE_FILING,
           AlertCategory.INVALID_NEXT_AR_YEAR,
           AlertCategory.MISSING_TOKEN,
-          AlertCategory.INTERNAL_SERVER_ERROR
+          AlertCategory.INTERNAL_SERVER_ERROR,
+          AlertCategory.INVALID_TOKEN
         ]"
       />
 
@@ -108,7 +109,7 @@ if (import.meta.client) {
     <!-- <SbcNuxtContentCard v-show="busStore.payStatus === 'PAID'" id="report-completed" route-suffix="2" /> -->
     <ClientOnly>
       <UButton
-        v-if="!keycloak.isAuthenticated()"
+        v-if="!keycloak.isAuthenticated() && alertStore.alerts.length === 0"
         :label="$t('btn.loginBCSC')"
         icon="i-mdi-card-account-details-outline"
         @click="keycloak.login"

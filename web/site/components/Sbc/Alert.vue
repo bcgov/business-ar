@@ -7,6 +7,13 @@ const props = defineProps<{
 
 const showAlert = computed(() => {
   const categories = Array.isArray(props.showOnCategory) ? props.showOnCategory : [props.showOnCategory]
+
+  // return the internal server alert if there is one present
+  const internalServerErrorAlert = alertStore.alerts.find(alert => alert.category === AlertCategory.INTERNAL_SERVER_ERROR)
+  if (internalServerErrorAlert) {
+    return [internalServerErrorAlert]
+  }
+
   return alertStore.alerts.filter(alert => categories.includes(alert.category))
 })
 </script>

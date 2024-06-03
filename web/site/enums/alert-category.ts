@@ -8,5 +8,6 @@ export enum AlertCategory {
   FUTURE_FILING = 'future-filing',
   INVALID_NEXT_AR_YEAR = 'invalid-next-ar-year',
   MISSING_TOKEN = 'missing-token',
-  INTERNAL_SERVER_ERROR = 'internal-server-error'
+  INTERNAL_SERVER_ERROR = 'internal-server-error',
+  INVALID_TOKEN = 'invalid-token'
 }

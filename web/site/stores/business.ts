@@ -16,9 +16,17 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
-    const response = await useBarApi<BusinessNano>(`/business/token/${id}`)
-    if (response) {
-      businessNano.value = response
+    try {
+      const response = await useBarApi<BusinessNano>(`/business/token/${id}`)
+      if (response) {
+        businessNano.value = response
+      }
+    } catch (e) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.INVALID_TOKEN
+      })
+      throw new Error(e)
     }
   }
 

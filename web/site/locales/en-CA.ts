@@ -15,6 +15,10 @@ export default {
     'internal-server-error': {
       title: '',
       description: 'Internal server error, please try again later or contact us for assistance.'
+    },
+    'invalid-token': {
+      title: 'Invalid Token',
+      description: 'Error retrieving business details with the provided token.'
     }
   },
   btn: {
