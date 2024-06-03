@@ -29,10 +29,16 @@ registerEndpoint('/business/undefined/filings/12/payment', {
   handler: () => (mockedArFilingResponse)
 })
 
-const fakeApiCall = vi.fn()
+const fakeApiCallBusinessDetails = vi.fn()
+const fakeApiCallTasks = vi.fn()
 registerEndpoint('/business/undefined/tasks', {
   method: 'GET',
-  handler: fakeApiCall
+  handler: fakeApiCallTasks
+})
+
+registerEndpoint('/business/undefined', {
+  method: 'GET',
+  handler: fakeApiCallBusinessDetails
 })
 
 registerEndpoint('/user/accounts', {
@@ -80,7 +86,7 @@ describe('Business Store Tests', () => {
 
     it('throws an error if business has already filed an AR for the current year', () => {
       const busStore = useBusinessStore()
-      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullAlreadyFiled.business)).toThrowError('Business has already filed an Annual Report for 2024')
+      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullAlreadyFiled.business)).toThrowError('Annual Report not due until 2025-10-10')
     })
 
     it('uses founding date for nextArDate if no lastArDate', () => {
@@ -102,13 +108,14 @@ describe('Business Store Tests', () => {
 
   describe('getBusinessTask', () => {
     it('fetches business task with filing and assigns values', async () => {
-      fakeApiCall.mockImplementation(() => mockedFilingTask)
+      fakeApiCallTasks.mockImplementation(() => mockedFilingTask)
+      fakeApiCallBusinessDetails.mockImplementation(() => mockedBusinessFull)
       const busStore = useBusinessStore()
       const arStore = useAnnualReportStore()
       const accountStore = useAccountStore()
       accountStore.userAccounts = mockedOrgs.orgs
-      console.log(mockedFilingTask.tasks[0].task)
-      console.log(accountStore.userAccounts)
+      // console.log(mockedFilingTask.tasks[0].task)
+      // console.log(accountStore.userAccounts)
       const { task, taskValue } = await busStore.getBusinessTask()
 
       expect(task).toEqual('filing')
@@ -119,7 +126,8 @@ describe('Business Store Tests', () => {
     })
 
     it('fetches business task with todo and assigns values', async () => {
-      fakeApiCall.mockImplementation(() => mockedTodoTask)
+      fakeApiCallTasks.mockImplementation(() => mockedTodoTask)
+      fakeApiCallBusinessDetails.mockImplementation(() => mockedBusinessFull)
       const busStore = useBusinessStore()
       const arStore = useAnnualReportStore()
       const { task, taskValue } = await busStore.getBusinessTask()
