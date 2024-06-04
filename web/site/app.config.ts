@@ -185,15 +185,18 @@ export default defineAppConfig({
       }
     },
     tooltip: {
+      wrapper: 'relative inline-flex',
+      container: 'z-20 group min-h-fit',
       background: 'bg-gray-700',
       color: 'text-white',
       ring: 'ring-1 ring-gray-700',
-      rounded: 'rounded-none',
-      base: 'h-auto text-base p-3',
+      rounded: 'rounded',
+      base: '[@media(pointer:coarse)]:hidden h-auto px-2 py-1 text-sm font-normal relative whitespace-normal',
       arrow: {
         base: 'before:w-3 before:h-3',
         ring: 'before:ring-1 before:ring-gray-700',
-        background: 'before:bg-gray-700'
+        background: 'before:bg-gray-700',
+        rounded: 'before:rounded-none'
       }
     },
     verticalNavigation: {

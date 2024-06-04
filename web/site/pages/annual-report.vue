@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
-import { UForm, UCheckbox, SbcInputsDateSelect } from '#components'
+import { UForm, UCheckbox, SbcInputsDateSelect, UTooltip } from '#components'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const keycloak = useKeycloak()
@@ -21,23 +21,24 @@ definePageMeta({
 // options for radio buttons
 const options = [
   {
-    label: t('page.annualReport.form.heldAgm.opt1'),
+    label: t('page.annualReport.form.agmStatus.opt1', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-1'
   },
   {
-    label: t('page.annualReport.form.heldAgm.opt2'),
+    label: t('page.annualReport.form.agmStatus.opt2', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-2'
   },
   {
-    label: t('page.annualReport.form.heldAgm.opt3'),
+    label: t('page.annualReport.form.agmStatus.opt3', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-3'
   }
 ]
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
+const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
 const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
-const selectedRadio = ref<string>('option-1')
+const selectedRadio = ref<string | null>(null)
 const loading = ref<boolean>(false)
 const errorAlert = reactive({
   title: '',
@@ -46,8 +47,9 @@ const errorAlert = reactive({
 const showCheckboxHelp = ref(false)
 
 // form state
-const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
+const arData = reactive<{ agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean}>({
   agmDate: null,
+  voteDate: null,
   officeAndDirectorsConfirmed: false
 })
 
@@ -107,36 +109,6 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-// clear date if switching radio options
-function handleRadioClick (option: string) {
-  if (selectedRadio.value !== option) {
-    arFormRef.value?.clear()
-    selectedRadio.value = option // this allows clicking anywhere in the radio button wrapper, not just the icon or label
-    dateSelectRef.value?.updateDate(null)
-    arData.agmDate = null
-  }
-}
-
-// handle arrow key events on radio group (default behaviour not working as expected)
-function handleRadioKeydown (event: KeyboardEvent) {
-  const currentIndex = options.findIndex(option => option.value === selectedRadio.value) // get index of previously focused radio
-
-  // move focus through radio group and set selected value
-  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-    const nextIndex = (currentIndex + 1) % options.length // wrap focus if focus from last radio
-    selectedRadio.value = options[nextIndex].value
-    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
-    radioElement?.focus()
-    event.preventDefault()
-  } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-    const prevIndex = (currentIndex - 1 + options.length) % options.length // wrap focus if focus from first radio
-    selectedRadio.value = options[prevIndex].value
-    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
-    radioElement?.focus()
-    event.preventDefault()
-  }
-}
-
 // set/unset checkbox error text after interacting with the checkbox
 watch(
   () => arData.officeAndDirectorsConfirmed,
@@ -154,7 +126,6 @@ if (import.meta.client) {
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
-    // await busStore.getFullBusinessDetails()
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
@@ -223,32 +194,37 @@ if (import.meta.client) {
             @error="onError"
           >
             <!-- TODO: look into why this label isnt being associated with the radios -->
-            <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
-              <fieldset
-                role="radioGroup"
-                class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
-                @keydown="handleRadioKeydown"
-              >
-                <legend class="sr-only">
-                  {{ $t('page.annualReport.form.heldAgm.question') }}
-                </legend>
-                <URadio
-                  v-for="option of options"
-                  :key="option.value"
-                  v-bind="option"
-                  v-model="selectedRadio"
-                  :options="options"
-                  :ui="{
-                    wrapper: `cursor-pointer relative flex items-center flex-1 w-full p-4 ${selectedRadio === option.value ? 'bg-white border border-bcGovColor-activeBlue' : 'bg-gray-100 hover:bg-gray-200'}`,
-                    label: 'cursor-pointer sm:whitespace-nowrap',
-                  }"
-                  @click="handleRadioClick(option.value)"
-                />
-              </fieldset>
+            <UFormGroup name="radioGroup">
+              <template #label>
+                <div class="flex items-start gap-1">
+                  <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}</span>
+                  <UTooltip
+                    ref="tooltipRef"
+                    :text="$t('page.annualReport.form.agmStatus.tooltip')"
+                    :popper="{ arrow: true, placement: 'auto' }"
+                    tabindex="0"
+                    @focus="() => tooltipRef?.onMouseEnter()"
+                    @blur="() => tooltipRef?.onMouseLeave()"
+                  >
+                    <UIcon
+                      name="i-mdi-info-outline"
+                      class="size-6 shrink-0 text-bcGovColor-activeBlue"
+                    />
+                  </UTooltip>
+                </div>
+              </template>
+
+              <URadioGroup v-model="selectedRadio" :options :ui="{ fieldset: 'space-y-2' }" :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200'}" />
             </UFormGroup>
 
             <!-- AGM Date -->
-            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format')" :ui="{ help: 'text-bcGovColor-midGray' }">
+            <UFormGroup
+              v-if="selectedRadio && selectedRadio === 'option-1'"
+              name="agmDate"
+              class="mt-4"
+              :help="$t('page.annualReport.form.agmDate.format')"
+              :ui="{ help: 'text-bcGovColor-midGray' }"
+            >
               <SbcInputsDateSelect
                 id="SelectAGMDate"
                 ref="dateSelectRef"
@@ -257,12 +233,37 @@ if (import.meta.client) {
                 :arialabel="$t('page.annualReport.form.agmDate.label')"
                 :initial-date="arData.agmDate ? dateStringToDate(arData.agmDate) : undefined"
                 variant="bcGov"
-                :disabled="selectedRadio !== 'option-1'"
                 @selection="(e) => {
                   arFormRef?.clear()
                   arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
               />
             </UFormGroup>
+
+            <!-- Unanimous vote date -->
+            <UFormGroup
+              v-if="selectedRadio && selectedRadio === 'option-2'"
+              name="voteDate"
+              class="mt-4"
+              :help="$t('page.annualReport.form.voteDate.format')"
+              :ui="{ help: 'text-bcGovColor-midGray' }"
+            >
+              <SbcInputsDateSelect
+                id="SelectVoteDate"
+                ref="dateSelectRef"
+                :max-date="new Date()"
+                :placeholder="$t('page.annualReport.form.voteDate.placeholder')"
+                :arialabel="$t('page.annualReport.form.voteDate.label')"
+                :initial-date="arData.voteDate ? dateStringToDate(arData.voteDate) : undefined"
+                variant="bcGov"
+                @selection="(e) => {
+                  arFormRef?.clear()
+                  arData.voteDate = dateToString(e!, 'YYYY-MM-DD')}"
+              />
+            </UFormGroup>
+
+            <UAlert title="test" />
+
+            <!-- <SbcAlert :show-on-category="" /> -->
           </UForm>
         </SbcPageSectionCard>
 

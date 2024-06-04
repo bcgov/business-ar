@@ -189,17 +189,24 @@ export default {
       h2: 'Annual Report for: {name}',
       reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
       form: {
-        heldAgm: {
-          question: 'Has your company held an Annual General Meeting?',
-          opt1: 'Yes',
-          opt2: 'We have not held an AGM yet',
-          opt3: 'We voted to not hold an AGM'
+        agmStatus: {
+          question: 'The {year} Annual General Meeting (AGM) status of this business',
+          tooltip: 'Gathering AGM information helps us better calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
+          opt1: 'Our {year} AGM was held',
+          opt2: 'Our {year} AGM is to be held',
+          opt3: 'The board voted to not hold our {year} AGM'
         },
         agmDate: {
-          placeholder: 'Select Annual General Meeting Date',
-          label: 'Select Annual General Meeting Date',
+          placeholder: 'AGM Date',
+          label: 'AGM Date',
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a date if you held an AGM'
+        },
+        voteDate: {
+          placeholder: 'Unanimous Resolution Date',
+          label: 'Unanimous Resolution Date',
+          format: 'Format: YYYY-MM-DD',
+          error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
         certify: {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
