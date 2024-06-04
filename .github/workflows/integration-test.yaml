@@ -137,7 +137,7 @@ jobs:
 
           #echo "canada_post_api_key=\"`get_var "op://API/$APP_ENV/auth-api/DONT_KNOW_LOOKUP" "CANADA_POST_API_KEY"`\"" >> terraform.tfvars
           echo "auth_url=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_AUTH_BASE_URL" "AUTH_URL"`\"" >> terraform.tfvars
-          echo "auth_realm=\"`get_var ""op://keycloak/$APP_ENV/base/KEYCLOAK_REALMNAME" "AUTH_REALM"`\"" >> terraform.tfvars
+          echo "auth_realm=\"`get_var "op://keycloak/$APP_ENV/base/KEYCLOAK_REALMNAME" "AUTH_REALM"`\"" >> terraform.tfvars
           echo "registry_home_url=\"`get_var "op://web-url/$APP_ENV/registry/REGISTRY_HOME_URL" "REGISTRY_HOME_URL"`\"" >> terraform.tfvars
           echo "nuxt_client_id=\"`get_var "op://keycloak/$APP_ENV/bar-web/UI_KEYCLOAK_RESOURCE_NAME" "NUXT_CLIENT_ID"`\"" >> terraform.tfvars
 
