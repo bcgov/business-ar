@@ -190,3 +190,9 @@ jobs:
         with:
           name: terraform.tfvars
           path: test/terraform/terraform.tfvars
+      - name: Debug config json file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: config.json
+          path: test/testim/config.json
