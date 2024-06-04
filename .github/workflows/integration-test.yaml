@@ -157,8 +157,8 @@ jobs:
 
           cd ../testim
           echo "{" > ./config2.json
-          echo "\"username": \"${{secrets.TEST_USER}}\"," >> ./config2.json
-          echo "\"password": \"${{secrets.TEST_PASSWORD}}\"" >> ./config2.json
+          echo "\"username\": \"${{secrets.TEST_USER}}\"," >> ./config2.json
+          echo "\"password\": \"${{secrets.TEST_PASSWORD}}\"" >> ./config2.json
           echo "}" >> ./config2.json
 
           #for later steps
