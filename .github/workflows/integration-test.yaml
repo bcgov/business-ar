@@ -185,6 +185,7 @@ jobs:
             echo "}" >> ./config.json
             testim --token ${{secrets.TESTIM_TOKEN}} --project ${{vars.TESTIM_PROJECT}} --use-local-chrome-driver --user ${{vars.TESTIM_USER}} --suite "Annual Report Integration" --base-url http://localhost:3000 --params-file ./config.json
       - name: Debug terraform file
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: terraform.tfvars
