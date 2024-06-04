@@ -1,30 +1,22 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, afterEach } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { useKeycloak } from '~/composables/useKeycloak'
 
-mockNuxtImport('useI18n', () => {
-  return () => (
-    {
-      locale: 'en-CA',
-      locales: ref([
-        {
-          name: 'English',
-          code: 'en-CA',
-          iso: 'en-CA',
-          dir: 'ltr',
-          file: 'en-CA.ts'
-        }
-      ]),
-      t: (key: string) => key
+vi.mock('#app', () => ({
+  useNuxtApp: () => ({
+    $i18n: {
+      locale: ref('en-CA')
     }
-  )
-})
+  })
+}))
 
 describe('useKeycloak', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
   it('handles login', () => {
     // get imports
     const { $keycloak } = useNuxtApp()
-    const { locale } = useI18n()
 
     // call function
     const keycloak = useKeycloak()
@@ -34,16 +26,16 @@ describe('useKeycloak', () => {
     expect($keycloak.login).toHaveBeenCalledOnce()
     expect($keycloak.login).toHaveBeenCalledWith({
       idpHint: 'bcsc',
-      redirectUri: `${location.origin}/${locale.value}`
+      redirectUri: `${location.origin}/en-CA`
     })
   })
 
   it('handles logout', () => {
     const { resetPiniaStoresMock } = vi.hoisted(() => ({ resetPiniaStoresMock: vi.fn() }))
     mockNuxtImport('resetPiniaStores', () => resetPiniaStoresMock)
+
     // get imports
     const { $keycloak } = useNuxtApp()
-    const { locale } = useI18n()
 
     // call function
     const keycloak = useKeycloak()
@@ -52,7 +44,7 @@ describe('useKeycloak', () => {
     // assert
     expect($keycloak.logout).toHaveBeenCalledOnce()
     expect($keycloak.logout).toHaveBeenCalledWith({
-      redirectUri: `${location.origin}/${locale.value}`
+      redirectUri: `${location.origin}/en-CA`
     })
     // logout should also clear pinia stores
     expect(resetPiniaStoresMock).toHaveBeenCalledOnce()
@@ -81,6 +73,30 @@ describe('useKeycloak', () => {
       email: 'test@email.com',
       loginSource: 'BCSC',
       roles: ['role1', 'role2']
+    })
+  })
+
+  describe('getToken', () => {
+    it('getToken returns token when updateToken is successful', async () => {
+      const { $keycloak } = useNuxtApp()
+
+      const keycloak = useKeycloak()
+
+      const token = await keycloak.getToken()
+      expect($keycloak.updateToken).toHaveBeenCalledOnce()
+      expect($keycloak.updateToken).toHaveBeenCalledWith(30)
+      expect(token).toBe('123')
+    })
+
+    it('getToken returns token with forceRefresh', async () => {
+      const { $keycloak } = useNuxtApp()
+
+      const keycloak = useKeycloak()
+
+      const token = await keycloak.getToken(true)
+      expect($keycloak.updateToken).toHaveBeenCalledOnce()
+      expect($keycloak.updateToken).toHaveBeenCalledWith(-1)
+      expect(token).toBe('123')
     })
   })
 })

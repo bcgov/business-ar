@@ -68,7 +68,7 @@ def get_filings_by_status(status):
             business = BusinessService.find_by_internal_id(filing.business_id)
             filing_json["filing"]["business"] = (
                 BusinessService.get_business_details_from_colin(
-                    business.identifier, business.legal_type
+                    business.identifier, business.legal_type, business.id
                 ).get("business", {})
             )
             filings_res.append(filing_json)

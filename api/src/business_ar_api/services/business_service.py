@@ -40,6 +40,7 @@ from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
 from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import AccountService
+from business_ar_api.services.invitation_service import InvitationService
 from business_ar_api.services.rest_service import RestService
 from flask import current_app
 
@@ -57,7 +58,9 @@ class BusinessService:
         return BusinessModel.find_by_id(business_id)
 
     @classmethod
-    def get_business_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
+    def get_business_details_from_colin(
+        cls, identifier: str, legal_type: str, business_id: int
+    ) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
         colin_business_identifier = (
@@ -87,6 +90,14 @@ class BusinessService:
                 "businessNumber"
             ]
             del business_details["business"]["businessNumber"]
+
+        active_invitations = InvitationService.find_active_invitation_by_business(
+            business_id
+        )
+        if active_invitations:
+            business_details["business"]["invitationEmail"] = active_invitations[
+                0
+            ].recipients
 
         return business_details
 
@@ -167,7 +178,7 @@ class BusinessService:
             )
 
         business_details_dict = BusinessService.get_business_details_from_colin(
-            business.identifier, business.legal_type
+            business.identifier, business.legal_type, business.id
         ).get("business", {})
 
         # Retrieve filings that are either incomplete, or drafts

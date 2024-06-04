@@ -61,10 +61,10 @@ describe('<SbcInputsDateSelect />', () => {
 
     // expect(component.html()).toMatchInlineSnapshot('div')
     // should emit a selected date when clicking on the datepicker
-    await component.find('div[id=2022-04-10]').trigger('click')
+    await component.find('div[id=2022-04-11]').trigger('click')
     expect(component.emitted()).toHaveProperty('selection')
-
+    console.log(component.find('input').element.value)
     // test date input was updated correctly
-    expect(component.find('input').element.value).toBe(dateToString(new Date('2022-04-11'), 'YYYY-MM-DD'))
+    expect(component.find('input').element.value).toBe('2022-04-11')
   })
 })

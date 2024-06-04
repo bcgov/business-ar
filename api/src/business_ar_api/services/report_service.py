@@ -51,7 +51,7 @@ class ReportService:
         self._filing = FilingService.find_filing_by_id(filing_id)
         self._business = BusinessService.find_by_internal_id(self._filing.business_id)
         business_details = BusinessService.get_business_details_from_colin(
-            self._business.identifier, self._business.legal_type
+            self._business.identifier, self._business.legal_type, self._business.id
         )
         business_json = business_details.get("business")
         self._filing_json = FilingSerializer.to_dict(self._filing)

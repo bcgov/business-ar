@@ -34,7 +34,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   }
 
   async function getFullBusinessDetails (): Promise<void> {
-    fullDetails.value = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, 'get', 'token')
+    fullDetails.value = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
   }
 
   function assignBusinessStoreValues (bus: BusinessFull) {

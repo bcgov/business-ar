@@ -174,8 +174,8 @@ def run():
                 filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
                     "header"
                 ]["filingDateTime"]
-                if not filing["filing"]["header"]["certifiedBy"]:
-                    filing["filing"]["header"]["certifiedBy"] = "Test"
+                filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
+                filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
 
                 if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive

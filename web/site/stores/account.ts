@@ -1,48 +1,29 @@
 import type { NewAccount } from '~/interfaces/account'
 import { type Org } from '~/interfaces/org'
 export const useAccountStore = defineStore('bar-sbc-account-store', () => {
-  // config imports
-  const { $keycloak } = useNuxtApp()
-  const token = $keycloak?.token
-  const config = useRuntimeConfig()
-  const apiUrl = config.public.barApiUrl
-
   // store values
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
 
-  async function getToken (): Promise<string | undefined> {
-    return await $keycloak
-      .updateToken(-1)
-      .then((_refreshed) => {
-        return $keycloak.token
-      })
-      .catch((error) => {
-        console.error(`Failed to get session token: ${error}`)
-        return undefined
-      })
-  }
-
   // get signed in users accounts
-  async function getUserAccounts (): Promise<{ orgs: Org[] } | undefined> {
+  async function getUserAccounts (): Promise<{ orgs: Org[] }> {
     try {
-      const newToken = await getToken()
-      return await $fetch<{ orgs: Org[]}>(apiUrl + '/user/accounts', {
-        headers: {
-          Authorization: `Bearer ${newToken}`
-        },
-        onResponse ({ response }) {
-          if (response.ok) {
-            // set userAccounts if response === 200
-            userAccounts.value = response._data.orgs
-          }
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving users accounts.'
-          console.error(errorMsg)
-        }
-      })
+      // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
+      // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
+      //   await useBarApi('/users', { method: 'POST' }, 'token')
+      //   await keycloak.getToken(true)
+      // }
+
+      const response = await useBarApi<{ orgs: Org[] }>(
+        '/user/accounts',
+        {},
+        'token',
+        'Error retrieving user accounts.'
+      )
+
+      userAccounts.value = response.orgs
+
+      return response
     } catch (e: any) {
       throw new Error(e)
     }
@@ -59,35 +40,32 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
   // create new account
   async function createNewAccount (data: NewAccount): Promise<void> {
-    const newToken = await getToken()
     try {
-      await $fetch(apiUrl + '/user/accounts', {
-        method: 'POST',
-        body: {
-          name: data.accountName,
-          contactPoint: {
-            email: data.contact.email,
-            phone: data.contact.phone,
-            extension: data.contact.phoneExt
+      // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
+      // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
+      //   await useBarApi('/users', { method: 'POST' }, 'token')
+      //   await keycloak.getToken(true)
+      // }
+
+      const response = await useBarApi<Org>(
+        '/user/accounts',
+        {
+          method: 'POST',
+          body: {
+            name: data.accountName,
+            contactPoint: {
+              email: data.contact.email,
+              phone: data.contact.phone,
+              extension: data.contact.phoneExt
+            }
           }
         },
-        headers: {
-          Authorization: `Bearer ${newToken}`
-        },
-        onResponse ({ response }) {
-          // console.log(response)
-          if (response.ok) {
-            // set userAccounts if response === 200, then navigate to AR filing page
-            currentAccount.value = response._data
-            userAccounts.value.push(response._data)
-          }
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error trying to create a new account.'
-          console.error(errorMsg)
-        }
-      })
+        'token',
+        'An error occurred while creating a new account.'
+      )
+
+      currentAccount.value = response
+      userAccounts.value.push(response)
     } catch (e: any) {
       throw new Error(e)
     }
@@ -95,14 +73,16 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
   async function isAccountNameAvailable (name: string): Promise<boolean> {
     try {
-      const response = await $fetch<{ limit: number, orgs: Org[], page: number, total: number}>(apiUrl + '/accounts', {
-        query: {
-          name
+      const response = await useBarApi<{ limit: number, orgs: Org[], page: number, total: number}>(
+        '/accounts',
+        {
+          query: {
+            name
+          }
         },
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+        'token',
+        'Unable to verify account name availability at this time.'
+      )
 
       if (response && response.orgs.length > 0) {
         return false
@@ -140,19 +120,15 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
     userAccounts.value = []
   }
 
+  // add roles to new sign in so user has roles in sbc auth
   async function updateUserProfile ():Promise<void> {
     try {
-      await $fetch(apiUrl + '/users', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${$keycloak.token}`
-        },
-        onResponseError ({ response }) {
-          // console error a message from the api or a default message
-          const errorMsg = response._data.message ?? 'Error retrieving business details.'
-          console.error(errorMsg)
-        }
-      })
+      await useBarApi(
+        '/users',
+        { method: 'POST' },
+        'token',
+        'An error occured while trying to update the user roles.'
+      )
     } catch (e: any) {
       throw new Error(e)
     }

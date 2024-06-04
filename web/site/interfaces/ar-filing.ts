@@ -11,6 +11,7 @@ export interface ArFilingResponse {
       filingYear: number
       id: number
       name: string
+      paymentAccount: string
       paymentStatus: null | string
       paymentToken: number
       status: string

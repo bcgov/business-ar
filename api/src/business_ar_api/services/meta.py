@@ -31,62 +31,24 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""Tests for the business resource.
+"""Supply version and commit hash info.
 
-Test suite to ensure that the Business endpoints are working as expected.
+When deployed in OKD, it adds the last commit hash onto the version info.
 """
-from datetime import datetime
-from http import HTTPStatus
-
-from business_ar_api.models import Business, Invitations
+import os
+from importlib.metadata import version
 
 
-def test_business_look_up_by_nano_id(session, client):
-    """Assert that a Business can be looked up using the nano id."""
-    business = Business(
-        legal_name="Test Business 1",
-        legal_type="BC",
-        identifier="BC1217715",
-        tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-12T",
-    )
-    business.save()
-    assert business.id is not None
-
-    invitations = Invitations(
-        recipients="test@abc.com",
-        message="Test Message",
-        sent_date=datetime.now(),
-        token="abcde123",
-        status="SENT",
-        additional_message="Test",
-        business_id=business.id,
-    )
-    invitations.save()
-
-    rv = client.get(f"/v1/business/token/{invitations.token}")
-
-    assert rv.status_code == HTTPStatus.OK
-    assert rv.json == {
-        "legalName": business.legal_name,
-        "legalType": business.legal_type,
-        "identifier": business.identifier,
-        "taxId": business.tax_id,
-    }
+def _get_commit_hash():
+    """Return the containers ref if present."""
+    if (commit_hash := os.getenv("VCS_REF", None)) and commit_hash != "missing":
+        return commit_hash
+    return None
 
 
-def test_business_does_not_exist(session, client):
-    """Assert that error is returned."""
-    business = Business(
-        legal_name="Test Business 4",
-        legal_type="BC",
-        identifier="BC1215715",
-        tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdBj7B-12T",
-    )
-    business.save()
-    assert business.id is not None
-
-    rv = client.get(f"/v1/business/token/etc123")
-
-    assert rv.status_code == HTTPStatus.BAD_REQUEST
+def get_run_version():
+    """Return a formatted version string for this service."""
+    ver = version(__name__[: __name__.find(".")])
+    if commit_hash := _get_commit_hash():
+        return f"{ver}-{commit_hash}"
+    return ver
