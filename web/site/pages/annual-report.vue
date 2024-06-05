@@ -101,13 +101,13 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3',
-      unanimousVoteDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
+      unanimousResolutionDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
     }
 
     console.log('filing: ', arFiling)
     // submit filing
-    const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
-    console.log('post response', paymentToken, filingId, payStatus)
+    // const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
+    // console.log('post response', paymentToken, filingId, payStatus)
     // if (payStatus === 'PAID') {
     //   return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
     // } else {
@@ -162,15 +162,21 @@ if (import.meta.client) {
         })
       }
 
-      // const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
-      // const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
-      // if (votedForNoAGM) {
-      //   selectedRadio.value = 'option-3'
-      // } else if (!votedForNoAGM && !agmDate) {
-      //   selectedRadio.value = 'option-2'
-      // } else if (agmDate) {
-      //   arData.agmDate = agmDate
-      // }
+      // set radio option and prefill date inputs
+      const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
+      const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
+      const voteDate = arStore.arFiling.filing.annualReport.unanimousResolutionDate
+      if (votedForNoAGM) {
+        selectedRadio.value = 'option-3'
+        await nextTick() // wait for dom update so input exists before setting date
+        arData.voteDate = voteDate
+      } else if (!votedForNoAGM && !agmDate) {
+        selectedRadio.value = 'option-2'
+      } else if (agmDate) {
+        selectedRadio.value = 'option-1'
+        await nextTick() // wait for dom update so input exists before setting date
+        arData.agmDate = agmDate
+      }
     }
   } finally {
     loadStore.pageLoading = false

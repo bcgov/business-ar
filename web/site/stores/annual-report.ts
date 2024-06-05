@@ -12,7 +12,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
   const errors = ref<Array<{ message: string, statusCode: number }>>([])
 
-  async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
+  async function submitAnnualReportFiling (arData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
     let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
     // add filing id to end of url if filing exists in the store
     if (Object.keys(arFiling.value).length !== 0) {
@@ -27,10 +27,10 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
             filingYear: busStore.currentBusiness.nextARYear
           },
           annualReport: {
-            annualGeneralMeetingDate: agmData.agmDate,
+            annualGeneralMeetingDate: arData.agmDate,
             annualReportDate: busStore.nextArDate,
-            votedForNoAGM: agmData.votedForNoAGM,
-            unanimousVoteDate: agmData.unanimousVoteDate
+            votedForNoAGM: arData.votedForNoAGM,
+            unanimousResolutionDate: arData.unanimousResolutionDate
           }
         }
       },

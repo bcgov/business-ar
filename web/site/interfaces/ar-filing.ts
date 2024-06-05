@@ -4,6 +4,7 @@ export interface ArFilingResponse {
       annualGeneralMeetingDate: string | null
       annualReportDate: string
       votedForNoAGM: boolean
+      unanimousResolutionDate: string | null
     },
     header: {
       completionDate: null | string
@@ -23,5 +24,5 @@ export interface ArFilingResponse {
 export interface ARFiling {
   agmDate: Date | null,
   votedForNoAGM: boolean,
-  unanimousVoteDate: Date | null
+  unanimousResolutionDate: Date | null
 }
