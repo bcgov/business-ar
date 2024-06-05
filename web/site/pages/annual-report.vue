@@ -175,6 +175,7 @@ if (import.meta.client) {
         arData.agmDate = agmDate
       }
     }
+  } catch { // silently handle errors
   } finally {
     loadStore.pageLoading = false
   }
@@ -189,7 +190,8 @@ if (import.meta.client) {
         <SbcAlert
           :show-on-category="[
             AlertCategory.INTERNAL_SERVER_ERROR,
-            AlertCategory.PAYMENT_ERROR
+            AlertCategory.PAYMENT_ERROR,
+            AlertCategory.AR_SUBMIT_ERROR
           ]"
         />
 

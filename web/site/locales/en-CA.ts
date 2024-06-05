@@ -31,6 +31,10 @@ export default {
     'payment-error': {
       title: 'Payment Not Complete',
       description: 'Your payment was not completed, please try again.'
+    },
+    'ar-submit-error': {
+      title: 'Submission Error',
+      description: 'An error occurred while processing your request. Please confirm your information and try again. If the issue persists, contact support for assistance.'
     }
   },
   btn: {

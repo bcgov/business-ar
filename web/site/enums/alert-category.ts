@@ -11,5 +11,6 @@ export enum AlertCategory {
   INTERNAL_SERVER_ERROR = 'internal-server-error',
   INVALID_TOKEN = 'invalid-token',
   BUSINESS_DETAILS = 'business-details',
-  PAYMENT_ERROR = 'payment-error'
+  PAYMENT_ERROR = 'payment-error',
+  AR_SUBMIT_ERROR = 'ar-submit-error'
 }

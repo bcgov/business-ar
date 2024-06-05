@@ -31,6 +31,10 @@ export default {
     'payment-error': {
       title: 'Paiement Incomplet',
       description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
+    },
+    'ar-submit-error': {
+      title: 'Erreur de Soumission',
+      description: "Une erreur s'est produite lors du traitement de votre demande. Veuillez confirmer vos informations et réessayer. Si le problème persiste, contactez le support pour obtenir de l'aide."
     }
   },
   btn: {
