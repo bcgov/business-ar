@@ -26,7 +26,11 @@ export default {
     },
     'account-access': {
       title: 'Accès Refusé',
-      desciption: "Votre compte n'est pas autorisé à effectuer cette tâche."
+      description: "Votre compte n'est pas autorisé à effectuer cette tâche."
+    },
+    'payment-error': {
+      title: 'Paiement Incomplet',
+      description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
     }
   },
   btn: {
@@ -214,10 +218,6 @@ export default {
           question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
-      },
-      payError: {
-        title: 'Paiement Incomplet',
-        description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
       },
       noAddresses: 'Aucune adresse trouvée',
       noDirectors: 'Aucun réalisateur trouvé'

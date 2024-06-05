@@ -26,7 +26,11 @@ export default {
     },
     'account-access': {
       title: 'Access Denied',
-      desciption: 'Your account does not have permission to complete this task.'
+      description: 'Your account does not have permission to complete this task.'
+    },
+    'payment-error': {
+      title: 'Payment Not Complete',
+      description: 'Your payment was not completed, please try again.'
     }
   },
   btn: {
@@ -214,10 +218,6 @@ export default {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
-      },
-      payError: {
-        title: 'Payment Not Complete',
-        description: 'Your payment was not completed, please try again.'
       },
       noAddresses: 'No addresses found',
       noDirectors: 'No directors found'

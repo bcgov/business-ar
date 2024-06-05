@@ -7,6 +7,7 @@ const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
+const alertStore = useAlertStore()
 const loadStore = useLoadingStore()
 loadStore.pageLoading = true
 
@@ -39,10 +40,6 @@ const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
 const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
 const selectedRadio = ref<string | null>(null)
 const loading = ref<boolean>(false)
-const errorAlert = reactive({
-  title: '',
-  description: ''
-})
 
 // form state
 const arData = reactive<{ agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean}>({
@@ -118,8 +115,6 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     //   await handlePaymentRedirect(paymentToken, filingId)
     // }
   } catch {
-    // display error
-    errorAlert.description = arStore.errors[0].message
   } finally {
     loading.value = false
   }
@@ -153,6 +148,7 @@ watch(selectedRadio, (newVal) => {
 
 // init page state
 if (import.meta.client) {
+  alertStore.$reset() // reset alerts when page mounts
   try {
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
@@ -160,8 +156,10 @@ if (import.meta.client) {
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
       if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
-        errorAlert.title = t('page.annualReport.payError.title')
-        errorAlert.description = t('page.annualReport.payError.description')
+        alertStore.addAlert({
+          severity: 'error',
+          category: AlertCategory.PAYMENT_ERROR
+        })
       }
 
       // const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
@@ -185,17 +183,11 @@ if (import.meta.client) {
       <div class="flex w-full flex-col gap-6">
         <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
 
-        <UAlert
-          v-if="errorAlert.title || errorAlert.description"
-          :title="errorAlert.title"
-          :description="errorAlert.description"
-          icon="i-mdi-alert"
-          color="red"
-          variant="subtle"
-          :ui="{
-            title: 'text-base text-bcGovColor-midGray font-semibold',
-            description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
-          }"
+        <SbcAlert
+          :show-on-category="[
+            AlertCategory.INTERNAL_SERVER_ERROR,
+            AlertCategory.PAYMENT_ERROR
+          ]"
         />
 
         <SbcPageSectionCard
