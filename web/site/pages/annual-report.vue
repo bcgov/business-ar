@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
-import { UForm, UCheckbox, SbcInputsDateSelect, UTooltip } from '#components'
+import { UCheckbox, UTooltip, UForm } from '#components'
 const { t } = useI18n()
-// const localePath = useLocalePath()
+const localePath = useLocalePath()
 const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
@@ -80,10 +80,10 @@ const validate = (state: { agmDate: string | null, voteDate: string | null, offi
 
 // separate checkbox validation method, cant include in validate prop on UForm
 function handleCertifyCheckboxValidation () {
-  if (!arData.officeAndDirectorsConfirmed) {
+  if (!arData.officeAndDirectorsConfirmed) { // push checkbox error to form ref
     arFormRef.value?.setErrors([{ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') }])
   }
-  if (arFormRef.value?.errors.length === 1) {
+  if (arFormRef.value?.errors.length === 1) { // move focus to checkbox if its the only form error
     const element = document.getElementById(checkboxRef.value?.inputId)
     element?.focus()
     element?.scrollIntoView()
@@ -93,7 +93,6 @@ function handleCertifyCheckboxValidation () {
 // handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   arFormRef.value?.clear() // reset form errors
-  console.log('submitting form: ', event.data)
   try {
     loading.value = true
     handleCertifyCheckboxValidation() // validate certification checkbox is checked
@@ -104,16 +103,14 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       unanimousResolutionDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
     }
 
-    console.log('filing: ', arFiling)
     // submit filing
-    // const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
-    // console.log('post response', paymentToken, filingId, payStatus)
-    // if (payStatus === 'PAID') {
-    //   return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
-    // } else {
-    //   // redirect to pay with the returned token and filing id
-    //   await handlePaymentRedirect(paymentToken, filingId)
-    // }
+    const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
+    if (payStatus === 'PAID') {
+      return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
+    } else {
+      // redirect to pay with the returned token and filing id
+      await handlePaymentRedirect(paymentToken, filingId)
+    }
   } catch {
   } finally {
     loading.value = false
@@ -146,7 +143,7 @@ watch(selectedRadio, (newVal) => {
   }
 })
 
-// init page state
+// init page state in setup lifecycle
 if (import.meta.client) {
   alertStore.$reset() // reset alerts when page mounts
   try {
@@ -239,7 +236,12 @@ if (import.meta.client) {
                 </div>
               </template>
 
-              <URadioGroup v-model="selectedRadio" :options :ui="{ fieldset: 'space-y-2' }" :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200'}" />
+              <URadioGroup
+                v-model="selectedRadio"
+                :options
+                :ui="{ fieldset: 'space-y-2' }"
+                :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
+              />
             </UFormGroup>
 
             <!-- leaving out the transition for now -->
