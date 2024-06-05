@@ -79,14 +79,17 @@ const validate = (state: { agmDate: string | null, voteDate: string | null, offi
 
 // separate checkbox validation method, cant include in validate prop on UForm
 function handleCertifyCheckboxValidation () {
+  let isChecked = true
   if (!arData.officeAndDirectorsConfirmed) { // push checkbox error to form ref
     arFormRef.value?.setErrors([{ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') }])
+    isChecked = false
   }
   if (arFormRef.value?.errors.length === 1) { // move focus to checkbox if its the only form error
     const element = document.getElementById(checkboxRef.value?.inputId)
     element?.focus()
     element?.scrollIntoView()
   }
+  return isChecked
 }
 
 // handle submitting filing and directing to pay screen
@@ -94,7 +97,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
   arFormRef.value?.clear() // reset form errors
   try {
     arStore.loading = true
-    handleCertifyCheckboxValidation() // validate certification checkbox is checked
+    if (!handleCertifyCheckboxValidation()) { // validate certification checkbox is checked
+      return
+    }
     // set data based off radio option
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
@@ -221,6 +226,7 @@ if (import.meta.client) {
               <template #label>
                 <div class="flex items-start gap-1">
                   <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}</span>
+                  <!-- TODO: investigate better i18n/mobile tooltip options -->
                   <UTooltip
                     ref="tooltipRef"
                     :text="$t('page.annualReport.form.agmStatus.tooltip')"
