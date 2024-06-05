@@ -4,9 +4,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   const alertStore = useAlertStore()
 
   // store values
-  const loading = ref<boolean>(true)
+  const loading = ref<boolean>(false)
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
-  const errors = ref<Array<{ message: string, statusCode: number }>>([])
 
   async function submitAnnualReportFiling (arData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
     try {
@@ -56,15 +55,13 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   }
 
   function $reset () {
-    loading.value = true
+    loading.value = false
     arFiling.value = {} as ArFilingResponse
-    errors.value = []
   }
 
   return {
     loading,
     arFiling,
-    errors,
     submitAnnualReportFiling,
     $reset
   }
