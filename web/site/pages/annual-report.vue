@@ -39,7 +39,6 @@ const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
 const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
 const selectedRadio = ref<string | null>(null)
-const loading = ref<boolean>(false)
 
 // form state
 const arData = reactive<{ agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean}>({
@@ -94,7 +93,7 @@ function handleCertifyCheckboxValidation () {
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   arFormRef.value?.clear() // reset form errors
   try {
-    loading.value = true
+    arStore.loading = true
     handleCertifyCheckboxValidation() // validate certification checkbox is checked
     // set data based off radio option
     const arFiling: ARFiling = {
@@ -113,7 +112,7 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     }
   } catch {
   } finally {
-    loading.value = false
+    arStore.loading = false
   }
 }
 
@@ -240,8 +239,9 @@ if (import.meta.client) {
 
               <URadioGroup
                 v-model="selectedRadio"
+                :legend="$t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear })"
                 :options
-                :ui="{ fieldset: 'space-y-2' }"
+                :ui="{ fieldset: 'space-y-2', legend: 'sr-only' }"
                 :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
               />
             </UFormGroup>
@@ -353,7 +353,7 @@ if (import.meta.client) {
       <SbcFeeWidget
         class="sm:mt-2"
         :fees="payFeesWidget.fees"
-        :is-loading="loading"
+        :is-loading="arStore.loading"
         @submit="arFormRef?.submit()"
       />
     </div>
