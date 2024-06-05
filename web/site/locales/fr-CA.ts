@@ -194,7 +194,8 @@ export default {
           tooltip: "La collecte d'informations sur l'AGA nous aide à mieux calculer les dates de prolongation de l'AGA et les changements de lieu. Cela permet également de garantir que votre entreprise reste conforme et en règle.",
           opt1: 'Notre AGA {year} a eu lieu',
           opt2: 'Notre AGA {year} aura lieu',
-          opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}"
+          opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}",
+          error: "Veuillez sélectionner un statut d'AGA pour continuer"
         },
         agmDate: {
           placeholder: "Date de l'AGA",
@@ -208,6 +209,7 @@ export default {
           format: 'Format: AAAA-MM-JJ',
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
+        complianceWarning: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
         certify: {
           question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'

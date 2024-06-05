@@ -194,7 +194,8 @@ export default {
           tooltip: 'Gathering AGM information helps us better calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
           opt1: 'Our {year} AGM was held',
           opt2: 'Our {year} AGM is to be held',
-          opt3: 'The board voted to not hold our {year} AGM'
+          opt3: 'The board voted to not hold our {year} AGM',
+          error: 'Please select an AGM status to continue'
         },
         agmDate: {
           placeholder: 'AGM Date',
@@ -208,6 +209,7 @@ export default {
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
+        complianceWarning: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
         certify: {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'

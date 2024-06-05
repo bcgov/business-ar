@@ -22,5 +22,6 @@ export interface ArFilingResponse {
 
 export interface ARFiling {
   agmDate: Date | null,
-  votedForNoAGM: boolean
+  votedForNoAGM: boolean,
+  unanimousVoteDate: Date | null
 }
