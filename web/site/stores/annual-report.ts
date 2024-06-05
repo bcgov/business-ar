@@ -29,7 +29,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
           annualReport: {
             annualGeneralMeetingDate: agmData.agmDate,
             annualReportDate: busStore.nextArDate,
-            votedForNoAGM: agmData.votedForNoAGM
+            votedForNoAGM: agmData.votedForNoAGM,
+            unanimousVoteDate: agmData.unanimousVoteDate
           }
         }
       },
@@ -38,11 +39,10 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         'Account-Id': `${accountStore.currentAccount.id}`
       },
       onResponse ({ response }) {
+        console.log(response)
         if (response.ok) {
-          // console.log(response)
           arFiling.value = response._data
         }
-        // console.log(arFiling.value)
       },
       onResponseError ({ response }) {
         let errorMsg = response._data.message ?? 'Could not complete filing or payment request, please try again.'

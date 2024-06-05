@@ -104,13 +104,13 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
       votedForNoAGM: selectedRadio.value === 'option-3',
-      unanimousVoteDate: selectedRadio.value === 'option-3' ? event.data.agmDate : null
+      unanimousVoteDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
     }
 
     console.log('filing: ', arFiling)
     // submit filing
     const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
-    console.log(paymentToken, filingId, payStatus)
+    console.log('post response', paymentToken, filingId, payStatus)
     // if (payStatus === 'PAID') {
     //   return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
     // } else {
