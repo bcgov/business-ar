@@ -35,6 +35,10 @@ export default {
     'ar-submit-error': {
       title: 'Submission Error',
       description: 'An error occurred while processing your request. Please confirm your information and try again. If the issue persists, contact support for assistance.'
+    },
+    'create-account': {
+      title: 'Account Creation Error',
+      description: 'Please verify your details and try again. If the issue persists, please contact support for assistance.'
     }
   },
   btn: {

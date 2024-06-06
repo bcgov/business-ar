@@ -12,5 +12,6 @@ export enum AlertCategory {
   INVALID_TOKEN = 'invalid-token',
   BUSINESS_DETAILS = 'business-details',
   PAYMENT_ERROR = 'payment-error',
-  AR_SUBMIT_ERROR = 'ar-submit-error'
+  AR_SUBMIT_ERROR = 'ar-submit-error',
+  CREATE_ACCOUNT = 'create-account'
 }

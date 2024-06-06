@@ -35,6 +35,10 @@ export default {
     'ar-submit-error': {
       title: 'Erreur de Soumission',
       description: "Une erreur s'est produite lors du traitement de votre demande. Veuillez confirmer vos informations et réessayer. Si le problème persiste, contactez le support pour obtenir de l'aide."
+    },
+    'create-account': {
+      title: 'Erreur de Création de Compte',
+      description: "Veuillez vérifier vos coordonnées et réessayer. Si le problème persiste, veuillez contacter le support pour obtenir de l'aide."
     }
   },
   btn: {

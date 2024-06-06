@@ -6,7 +6,6 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const accountStore = useAccountStore()
 const accountFormRef = ref<InstanceType<typeof UForm> | null>(null)
-const formLoading = ref(false)
 const keycloak = useKeycloak()
 const pageLoading = useState('page-loading')
 
@@ -40,13 +39,13 @@ type FormSchema = z.output<typeof accountSchema>
 
 async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
   try {
-    formLoading.value = true
+    accountStore.loading = true
     await accountStore.createNewAccount(event.data)
     return navigateTo(localePath('/annual-report'))
   } catch (e) {
     console.error(e)
   } finally {
-    formLoading.value = false
+    accountStore.loading = false
   }
 }
 
@@ -91,6 +90,14 @@ if (import.meta.client) {
         class="self-start"
         :heading="$t('page.createAccount.h1')"
       />
+
+      <SbcAlert
+        :show-on-category="[
+          AlertCategory.CREATE_ACCOUNT,
+          AlertCategory.INTERNAL_SERVER_ERROR
+        ]"
+      />
+
       <SbcPageSectionCard
         :heading="$t('page.createAccount.h2')"
       >
@@ -169,7 +176,7 @@ if (import.meta.client) {
                 class="ml-auto"
                 :label="$t('btn.saveAccountAndFileAr')"
                 type="submit"
-                :loading="formLoading"
+                :loading="accountStore.loading"
               />
             </div>
           </div>
