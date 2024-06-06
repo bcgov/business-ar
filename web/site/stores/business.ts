@@ -1,4 +1,4 @@
-import type { Business, BusinessFull, BusinessNano, BusinessTask, BusinessTaskName } from '~/interfaces/business'
+import type { Business, BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const arStore = useAnnualReportStore()
@@ -12,7 +12,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const businessNano = ref<BusinessNano>({} as BusinessNano)
   const nextArDate = ref<string>('')
   const payStatus = ref<string | null>(null)
-  const businessTask = ref<BusinessTaskName>('initial')
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
@@ -103,13 +102,11 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
       // handle case where theres no tasks available (filings complete up to date)
       if (response.tasks.length === 0) {
-        businessTask.value = 'none'
         return { task: null, taskValue: null }
       }
 
       const taskValue = response.tasks[0].task // assign task value
       const taskName = Object.getOwnPropertyNames(taskValue)[0] // assign task name
-      businessTask.value = taskName as 'filing' | 'todo' // set store value
 
       // assign business store values using response from task endpoint, saves having to make another call to get business details
       if ('filing' in taskValue) {
@@ -146,7 +143,6 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     nextArDate.value = ''
     payStatus.value = null
     fullDetails.value = {} as Business
-    businessTask.value = 'initial'
   }
 
   return {
@@ -161,8 +157,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     businessNano,
     nextArDate,
     payStatus,
-    fullDetails,
-    businessTask
+    fullDetails
   }
 },
 { persist: true } // persist store values in session storage
