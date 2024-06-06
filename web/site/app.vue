@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SbcHeaderMain, SbcFooter } from '#components'
-const loadStore = useLoadingStore()
+const pageLoading = useState('page-loading', () => false)
 
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
@@ -19,7 +19,7 @@ useHead({
     class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
   >
     <ClientOnly>
-      <SbcLoadingSpinner v-if="loadStore.pageLoading" overlay />
+      <SbcLoadingSpinner v-if="pageLoading" overlay />
     </ClientOnly>
     <SbcHeaderMain />
     <NuxtLayout>

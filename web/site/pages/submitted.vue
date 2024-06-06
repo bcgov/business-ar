@@ -3,8 +3,7 @@ const { t } = useI18n()
 const route = useRoute()
 const busStore = useBusinessStore()
 const localePath = useLocalePath()
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.submitted.title')
@@ -16,6 +15,7 @@ definePageMeta({
 
 async function initPage () {
   try {
+    pageLoading.value = true
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')
     } else {
@@ -24,12 +24,13 @@ async function initPage () {
       if (busStore.payStatus !== 'PAID') {
         return navigateTo(localePath('/annual-report'))
       }
-      loadStore.pageLoading = false
     }
   } catch (e) {
     // go back to ar page if no filing id or error in the PUT request
     console.error((e as Error).message)
     return navigateTo(localePath('/annual-report'))
+  } finally {
+    pageLoading.value = false
   }
 }
 
@@ -38,7 +39,7 @@ if (import.meta.client) {
 }
 </script>
 <template>
-  <div v-show="!loadStore.pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center">
     <SbcPageSectionH1 class="flex items-center gap-2">
       <span>{{ $t('page.submitted.h1') }}</span>
       <UIcon

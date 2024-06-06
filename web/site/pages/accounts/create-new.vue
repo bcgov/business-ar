@@ -8,8 +8,7 @@ const accountStore = useAccountStore()
 const accountFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const formLoading = ref(false)
 const keycloak = useKeycloak()
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.createAccount.title')
@@ -75,12 +74,13 @@ const validate = async (state: any): Promise<FormError[]> => {
 // try to prefill account name on page load
 if (import.meta.client) {
   try {
+    pageLoading.value = true
     const name = parseSpecialChars(keycloak.kcUser.value.fullName, '') // parse name if special chars
     accountDetails.accountName = await accountStore.findAvailableAccountName(name) // find account name using users name
+    pageLoading.value = false
   } catch (error) {
     console.error((error as Error).message)
-  } finally {
-    loadStore.pageLoading = false
+    pageLoading.value = false
   }
 }
 </script>
