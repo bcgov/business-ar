@@ -9,6 +9,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   // get signed in users accounts
   async function getUserAccounts (): Promise<{ orgs: Org[] }> {
     try {
+      // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')
@@ -42,6 +43,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   // create new account
   async function createNewAccount (data: NewAccount): Promise<void> {
     try {
+      // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')

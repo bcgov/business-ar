@@ -30,6 +30,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     }
   }
 
+  // TODO: investigate business details in network tab, specifically being able to see business details when there is an in progress filing and the user does not own the account associated with that filing
   async function getFullBusinessDetails (): Promise<void> {
     try {
       const response = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
