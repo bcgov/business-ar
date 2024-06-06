@@ -8,6 +8,7 @@ const busStore = useBusinessStore()
 const accountStore = useAccountStore()
 const pageLoading = useState('page-loading')
 const alertStore = useAlertStore()
+const environment = useRuntimeConfig().public.environment
 
 const nanoid = ref(route.query.nanoid || '')
 async function useNanoId () {
@@ -116,7 +117,7 @@ if (import.meta.client) {
         @click="keycloak.login"
       />
       <div
-        v-if="useRuntimeConfig().public.environment !== undefined"
+        v-if="environment === 'Development' || environment === 'Test'"
         class="flex gap-2"
         @keydown.enter.prevent="useNanoId"
       >
