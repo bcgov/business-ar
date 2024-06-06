@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SbcHeaderMain, SbcFooter } from '#components'
 const pageLoading = useState('page-loading', () => false)
 
 const i18nHead = useLocaleHead({

@@ -117,7 +117,7 @@ if (import.meta.client) {
         @click="keycloak.login"
       />
       <div
-        v-if="environment === 'Development' || environment === 'Test'"
+        v-if="environment.includes('Development') || environment.includes('Test')"
         class="flex gap-2"
         @keydown.enter.prevent="useNanoId"
       >
