@@ -30,6 +30,7 @@ export interface BusinessFilingTask {
       annualGeneralMeetingDate: string
       annualReportDate: string
       votedForNoAGM: boolean
+      unanimousResolutionDate: string
     }
     business: BusinessFull
     header: {
