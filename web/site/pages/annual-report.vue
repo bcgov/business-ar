@@ -237,7 +237,7 @@ if (import.meta.client) {
                   >
                     <UIcon
                       name="i-mdi-info-outline"
-                      class="size-6 shrink-0 text-bcGovColor-activeBlue"
+                      class="size-6 shrink-0 text-bcGovColor-activeBlue [@media(pointer:coarse)]:hidden"
                     />
                   </UTooltip>
                 </div>
