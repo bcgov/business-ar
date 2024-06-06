@@ -9,4 +9,12 @@ export default defineNuxtRouteMiddleware((to) => {
     params.delete('error')
     to.fullPath = to.path + (params.size > 0 ? `?${params}` : '') + to.hash
   }
+
+  // reset pageloading to true betweeen each route ()
+  const pageLoading = useState('page-loading')
+  pageLoading.value = true
+
+  // reset alerts between pages
+  const alertStore = useAlertStore()
+  alertStore.$reset()
 })
