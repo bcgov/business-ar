@@ -13,5 +13,7 @@ export enum AlertCategory {
   BUSINESS_DETAILS = 'business-details',
   PAYMENT_ERROR = 'payment-error',
   AR_SUBMIT_ERROR = 'ar-submit-error',
-  CREATE_ACCOUNT = 'create-account'
+  CREATE_ACCOUNT = 'create-account',
+  TOS_GET_ERROR = 'tos-get-error',
+  TOS_PATCH_ERROR = 'tos-patch-error'
 }

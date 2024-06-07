@@ -39,6 +39,10 @@ export default {
     'create-account': {
       title: 'Account Creation Error',
       description: 'Please verify your details and try again. If the issue persists, please contact support for assistance.'
+    },
+    'tos-patch-error': {
+      title: 'Terms of Use Error',
+      description: 'We could not update the Terms of Use at this time, please try again later or contact us for assistance.'
     }
   },
   btn: {
@@ -64,7 +68,9 @@ export default {
     logout: 'Log out',
     saveAccountAndFileAr: 'Save Account & File Annual Report',
     submitAndPay: 'Submit & Pay',
-    accountOptions: 'Account Options Menu'
+    accountOptions: 'Account Options Menu',
+    accept: 'Accept',
+    decline: 'Decline'
   },
   currency: {
     cad: 'CAD',
@@ -233,6 +239,15 @@ export default {
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
       h1: 'Annual Report Complete'
+    },
+    tos: {
+      title: 'Terms of Use - Service BC Annual Report',
+      h1: 'Terms of Use',
+      form: {
+        checkboxLabel: 'I have read and accept the Terms of Use',
+        scrollError: 'Please scroll to the bottom of the document to accept the Terms of Use',
+        checkedError: 'You must accept the Terms of Use to continue'
+      }
     }
   },
   widgets: {

@@ -51,7 +51,7 @@ async function initPage () {
           return navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
-        return navigateTo(localePath('/tos'))
+        return navigateTo(localePath('/accounts/choose-existing'))
         // return navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {

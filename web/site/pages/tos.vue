@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
+import type { FormError } from '#ui/types'
 import { UCheckbox, UForm } from '#components'
 const localePath = useLocalePath()
+const { t } = useI18n()
 const pageLoading = useState('page-loading')
 const tosStore = useTosStore()
 
+useHead({
+  title: t('page.tos.title')
+})
+
 definePageMeta({
+  isTos: true
 })
 
 const checkboxRef = ref<InstanceType<typeof UCheckbox>>(null)
@@ -31,26 +37,30 @@ const validate = (state: { agreeToTerms: boolean | undefined }): FormError[] => 
   const errors: FormError[] = []
 
   if (!state.agreeToTerms && !hasReachedBottom.value) {
-    errors.push({ path: 'agreeToTerms', message: 'Please scroll to the bottom of the document to accept the Terms of Use' })
+    errors.push({ path: 'agreeToTerms', message: t('page.tos.form.scrollError') })
     return errors
   }
 
   if (!state.agreeToTerms) {
-    errors.push({ path: 'agreeToTerms', message: 'You must accept the Terms of Use to continue' })
+    errors.push({ path: 'agreeToTerms', message: t('page.tos.form.checkedError') })
   }
 
   return errors
 }
 
-if (import.meta.client) {
-  await tosStore.getTermsOfUse()
+onMounted(() => {
   pageLoading.value = false
-}
+})
 </script>
 <template>
   <ClientOnly>
     <div class="relative -mb-4 flex w-full flex-col items-center sm:max-w-screen-sm md:max-w-screen-md">
-      <SbcPageSectionH1 heading="Terms of Use" />
+      <SbcPageSectionH1 class="sticky top-0 -my-4 w-full border-b border-bcGovGray-500 bg-bcGovColor-gray1 py-2 text-center" :heading="$t('page.tos.h1')" />
+      <SbcAlert
+        :show-on-category="[AlertCategory.INTERNAL_SERVER_ERROR, AlertCategory.TOS_PATCH_ERROR]"
+        class="sticky top-12 mt-2"
+      />
+
       <!-- eslint-disable-next-line vue/no-v-html -->
       <div v-if="tosStore.tos.termsOfUse" ref="tosDivRef" class="prose prose-bcGov max-w-full break-words" v-html="tosStore.tos.termsOfUse" />
       <UForm
@@ -58,7 +68,7 @@ if (import.meta.client) {
         class="sticky bottom-0 flex w-full flex-col items-center justify-between gap-4 border-t border-bcGovGray-500 bg-bcGovColor-gray1 py-4 sm:flex-row sm:gap-0"
         :state
         :validate="validate"
-        @submit="tosStore.submitTermsOfUse($event, () => navigateTo(localePath('/')))"
+        @submit="tosStore.submitTermsOfUse($event, () => navigateTo(localePath('/accounts/choose-existing')))"
       >
         <UFormGroup
           name="agreeToTerms"
@@ -72,17 +82,11 @@ if (import.meta.client) {
             ref="checkboxRef"
             v-model="state.agreeToTerms"
             class="mt-1 self-start sm:self-auto"
-            label="I have read and accept the Terms of Use"
+            :label="$t('page.tos.form.checkboxLabel')"
           />
           <template #error="{ error }">
-            <span
-              :class="[
-                error ? 'text-red-500' : '',
-                !hasReachedBottom ? 'text-base' : '',
-              ]"
-            >
-              <span v-if="!hasReachedBottom"> {{ error }}</span>
-              <span v-else> {{ error }}</span>
+            <span :class="{ 'text-red-500': error, 'text-base': !hasReachedBottom }">
+              {{ error }}
             </span>
           </template>
         </UFormGroup>
@@ -90,13 +94,13 @@ if (import.meta.client) {
           <UButton
             class="flex-1 sm:flex-none"
             :ui="{ base: 'flex justify-center items-center'}"
-            label="Accept"
+            :label="$t('btn.accept')"
             type="submit"
           />
           <UButton
             class="flex-1 sm:flex-none"
             :ui="{ base: 'flex justify-center items-center'}"
-            label="Decline"
+            :label="$t('btn.decline')"
             variant="outline"
             @click="() => console.log('decline terms of use')"
           />

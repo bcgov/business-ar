@@ -39,6 +39,10 @@ export default {
     'create-account': {
       title: 'Erreur de Création de Compte',
       description: "Veuillez vérifier vos coordonnées et réessayer. Si le problème persiste, veuillez contacter le support pour obtenir de l'aide."
+    },
+    'tos-patch-error': {
+      title: "Erreur des Conditions d'Utilisation",
+      description: "Nous n'avons pas pu mettre à jour les Conditions d'Utilisation pour le moment. Veuillez réessayer plus tard ou nous contacter pour obtenir de l'aide."
     }
   },
   btn: {
@@ -64,7 +68,9 @@ export default {
     logout: 'Se Déconnecter',
     saveAccountAndFileAr: 'Enregistrer le Compte et Déposer le Rapport Annuel',
     submitAndPay: 'Soumettre et Payer',
-    accountOptions: "Menu d'options pour Compte"
+    accountOptions: "Menu d'options pour Compte",
+    accept: 'Accepter',
+    decline: 'Déclin'
   },
   currency: {
     cad: 'CAD',
@@ -233,6 +239,15 @@ export default {
     submitted: {
       title: 'Rapport Annuel Terminé - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel Terminé'
+    },
+    tos: { // TODO: review tos page translations
+      title: "Conditions d'Utilisation - Rapport Annuel de Service CB",
+      h1: "Conditions d'Utilisation",
+      form: {
+        checkboxLabel: "J'ai lu et j'accepte les Conditions d'Utilisation",
+        scrollError: "Veuillez faire défiler jusqu'en bas du document pour accepter les Conditions d'Utilisation",
+        checkedError: "Vous devez accepter les Conditions d'Utilisation pour continuer"
+      }
     }
   },
   widgets: {
