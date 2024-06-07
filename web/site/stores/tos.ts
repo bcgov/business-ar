@@ -26,7 +26,7 @@ export const useTosStore = defineStore('bar-sbc-terms-of-service-store', () => {
         {
           method: 'PATCH',
           body: {
-            istermsaccepted: false,
+            istermsaccepted: false, // event.data.agreeToTerms
             termsversion: tos.value.termsOfUseCurrentVersion
           }
         },

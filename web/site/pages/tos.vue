@@ -95,6 +95,7 @@ onMounted(() => {
             class="flex-1 sm:flex-none"
             :ui="{ base: 'flex justify-center items-center'}"
             :label="$t('btn.accept')"
+            :loading="tosStore.loading"
             type="submit"
           />
           <UButton
