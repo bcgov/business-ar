@@ -51,7 +51,8 @@ async function initPage () {
           return navigateTo(localePath('/annual-report'))
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
-        return navigateTo(localePath('/accounts/choose-existing'))
+        return navigateTo(localePath('/tos'))
+        // return navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
