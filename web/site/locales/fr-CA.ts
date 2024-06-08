@@ -70,7 +70,8 @@ export default {
     submitAndPay: 'Soumettre et Payer',
     accountOptions: "Menu d'options pour Compte",
     accept: 'Accepter',
-    decline: 'Déclin'
+    decline: 'Déclin',
+    close: 'Fermer'
   },
   currency: {
     cad: 'CAD',

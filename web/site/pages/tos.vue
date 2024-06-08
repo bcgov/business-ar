@@ -113,7 +113,7 @@ onMounted(() => {
       v-model="showDeclineTermsModal"
       :title="$t('page.tos.modal.title')"
       :content="$t('page.tos.modal.content')"
-      :actions="[{ label: 'test', handler: () => navigateTo({ path: localePath('/'), query: { fromTos: 'true' }})}]"
+      :actions="[{ label: $t('btn.decline'), handler: () => navigateTo({ path: localePath('/'), query: { fromTos: 'true' }})}]"
     />
   </ClientOnly>
 </template>

@@ -20,13 +20,12 @@ export const useTosStore = defineStore('bar-sbc-terms-of-service-store', () => {
   async function submitTermsOfUse (event: FormSubmitEvent<any>, successCallback: Function) {
     try {
       loading.value = true
-      console.log(event)
       const response = await useBarApi<TOSPatchResponse>(
         '/users/tos',
         {
           method: 'PATCH',
           body: {
-            istermsaccepted: false, // event.data.agreeToTerms
+            istermsaccepted: event.data.agreeToTerms,
             termsversion: tos.value.termsOfUseCurrentVersion
           }
         },

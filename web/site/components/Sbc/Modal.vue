@@ -13,10 +13,12 @@ defineProps<{
       <template #header>
         <div class="flex items-center justify-between">
           <span class="text-xl font-semibold text-bcGovColor-darkGray">{{ title }}</span>
+          <!-- eslint-disable vue/attribute-hyphenation -->
           <UButton
             :ui="{ icon: { base: 'shrink-0 scale-150' } }"
             icon="i-mdi-close"
             color="primary"
+            :ariaLabel="$t('btn.close')"
             square
             variant="ghost"
             @click="modalModel = false"
@@ -27,7 +29,7 @@ defineProps<{
         {{ content }}
       </p>
       <template #footer>
-        <div class="flex items-center justify-around gap-4">
+        <div class="flex items-center justify-center gap-4">
           <UButton
             v-for="(action, index) in actions"
             :key="index"
