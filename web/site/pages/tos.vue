@@ -109,33 +109,11 @@ onMounted(() => {
         </div>
       </UForm>
     </div>
-    <UModal v-model="showDeclineTermsModal">
-      <UCard :ui="{ divide: '' }">
-        <template #header>
-          <div class="flex items-center justify-between">
-            <span class="text-xl font-semibold text-bcGovColor-darkGray">Decline Terms of Use</span>
-            <UButton
-              :ui="{ icon: { base: 'shrink-0 scale-150' } }"
-              icon="i-mdi-close"
-              color="primary"
-              square
-              variant="ghost"
-            />
-          </div>
-        </template>
-        <p class="text-bcGovColor-midGray">
-          By declining the Terms of Use, you will not be able to continue using this service. Please accept the Terms of Use to proceed.
-        </p>
-        <template #footer>
-          <div class="flex items-center justify-between">
-            <UButton
-              label="test"
-              class="mx-auto"
-              @click="navigateTo({ path: localePath('/'), query: { fromTos: 'true' }})"
-            />
-          </div>
-        </template>
-      </UCard>
-    </UModal>
+    <SbcModal
+      v-model="showDeclineTermsModal"
+      :title="$t('page.tos.modal.title')"
+      :content="$t('page.tos.modal.content')"
+      :actions="[{ label: 'test', handler: () => navigateTo({ path: localePath('/'), query: { fromTos: 'true' }})}]"
+    />
   </ClientOnly>
 </template>

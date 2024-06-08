@@ -247,6 +247,10 @@ export default {
         checkboxLabel: "J'ai lu et j'accepte les Conditions d'Utilisation",
         scrollError: "Veuillez faire défiler jusqu'en bas du document pour accepter les Conditions d'Utilisation",
         checkedError: "Vous devez accepter les Conditions d'Utilisation pour continuer"
+      },
+      modal: {
+        title: "Refuser les Conditions d'Utilisation",
+        content: "En refusant les Conditions d'Utilisation, vous ne pourrez pas continuer à utiliser ce service. Veuillez accepter les Conditions d'Utilisation pour continuer."
       }
     }
   },

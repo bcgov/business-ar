@@ -247,6 +247,10 @@ export default {
         checkboxLabel: 'I have read and accept the Terms of Use',
         scrollError: 'Please scroll to the bottom of the document to accept the Terms of Use',
         checkedError: 'You must accept the Terms of Use to continue'
+      },
+      modal: {
+        title: 'Decline Terms of Use',
+        content: 'By declining the Terms of Use, you will not be able to continue using this service. Please accept the Terms of Use to proceed.'
       }
     }
   },
