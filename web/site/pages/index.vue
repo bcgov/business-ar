@@ -27,6 +27,11 @@ definePageMeta({
 // init page function to be able to return navigateTo instead of await, smoother UX
 async function initPage () {
   try {
+    // return if user redirected from tos page
+    if (route.query.fromTos) {
+      pageLoading.value = false // only set false if not navigating to new page
+      return
+    }
     pageLoading.value = true
     alertStore.$reset()
     // get business task is user is logged in (user was redirected after keycloak login)
@@ -52,7 +57,6 @@ async function initPage () {
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
         return navigateTo(localePath('/accounts/choose-existing'))
-        // return navigateTo(localePath('/accounts/choose-existing'))
       }
     } else if (!$keycloak.authenticated && route.query.nanoid) {
       // load business details if valid nano id and no user logged in (fresh start of flow)
