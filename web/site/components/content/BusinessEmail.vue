@@ -7,10 +7,12 @@ const displayEmail = computed(() => {
   if (mailingAddress && mailingAddress.length > 0 && 'email' in mailingAddress[0]) {
     return mailingAddress[0].email
   } else {
-    return busStore.currentBusiness?.email ?? 'No email found'
+    return busStore.currentBusiness?.invitationEmail ?? 'No email found'
   }
 })
 </script>
 <template>
-  <span class="not-prose font-semibold">{{ displayEmail }}</span>
+  <ClientOnly>
+    <span class="not-prose font-semibold">{{ displayEmail }}</span>
+  </ClientOnly>
 </template>

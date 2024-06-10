@@ -1,4 +1,50 @@
 export default {
+  alerts: {
+    'future-filing': {
+      title: '',
+      description: 'The next Annual Report for this company is not due until {date}. Please file the Annual Report on or after that date.'
+    },
+    'invalid-next-ar-year': {
+      title: 'Invalid Annual Report Year',
+      description: 'The next Annual Report year is invalid or missing.'
+    },
+    'missing-token': {
+      title: '',
+      description: 'Missing token to retrieve business details.'
+    },
+    'internal-server-error': {
+      title: '',
+      description: 'Internal server error, please try again later or contact us for assistance.'
+    },
+    'invalid-token': {
+      title: 'Invalid Token',
+      description: 'Error retrieving business details with the provided token.'
+    },
+    'business-details': {
+      title: '',
+      description: 'Error retrieving business details.'
+    },
+    'account-access': {
+      title: 'Access Denied',
+      description: 'Your account does not have permission to complete this task.'
+    },
+    'payment-error': {
+      title: 'Payment Not Complete',
+      description: 'Your payment was not completed, please try again.'
+    },
+    'ar-submit-error': {
+      title: 'Submission Error',
+      description: 'An error occurred while processing your request. Please confirm your information and try again. If the issue persists, contact support for assistance.'
+    },
+    'create-account': {
+      title: 'Account Creation Error',
+      description: 'Please verify your details and try again. If the issue persists, please contact support for assistance.'
+    },
+    'tos-patch-error': {
+      title: 'Terms of Use Error',
+      description: 'We could not update the Terms of Use at this time, please try again later or contact us for assistance.'
+    }
+  },
   btn: {
     getStarted: 'Get Started',
     goHome: 'Go Home',
@@ -22,7 +68,10 @@ export default {
     logout: 'Log out',
     saveAccountAndFileAr: 'Save Account & File Annual Report',
     submitAndPay: 'Submit & Pay',
-    accountOptions: 'Account Options Menu'
+    accountOptions: 'Account Options Menu',
+    accept: 'Accept',
+    decline: 'Decline',
+    close: 'Close'
   },
   currency: {
     cad: 'CAD',
@@ -159,26 +208,31 @@ export default {
       h2: 'Annual Report for: {name}',
       reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
       form: {
-        heldAgm: {
-          question: 'Has your company held an Annual General Meeting?',
-          opt1: 'Yes',
-          opt2: 'We have not held an AGM yet',
-          opt3: 'We voted to not hold an AGM'
+        agmStatus: {
+          question: 'The {year} Annual General Meeting (AGM) status of this business',
+          tooltip: 'Gathering AGM information helps us better calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
+          opt1: 'Our {year} AGM was held',
+          opt2: 'Our {year} AGM is to be held',
+          opt3: 'The board voted to not hold our {year} AGM',
+          error: 'Please select an AGM status to continue'
         },
         agmDate: {
-          placeholder: 'Select Annual General Meeting Date',
-          label: 'Select Annual General Meeting Date',
+          placeholder: 'AGM Date',
+          label: 'AGM Date',
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a date if you held an AGM'
         },
+        voteDate: {
+          placeholder: 'Unanimous Resolution Date',
+          label: 'Unanimous Resolution Date',
+          format: 'Format: YYYY-MM-DD',
+          error: 'You must select a resolution date if the board voted to not hold an AGM'
+        },
+        complianceWarning: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
         certify: {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
-      },
-      payError: {
-        title: 'Payment Not Complete',
-        description: 'Your payment was not completed, please try again.'
       },
       noAddresses: 'No addresses found',
       noDirectors: 'No directors found'
@@ -186,6 +240,19 @@ export default {
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
       h1: 'Annual Report Complete'
+    },
+    tos: {
+      title: 'Terms of Use - Service BC Annual Report',
+      h1: 'Terms of Use',
+      form: {
+        checkboxLabel: 'I have read and accept the Terms of Use',
+        scrollError: 'Please scroll to the bottom of the document to accept the Terms of Use',
+        checkedError: 'You must accept the Terms of Use to continue'
+      },
+      modal: {
+        title: 'Decline Terms of Use',
+        content: 'By declining the Terms of Use, you will not be able to continue using this service. Please accept the Terms of Use to proceed.'
+      }
     }
   },
   widgets: {

@@ -10,7 +10,7 @@ const environment = useRuntimeConfig().public.environment
     data-testid="sbc-main-header"
     class="relative border-b-2 border-bcGovColor-navDivider bg-bcGovColor-header p-2 sm:px-4 dark:border-b dark:bg-bcGovColor-darkGray"
   >
-    <span v-if="environment" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl text-gray-300 opacity-50">{{ environment }}</span>
+    <span v-if="environment.includes('Development') || environment.includes('Test')" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl text-gray-300 opacity-50">{{ environment }}</span>
     <nav
       class="m-auto flex w-full max-w-[1360px] items-center justify-between"
       :aria-label="$t('SbcHeader.navLabel')"

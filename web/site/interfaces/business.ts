@@ -14,6 +14,7 @@ export interface BusinessFull {
   legalType: string
   nextARYear: number
   status: string
+  invitationEmail: string
 }
 
 export interface BusinessNano {
@@ -29,6 +30,7 @@ export interface BusinessFilingTask {
       annualGeneralMeetingDate: string
       annualReportDate: string
       votedForNoAGM: boolean
+      unanimousResolutionDate: string
     }
     business: BusinessFull
     header: {

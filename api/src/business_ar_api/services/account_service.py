@@ -82,6 +82,36 @@ class AccountService:
 
     @classmethod
     @user_context
+    def get_user_tos(cls, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/@me"
+        user_details = RestService.get(
+            endpoint=endpoint, token=user.bearer_token
+        ).json()
+        res = user_details.get("userTerms")
+        if not res.get("isTermsOfUseAccepted"):
+            tos_document_response = RestService.get(
+                endpoint=f"{current_app.config.get('AUTH_API_URL')}/documents/termsofuse",
+                token=user.bearer_token,
+            ).json()
+            res["termsOfUseCurrentVersion"] = tos_document_response.get("versionId")
+            res["termsOfUse"] = tos_document_response.get("content")
+        return res
+
+    @classmethod
+    @user_context
+    def update_user_tos(cls, request_json: dict, **kwargs):
+        user: UserContext = kwargs["user_context"]
+        endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/@me"
+
+        user_details = RestService.patch(
+            endpoint=endpoint, token=user.bearer_token, data=request_json
+        ).json()
+        res = user_details.get("userTerms")
+        return res
+
+    @classmethod
+    @user_context
     def create_user_account(cls, account_details: dict, **kwargs):
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"

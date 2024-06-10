@@ -1,4 +1,50 @@
 export default {
+  alerts: { // TODO: review alert messages
+    'future-filing': {
+      title: '',
+      description: "Le prochain Rapport Annuel de cette entreprise n'est pas dû avant le {date}. Veuillez déposer le Rapport Annuel à partir de cette date."
+    },
+    'invalid-next-ar-year': {
+      title: 'Année de Rapport Annuel invalide',
+      description: "L'année suivante du Rapport Annuel est invalide ou manquante."
+    },
+    'missing-token': {
+      title: '',
+      description: "Jeton manquant pour récupérer les détails de l'entreprise."
+    },
+    'internal-server-error': {
+      title: '',
+      description: "Erreur de serveur interne, veuillez réessayer plus tard ou contactez-nous pour obtenir de l'aide."
+    },
+    'invalid-token': {
+      title: 'Jeton Invalide',
+      description: "Erreur lors de la récupération des détails de l'entreprise avec le jeton fourni."
+    },
+    'business-details': {
+      title: '',
+      description: "Erreur lors de la récupération des détails de l'entreprise."
+    },
+    'account-access': {
+      title: 'Accès Refusé',
+      description: "Votre compte n'est pas autorisé à effectuer cette tâche."
+    },
+    'payment-error': {
+      title: 'Paiement Incomplet',
+      description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
+    },
+    'ar-submit-error': {
+      title: 'Erreur de Soumission',
+      description: "Une erreur s'est produite lors du traitement de votre demande. Veuillez confirmer vos informations et réessayer. Si le problème persiste, contactez le support pour obtenir de l'aide."
+    },
+    'create-account': {
+      title: 'Erreur de Création de Compte',
+      description: "Veuillez vérifier vos coordonnées et réessayer. Si le problème persiste, veuillez contacter le support pour obtenir de l'aide."
+    },
+    'tos-patch-error': {
+      title: "Erreur des Conditions d'Utilisation",
+      description: "Nous n'avons pas pu mettre à jour les Conditions d'Utilisation pour le moment. Veuillez réessayer plus tard ou nous contacter pour obtenir de l'aide."
+    }
+  },
   btn: {
     getStarted: 'Commencer',
     goHome: 'Accueil',
@@ -22,7 +68,10 @@ export default {
     logout: 'Se Déconnecter',
     saveAccountAndFileAr: 'Enregistrer le Compte et Déposer le Rapport Annuel',
     submitAndPay: 'Soumettre et Payer',
-    accountOptions: "Menu d'options pour Compte"
+    accountOptions: "Menu d'options pour Compte",
+    accept: 'Accepter',
+    decline: 'Déclin',
+    close: 'Fermer'
   },
   currency: {
     cad: 'CAD',
@@ -158,27 +207,32 @@ export default {
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
       reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
-      form: {
-        heldAgm: {
-          question: "Es'ce que votre entreprise a tenu une assemblée générale annuelle?",
-          opt1: 'Oui',
-          opt2: "Nous n'avons pas encore tenu une AGA",
-          opt3: "Nous avons voté pour ne pas tenir d'AGA"
+      form: { // TODO: review annual report form translations
+        agmStatus: {
+          question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
+          tooltip: "La collecte d'informations sur l'AGA nous aide à mieux calculer les dates de prolongation de l'AGA et les changements de lieu. Cela permet également de garantir que votre entreprise reste conforme et en règle.",
+          opt1: 'Notre AGA {year} a eu lieu',
+          opt2: 'Notre AGA {year} aura lieu',
+          opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}",
+          error: "Veuillez sélectionner un statut d'AGA pour continuer"
         },
         agmDate: {
-          placeholder: "Sélectionnez la date de l'assemblée générale annuelle",
-          label: "Sélectionnez la date de l'assemblée générale annuelle",
+          placeholder: "Date de l'AGA",
+          label: "Date de l'AGA",
           format: 'Format: AAAA-MM-JJ',
           error: 'Vous devez sélectionner une date si vous avez tenu une AGA'
         },
+        voteDate: {
+          placeholder: 'Date de Résolution Unanime',
+          label: 'Date de Résolution Unanime',
+          format: 'Format: AAAA-MM-JJ',
+          error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
+        },
+        complianceWarning: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
         certify: {
           question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
-      },
-      payError: {
-        title: 'Paiement Incomplet',
-        description: "Votre paiement n'a pas été finalisé, veuillez réessayer."
       },
       noAddresses: 'Aucune adresse trouvée',
       noDirectors: 'Aucun réalisateur trouvé'
@@ -186,6 +240,19 @@ export default {
     submitted: {
       title: 'Rapport Annuel Terminé - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel Terminé'
+    },
+    tos: { // TODO: review tos page translations
+      title: "Conditions d'Utilisation - Rapport Annuel de Service CB",
+      h1: "Conditions d'Utilisation",
+      form: {
+        checkboxLabel: "J'ai lu et j'accepte les Conditions d'Utilisation",
+        scrollError: "Veuillez faire défiler jusqu'en bas du document pour accepter les Conditions d'Utilisation",
+        checkedError: "Vous devez accepter les Conditions d'Utilisation pour continuer"
+      },
+      modal: {
+        title: "Refuser les Conditions d'Utilisation",
+        content: "En refusant les Conditions d'Utilisation, vous ne pourrez pas continuer à utiliser ce service. Veuillez accepter les Conditions d'Utilisation pour continuer."
+      }
     }
   },
   widgets: {

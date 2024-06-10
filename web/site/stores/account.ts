@@ -1,17 +1,20 @@
-import type { NewAccount } from '~/interfaces/account'
-import { type Org } from '~/interfaces/org'
 export const useAccountStore = defineStore('bar-sbc-account-store', () => {
+  const keycloak = useKeycloak()
+  const alertStore = useAlertStore()
+
   // store values
   const currentAccount = ref<Org>({} as Org)
   const userAccounts = ref<Org[]>([])
+  const loading = ref<boolean>(false)
 
   // get signed in users accounts
   async function getUserAccounts (): Promise<{ orgs: Org[] }> {
     try {
+      // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')
-      //   await keycloak.getToken(true)
+      await keycloak.getToken(true) // force refresh
       // }
 
       const response = await useBarApi<{ orgs: Org[] }>(
@@ -41,10 +44,11 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   // create new account
   async function createNewAccount (data: NewAccount): Promise<void> {
     try {
+      // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
       //   await useBarApi('/users', { method: 'POST' }, 'token')
-      //   await keycloak.getToken(true)
+      await keycloak.getToken(true) // force refresh
       // }
 
       const response = await useBarApi<Org>(
@@ -66,8 +70,12 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
       currentAccount.value = response
       userAccounts.value.push(response)
-    } catch (e: any) {
-      throw new Error(e)
+    } catch (e) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.CREATE_ACCOUNT
+      })
+      throw e
     }
   }
 
@@ -118,6 +126,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   function $reset () {
     currentAccount.value = {} as Org
     userAccounts.value = []
+    loading.value = false
   }
 
   // add roles to new sign in so user has roles in sbc auth
@@ -137,6 +146,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   return {
     currentAccount,
     userAccounts,
+    loading,
     getUserAccounts,
     selectUserAccount,
     createNewAccount,

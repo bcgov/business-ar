@@ -5,8 +5,7 @@ const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
 const setAccountLoading = ref<boolean>(false)
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.existingAccount.title')
@@ -24,14 +23,14 @@ function handleAccountSelect (id: number) {
 
 async function initPage () {
   try {
+    pageLoading.value = true
     const accounts = await accountStore.getUserAccounts()
     if (accounts?.orgs.length === 0 || accounts === undefined) {
       return navigateTo(localePath('/accounts/create-new'))
     }
+    pageLoading.value = false
   } catch {
     return navigateTo(localePath('/accounts/create-new'))
-  } finally {
-    loadStore.pageLoading = false
   }
 }
 

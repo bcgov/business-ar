@@ -176,6 +176,7 @@ def run():
                 ]["filingDateTime"]
                 filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
+                filing["filing"]["header"]["source"] = "BAR"
 
                 if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive

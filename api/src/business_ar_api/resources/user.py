@@ -15,13 +15,14 @@
 
 from http import HTTPStatus
 
-from flask import Blueprint
+from flask import Blueprint, request
 from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.exceptions.exceptions import ExternalServiceException
 from business_ar_api.exceptions.responses import error_response
 from business_ar_api.services.account_service import AccountService
+from business_ar_api.services.schema_service import SchemaService
 
 bp = Blueprint("users", __name__)
 
@@ -34,5 +35,36 @@ def update_user_profile():
     try:
         user_details = AccountService.update_user_profile()
         return user_details, HTTPStatus.OK
+    except ExternalServiceException as service_exception:
+        return error_response(service_exception.message, service_exception.status_code)
+
+
+@bp.route("/v1/users/tos", methods=["GET"])
+@cross_origin(origin="*")
+@_jwt.requires_auth
+def get_user_tos():
+    """Get ToS state of the user. If ToS is not accepted, return the ToS document"""
+    try:
+        user_tos = AccountService.get_user_tos()
+        return user_tos, HTTPStatus.OK
+    except ExternalServiceException as service_exception:
+        return error_response(service_exception.message, service_exception.status_code)
+
+
+@bp.route("/v1/users/tos", methods=["PATCH"])
+@cross_origin(origin="*")
+@_jwt.requires_auth
+def update_user_tos():
+    """Update ToS state of the user."""
+    try:
+        request_json = request.get_json()
+        schema_name = "user-tos.json"
+        schema_service = SchemaService()
+        [valid, errors] = schema_service.validate(schema_name, request_json)
+        if not valid:
+            return error_response("Invalid request", HTTPStatus.BAD_REQUEST, errors)
+
+        user_tos = AccountService.update_user_tos(request_json)
+        return user_tos, HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)

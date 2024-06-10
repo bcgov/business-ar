@@ -1,78 +1,67 @@
-import type { ARFiling } from '~/interfaces/ar-filing'
+import type { ARFiling, ArFilingResponse } from '~/interfaces/ar-filing'
 export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
-  // config imports
-  const { $keycloak } = useNuxtApp()
-  const accountStore = useAccountStore()
-  const config = useRuntimeConfig()
-  const apiUrl = config.public.barApiUrl
   const busStore = useBusinessStore()
+  const alertStore = useAlertStore()
 
   // store values
-  const loading = ref<boolean>(true)
+  const loading = ref<boolean>(false)
   const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
-  const errors = ref<Array<{ message: string, statusCode: number }>>([])
 
-  async function submitAnnualReportFiling (agmData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
-    let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
-    // add filing id to end of url if filing exists in the store
-    if (Object.keys(arFiling.value).length !== 0) {
-      apiSuffix += `/${arFiling.value.filing.header.id}`
-    }
-
-    const response = await $fetch<ArFilingResponse>(apiUrl + apiSuffix, {
-      method: 'POST',
-      body: {
-        filing: {
-          header: {
-            filingYear: busStore.currentBusiness.nextARYear
-          },
-          annualReport: {
-            annualGeneralMeetingDate: agmData.agmDate,
-            annualReportDate: busStore.nextArDate,
-            votedForNoAGM: agmData.votedForNoAGM
-          }
-        }
-      },
-      headers: {
-        Authorization: `Bearer ${$keycloak.token}`,
-        'Account-Id': `${accountStore.currentAccount.id}`
-      },
-      onResponse ({ response }) {
-        if (response.ok) {
-          // console.log(response)
-          arFiling.value = response._data
-        }
-        // console.log(arFiling.value)
-      },
-      onResponseError ({ response }) {
-        let errorMsg = response._data.message ?? 'Could not complete filing or payment request, please try again.'
-        console.error(errorMsg)
-        if (response.status !== 400) {
-          errorMsg = 'Could not complete filing or payment request, please try again.'
-        }
-        errors.value.push(
-          { message: errorMsg, statusCode: response.status }
-        )
+  async function submitAnnualReportFiling (arData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
+    try {
+      let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
+      // add filing id to end of url if filing exists in the store
+      if (Object.keys(arFiling.value).length !== 0) {
+        apiSuffix += `/${arFiling.value.filing.header.id}`
       }
-    })
 
-    const paymentToken = response.filing.header.paymentToken
-    const filingId = response.filing.header.id
-    const payStatus = response.filing.header.status
+      const response = await useBarApi<ArFilingResponse>(
+        apiSuffix,
+        {
+          method: 'POST',
+          body: {
+            filing: {
+              header: {
+                filingYear: busStore.currentBusiness.nextARYear
+              },
+              annualReport: {
+                annualGeneralMeetingDate: arData.agmDate,
+                annualReportDate: busStore.nextArDate,
+                votedForNoAGM: arData.votedForNoAGM,
+                unanimousResolutionDate: arData.unanimousResolutionDate
+              }
+            }
+          }
+        },
+        'all'
+      )
 
-    return { paymentToken, filingId, payStatus }
+      if (response) {
+        arFiling.value = response
+      }
+
+      const paymentToken = response.filing.header.paymentToken
+      const filingId = response.filing.header.id
+      const payStatus = response.filing.header.status
+
+      return { paymentToken, filingId, payStatus }
+    } catch (e) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.AR_SUBMIT_ERROR
+      })
+      throw e
+    }
   }
 
   function $reset () {
-    loading.value = true
+    loading.value = false
     arFiling.value = {} as ArFilingResponse
-    errors.value = []
   }
 
   return {
     loading,
     arFiling,
-    errors,
     submitAnnualReportFiling,
     $reset
   }

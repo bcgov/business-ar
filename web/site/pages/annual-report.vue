@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
-import { UForm, UCheckbox, SbcInputsDateSelect } from '#components'
+import { UCheckbox, UTooltip, UForm } from '#components'
 const { t } = useI18n()
 const localePath = useLocalePath()
 const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
 const payFeesWidget = usePayFeesWidget()
-const loadStore = useLoadingStore()
-loadStore.pageLoading = true
+const alertStore = useAlertStore()
+const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.annualReport.title')
@@ -21,82 +21,102 @@ definePageMeta({
 // options for radio buttons
 const options = [
   {
-    label: t('page.annualReport.form.heldAgm.opt1'),
+    label: t('page.annualReport.form.agmStatus.opt1', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-1'
   },
   {
-    label: t('page.annualReport.form.heldAgm.opt2'),
+    label: t('page.annualReport.form.agmStatus.opt2', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-2'
   },
   {
-    label: t('page.annualReport.form.heldAgm.opt3'),
+    label: t('page.annualReport.form.agmStatus.opt3', { year: busStore.currentBusiness.nextARYear }),
     value: 'option-3'
   }
 ]
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
-const dateSelectRef = ref<InstanceType<typeof SbcInputsDateSelect> | null>(null)
-const selectedRadio = ref<string>('option-1')
-const loading = ref<boolean>(false)
-const errorAlert = reactive({
-  title: '',
-  description: ''
-})
-const showCheckboxHelp = ref(false)
+const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
+const selectedRadio = ref<string | null>(null)
 
 // form state
-const arData = reactive<{ agmDate: string | null, officeAndDirectorsConfirmed: boolean}>({
+const arData = reactive<{ agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean}>({
   agmDate: null,
+  voteDate: null,
   officeAndDirectorsConfirmed: false
 })
 
-// validate the date field and show error if the 'Yes' radio is selected
-const validate = (state: any): FormError[] => {
-  const errors = []
-  // if yes to agm, user must input a date
-  if (selectedRadio.value === 'option-1' && !state.agmDate) {
-    errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
+// validate form based on the selected radio value
+const validate = (state: { agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean }): FormError[] => {
+  const errors: FormError[] = []
+
+  switch (selectedRadio.value) {
+    case null: // add general error if no radio selected
+      errors.push({ path: 'radioGroup', message: t('page.annualReport.form.agmStatus.error') })
+      break
+
+    case 'option-1': // add agm date field error if selected option-1
+      if (!state.agmDate) {
+        errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
+      }
+      break
+
+    case 'option-2': // no error for option-2
+      break
+
+    case 'option-3': // add vote date field error if selected option-3
+      if (!state.voteDate) {
+        errors.push({ path: 'voteDate', message: t('page.annualReport.form.voteDate.error') })
+      }
+      break
+
+    default:
+      break
   }
   return errors
+}
+
+// separate checkbox validation method, cant include in validate prop on UForm
+function handleCertifyCheckboxValidation () {
+  let isChecked = true
+  if (!arData.officeAndDirectorsConfirmed) { // push checkbox error to form ref
+    arFormRef.value?.setErrors([{ path: 'officeAndDirectorsConfirmed', message: t('page.annualReport.form.certify.error') }])
+    isChecked = false
+  }
+  if (arFormRef.value?.errors.length === 1) { // move focus to checkbox if its the only form error
+    const element = document.getElementById(checkboxRef.value?.inputId)
+    element?.focus()
+    element?.scrollIntoView()
+  }
+  return isChecked
 }
 
 // handle submitting filing and directing to pay screen
 async function submitAnnualReport (event: FormSubmitEvent<any>) {
   arFormRef.value?.clear() // reset form errors
-  arStore.errors = [] // reset errors
-  errorAlert.title = ''
-  errorAlert.description = ''
   try {
-    // check if confirmation checkbox was selected
-    if (!arData.officeAndDirectorsConfirmed) {
-      showCheckboxHelp.value = true // display error message
-      if (arFormRef.value?.errors.length === 0) { // only scroll into view if no other errors
-        const element = document.getElementById(checkboxRef.value?.inputId)
-        element?.focus()
-        element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-      return // cancel form submission if not checked
+    arStore.loading = true
+    if (!handleCertifyCheckboxValidation()) { // validate certification checkbox is checked
+      return
     }
-    loading.value = true
-    // set data based off radio button value
+    // set data based off radio option
     const arFiling: ARFiling = {
       agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
-      votedForNoAGM: selectedRadio.value === 'option-3'
+      votedForNoAGM: selectedRadio.value === 'option-3',
+      unanimousResolutionDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
     }
+
     // submit filing
     const { paymentToken, filingId, payStatus } = await arStore.submitAnnualReportFiling(arFiling)
-    if (payStatus === 'PAID') {
+    if (payStatus === 'PAID') { // redirect to final page if payStatus comes back as paid (PAD accounts)
       return navigateTo(localePath(`/submitted?filing_id=${filingId}`))
     } else {
       // redirect to pay with the returned token and filing id
       await handlePaymentRedirect(paymentToken, filingId)
     }
   } catch {
-    // display error
-    errorAlert.description = arStore.errors[0].message
   } finally {
-    loading.value = false
+    arStore.loading = false
   }
 }
 
@@ -107,96 +127,76 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-// clear date if switching radio options
-function handleRadioClick (option: string) {
-  if (selectedRadio.value !== option) {
-    arFormRef.value?.clear()
-    selectedRadio.value = option // this allows clicking anywhere in the radio button wrapper, not just the icon or label
-    dateSelectRef.value?.updateDate(null)
-    arData.agmDate = null
-  }
-}
-
-// handle arrow key events on radio group (default behaviour not working as expected)
-function handleRadioKeydown (event: KeyboardEvent) {
-  const currentIndex = options.findIndex(option => option.value === selectedRadio.value) // get index of previously focused radio
-
-  // move focus through radio group and set selected value
-  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-    const nextIndex = (currentIndex + 1) % options.length // wrap focus if focus from last radio
-    selectedRadio.value = options[nextIndex].value
-    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
-    radioElement?.focus()
-    event.preventDefault()
-  } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-    const prevIndex = (currentIndex - 1 + options.length) % options.length // wrap focus if focus from first radio
-    selectedRadio.value = options[prevIndex].value
-    const radioElement = document.querySelector(`input[value=${selectedRadio.value}]`) as HTMLInputElement
-    radioElement?.focus()
-    event.preventDefault()
-  }
-}
-
-// set/unset checkbox error text after interacting with the checkbox
+// clear checkbox error text after interacting with the checkbox
 watch(
   () => arData.officeAndDirectorsConfirmed,
   (newVal) => {
-    if (newVal === true) {
-      showCheckboxHelp.value = false
-    } else {
-      showCheckboxHelp.value = true
+    if (newVal) {
+      arFormRef.value?.clear('officeAndDirectorsConfirmed')
     }
   }
 )
 
-// init page state
+// reset form state any time the radio option changes
+watch(selectedRadio, (newVal) => {
+  if (newVal) {
+    arData.agmDate = null
+    arData.voteDate = null
+    arData.officeAndDirectorsConfirmed = false
+  }
+})
+
+// init page state in setup lifecycle
 if (import.meta.client) {
+  alertStore.$reset() // reset alerts when page mounts
   try {
+    pageLoading.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
-    await busStore.getFullBusinessDetails()
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
       if (arStore.arFiling.filing.header.status && arStore.arFiling.filing.header.status !== 'PAID') {
-        errorAlert.title = t('page.annualReport.payError.title')
-        errorAlert.description = t('page.annualReport.payError.description')
+        alertStore.addAlert({
+          severity: 'error',
+          category: AlertCategory.PAYMENT_ERROR
+        })
       }
 
+      // set radio option and prefill date inputs
       const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
       const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
+      const voteDate = arStore.arFiling.filing.annualReport.unanimousResolutionDate
       if (votedForNoAGM) {
         selectedRadio.value = 'option-3'
+        await nextTick() // wait for dom update so input exists before setting date
+        arData.voteDate = voteDate
       } else if (!votedForNoAGM && !agmDate) {
         selectedRadio.value = 'option-2'
       } else if (agmDate) {
+        selectedRadio.value = 'option-1'
+        await nextTick() // wait for dom update so input exists before setting date
         arData.agmDate = agmDate
       }
     }
+  } catch { // silently handle errors
   } finally {
-    loadStore.pageLoading = false
+    pageLoading.value = false
   }
 }
-
-// fix premature validation of final checkbox
 </script>
 <template>
   <ClientOnly>
-    <div v-show="!loadStore.pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
+    <div v-show="!pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
       <div class="flex w-full flex-col gap-6">
         <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
 
-        <UAlert
-          v-if="errorAlert.title || errorAlert.description"
-          :title="errorAlert.title"
-          :description="errorAlert.description"
-          icon="i-mdi-alert"
-          color="red"
-          variant="subtle"
-          :ui="{
-            title: 'text-base text-bcGovColor-midGray font-semibold',
-            description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
-          }"
+        <SbcAlert
+          :show-on-category="[
+            AlertCategory.INTERNAL_SERVER_ERROR,
+            AlertCategory.PAYMENT_ERROR,
+            AlertCategory.AR_SUBMIT_ERROR
+          ]"
         />
 
         <SbcPageSectionCard
@@ -222,47 +222,93 @@ if (import.meta.client) {
             @submit="submitAnnualReport"
             @error="onError"
           >
-            <!-- TODO: look into why this label isnt being associated with the radios -->
-            <UFormGroup name="radioGroup" :label="$t('page.annualReport.form.heldAgm.question')">
-              <fieldset
-                role="radioGroup"
-                class="flex flex-col items-start gap-4 xl:flex-row xl:items-center"
-                @keydown="handleRadioKeydown"
-              >
-                <legend class="sr-only">
-                  {{ $t('page.annualReport.form.heldAgm.question') }}
-                </legend>
-                <URadio
-                  v-for="option of options"
-                  :key="option.value"
-                  v-bind="option"
-                  v-model="selectedRadio"
-                  :options="options"
-                  :ui="{
-                    wrapper: `cursor-pointer relative flex items-center flex-1 w-full p-4 ${selectedRadio === option.value ? 'bg-white border border-bcGovColor-activeBlue' : 'bg-gray-100 hover:bg-gray-200'}`,
-                    label: 'cursor-pointer sm:whitespace-nowrap',
-                  }"
-                  @click="handleRadioClick(option.value)"
-                />
-              </fieldset>
+            <UFormGroup name="radioGroup">
+              <template #label>
+                <div class="flex items-start gap-1">
+                  <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}</span>
+                  <!-- TODO: investigate better i18n/mobile tooltip options -->
+                  <UTooltip
+                    ref="tooltipRef"
+                    :text="$t('page.annualReport.form.agmStatus.tooltip')"
+                    :popper="{ arrow: true, placement: 'auto' }"
+                    tabindex="0"
+                    @focus="() => tooltipRef?.onMouseEnter()"
+                    @blur="() => tooltipRef?.onMouseLeave()"
+                  >
+                    <UIcon
+                      name="i-mdi-info-outline"
+                      class="size-6 shrink-0 text-bcGovColor-activeBlue [@media(pointer:coarse)]:hidden"
+                    />
+                  </UTooltip>
+                </div>
+              </template>
+
+              <URadioGroup
+                v-model="selectedRadio"
+                :legend="$t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear })"
+                :options
+                :ui="{ fieldset: 'space-y-2', legend: 'sr-only' }"
+                :ui-radio="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
+              />
             </UFormGroup>
 
+            <!-- leaving out the transition for now -->
+            <!-- <Transition name="slide-up" mode="out-in"> -->
             <!-- AGM Date -->
-            <UFormGroup name="agmDate" class="mt-4" :help="$t('page.annualReport.form.agmDate.format')" :ui="{ help: 'text-bcGovColor-midGray' }">
+            <UFormGroup
+              v-if="selectedRadio && selectedRadio === 'option-1'"
+              name="agmDate"
+              class="mt-4"
+              :help="$t('page.annualReport.form.agmDate.format')"
+              :ui="{ help: 'text-bcGovColor-midGray' }"
+            >
               <SbcInputsDateSelect
-                id="SelectAGMDate"
-                ref="dateSelectRef"
+                id="date-select-agm"
                 :max-date="new Date()"
                 :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
                 :arialabel="$t('page.annualReport.form.agmDate.label')"
                 :initial-date="arData.agmDate ? dateStringToDate(arData.agmDate) : undefined"
-                variant="bcGov"
-                :disabled="selectedRadio !== 'option-1'"
+                :variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
                 @selection="(e) => {
                   arFormRef?.clear()
                   arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
               />
             </UFormGroup>
+
+            <!-- did not hold agm warning -->
+            <UAlert
+              v-else-if="selectedRadio && selectedRadio === 'option-2'"
+              icon="i-mdi-warning"
+              variant="subtle"
+              color="red"
+              :ui="{ description: 'mt-1 text-sm leading-4 opacity-90 text-bcGovColor-midGray', variant: { subtle: 'ring-2' }, rounded: 'rounded-none' }"
+            >
+              <template #description>
+                <SbcI18nBold translation-path="page.annualReport.form.complianceWarning" />
+              </template>
+            </UAlert>
+
+            <!-- Unanimous vote date -->
+            <UFormGroup
+              v-else-if="selectedRadio && selectedRadio === 'option-3'"
+              name="voteDate"
+              class="mt-4"
+              :help="$t('page.annualReport.form.voteDate.format')"
+              :ui="{ help: 'text-bcGovColor-midGray' }"
+            >
+              <SbcInputsDateSelect
+                id="date-select-vote"
+                :max-date="new Date()"
+                :placeholder="$t('page.annualReport.form.voteDate.placeholder')"
+                :arialabel="$t('page.annualReport.form.voteDate.label')"
+                :initial-date="arData.voteDate ? dateStringToDate(arData.voteDate) : undefined"
+                :variant="handleFormInputVariant('voteDate', arFormRef?.errors)"
+                @selection="(e) => {
+                  arFormRef?.clear()
+                  arData.voteDate = dateToString(e!, 'YYYY-MM-DD')}"
+              />
+            </UFormGroup>
+            <!-- </Transition> -->
           </UForm>
         </SbcPageSectionCard>
 
@@ -295,7 +341,7 @@ if (import.meta.client) {
             :ui="{
               help: 'mt-2 text-red-500',
             }"
-            :help="showCheckboxHelp ? $t('page.annualReport.form.certify.error') : ''"
+            :help="arFormRef?.errors.some((error: FormError) => error.path === 'officeAndDirectorsConfirmed') ? $t('page.annualReport.form.certify.error') : ''"
           >
             <UCheckbox
               ref="checkboxRef"
@@ -313,9 +359,25 @@ if (import.meta.client) {
       <SbcFeeWidget
         class="sm:mt-2"
         :fees="payFeesWidget.fees"
-        :is-loading="loading"
+        :is-loading="arStore.loading"
         @submit="arFormRef?.submit()"
       />
     </div>
   </ClientOnly>
 </template>
+<!-- <style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.1s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+</style> -->

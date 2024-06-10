@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "87ddcdb4-9ea9-46da-881e-209f423e88e4",
+		"_postman_id": "f3d9fd0e-800a-46fe-9773-b324823f994a",
 		"name": "business-ar-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31792407"
@@ -788,6 +788,77 @@
 						"filings",
 						"{{filing_id}}",
 						"notify"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Terms of Service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/users/tos",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"users",
+						"tos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Terms of Service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"istermsaccepted\": true,\n    \"termsversion\": \"5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api_url}}/users/tos",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"users",
+						"tos"
 					]
 				}
 			},
