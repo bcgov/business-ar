@@ -22,7 +22,7 @@ const appVersion = await getAppMetaInfo()
     <ClientOnly>
       <SbcLoadingSpinner v-if="pageLoading" overlay />
     </ClientOnly>
-    <SbcHeaderMain />
+    <SbcHeaderMain :app-version="appVersion" />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
