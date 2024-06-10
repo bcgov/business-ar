@@ -1,4 +1,12 @@
 <script setup lang="ts">
+
+defineProps<{
+  appVersion: {
+    ui: string
+    api: string
+  } | undefined
+}>()
+
 const links = [
   {
     label: 'SbcFooter.home',
@@ -46,7 +54,21 @@ const links = [
           {{ $t(link.label) }}
         </NuxtLink>
       </nav>
-      <span class="whitespace-nowrap italic text-bcGovColor-navDivider">{{ $t('SbcFooter.bcApp') }}</span>
+      <div class="flex flex-col">
+        <span class="whitespace-nowrap italic text-bcGovColor-navDivider">{{ $t('SbcFooter.bcApp') }}</span>
+        <div v-if="appVersion" class="flex items-center gap-1">
+          <span class="text-xs text-white"> Version: {{ appVersion.ui }}</span>
+          <UTooltip>
+            <UIcon name="i-mdi-info-outline" class="size-4 shrink-0 text-white" />
+            <template #text>
+              <div class="flex flex-col">
+                <span> UI: v{{ appVersion.ui }}</span>
+                <span> API: v{{ appVersion.api }}</span>
+              </div>
+            </template>
+          </UTooltip>
+        </div>
+      </div>
     </div>
   </footer>
 </template>

@@ -12,6 +12,8 @@ useHead({
     dir: () => i18nHead.value.htmlAttrs!.dir
   }
 })
+
+const appVersion = await getAppMetaInfo()
 </script>
 <template>
   <div
@@ -24,6 +26,6 @@ useHead({
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <SbcFooter />
+    <SbcFooter :app-version="appVersion" />
   </div>
 </template>
