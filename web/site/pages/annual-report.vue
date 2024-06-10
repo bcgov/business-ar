@@ -357,7 +357,7 @@ if (import.meta.client) {
         </SbcPageSectionCard>
       </div>
       <SbcFeeWidget
-        class="sm:mt-2"
+        class="md:sticky md:top-10 md:mt-1 md:self-start"
         :fees="payFeesWidget.fees"
         :is-loading="arStore.loading"
         @submit="arFormRef?.submit()"
