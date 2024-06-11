@@ -19,10 +19,12 @@ defineProps<{
   >
     <div v-if="environment.includes('Development') || environment.includes('Test')" class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 text-3xl text-gray-300 opacity-75">
       <span>{{ environment }}</span>
-      <div v-if="appVersion" class="flex flex-col text-base">
-        <span>UI: v{{ appVersion.ui }}</span>
-        <span>API: v{{ appVersion.api }}</span>
-      </div>
+      <ClientOnly>
+        <div v-if="appVersion" class="flex flex-col text-base">
+          <span>UI: v{{ appVersion.ui }}</span>
+          <span>API: v{{ appVersion.api }}</span>
+        </div>
+      </ClientOnly>
     </div>
     <nav
       class="m-auto flex w-full max-w-[1360px] items-center justify-between"
