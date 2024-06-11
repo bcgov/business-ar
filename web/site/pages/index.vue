@@ -82,6 +82,7 @@ if (import.meta.client) {
 }
 </script>
 <template>
+  <!-- TODO: find hydration error only when being redirected from tos page -->
   <!-- must use v-show for nuxt content to prerender correctly -->
   <div v-show="!pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>

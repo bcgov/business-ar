@@ -22,6 +22,12 @@ export default defineAppConfig({
       }
     },
     button: {
+      padding: {
+        sm: 'px-7 py-3'
+      },
+      gap: {
+        sm: 'gap-x-2.5'
+      },
       color: {
         white: {
           link: 'text-white text-base font-semibold tracking-wide dark:text-white hover:bg-white/[0.1] dark:bg-gray-900 dark:hover:bg-gray-800/75 focus-visible:ring-2 focus-visible:ring-white dark:focus-visible:ring-white transition-colors duration-300 ease-in-out',

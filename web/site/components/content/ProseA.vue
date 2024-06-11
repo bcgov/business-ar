@@ -33,7 +33,7 @@ function resolvePath () {
     :target
     :download
     variant="link"
-    class="-m-2"
+    class="-m-6"
   >
     <slot />
   </UButton>

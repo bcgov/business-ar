@@ -23,7 +23,7 @@ const total = computed(() => {
 })
 </script>
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 font-bold">
     <UCard
       data-cy="pay-fees-widget"
       :ui="{
@@ -46,7 +46,7 @@ const total = computed(() => {
       }"
     >
       <template #header>
-        <span data-cy="pay-fees-widget-title" class="font-semibold text-white">{{ $t('widgets.feeSummary.title') }}</span>
+        <span data-cy="pay-fees-widget-title" class="text-white">{{ $t('widgets.feeSummary.title') }}</span>
       </template>
 
       <div
@@ -55,18 +55,19 @@ const total = computed(() => {
         class="flex flex-col gap-2"
       >
         <div class="flex items-center justify-between">
-          <span class="mr-auto text-sm font-normal text-bcGovColor-darkGray">
+          <span class="mr-auto text-sm text-bcGovColor-darkGray">
             {{ $t(`widgets.feeSummary.itemLabels.${fee.filingTypeCode}`) }}
           </span>
-          <span class="whitespace-nowrap text-sm font-bold">
+          <span class="whitespace-nowrap text-sm">
             {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.filingFees) }}
           </span>
         </div>
-        <div class="flex items-center justify-between">
-          <span class="mr-auto text-sm font-normal text-bcGovColor-darkGray">
+        <UDivider class="my-2" :ui="{ border: { base: 'flex border-bcGovGray-200' }}" />
+        <div class="ml-4 flex items-center justify-between">
+          <span class="mr-auto text-sm text-bcGovColor-darkGray">
             {{ $t(`widgets.feeSummary.serviceFees`) }}
           </span>
-          <span class="whitespace-nowrap text-sm font-bold">
+          <span class="whitespace-nowrap text-sm">
             {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.serviceFees) }}
           </span>
         </div>
@@ -84,7 +85,7 @@ const total = computed(() => {
 
       <template #footer>
         <div class="flex items-center justify-between" data-cy="pay-fees-widget-total">
-          <span class="mr-auto text-sm font-bold text-bcGovColor-darkGray">
+          <span class="mr-auto text-sm text-bcGovColor-darkGray">
             {{ $t('widgets.feeSummary.total') }}
           </span>
           <div class="flex items-center gap-2">
@@ -93,13 +94,13 @@ const total = computed(() => {
             </span>
             <span
               v-if="fees?.length > 0"
-              class="overflow-hidden whitespace-nowrap text-2xl font-bold"
+              class="overflow-hidden whitespace-nowrap text-2xl"
             >
               {{ displayCanadianDollars(total) }}
             </span>
             <span
               v-else
-              class="overflow-hidden whitespace-nowrap text-2xl font-bold"
+              class="overflow-hidden whitespace-nowrap text-2xl"
             >
               -
             </span>

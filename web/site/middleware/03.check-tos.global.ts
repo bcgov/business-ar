@@ -4,18 +4,19 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const tosStore = useTosStore()
   const alertStore = useAlertStore()
   try {
-    // all protected routes that arent tos
-    if (to.meta.order !== 0 && !to.meta.isTos) {
+    // all protected routes
+    if (to.meta.order !== 0) {
       const tos = await tosStore.getTermsOfUse()
 
-      // check if tos accepted, if not navigate to tos page
-      if (!tos?.isTermsOfUseAccepted) {
+      // redirect to tos page if not accepted
+      if (!tos?.isTermsOfUseAccepted && !to.meta.isTos) {
         return navigateTo(localePath('/tos'))
       }
-    }
-    // if tos page, load tos (required to get tos from api call)
-    if (to.meta.isTos) {
-      await tosStore.getTermsOfUse()
+
+      // redirect home if is accepted and is navigating to the tos page (prevent manual navigation)
+      if (tos?.isTermsOfUseAccepted && to.meta.isTos) {
+        return navigateTo(localePath('/'))
+      }
     }
   } catch {
     // navigate home if any errors in tos get and add alert

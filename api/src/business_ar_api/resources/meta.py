@@ -41,7 +41,7 @@ from flask import jsonify
 
 from ..services.meta import get_run_version
 
-bp = Blueprint("META", __name__, url_prefix="/api/v1/meta")
+bp = Blueprint("META", __name__, url_prefix="/v1/meta")
 
 
 @bp.route("/info")
