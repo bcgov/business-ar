@@ -48,6 +48,7 @@ const arData = reactive<{ agmDate: string | null, voteDate: string | null, offic
 
 // validate form based on the selected radio value
 const validate = (state: { agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean }): FormError[] => {
+  console.log('validating')
   const errors: FormError[] = []
 
   switch (selectedRadio.value) {
@@ -184,6 +185,12 @@ if (import.meta.client) {
     pageLoading.value = false
   }
 }
+
+// const dateTest = ref('')
+
+watch(arData, () => {
+  console.log('new data', arData)
+}, { immediate: true, deep: true })
 </script>
 <template>
   <ClientOnly>
@@ -212,6 +219,8 @@ if (import.meta.client) {
           />
 
           <UDivider class="mb-4 mt-8" />
+
+          <!-- <SbcDatepicker2 v-model="dateTest" /> -->
 
           <UForm
             ref="arFormRef"
@@ -262,7 +271,15 @@ if (import.meta.client) {
               :help="$t('page.annualReport.form.agmDate.format')"
               :ui="{ help: 'text-bcGovColor-midGray' }"
             >
-              <SbcInputsDateSelect
+              <SbcDatepicker2
+                id="date-select-agm"
+                v-model="arData.agmDate"
+                :max-date="new Date()"
+                :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
+                :arialabel="$t('page.annualReport.form.agmDate.label')"
+                :input-variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
+              />
+              <!-- <SbcInputsDateSelect
                 id="date-select-agm"
                 :max-date="new Date()"
                 :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
@@ -272,7 +289,7 @@ if (import.meta.client) {
                 @selection="(e) => {
                   arFormRef?.clear()
                   arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
-              />
+              /> -->
             </UFormGroup>
 
             <!-- did not hold agm warning -->
