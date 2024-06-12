@@ -40,7 +40,7 @@ const tooltipRef = ref<InstanceType<typeof UTooltip> | null>(null)
 const selectedRadio = ref<string | null>(null)
 
 // form state
-const arData = reactive<{ agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean}>({
+const arData = reactive<{ agmDate: Date | null, voteDate: Date | null, officeAndDirectorsConfirmed: boolean}>({
   agmDate: null,
   voteDate: null,
   officeAndDirectorsConfirmed: false
@@ -48,7 +48,6 @@ const arData = reactive<{ agmDate: string | null, voteDate: string | null, offic
 
 // validate form based on the selected radio value
 const validate = (state: { agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean }): FormError[] => {
-  console.log('validating')
   const errors: FormError[] = []
 
   switch (selectedRadio.value) {
@@ -74,6 +73,7 @@ const validate = (state: { agmDate: string | null, voteDate: string | null, offi
     default:
       break
   }
+
   return errors
 }
 
@@ -102,9 +102,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     }
     // set data based off radio option
     const arFiling: ARFiling = {
-      agmDate: selectedRadio.value === 'option-1' ? event.data.agmDate : null,
+      agmDate: selectedRadio.value === 'option-1' ? datetimeStringToDateString(event.data.agmDate) : null,
       votedForNoAGM: selectedRadio.value === 'option-3',
-      unanimousResolutionDate: selectedRadio.value === 'option-3' ? event.data.voteDate : null
+      unanimousResolutionDate: selectedRadio.value === 'option-3' ? datetimeStringToDateString(event.data.voteDate) : null
     }
 
     // submit filing
@@ -140,6 +140,7 @@ watch(
 
 // reset form state any time the radio option changes
 watch(selectedRadio, (newVal) => {
+  arFormRef.value?.clear('radioGroup') // clear radio group error if exists
   if (newVal) {
     arData.agmDate = null
     arData.voteDate = null
@@ -149,11 +150,11 @@ watch(selectedRadio, (newVal) => {
 
 // init page state in setup lifecycle
 if (import.meta.client) {
-  alertStore.$reset() // reset alerts when page mounts
   try {
     pageLoading.value = true
     // load fees for fee widget, might move into earlier setup
     addBarPayFees()
+
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
       // add payment error message if pay status exists and doesnt equal paid
@@ -171,13 +172,13 @@ if (import.meta.client) {
       if (votedForNoAGM) {
         selectedRadio.value = 'option-3'
         await nextTick() // wait for dom update so input exists before setting date
-        arData.voteDate = voteDate
+        arData.voteDate = voteDate !== null ? dateStringToDate(voteDate) : null
       } else if (!votedForNoAGM && !agmDate) {
         selectedRadio.value = 'option-2'
       } else if (agmDate) {
         selectedRadio.value = 'option-1'
         await nextTick() // wait for dom update so input exists before setting date
-        arData.agmDate = agmDate
+        arData.agmDate = dateStringToDate(agmDate)
       }
     }
   } catch { // silently handle errors
@@ -185,12 +186,6 @@ if (import.meta.client) {
     pageLoading.value = false
   }
 }
-
-// const dateTest = ref('')
-
-watch(arData, () => {
-  console.log('new data', arData)
-}, { immediate: true, deep: true })
 </script>
 <template>
   <ClientOnly>
@@ -220,12 +215,11 @@ watch(arData, () => {
 
           <UDivider class="mb-4 mt-8" />
 
-          <!-- <SbcDatepicker2 v-model="dateTest" /> -->
-
           <UForm
             ref="arFormRef"
             :state="arData"
             :validate="validate"
+            :validate-on="['submit']"
             autocomplete="off"
             class="space-y-6"
             @submit="submitAnnualReport"
@@ -261,8 +255,6 @@ watch(arData, () => {
               />
             </UFormGroup>
 
-            <!-- leaving out the transition for now -->
-            <!-- <Transition name="slide-up" mode="out-in"> -->
             <!-- AGM Date -->
             <UFormGroup
               v-if="selectedRadio && selectedRadio === 'option-1'"
@@ -278,18 +270,8 @@ watch(arData, () => {
                 :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
                 :arialabel="$t('page.annualReport.form.agmDate.label')"
                 :input-variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
+                @blur="arFormRef?.validate('agmDate', { silent: true } )"
               />
-              <!-- <SbcInputsDateSelect
-                id="date-select-agm"
-                :max-date="new Date()"
-                :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
-                :arialabel="$t('page.annualReport.form.agmDate.label')"
-                :initial-date="arData.agmDate ? dateStringToDate(arData.agmDate) : undefined"
-                :variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
-                @selection="(e) => {
-                  arFormRef?.clear()
-                  arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
-              /> -->
             </UFormGroup>
 
             <!-- did not hold agm warning -->
@@ -313,19 +295,16 @@ watch(arData, () => {
               :help="$t('page.annualReport.form.voteDate.format')"
               :ui="{ help: 'text-bcGovColor-midGray' }"
             >
-              <SbcInputsDateSelect
+              <SbcDatepicker2
                 id="date-select-vote"
+                v-model="arData.voteDate"
                 :max-date="new Date()"
                 :placeholder="$t('page.annualReport.form.voteDate.placeholder')"
                 :arialabel="$t('page.annualReport.form.voteDate.label')"
-                :initial-date="arData.voteDate ? dateStringToDate(arData.voteDate) : undefined"
-                :variant="handleFormInputVariant('voteDate', arFormRef?.errors)"
-                @selection="(e) => {
-                  arFormRef?.clear()
-                  arData.voteDate = dateToString(e!, 'YYYY-MM-DD')}"
+                :input-variant="handleFormInputVariant('voteDate', arFormRef?.errors)"
+                @blur="arFormRef?.validate('voteDate', { silent: true } )"
               />
             </UFormGroup>
-            <!-- </Transition> -->
           </UForm>
         </SbcPageSectionCard>
 
@@ -382,19 +361,3 @@ watch(arData, () => {
     </div>
   </ClientOnly>
 </template>
-<!-- <style scoped>
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.1s ease-out;
-}
-
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-</style> -->
