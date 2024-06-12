@@ -12,7 +12,7 @@ describe('Date Utilities', () => {
     it('returns null for an invalid date string', () => {
       const dateString = 'invalid-date'
       const date = dateStringToDate(dateString)
-      expect(date).toBeUndefined()
+      expect(date).toBeNull()
     })
   })
 
