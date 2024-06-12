@@ -60,6 +60,19 @@ const iconClass = computed(() => {
 defineExpose({
   updateDate
 })
+
+// usage
+// <SbcInputsDateSelect
+//   id="date-select-agm"
+//   :max-date="new Date()"
+//   :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
+//   :arialabel="$t('page.annualReport.form.agmDate.label')"
+//   :initial-date="arData.agmDate ? dateStringToDate(arData.agmDate) : undefined"
+//   :variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
+//   @selection="(e) => {
+//     arFormRef?.clear()
+//     arData.agmDate = dateToString(e!, 'YYYY-MM-DD')}"
+// />
 </script>
 <template>
   <div>
