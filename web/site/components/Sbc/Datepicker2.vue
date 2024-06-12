@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import VueDatePicker, { type DatePickerInstance } from '@vuepic/vue-datepicker'
+import VueDatePicker from '@vuepic/vue-datepicker'
 const { locale } = useI18n()
 
 const dateModel = defineModel({ type: Date as PropType<Date | null>, default: null })
 
-// props / emits
-const props = defineProps<{
+defineProps<{
   inputVariant: string
   maxDate?: Date
   minDate?: Date
@@ -13,35 +12,20 @@ const props = defineProps<{
   arialabel?: string
 }>()
 
-// eslint-disable-next-line func-call-spacing
-const emit = defineEmits<{
-  (e: 'date', value: Date | null): void
-  (e: 'validate-field'): void
-}>()
+const datePickerRef = ref<InstanceType<typeof VueDatePicker> | null>(null)
 
-const datePickerRef = ref<DatePickerInstance>(null)
+// leaving this for future reference
+// function validateDateInput (input: string): Date | null {
+//   const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+//   const inputDate = dateStringToDate(input) ?? null
+//   const validDate = inputDate && (!props.maxDate || inputDate < props.maxDate)
 
-function handleManualDateEntry (input: string) {
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-  const inputDate = dateStringToDate(input) ?? null
-  const validDate = inputDate && (!props.maxDate || inputDate < props.maxDate)
-  if (!input || (input.match(dateRegex) !== null && validDate)) {
-    dateModel.value = inputDate
-  }
-}
+//   if (!input || (input.match(dateRegex) !== null && validDate)) {
+//     return inputDate
+//   }
 
-function handleInput (event: Event) {
-  const target = event.target as HTMLInputElement
-  handleManualDateEntry(target.value)
-}
-
-function handleInputBlur () {
-  console.log('input blur')
-}
-
-watch(dateModel, () => {
-  console.log(dateModel.value)
-})
+//   return null
+// }
 </script>
 <template>
   <!-- required for UInput aria-label -->
@@ -64,22 +48,23 @@ watch(dateModel, () => {
     :week-start="0"
     arrow-navigation
     data-testid="date-picker"
-    @blur="handleInputBlur"
   >
-    <template #dp-input="{ value, onInput, onEnter, onTab, onBlur, onKeypress, onPaste }">
+    <template #dp-input="{ value, onInput, onEnter, onTab, onBlur, onKeypress, onPaste, onFocus, isMenuOpen }">
       <UInput
+        :ui="{ icon: { base: isMenuOpen ? 'text-primary-500' : 'text-gray-700' } }"
         :value="value"
         :variant="inputVariant"
         icon="i-mdi-calendar"
         trailing
         :placeholder="placeholder || ''"
         :ariaLabel="arialabel || ''"
-        @input="onInput; handleInput($event)"
-        @keypress.enter="onEnter"
-        @keypress.tab="onTab"
-        @keypress="onKeypress"
-        @paste="onPaste"
+        @input="onInput"
+        @keyup.enter.prevent="onEnter"
+        @keydown.tab="onTab"
         @blur="onBlur"
+        @keyup="onKeypress"
+        @paste="onPaste"
+        @focus="onFocus"
       />
     </template>
   </VueDatePicker>
