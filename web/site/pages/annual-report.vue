@@ -48,6 +48,7 @@ const arData = reactive<{ agmDate: Date | null, voteDate: Date | null, officeAnd
 
 // validate form based on the selected radio value
 const validate = (state: { agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean }): FormError[] => {
+  arFormRef.value?.clear() // reset form errors
   const errors: FormError[] = []
 
   switch (selectedRadio.value) {
@@ -128,14 +129,14 @@ function onError (event: FormErrorEvent) {
   element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-// clear checkbox error text after interacting with the checkbox
+// clear form errors anytime data changes
 watch(
-  () => arData.officeAndDirectorsConfirmed,
+  () => arData,
   (newVal) => {
     if (newVal) {
-      arFormRef.value?.clear('officeAndDirectorsConfirmed')
+      arFormRef.value?.clear()
     }
-  }
+  }, { deep: true }
 )
 
 // reset form state any time the radio option changes

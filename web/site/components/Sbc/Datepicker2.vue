@@ -49,7 +49,7 @@ const datePickerRef = ref<InstanceType<typeof VueDatePicker> | null>(null)
     arrow-navigation
     data-testid="date-picker"
   >
-    <template #dp-input="{ value, onInput, onEnter, onTab, onBlur, onKeypress, onPaste, onFocus, isMenuOpen }">
+    <template #dp-input="{ value, onInput, onEnter, onTab, onKeypress, onPaste, onFocus, isMenuOpen }">
       <UInput
         :ui="{ icon: { base: isMenuOpen ? 'text-primary-500' : 'text-gray-700' } }"
         :value="value"
@@ -59,9 +59,8 @@ const datePickerRef = ref<InstanceType<typeof VueDatePicker> | null>(null)
         :placeholder="placeholder || ''"
         :ariaLabel="arialabel || ''"
         @input="onInput"
-        @keyup.enter.prevent="onEnter"
-        @keydown.tab="onTab"
-        @blur="onBlur"
+        @keydown.enter.prevent="onEnter"
+        @keydown.tab.stop="onTab"
         @keyup="onKeypress"
         @paste="onPaste"
         @focus="onFocus"
