@@ -95,7 +95,8 @@ if (import.meta.client) {
           AlertCategory.MISSING_TOKEN,
           AlertCategory.INTERNAL_SERVER_ERROR,
           AlertCategory.INVALID_TOKEN,
-          AlertCategory.BUSINESS_DETAILS
+          AlertCategory.BUSINESS_DETAILS,
+          AlertCategory.ACCOUNT_ACCESS
         ]"
       />
 
