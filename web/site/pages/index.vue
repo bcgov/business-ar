@@ -121,7 +121,7 @@ if (import.meta.client) {
     <!-- show data from nuxt content -->
     <!-- must use v-show, v-if will not prerender content because the queryContent method wont be called -->
     <SbcNuxtContentCard v-show="!keycloak.isAuthenticated()" id="initial" route-suffix="1" />
-    <SbcNuxtContentCard v-show="keycloak.isAuthenticated() && alertStore.hasAlerts" id="error" route-suffix="2" />
+    <SbcNuxtContentCard v-show="keycloak.isAuthenticated() && alertStore.hasAlerts && alertStore.alerts[0].severity === 'error'" id="error" route-suffix="2" />
     <ClientOnly>
       <UButton
         v-if="!keycloak.isAuthenticated() && !alertStore.hasAlerts"
