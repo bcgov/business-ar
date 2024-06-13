@@ -15,5 +15,6 @@ export enum AlertCategory {
   AR_SUBMIT_ERROR = 'ar-submit-error',
   CREATE_ACCOUNT = 'create-account',
   TOS_GET_ERROR = 'tos-get-error',
-  TOS_PATCH_ERROR = 'tos-patch-error'
+  TOS_PATCH_ERROR = 'tos-patch-error',
+  FILING_IN_PROGRESS = 'filing-in-progress'
 }

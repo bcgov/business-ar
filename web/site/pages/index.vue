@@ -54,6 +54,12 @@ async function initPage () {
       if (task === 'filing') { // TODO: figure out why combining the if statements always returns false
         if (busStore.payStatus !== 'PAID') {
           return navigateTo(localePath('/annual-report'))
+        } else if (busStore.payStatus === 'PAID') { // add alert if filing is in paid state but hasnt been fully completed yet
+          alertStore.addAlert({
+            severity: 'info',
+            category: AlertCategory.FILING_IN_PROGRESS
+          })
+          pageLoading.value = false // only set false if not navigating to new page
         }
       } else { // user is authenticated but theres no existing filing, continue normal flow
         return navigateTo(localePath('/accounts/choose-existing'))
@@ -67,7 +73,6 @@ async function initPage () {
         severity: 'error',
         category: AlertCategory.MISSING_TOKEN
       })
-      console.error('Missing token to fetch business details')
       throw new Error('Missing token to fetch business details')
     }
   } catch (e) {
@@ -96,7 +101,8 @@ if (import.meta.client) {
           AlertCategory.INTERNAL_SERVER_ERROR,
           AlertCategory.INVALID_TOKEN,
           AlertCategory.BUSINESS_DETAILS,
-          AlertCategory.ACCOUNT_ACCESS
+          AlertCategory.ACCOUNT_ACCESS,
+          AlertCategory.FILING_IN_PROGRESS
         ]"
       />
 

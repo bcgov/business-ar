@@ -43,6 +43,10 @@ export default {
     'tos-patch-error': {
       title: "Erreur des Conditions d'Utilisation",
       description: "Nous n'avons pas pu mettre à jour les Conditions d'Utilisation pour le moment. Veuillez réessayer plus tard ou nous contacter pour obtenir de l'aide."
+    },
+    'filing-in-progress': {
+      title: 'Soumission en Cours',
+      description: 'Votre soumission a été payée et est actuellement en cours de traitement.'
     }
   },
   btn: {

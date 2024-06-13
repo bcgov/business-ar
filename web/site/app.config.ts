@@ -21,6 +21,13 @@ export default defineAppConfig({
         variant: 'accordian_trigger'
       }
     },
+    alert: {
+      variant: {
+        error: 'bg-red-50 dark:bg-red-400 dark:bg-opacity-10 text-red-500 dark:text-red-400 ring-1 ring-inset ring-red-500 dark:ring-red-400 ring-opacity-25 dark:ring-opacity-25',
+        info: 'bg-white text-orange-500 ring-opacity-25 dark:ring-opacity-25',
+        warning: 'bg-yellow-50 dark:bg-yellow-400 dark:bg-opacity-10 text-yellow-500 dark:text-yellow-400 ring-1 ring-inset ring-yellow-500 dark:ring-yellow-400 ring-opacity-25 dark:ring-opacity-25'
+      }
+    },
     button: {
       size: {
         bcGov: 'text-sm'
