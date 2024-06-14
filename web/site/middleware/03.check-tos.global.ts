@@ -25,6 +25,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       severity: 'error',
       category: AlertCategory.INTERNAL_SERVER_ERROR
     })
-    return navigateTo(localePath('/'))
+    return navigateTo({ path: localePath('/'), query: { fromTos: 'true' } })
   }
 })

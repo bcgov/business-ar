@@ -24,8 +24,7 @@ const showAlert = computed(() => {
     :description="$t(`alerts.${showAlert[0].category}.description`, { date: busStore.nextArDate })"
     class="text-left"
     icon="i-mdi-alert"
-    color="red"
-    variant="subtle"
+    :variant="showAlert[0].severity"
     :ui="{
       title: 'text-base text-bcGovColor-midGray font-semibold',
       description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'

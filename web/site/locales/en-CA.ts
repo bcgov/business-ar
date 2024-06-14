@@ -43,6 +43,10 @@ export default {
     'tos-patch-error': {
       title: 'Terms of Use Error',
       description: 'We could not update the Terms of Use at this time, please try again later or contact us for assistance.'
+    },
+    'filing-in-progress': {
+      title: 'Filing in Progress',
+      description: 'Your filing has been paid and is currently being processed.'
     }
   },
   btn: {
