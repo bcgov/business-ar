@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware((to) => {
     to.fullPath = to.path + (params.size > 0 ? `?${params}` : '') + to.hash
   }
 
-  // reset pageloading to true betweeen each route ()
+  // reset pageloading and alerts betweeen each route, only if not redirected from tos
   if (!to.query.fromTos) {
     pageLoading.value = true
 
