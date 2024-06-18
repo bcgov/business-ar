@@ -1,5 +1,3 @@
-# Copyright © 2024 Province of British Columbia
-#
 # Licensed under the BSD 3 Clause License, (the "License");
 # you may not use this file except in compliance with the License.
 # The template for the license can be found here
@@ -31,33 +29,16 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Flask
-
-from .accounts import bp as accounts_bp
-from .base import bp as base_endpoint
-from .business import bp as business_bp
-from .filing import bp as filings_bp
-from .internal import bp as internal_bp
-from .invitation import bp as invitation_bp
-from .meta import bp as meta_bp
-from .reports import bp as reports_bp
-from .user import bp as user_bp
+""" Data Class
+"""
+from dataclasses import dataclass, field
 
 
-def register_endpoints(app: Flask):
-    # Allow base route to match with, and without a trailing slash
-    app.url_map.strict_slashes = False
+@dataclass
+class InvitationSearch:
+    """Used for searching invitations."""
 
-    app.register_blueprint(
-        url_prefix="/",
-        blueprint=base_endpoint,
-    )
-
-    app.register_blueprint(accounts_bp)
-    app.register_blueprint(business_bp)
-    app.register_blueprint(filings_bp)
-    app.register_blueprint(internal_bp)
-    app.register_blueprint(invitation_bp)
-    app.register_blueprint(meta_bp)
-    app.register_blueprint(user_bp)
-    app.register_blueprint(reports_bp)
+    search_text: str
+    status: str
+    page: int
+    limit: int
