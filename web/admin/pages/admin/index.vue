@@ -7,10 +7,6 @@ useHead({
   title: t('page.admin.title')
 })
 
-definePageMeta({
-  middleware: []
-})
-
 onMounted(() => {
   pageLoading.value = false
 })

@@ -75,6 +75,7 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
 
   <SbcPageSectionCard
     :heading="$t('labels.searchResults', { count: invitations?.total || 0 })"
+    class="overflow-hidden"
   >
     <UTable
       :rows="invitations?.items || []"

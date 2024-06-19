@@ -53,7 +53,7 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
 </script>
 <template>
   <UModal v-model="modalModel" :fullscreen="isSmallScreen">
-    <UCard :ui="{ base: 'min-w-fit overflow-hidden', body: { base: isSmallScreen ? 'h-screen space-y-2' : 'max-h-[75vh] space-y-2 overflow-y-auto' }}">
+    <UCard :ui="{ base: isSmallScreen ? 'h-screen overflow-y-auto' : 'min-w-fit overflow-hidden', body: { base: isSmallScreen ? 'space-y-2' : 'max-h-[75vh] space-y-2 overflow-y-auto' }}">
       <template #header>
         <header class="flex justify-between">
           <div class="flex flex-col">
@@ -135,7 +135,7 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
               v-if="showRawYears.includes(item.header.filingYear)"
               :title="$t('page.admin.table.invite.detailModal.section.rawData.title')"
             >
-              <pre class="mt-1"> {{ item }} </pre>
+              <pre class="mt-1 max-w-[90vw] overflow-x-auto"> {{ item }} </pre>
             </SbcModalAnnualReportDetailsDataSection>
           </div>
         </template>
