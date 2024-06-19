@@ -35,7 +35,8 @@
 from http import HTTPStatus
 
 import requests
-from business_ar_api.enums.enum import AuthHeaderType, ContentType
+from business_ar_api.common.auth import jwt
+from business_ar_api.enums.enum import AuthHeaderType, ContentType, Role
 from business_ar_api.exceptions.exceptions import (
     AuthException,
     BusinessException,
@@ -275,6 +276,10 @@ class AccountService:
     def is_authorized(cls, business_identifier: str, **kwargs) -> bool:
         """Authorize the user for access to the service."""
         try:
+            # if this is a staff person, they are allowed to access the resource
+            if jwt.validate_roles([Role.STAFF]):
+                return True
+
             timeout = int(current_app.config.get("AUTH_SVC_TIMEOUT", 20))
             api_url = current_app.config.get("AUTH_API_URL")
             user: UserContext = kwargs["user_context"]
