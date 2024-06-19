@@ -35,20 +35,47 @@
 
 Test suite to ensure that the Business endpoints are working as expected.
 """
+import string
 from datetime import datetime
 from http import HTTPStatus
+
+from nanoid import generate
 
 from business_ar_api.models import Business, Invitations
 
 
-def test_business_look_up_by_nano_id(session, client):
+def mock_colin_details(corp_state, legal_name, mocker):
+        # Mock the colin callback
+    colin_details = {
+        "business": {
+            "legalName": legal_name,
+            "corpState": corp_state
+        }
+    }
+    return mocker.patch(
+     "business_ar_api.services.BusinessService.get_business_details_from_colin",
+     return_value=colin_details)
+    
+
+def test_business_look_up_by_nano_id(session, client, mocker):
     """Assert that a Business can be looked up using the nano id."""
+
+    # Setup
+    nanoid_charset = string.ascii_letters + string.digits
+    nano_id = generate(nanoid_charset)
+
+    legal_name = "Test Business 1"
+    corp_state = "ACTIVE"
+
+    # mock out the external call to COLIN
+    colin_call = mock_colin_details(corp_state, legal_name, mocker)
+
     business = Business(
-        legal_name="Test Business 1",
+        legal_name=legal_name,
         legal_type="BC",
         identifier="BC1217715",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdHi6B-12T",
+        nano_id=nano_id,
     )
     business.save()
     assert business.id is not None
@@ -57,20 +84,26 @@ def test_business_look_up_by_nano_id(session, client):
         recipients="test@abc.com",
         message="Test Message",
         sent_date=datetime.now(),
-        token="abcde123",
+        token=nano_id,
         status="SENT",
         additional_message="Test",
         business_id=business.id,
     )
     invitations.save()
 
+    # Test
     rv = client.get(f"/v1/business/token/{invitations.token}")
 
+    # ensure mock was called
+    colin_call.assert_called_once()
+
+    # Veriy test
     assert rv.status_code == HTTPStatus.OK
     assert rv.json == {
-        "legalName": business.legal_name,
+        "legalName": legal_name,
         "legalType": business.legal_type,
         "identifier": business.identifier,
+        "status": corp_state,
         "taxId": business.tax_id,
     }
 
