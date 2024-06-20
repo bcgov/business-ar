@@ -29,9 +29,20 @@ Now you are ready to file your Annual Report. You will come to a page prepopulat
   - The board voted to not hold an AGM
 - For more information on Annual General Meetings, please see the section below.
 - Review and confirm the addresses and directors prior to certifying and filing your Annual Report. If you need to update your business address and/or directors, you will need to go to <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> to complete those changes first.
+
+## Want to know more about Annual General Meetings (AGM)?
+What is covered in an AGM
+- Presentation of Financial Statements
+- Appointments of Auditor (unless waived by special resolution)
+- Election of Directors
+- Other matters as set out in the notice of AGM
+
+## Requirement to hold an AGM
+Companies registered in British Columbia are required to hold an AGM at least once each calendar year and not more than 15 months after the anniversary date of your company being registered in BC.
  
+If your company is newly registered in BC, your first AGM must be held not more than 18 months after the date it was registered within BC.
 
-
+The Annual Report asks the status of your AGM to help your company remain compliant with the requirements of the <a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi" target="_blank"> BC Corporations Act</a>.
 
 ## Pay and Filing Confirmation
 You will be redirected to the PayBC site to provide your payment information. Once your payment is complete you will see a confirmation page your Annual Report was successfully filed followed by an email with a copy of your filing and receipt to the contact email on file.
