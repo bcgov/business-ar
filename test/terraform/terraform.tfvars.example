@@ -32,3 +32,5 @@ notify_api_version = "/api/v1"
 
 report_api_url = "http://report_url"
 report_api_version = "/api/v1"
+
+paymentPortalUrl = "http://paymentportalurl"

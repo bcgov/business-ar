@@ -141,3 +141,8 @@ variable "report_api_version" {
   type = string
   default = "/api/v1"
 }
+
+variable "paymentPortalUrl" {
+  type = string
+  default = ""
+}

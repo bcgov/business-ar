@@ -143,7 +143,7 @@ resource docker_container "regweb_container" {
     "NUXT_BAR_API_URL=${var.hostname}:${var.apiHostPort}",
     "NUXT_BAR_API_VERSION=/v1",
     "NUXT_BASE_URL=${var.hostname}:${var.uiHostPort}/",
-
+    "NUXT_PAYMENT_PORTAL_URL=${var.paymentPortalUrl}",
     "NUXT_REGISTRY_HOME_URL=${var.registry_home_url}",
   ]
 }
