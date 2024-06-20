@@ -106,6 +106,8 @@ if (import.meta.client) {
         ]"
       />
 
+      <SbcHelpTrigger />
+
       <!-- show business details -->
       <UCard v-show="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
         <SbcBusinessInfo

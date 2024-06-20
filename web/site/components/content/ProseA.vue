@@ -33,7 +33,10 @@ function resolvePath () {
     :target
     :download
     variant="link"
-    class="-m-6"
+    class="-mx-2 -my-4"
+    size="sm"
+    trailing
+    :icon="target === '_blank' ? 'i-mdi-open-in-new' : ''"
   >
     <slot />
   </UButton>

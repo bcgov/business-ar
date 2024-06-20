@@ -257,6 +257,9 @@ export default {
         title: 'Decline Terms of Use',
         content: 'By declining the Terms of Use, you will not be able to continue using this service. Please accept the Terms of Use to proceed.'
       }
+    },
+    help: {
+      title: 'Annual Report Help - Service BC Annual Report'
     }
   },
   widgets: {

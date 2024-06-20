@@ -27,5 +27,6 @@ const appVersion = await getAppMetaInfo()
       <NuxtPage />
     </NuxtLayout>
     <SbcFooter :app-version="appVersion" />
+    <SbcHelpModal />
   </div>
 </template>
