@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const pageLoading = useState('page-loading', () => false)
+const { locale } = useI18n()
 
 const i18nHead = useLocaleHead({
   addDirAttribute: true,
@@ -14,6 +15,13 @@ useHead({
 })
 
 const appVersion = await getAppMetaInfo()
+
+const { data: helpDocs } = await useAsyncData('help-docs-fetch', () => {
+  return queryContent()
+    .where({ _locale: locale.value, _path: { $eq: '/help' } })
+    .findOne()
+})
+provide('sbc-bar-help-docs', helpDocs)
 </script>
 <template>
   <div
