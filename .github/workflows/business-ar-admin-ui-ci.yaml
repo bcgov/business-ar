@@ -1,0 +1,20 @@
+name: Business AR Admin UI CI
+
+on:
+  pull_request:
+    paths:
+      - "web/admin/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./web/admin
+
+jobs:
+  business-ar-ui-ci:
+    uses: bcgov/bcregistry-sre/.github/workflows/frontend-ci.yaml@main
+    with:
+      app_name: "business-ar-admin-ui"
+      working_directory: "./web/admin"
+      codecov_flag: "businessaradminui"

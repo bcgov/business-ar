@@ -9,7 +9,7 @@ gh repo fork bcgov/business-ar
 
 Change into the directory and install the packages.
 ```bash
-cd business-ar/web/site
+cd business-ar/web/admin
 pnpm install
 ```
 

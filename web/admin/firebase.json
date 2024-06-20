@@ -1,7 +1,7 @@
 {
   "hosting":
     {
-      "site": "business-ar-dev",
+      "site": "business-ar-admin-dev",
       "public": "dist",
       "ignore": ["**/devops/**", "**/.*", "**/node_modules/**"],
       "rewrites": [

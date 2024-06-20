@@ -19,6 +19,10 @@ coverage:
         target: 80%
         flags:
           - businessarui
+      admin-ui:
+        target: 80%
+        flags:
+          - businessaradminui
 ignore:
   - "^/tests/**/*" # ignore test harness code
 
@@ -43,4 +47,8 @@ flags:
   businessarui:
     paths:
       - web/site
+    carryforward: true
+  businessaradminui:
+    paths:
+      - web/admin
     carryforward: true
