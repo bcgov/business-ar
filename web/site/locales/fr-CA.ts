@@ -260,7 +260,7 @@ export default {
       }
     },
     help: { // TODO: review help page translations
-      title: 'Aide pour le Rapport Annuel - Rapport Annuel de Service CB'
+      title: "Vue d'Ensemble du Rapport Annuel - Rapport Annuel de Service CB"
     }
   },
   widgets: {

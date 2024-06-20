@@ -260,7 +260,7 @@ export default {
       }
     },
     help: {
-      title: 'Annual Report Help - Service BC Annual Report'
+      title: 'Annual Report Overview - Service BC Annual Report'
     }
   },
   widgets: {
