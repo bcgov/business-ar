@@ -43,7 +43,10 @@ export default defineNuxtConfig({
       'en-CA',
       'fr-CA'
     ],
-    contentHead: false
+    contentHead: false,
+    markdown: {
+      anchorLinks: false
+    }
     // experimental: {
     //   clientDB: true
     // }
