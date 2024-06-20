@@ -45,7 +45,7 @@ def test_meta_no_commit_hash(client):
     PACKAGE_NAME = "business_ar_api"
     ver = version(PACKAGE_NAME)
 
-    rv = client.get("/api/v1/meta/info")
+    rv = client.get("/v1/meta/info")
 
     assert rv.status_code == 200
     assert rv.json == {
@@ -64,7 +64,7 @@ def test_meta_with_commit_hash(monkeypatch, client):
     commit_hash = "deadbeef_ha"
     monkeypatch.setenv("VCS_REF", commit_hash)
 
-    rv = client.get("/api/v1/meta/info")
+    rv = client.get("/v1/meta/info")
     assert rv.status_code == 200
     assert rv.json == {
         "API": f"{PACKAGE_NAME}/{ver}-{commit_hash}",

@@ -43,7 +43,7 @@ class LoginSource(Enum):
     IDIR = "IDIR"
 
 
-class Role(Enum):
+class Role(str, Enum):
     """User Role."""
 
     VIEWER = "view"
