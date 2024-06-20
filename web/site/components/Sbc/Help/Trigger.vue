@@ -8,7 +8,7 @@ const localePath = useLocalePath()
   <UButton
     class="[@media(pointer:fine)]:hidden"
     variant="outline"
-    label="Read the Overview"
+    :label="$t('btn.openHelpDocs')"
     icon="i-mdi-help-circle-outline"
     trailing
     size="sm"
@@ -18,7 +18,7 @@ const localePath = useLocalePath()
   <UButton
     class="[@media(pointer:coarse)]:hidden"
     variant="outline"
-    label="Read the Overview"
+    :label="$t('btn.openHelpDocs')"
     icon="i-mdi-help-circle-outline"
     trailing
     size="sm"

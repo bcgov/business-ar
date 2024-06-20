@@ -75,7 +75,8 @@ export default {
     accountOptions: 'Account Options Menu',
     accept: 'Accept',
     decline: 'Decline',
-    close: 'Close'
+    close: 'Close',
+    openHelpDocs: 'Read the Overview'
   },
   currency: {
     cad: 'CAD',
