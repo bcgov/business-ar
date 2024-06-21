@@ -16,5 +16,6 @@ export enum AlertCategory {
   CREATE_ACCOUNT = 'create-account',
   TOS_GET_ERROR = 'tos-get-error',
   TOS_PATCH_ERROR = 'tos-patch-error',
-  FILING_IN_PROGRESS = 'filing-in-progress'
+  FILING_IN_PROGRESS = 'filing-in-progress',
+  DOCUMENT_DOWNLOAD = 'document-download'
 }

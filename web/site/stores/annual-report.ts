@@ -87,9 +87,11 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
       }
       document.body.appendChild(tempAnchor)
       tempAnchor.click() // invoke download on temp anchor
-    } catch (e) {
-      console.log('error')
-      console.log(e)
+    } catch {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.DOCUMENT_DOWNLOAD
+      })
     } finally {
       loading.value = false
       setTimeout(() => {

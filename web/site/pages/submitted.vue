@@ -47,6 +47,12 @@ if (import.meta.client) {
         class="size-10 shrink-0 text-outcomes-approved"
       />
     </SbcPageSectionH1>
+    <SbcAlert
+      :show-on-category="[
+        AlertCategory.INTERNAL_SERVER_ERROR,
+        AlertCategory.DOCUMENT_DOWNLOAD
+      ]"
+    />
     <SbcNuxtContentCard id="submitted" />
   </div>
 </template>
