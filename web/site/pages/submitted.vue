@@ -4,13 +4,15 @@ const route = useRoute()
 const busStore = useBusinessStore()
 const localePath = useLocalePath()
 const pageLoading = useState('page-loading')
+pageLoading.value = false
 
 useHead({
   title: t('page.submitted.title')
 })
 
 definePageMeta({
-  middleware: ['require-account']
+  order: 0
+  // middleware: ['require-account']
 })
 
 async function initPage () {
@@ -35,7 +37,7 @@ async function initPage () {
 }
 
 if (import.meta.client) {
-  initPage()
+  // initPage()
 }
 </script>
 <template>
@@ -53,7 +55,7 @@ if (import.meta.client) {
         AlertCategory.DOCUMENT_DOWNLOAD
       ]"
     />
-    <SbcNuxtContentCard id="submitted-success-text" route-suffix="success-text" />
-    <SbcNuxtContentCard id="submitted-platform-info" route-suffix="platform-info" />
+    <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" />
+    <SbcNuxtContentCard id="submitted-platform-info" route-suffix="/platform-info" />
   </div>
 </template>

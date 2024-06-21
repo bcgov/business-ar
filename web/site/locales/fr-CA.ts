@@ -80,7 +80,9 @@ export default {
     accept: 'Accepter',
     decline: 'Déclin',
     close: 'Fermer',
-    openHelpDocs: "Lire la Vue d'Ensemble"
+    openHelpDocs: "Lire la Vue d'Ensemble",
+    downloadReceipt: 'Télécharger le Reçu',
+    downloadReport: 'Télécharger le Rapport'
   },
   currency: {
     cad: 'CAD',
