@@ -121,7 +121,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           throw new Error('Access Denied: Your account does not have permission to complete this task.')
         }
         // assignBusinessStoreValues(taskValue.filing.business)
-        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport, documents: taskValue.filing.documents } }
         payStatus.value = taskValue.filing.header.status
       }
       return { task: taskName, taskValue }

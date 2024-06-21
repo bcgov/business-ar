@@ -1,3 +1,5 @@
+import type { AnnualReport, FilingHeader, FilingDocument } from './ar-filing'
+
 export interface BusinessFull {
   taxId: string
   corpState: string
@@ -26,28 +28,10 @@ export interface BusinessNano {
 
 export interface BusinessFilingTask {
   filing: {
-    annualReport: {
-      annualGeneralMeetingDate: string
-      annualReportDate: string
-      votedForNoAGM: boolean
-      unanimousResolutionDate: string
-    }
+    annualReport: AnnualReport
     business: BusinessFull
-    header: {
-      certifiedBy: string | null
-      colinIds: string[] | number[]
-      completionDate: string | null
-      date: string
-      filingDateTime: string
-      filingYear: number
-      id: number
-      name: string
-      paymentAccount: string
-      paymentStatus: string | null
-      paymentToken: number
-      status: string
-      submitter: string | null
-    }
+    header: FilingHeader
+    documents: FilingDocument[]
   }
 }
 
