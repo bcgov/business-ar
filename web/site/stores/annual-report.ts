@@ -54,6 +54,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
     }
   }
 
+  // handle filing download
   async function handleDocumentDownload (file: { name: string, url: string }) {
     const { $keycloak } = useNuxtApp()
     let blobUrl: string | undefined
@@ -61,7 +62,6 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
     try {
       loading.value = true
       let filename: string
-
       const year = new Date().getFullYear()
       if (file.name === 'Receipt') {
         filename = `BC_Annual_Report_${year}_Receipt.pdf`
