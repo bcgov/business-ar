@@ -70,7 +70,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     if (!bus.lastArDate) {
       nextArDate.value = addOneYear(bus.foundingDate)
     } else {
-      nextArDate.value = addOneYear(bus.lastArDate)
+      nextArDate.value = addOneYear(bus.lastArDate!)
     }
 
     // throw error if next ar date is in the future
