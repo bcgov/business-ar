@@ -55,12 +55,12 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
   }
 
   async function handleDocumentDownload (file: { name: string, url: string }) {
+    const { $keycloak } = useNuxtApp()
     let blobUrl: string | undefined
     let tempAnchor: HTMLAnchorElement | undefined
     try {
       loading.value = true
       let filename: string
-      const endpoint = file.url.replace(/^\/v1/, '')
 
       const year = new Date().getFullYear()
       if (file.name === 'Receipt') {
@@ -69,7 +69,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         filename = `BC_Annual_Report_${year}.pdf`
       }
 
-      const response = await useBarApi(endpoint, { responseType: 'blob' }, 'token')
+      const response = await $fetch(file.url, { responseType: 'blob', headers: { Authorization: `Bearer ${$keycloak.token}` } })
       const blobObj = response as unknown as Blob
       blobUrl = window.URL.createObjectURL(blobObj)
       tempAnchor = document.createElement('a')
