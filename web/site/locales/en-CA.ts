@@ -47,6 +47,10 @@ export default {
     'filing-in-progress': {
       title: 'Filing in Progress',
       description: 'Your filing has been paid and is currently being processed.'
+    },
+    'document-download': {
+      title: 'Download Failed',
+      description: 'Unable to download the document at this time. Please try again or contact support if the issue persists.'
     }
   },
   btn: {
