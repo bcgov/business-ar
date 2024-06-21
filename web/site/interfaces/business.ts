@@ -10,13 +10,17 @@ export interface BusinessFull {
   identifier: string
   jurisdiction: string
   lastAgmDate: string | null
-  lastArDate: string
+  lastArDate: string | null
   lastLedgerTimestamp: string
   legalName: string
   legalType: string
   nextARYear: number
   status: string
   invitationEmail: string
+  hasFutureEffectiveFilings: boolean
+  homeCompanyName: null | string
+  homeJurisdictionNumber: null | string
+  homeRecognitionDate: any
 }
 
 export interface BusinessNano {

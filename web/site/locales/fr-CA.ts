@@ -51,6 +51,10 @@ export default {
     'document-download': {
       title: 'Échec du Téléchargement',
       description: 'Impossible de télécharger le document pour le moment. Veuillez réessayer ou contacter le support si le problème persiste.'
+    },
+    'future-effective-filings': {
+      title: 'Dépôts en Attente en Cours',
+      description: 'Des dépôts en attente doivent être complétés pour cette entreprise avant de pouvoir poursuivre cette tâche. Veuillez réessayer plus tard.'
     }
   },
   btn: {

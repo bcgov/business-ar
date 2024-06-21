@@ -48,6 +48,15 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   function assignBusinessStoreValues (bus: BusinessFull) {
     currentBusiness.value = bus
 
+    // throw error if business has future effective filings
+    if (bus.hasFutureEffectiveFilings) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.FUTURE_EFFECTIVE_FILINGS
+      })
+      throw new Error(`${bus.legalName || 'This business'} has future effective filings.`)
+    }
+
     // throw an error if the nextArYear is invalid
     if (!bus.nextARYear || bus.nextARYear === -1) {
       alertStore.addAlert({

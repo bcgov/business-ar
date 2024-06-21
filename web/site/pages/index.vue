@@ -102,7 +102,8 @@ if (import.meta.client) {
           AlertCategory.INVALID_TOKEN,
           AlertCategory.BUSINESS_DETAILS,
           AlertCategory.ACCOUNT_ACCESS,
-          AlertCategory.FILING_IN_PROGRESS
+          AlertCategory.FILING_IN_PROGRESS,
+          AlertCategory.FUTURE_EFFECTIVE_FILINGS
         ]"
       />
 

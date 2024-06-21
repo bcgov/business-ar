@@ -51,6 +51,10 @@ export default {
     'document-download': {
       title: 'Download Failed',
       description: 'Unable to download the document at this time. Please try again or contact support if the issue persists.'
+    },
+    'future-effective-filings': {
+      title: 'Pending Filings in Progress',
+      description: 'There are pending filings for this business that need to be completed before you can proceed with this task. Please try again later.'
     }
   },
   btn: {
