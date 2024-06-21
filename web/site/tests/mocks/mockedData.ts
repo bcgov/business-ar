@@ -73,9 +73,14 @@ export const mockedArFilingResponse: ArFilingResponse = {
     annualReport: {
       annualGeneralMeetingDate: '2024-04-30',
       annualReportDate: '2024-04-30',
-      votedForNoAGM: false
+      votedForNoAGM: false,
+      unanimousResolutionDate: null
     },
     header: {
+      certifiedBy: 'some user',
+      certifiedByDisplayName: 'STING',
+      colinIds: [123, 456, 789],
+      date: '2024-04-30',
       completionDate: null,
       filingDateTime: '2024-04-30',
       filingYear: 2024,
@@ -86,7 +91,8 @@ export const mockedArFilingResponse: ArFilingResponse = {
       paymentToken: 123456,
       status: 'Submitted',
       submitter: null
-    }
+    },
+    documents: []
   }
 }
 
@@ -97,14 +103,18 @@ export const mockedBusinessNano: BusinessNano = {
   taxId: null
 }
 
-export const mockedBusinessFull = {
+export const mockedBusinessFull: { business: BusinessFull } = {
   business: {
     taxId: '234653465',
     corpState: 'some state',
     corpStateClass: 'some class',
     email: 'some email',
-    foundingDate: 'some date',
+    foundingDate: '2020-10-10',
     goodStanding: true,
+    hasFutureEffectiveFilings: false,
+    homeCompanyName: null,
+    homeJurisdictionNumber: null,
+    homeRecognitionDate: null,
     identifier: '123456789',
     jurisdiction: 'BC',
     invitationEmail: 'test@example.com',
@@ -114,69 +124,6 @@ export const mockedBusinessFull = {
     legalName: 'Test Business Inc',
     legalType: 'BC',
     nextARYear: 2021,
-    status: 'some status'
-  }
-}
-
-export const mockedBusinessFullInvalidArYear = {
-  business: {
-    taxId: '234653465',
-    corpState: 'some state',
-    corpStateClass: 'some class',
-    email: 'some email',
-    foundingDate: 'some date',
-    goodStanding: true,
-    identifier: '123456789',
-    jurisdiction: 'BC',
-    lastAgmDate: null,
-    lastArDate: '2020-10-10',
-    invitationEmail: 'test@example.com',
-    lastLedgerTimestamp: '',
-    legalName: 'Test Business Inc',
-    legalType: 'BC',
-    nextARYear: -1,
-    status: 'some status'
-  }
-}
-
-export const mockedBusinessFullAlreadyFiled = {
-  business: {
-    taxId: '234653465',
-    corpState: 'some state',
-    corpStateClass: 'some class',
-    email: 'some email',
-    foundingDate: 'some date',
-    goodStanding: true,
-    identifier: '123456789',
-    invitationEmail: 'test@example.com',
-    jurisdiction: 'BC',
-    lastAgmDate: null,
-    lastArDate: '2024-10-10',
-    lastLedgerTimestamp: '',
-    legalName: 'Test Business Inc',
-    legalType: 'BC',
-    nextARYear: 2025,
-    status: 'some status'
-  }
-}
-
-export const mockedBusinessFullNoLastArDate = {
-  business: {
-    taxId: '234653465',
-    corpState: 'some state',
-    corpStateClass: 'some class',
-    email: 'some email',
-    foundingDate: '2020-10-10',
-    goodStanding: true,
-    invitationEmail: 'test@example.com',
-    identifier: '123456789',
-    jurisdiction: 'BC',
-    lastAgmDate: null,
-    lastArDate: '',
-    lastLedgerTimestamp: '',
-    legalName: 'Test Business Inc',
-    legalType: 'BC',
-    nextARYear: 2025,
     status: 'some status'
   }
 }

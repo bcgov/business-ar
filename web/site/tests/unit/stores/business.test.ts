@@ -5,10 +5,7 @@ import { useBusinessStore } from '#imports'
 import {
   mockedBusinessNano,
   mockedBusinessFull,
-  mockedBusinessFullInvalidArYear,
   mockedArFilingResponse,
-  mockedBusinessFullAlreadyFiled,
-  mockedBusinessFullNoLastArDate,
   mockedFilingTask,
   mockedTodoTask,
   mockedOrgs
@@ -49,8 +46,11 @@ registerEndpoint('/user/accounts', {
 })
 
 describe('Business Store Tests', () => {
+  let addAlertSpy: any
   beforeEach(() => {
     setActivePinia(createPinia())
+    const alertStore = useAlertStore()
+    addAlertSpy = vi.spyOn(alertStore, 'addAlert')
   })
 
   it('inits the store with empty values', () => {
@@ -81,19 +81,55 @@ describe('Business Store Tests', () => {
 
     it('throws an error for a business with invalid nextARYear', () => {
       const busStore = useBusinessStore()
-      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullInvalidArYear.business)).toThrowError('Test Business Inc is not eligible to file an Annual Report')
+      const testBusiness = {
+        ...mockedBusinessFull.business,
+        nextARYear: -1
+      }
+      expect(() => busStore.assignBusinessStoreValues(testBusiness)).toThrowError('Test Business Inc is not eligible to file an Annual Report')
+      expect(addAlertSpy).toHaveBeenCalledWith({
+        severity: 'error',
+        category: 'invalid-next-ar-year'
+      })
     })
 
-    it('throws an error if business has already filed an AR for the current year', () => {
+    it('throws an error if last ar date > or = to current date', () => {
       const busStore = useBusinessStore()
-      expect(() => busStore.assignBusinessStoreValues(mockedBusinessFullAlreadyFiled.business)).toThrowError('Annual Report not due until 2025-10-10')
+      const currentDate = new Date()
+      const lastArDate = dateToString(currentDate, 'YYYY-MM-DD')
+      const futureDate = addOneYear(lastArDate)
+      const testBusiness = {
+        ...mockedBusinessFull.business,
+        lastArDate
+      }
+      expect(() => busStore.assignBusinessStoreValues(testBusiness)).toThrowError(`Annual Report not due until ${futureDate}`)
+      expect(addAlertSpy).toHaveBeenCalledWith({
+        severity: 'error',
+        category: 'future-filing'
+      })
     })
 
     it('uses founding date for nextArDate if no lastArDate', () => {
       const busStore = useBusinessStore()
-      busStore.assignBusinessStoreValues(mockedBusinessFullNoLastArDate.business)
+      const testBusiness = {
+        ...mockedBusinessFull.business,
+        lastArDate: null
+      }
+      busStore.assignBusinessStoreValues(testBusiness)
 
       expect(busStore.nextArDate).toEqual('2021-10-10')
+    })
+
+    it('throws an error for a business with future effective filings', () => {
+      const busStore = useBusinessStore()
+      const testBusiness = {
+        ...mockedBusinessFull.business,
+        hasFutureEffectiveFilings: true
+      }
+      expect(() => busStore.assignBusinessStoreValues(testBusiness)).toThrowError('Test Business Inc has future effective filings.')
+      expect(addAlertSpy).toHaveBeenCalledWith({
+        severity: 'error',
+        category: 'future-effective-filings'
+      })
     })
   })
 
