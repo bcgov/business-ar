@@ -4,15 +4,13 @@ const route = useRoute()
 const busStore = useBusinessStore()
 const localePath = useLocalePath()
 const pageLoading = useState('page-loading')
-pageLoading.value = false
 
 useHead({
   title: t('page.submitted.title')
 })
 
 definePageMeta({
-  order: 0
-  // middleware: ['require-account']
+  middleware: ['require-account']
 })
 
 async function initPage () {
@@ -37,7 +35,7 @@ async function initPage () {
 }
 
 if (import.meta.client) {
-  // initPage()
+  initPage()
 }
 </script>
 <template>

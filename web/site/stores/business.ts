@@ -85,6 +85,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
     if (response) {
       payStatus.value = response.filing.header.status
+      arStore.arFiling = response
     }
   }
 
