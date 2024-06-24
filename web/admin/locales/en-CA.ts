@@ -51,6 +51,10 @@ export default {
     'requires-staff-user': {
       title: 'Staff User Required',
       description: 'This site requires a staff user. Please log in with a staff account.'
+    },
+    'document-download': {
+      title: 'Download Failed',
+      description: 'Unable to download the document at this time. Please try again or contact support if the issue persists.'
     }
   },
   btn: {
@@ -85,9 +89,11 @@ export default {
     viewDetails: 'View Details',
     yearAnnualReport: '{year} Annual Report',
     viewRaw: {
-      open: 'View Raw',
-      close: 'Close Raw'
-    }
+      open: 'View Raw JSON',
+      close: 'Close Raw JSON'
+    },
+    downloadReceipt: 'Download Receipt',
+    downloadReport: 'Download Report'
   },
   currency: {
     cad: 'CAD',

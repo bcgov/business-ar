@@ -17,5 +17,6 @@ export enum AlertCategory {
   TOS_GET_ERROR = 'tos-get-error',
   TOS_PATCH_ERROR = 'tos-patch-error',
   FILING_IN_PROGRESS = 'filing-in-progress',
-  REQUIRES_STAFF_USER = 'requires-staff-user'
+  REQUIRES_STAFF_USER = 'requires-staff-user',
+  DOCUMENT_DOWNLOAD = 'document-download',
 }
