@@ -48,6 +48,15 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   function assignBusinessStoreValues (bus: BusinessFull) {
     currentBusiness.value = bus
 
+    // throw error if business not in ACT corpState
+    if (bus.corpState !== 'ACT') {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.INACTIVE_CORP_STATE
+      })
+      throw new Error(`${bus.legalName || 'This business'} is not in an active state.`)
+    }
+
     // throw error if business has future effective filings
     if (bus.hasFutureEffectiveFilings) {
       alertStore.addAlert({

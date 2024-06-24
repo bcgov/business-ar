@@ -103,7 +103,8 @@ if (import.meta.client) {
           AlertCategory.BUSINESS_DETAILS,
           AlertCategory.ACCOUNT_ACCESS,
           AlertCategory.FILING_IN_PROGRESS,
-          AlertCategory.FUTURE_EFFECTIVE_FILINGS
+          AlertCategory.FUTURE_EFFECTIVE_FILINGS,
+          AlertCategory.INACTIVE_CORP_STATE
         ]"
       />
 

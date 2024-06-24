@@ -18,5 +18,6 @@ export enum AlertCategory {
   TOS_PATCH_ERROR = 'tos-patch-error',
   FILING_IN_PROGRESS = 'filing-in-progress',
   DOCUMENT_DOWNLOAD = 'document-download',
-  FUTURE_EFFECTIVE_FILINGS = 'future-effective-filings'
+  FUTURE_EFFECTIVE_FILINGS = 'future-effective-filings',
+  INACTIVE_CORP_STATE = 'inactive-corp-state'
 }

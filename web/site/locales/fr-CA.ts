@@ -55,6 +55,10 @@ export default {
     'future-effective-filings': {
       title: 'Dépôt en Attente Trouvé',
       description: 'Il y a un dossier en attente pour cette entreprise trouvé dans CorporateOnLine qui doit être complété avant que vous puissiez poursuivre cette tâche. Veuillez revenir une fois ce dépôt terminé.'
+    },
+    'inactive-corp-state': {
+      title: 'Entreprise Inactive',
+      description: "Cette entreprise est actuellement inactive. Vous ne pouvez pas continuer cette tâche tant que l'entreprise n'est pas réactivée. Veuillez contacter le support pour obtenir de l'aide."
     }
   },
   btn: {

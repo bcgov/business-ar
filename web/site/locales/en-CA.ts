@@ -55,6 +55,10 @@ export default {
     'future-effective-filings': {
       title: 'Pending Filing Found',
       description: 'There is a pending filing for this business found in CorporateOnLine that needs to be completed before you can proceed with this task. Please return after that filing has been completed.'
+    },
+    'inactive-corp-state': {
+      title: 'Inactive Business',
+      description: 'This business is currently inactive. You cannot proceed with this task until the business is reactivated. Please contact support for assistance.'
     }
   },
   btn: {
