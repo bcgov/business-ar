@@ -116,7 +116,7 @@ if (import.meta.client) {
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
             { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
-            { label: $t('labels.busNum'), value: busStore.businessNano.taxId },
+            { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
           ]"
         />
       </UCard>
