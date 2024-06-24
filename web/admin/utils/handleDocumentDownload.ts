@@ -1,4 +1,4 @@
-export async function handleDocumentDownload (file: { name: string, url: string }) {
+export async function handleDocumentDownload (file: { name: string, url: string }, identifier: string) {
   const { $keycloak } = useNuxtApp()
   const alertStore = useAlertStore()
   let blobUrl: string | undefined
@@ -7,9 +7,9 @@ export async function handleDocumentDownload (file: { name: string, url: string 
     let filename: string
     const year = new Date().getFullYear()
     if (file.name === 'Receipt') {
-      filename = `BC_Annual_Report_${year}_Receipt.pdf`
+      filename = `BC_Annual_Report_${identifier}_${year}_Receipt.pdf`
     } else {
-      filename = `BC_Annual_Report_${year}.pdf`
+      filename = `BC_Annual_Report_${identifier}_${year}.pdf`
     }
 
     const response = await $fetch(file.url, { responseType: 'blob', headers: { Authorization: `Bearer ${$keycloak.token}` } })

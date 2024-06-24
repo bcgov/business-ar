@@ -141,7 +141,7 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
                     :icon="doc.name === 'Receipt' ? 'i-mdi-invoice-export-outline' : 'i-mdi-file-download-outline'"
                     color="gray"
                     :aria-label="doc.name === 'Receipt' ? $t('btn.downloadReceipt') : $t('btn.downloadReport')"
-                    @click="handleDocumentDownload(doc)"
+                    @click="handleDocumentDownload(doc, business.identifier)"
                   />
                 </UTooltip>
               </UButtonGroup>
