@@ -108,6 +108,19 @@ describe('Business Store Tests', () => {
       })
     })
 
+    it("throws an error if business corp state does not equal 'ACT'", () => {
+      const busStore = useBusinessStore()
+      const testBusiness = {
+        ...mockedBusinessFull.business,
+        corpState: 'HDA'
+      }
+      expect(() => busStore.assignBusinessStoreValues(testBusiness)).toThrowError(testBusiness.legalName + ' is not in an active state.')
+      expect(addAlertSpy).toHaveBeenCalledWith({
+        severity: 'error',
+        category: 'inactive-corp-state'
+      })
+    })
+
     it('uses founding date for nextArDate if no lastArDate', () => {
       const busStore = useBusinessStore()
       const testBusiness = {

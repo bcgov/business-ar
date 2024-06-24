@@ -106,7 +106,7 @@ export const mockedBusinessNano: BusinessNano = {
 export const mockedBusinessFull: { business: BusinessFull } = {
   business: {
     taxId: '234653465',
-    corpState: 'some state',
+    corpState: 'ACT',
     corpStateClass: 'some class',
     email: 'some email',
     foundingDate: '2020-10-10',
