@@ -38,6 +38,7 @@ defineProps<{
         <ClientOnly>
           <UDropdown
             v-if="keycloak.isAuthenticated()"
+            id="account-options-dropdown"
             :items="loggedInUserOptions"
             :ui="{
               width: '',
@@ -51,6 +52,7 @@ defineProps<{
             <!-- required for UInput aria-label -->
             <!-- eslint-disable vue/attribute-hyphenation -->
             <UButton
+              id="account-options-button"
               color="white"
               variant="link"
               :ariaLabel="$t('btn.accountOptions')"
