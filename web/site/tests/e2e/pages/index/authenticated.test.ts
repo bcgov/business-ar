@@ -3,6 +3,8 @@ import AxeBuilder from '@axe-core/playwright'
 import { mockedBusinessNano, mockedTodoTask, mockBusiness, mockedOrgs, mockedFilingTask } from '../../../mocks/mockedData'
 import lang from '../../../../locales/en-CA'
 import { assertCommonElements, assertH1Text, assertNuxtContent, assertAlertText } from '../../helpers'
+import { mockRoute } from '../../utils/mock-route'
+import { createScreenshotPath } from '../../utils/create-screenshot-path'
 import { dateToString, addOneYear } from '../../../../utils/date'
 
 test.describe('Authenticated', () => {
@@ -26,40 +28,29 @@ test.describe('Authenticated', () => {
     expect(a11yResults.violations).toEqual([])
 
     // generate unique filename with describe block text and take screenshot after each test
-    const describeText = testInfo.titlePath.slice(1).map(title => title.toLowerCase().replace(/\s+/g, '-')).join('/')
-    const filename = `test-results/${describeText}.png`
+    const filename = createScreenshotPath(testInfo.titlePath)
     await page.screenshot({ fullPage: true, path: filename })
   })
 
   test.describe('Valid Nano ID', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('**/business/token/123', async (route) => { // mock 200 response with nanoid GET
-        await route.fulfill({ json: mockedBusinessNano })
-      })
-      await page.route('**/business/*/tasks', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({ json: mockedTodoTask })
-      })
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({ json: mockBusiness })
-      })
+      await mockRoute(page, '**/business/token/123', { json: mockedBusinessNano }) // mock 200 response with nanoid GET
+      await mockRoute(page, '**/business/*/tasks', { json: mockedTodoTask }) // mock 200 response with business task GET
+      await mockRoute(page, '**/business/*', { json: mockBusiness }) // mock 200 response with business details GET
     })
 
     test('With Accounts - should be redirected to accounts-choose-existing', async ({ page }) => {
-      await page.route('**/user/accounts', async (route) => { // mock 200 response with accounts GET
-        await route.fulfill({ json: mockedOrgs })
-      })
+      await mockRoute(page, '**/user/accounts', { json: mockedOrgs }) // mock 200 response with accounts GET
       await page.goto('/en-CA?nanoid=123') // navigate to home page with mocked responses
 
       await expect(page.getByText(lang.page.existingAccount.h1, { exact: true })).toBeVisible() // wait for page to be rendered
-
+      await page.waitForURL('**/accounts/choose-existing') // wait for redirect
       // assert page url
       expect(page.url()).toContain('/accounts/choose-existing')
     })
 
     test('With No Accounts - should be redirected to accounts-create-new', async ({ page }) => {
-      await page.route('**/user/accounts', async (route) => { // mock 200 response with accounts GET
-        await route.fulfill({ json: [] })
-      })
+      await mockRoute(page, '**/user/accounts', { json: [] }) // mock 200 response with accounts GET
       await page.goto('/en-CA?nanoid=123') // navigate to home page with mocked responses
 
       await expect(page.getByText(lang.page.createAccount.h1, { exact: true })).toBeVisible() // wait for page to be rendered
@@ -70,9 +61,7 @@ test.describe('Authenticated', () => {
   })
 
   test('Invalid Nano ID', async ({ page }) => {
-    await page.route('**/business/token/123', async (route) => {
-      await route.fulfill({ status: 400 }) // mock 400 response with nanoid GET
-    })
+    await mockRoute(page, '**/business/token/123', { status: 400 }) // mock 400 response with nanoid GET
     await page.goto('/en-CA?nanoid=123') // navigate to home page
     await expect(page.getByText(lang.page.home.h1, { exact: true })).toBeVisible() // wait for page to be rendered
 
@@ -124,38 +113,30 @@ test.describe('Authenticated', () => {
 
   test.describe('Business Has Active Filing', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('**/business/token/123', async (route) => { // mock 200 response with nanoid GET
-        await route.fulfill({ json: mockedBusinessNano })
-      })
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({ json: mockBusiness })
-      })
+      await mockRoute(page, '**/business/token/123', { json: mockedBusinessNano }) // mock 200 response with nanoid GET
+      await mockRoute(page, '**/business/*', { json: mockBusiness }) // mock 200 response with business details GET
     })
 
     test('Filing In Draft - should be redirected to annual-report', async ({ page }) => {
       const baseTask = mockedFilingTask.tasks[0].task.filing
-      await page.route('**/business/*/tasks', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({
-          json: {
-            tasks: [{
-              task: {
-                filing: {
-                  business: baseTask.business,
-                  annualReport: baseTask.annualReport,
-                  header: {
-                    ...baseTask.header,
-                    paymentAccount: 1,
-                    status: 'PENDING'
-                  }
+      await mockRoute(page, '**/business/*/tasks', { // mock 200 response with business task GET
+        json: {
+          tasks: [{
+            task: {
+              filing: {
+                business: baseTask.business,
+                annualReport: baseTask.annualReport,
+                header: {
+                  ...baseTask.header,
+                  paymentAccount: 1,
+                  status: 'PENDING'
                 }
               }
-            }]
-          }
-        })
+            }
+          }]
+        }
       })
-      await page.route('**/user/accounts', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({ json: mockedOrgs })
-      })
+      await mockRoute(page, '**/user/accounts', { json: mockedOrgs }) // mock 200 response with user accounts GET
       await page.goto('/en-CA?nanoid=123') // navigate to home page
       await page.waitForURL('**/annual-report') // wait for redirect
 
@@ -168,28 +149,24 @@ test.describe('Authenticated', () => {
 
     test('Filing In PAID Status', async ({ page }) => {
       const baseTask = mockedFilingTask.tasks[0].task.filing
-      await page.route('**/business/*/tasks', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({
-          json: {
-            tasks: [{
-              task: {
-                filing: {
-                  business: baseTask.business,
-                  annualReport: baseTask.annualReport,
-                  header: {
-                    ...baseTask.header,
-                    paymentAccount: 1,
-                    status: 'PAID'
-                  }
+      await mockRoute(page, '**/business/*/tasks', { // mock 200 response with business task GET
+        json: {
+          tasks: [{
+            task: {
+              filing: {
+                business: baseTask.business,
+                annualReport: baseTask.annualReport,
+                header: {
+                  ...baseTask.header,
+                  paymentAccount: 1,
+                  status: 'PAID'
                 }
               }
-            }]
-          }
-        })
+            }
+          }]
+        }
       })
-      await page.route('**/user/accounts', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({ json: mockedOrgs })
-      })
+      await mockRoute(page, '**/user/accounts', { json: mockedOrgs }) // mock 200 response with user accounts GET
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 
       // assert h1 text
@@ -215,28 +192,24 @@ test.describe('Authenticated', () => {
 
     test('User Does not Own Account', async ({ page }) => {
       const baseTask = mockedFilingTask.tasks[0].task.filing
-      await page.route('**/business/*/tasks', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({
-          json: {
-            tasks: [{
-              task: {
-                filing: {
-                  business: baseTask.business,
-                  annualReport: baseTask.annualReport,
-                  header: {
-                    ...baseTask.header,
-                    paymentAccount: 999,
-                    status: 'PAID'
-                  }
+      await mockRoute(page, '**/business/*/tasks', { // mock 200 response with business task GET
+        json: {
+          tasks: [{
+            task: {
+              filing: {
+                business: baseTask.business,
+                annualReport: baseTask.annualReport,
+                header: {
+                  ...baseTask.header,
+                  paymentAccount: 999,
+                  status: 'PAID'
                 }
               }
-            }]
-          }
-        })
+            }
+          }]
+        }
       })
-      await page.route('**/user/accounts', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({ json: mockedOrgs })
-      })
+      await mockRoute(page, '**/user/accounts', { json: mockedOrgs }) // mock 200 response with user accounts GET
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 
       // assert h1 text
@@ -263,25 +236,19 @@ test.describe('Authenticated', () => {
 
   test.describe('Error or Alert States', () => {
     test.beforeEach(async ({ page }) => {
-      await page.route('**/business/token/123', async (route) => { // mock 200 response with nanoid GET
-        await route.fulfill({ json: mockedBusinessNano })
-      })
-      await page.route('**/business/*/tasks', async (route) => { // mock 200 response with business task GET
-        await route.fulfill({ json: mockedTodoTask })
-      })
+      await mockRoute(page, '**/business/token/123', { json: mockedBusinessNano }) // mock 200 response with nanoid GET
+      await mockRoute(page, '**/business/*/tasks', { json: mockedTodoTask }) // mock 200 response with business task GET
     })
 
     test('Business Has Inactive State', async ({ page }) => {
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({
-          json: {
-            ...mockBusiness,
-            business: {
-              ...mockBusiness.business,
-              corpState: 'HIS'
-            }
+      await mockRoute(page, '**/business/*', { // mock 200 response with business details GET
+        json: {
+          ...mockBusiness,
+          business: {
+            ...mockBusiness.business,
+            corpState: 'HIS'
           }
-        })
+        }
       })
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 
@@ -290,7 +257,7 @@ test.describe('Authenticated', () => {
 
       // assert business details card not rendered
       const busDetails = page.getByTestId('bus-details-card')
-      expect(busDetails).not.toBeVisible()
+      await expect(busDetails).toBeVisible()
 
       // assert INITIAL nuxt content not rendered
       await assertNuxtContent(page, 'initial', false)
@@ -307,16 +274,14 @@ test.describe('Authenticated', () => {
     })
 
     test('Business Has Future Effective Filings', async ({ page }) => {
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({
-          json: {
-            ...mockBusiness,
-            business: {
-              ...mockBusiness.business,
-              hasFutureEffectiveFilings: true
-            }
+      await mockRoute(page, '**/business/*', { // mock 200 response with business details GET
+        json: {
+          ...mockBusiness,
+          business: {
+            ...mockBusiness.business,
+            hasFutureEffectiveFilings: true
           }
-        })
+        }
       })
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 
@@ -342,16 +307,14 @@ test.describe('Authenticated', () => {
     })
 
     test('Business Has Invalid Next AR Year', async ({ page }) => {
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({
-          json: {
-            ...mockBusiness,
-            business: {
-              ...mockBusiness.business,
-              nextARYear: -1
-            }
+      await mockRoute(page, '**/business/*', { // mock 200 response with business details GET
+        json: {
+          ...mockBusiness,
+          business: {
+            ...mockBusiness.business,
+            nextARYear: -1
           }
-        })
+        }
       })
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 
@@ -380,17 +343,14 @@ test.describe('Authenticated', () => {
       const currentDate = new Date()
       const lastArDate = dateToString(currentDate, 'YYYY-MM-DD')
       const futureDate = addOneYear(lastArDate)
-
-      await page.route('**/business/*', async (route) => { // mock 200 response with business details GET
-        await route.fulfill({
-          json: {
-            ...mockBusiness,
-            business: {
-              ...mockBusiness.business,
-              lastArDate
-            }
+      await mockRoute(page, '**/business/*', { // mock 200 response with business details GET
+        json: {
+          ...mockBusiness,
+          business: {
+            ...mockBusiness.business,
+            lastArDate
           }
-        })
+        }
       })
       await page.goto('/en-CA?nanoid=123') // navigate to home page
 

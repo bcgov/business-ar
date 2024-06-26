@@ -3,6 +3,8 @@ import AxeBuilder from '@axe-core/playwright'
 import { mockedBusinessNano } from '../../../mocks/mockedData'
 import lang from '../../../../locales/en-CA'
 import { assertCommonElements, assertH1Text, assertNuxtContent, assertAlertText } from '../../helpers'
+import { mockRoute } from '../../utils/mock-route'
+import { createScreenshotPath } from '../../utils/create-screenshot-path'
 
 test.describe('Unauthenticated', () => {
   test.afterEach(async ({ page }, testInfo) => {
@@ -23,14 +25,12 @@ test.describe('Unauthenticated', () => {
     expect(a11yResults.violations).toEqual([])
 
     // generate unique filename with describe block text and take screenshot after each test
-    const describeText = testInfo.titlePath.slice(1).map(title => title.toLowerCase().replace(/\s+/g, '-')).join('/')
-    const filename = `test-results/${describeText}.png`
+    const filename = createScreenshotPath(testInfo.titlePath)
     await page.screenshot({ fullPage: true, path: filename })
   })
+
   test('Valid Nano ID', async ({ page }) => {
-    await page.route('**/business/token/123', async (route) => { // mock 200 response with nanoid GET
-      await route.fulfill({ json: mockedBusinessNano })
-    })
+    await mockRoute(page, '**/business/token/123', { json: mockedBusinessNano }) // mock 200 response with nanoid GET
     await page.goto('/en-CA?nanoid=123') // navigate to home page with mocked token response
     await expect(page.getByText(lang.page.home.h1, { exact: true })).toBeVisible() // wait for page to be rendered
 
@@ -56,9 +56,7 @@ test.describe('Unauthenticated', () => {
   })
 
   test('Invalid Nano ID', async ({ page }) => {
-    await page.route('**/business/token/123', async (route) => {
-      await route.fulfill({ status: 400 }) // mock 400 response with nanoid GET
-    })
+    await mockRoute(page, '**/business/token/123', { status: 400 }) // mock 400 response with nanoid GET
     await page.goto('/en-CA?nanoid=123') // navigate to home page
     await expect(page.getByText(lang.page.home.h1, { exact: true })).toBeVisible() // wait for page to be rendered
 
