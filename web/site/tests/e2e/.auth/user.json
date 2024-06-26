@@ -1,0 +1,180 @@
+{
+  "cookies": [
+    {
+      "name": "KEYCLOAK_3P_COOKIE_SAMESITE",
+      "value": "supported",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/protocol/openid-connect/3p-cookies",
+      "expires": 1719435732.995786,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AUTH_SESSION_ID",
+      "value": "88aa372e-2f62-42f4-8193-5270a562712f.eycloak-98c985d65-gsr2j",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AUTH_SESSION_ID_LEGACY",
+      "value": "88aa372e-2f62-42f4-8193-5270a562712f.eycloak-98c985d65-gsr2j",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "KEYCLOAK_IDENTITY",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3ODEyNzUsImlhdCI6MTcxOTQzNTY3NSwianRpIjoiODYyMDNlNDItZjkzNy00ODdkLTg4MDAtYWE3NWRjNDhiM2VmIiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiODhhYTM3MmUtMmY2Mi00MmY0LTgxOTMtNTI3MGE1NjI3MTJmIiwic2lkIjoiODhhYTM3MmUtMmY2Mi00MmY0LTgxOTMtNTI3MGE1NjI3MTJmIiwic3RhdGVfY2hlY2tlciI6IlJHLUVoTEtRdE14RHBvalNZZUhIamZPX0pheHVPZFVCbVZnWHB5RDZvUFUifQ.kgInVfaMRBD7BD4Er5ichFiam4I_rKpwQm5V-48paAU",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "KEYCLOAK_IDENTITY_LEGACY",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3ODEyNzUsImlhdCI6MTcxOTQzNTY3NSwianRpIjoiODYyMDNlNDItZjkzNy00ODdkLTg4MDAtYWE3NWRjNDhiM2VmIiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiODhhYTM3MmUtMmY2Mi00MmY0LTgxOTMtNTI3MGE1NjI3MTJmIiwic2lkIjoiODhhYTM3MmUtMmY2Mi00MmY0LTgxOTMtNTI3MGE1NjI3MTJmIiwic3RhdGVfY2hlY2tlciI6IlJHLUVoTEtRdE14RHBvalNZZUhIamZPX0pheHVPZFVCbVZnWHB5RDZvUFUifQ.kgInVfaMRBD7BD4Er5ichFiam4I_rKpwQm5V-48paAU",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "KEYCLOAK_SESSION",
+      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/88aa372e-2f62-42f4-8193-5270a562712f",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": 1719781275.515141,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "KEYCLOAK_SESSION_LEGACY",
+      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/88aa372e-2f62-42f4-8193-5270a562712f",
+      "domain": "dev.loginproxy.gov.bc.ca",
+      "path": "/auth/realms/bcregistry/",
+      "expires": 1719781275.515153,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "721C1127B6B8D6F1398841196886DF8B.nugget2",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/cardtap",
+      "expires": 1719437473.731962,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ias.login.returning-user",
+      "value": "\"2024-06-26T14:01:15.27\"",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/cardtap",
+      "expires": 1753995675.25089,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "JSESSIONID",
+      "value": "767BBE03AA27BBCA3C60DCED4202A989.nugget4",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/login",
+      "expires": 1719437473.407877,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_sp_ses.af0c",
+      "value": "*",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/",
+      "expires": 1719437474,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "sp",
+      "value": "1a37440b-632a-4e95-9d6a-b6ca007c4023",
+      "domain": "spt.apps.gov.bc.ca",
+      "path": "/",
+      "expires": 1750971674.627792,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "3c6aa5bf75cec870d6dde49c758533da",
+      "value": "c669bcac2b61d606fed17601d1194052",
+      "domain": "spt.apps.gov.bc.ca",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_sp_id.af0c",
+      "value": "080a801a-f407-4bff-913f-49495ce041cf.1719435674.1.1719435675.1719435674.5af01665-e429-4e7d-b409-3f8a3a1b93d9",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/",
+      "expires": 1753995674.546867,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:3000",
+      "localStorage": [
+        {
+          "name": "iconify-count",
+          "value": "0"
+        },
+        {
+          "name": "kc-callback-b5ea601f-c696-4ff3-87f2-2189a788f56b",
+          "value": "{\"state\":\"b5ea601f-c696-4ff3-87f2-2189a788f56b\",\"nonce\":\"984444c9-ab64-499c-af78-54150f8a4a24\",\"redirectUri\":\"http%3A%2F%2Flocalhost%3A3000%2Fen-CA\",\"pkceCodeVerifier\":\"LlHb2p0B5JCafpqCDEeLHHDRZlhGDvlKeBkJqCZw1Wgnz31ZWKQnqjqnJOGziX1oiAZ1zxhv9hVIlf1bVQPiOZ8Mbi8fe242\",\"expires\":1719439273287}"
+        },
+        {
+          "name": "nuxt-color-mode",
+          "value": "light"
+        },
+        {
+          "name": "iconify-version",
+          "value": "iconify2"
+        }
+      ]
+    },
+    {
+      "origin": "https://idtest.gov.bc.ca",
+      "localStorage": [
+        {
+          "name": "snowplowOutQueue_snowplow_rt_post2",
+          "value": "[]"
+        },
+        {
+          "name": "snowplowOutQueue_snowplow_rt_post2.expires",
+          "value": "1782507675047"
+        }
+      ]
+    }
+  ]
+}

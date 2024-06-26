@@ -15,6 +15,7 @@ const devicesToTest = [
 ] satisfies Array<string | typeof devices[string]>
 
 export default defineConfig<ConfigOptions>({
+  globalSetup: './tests/e2e/.auth/auth-setup',
   testDir: './tests/e2e',
   reporter: 'line',
   // Fail the build on CI if you accidentally left test.only in the source code.
@@ -33,7 +34,7 @@ export default defineConfig<ConfigOptions>({
     actionTimeout: 0,
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
-    screenshot: 'off',
+    screenshot: 'on',
     // do not open browser
     headless: true
   },
