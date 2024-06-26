@@ -100,7 +100,7 @@ export const mockedBusinessNano: BusinessNano = {
   identifier: '123456789',
   legalName: 'Test Business',
   legalType: 'BC',
-  taxId: null
+  taxId: '986395507BC0001'
 }
 
 export const mockedBusinessFull: { business: BusinessFull } = {
@@ -199,4 +199,104 @@ export const mockFilingData: FilingData = {
   waiveFees: false,
   priority: true,
   futureEffective: false
+}
+
+export const mockBusiness: Business = {
+  business: mockedBusinessFull.business,
+  offices: {
+    recordsOffice: {
+      deliveryAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      },
+      mailingAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      }
+    },
+    registeredOffice: {
+      deliveryAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      },
+      mailingAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      }
+    }
+  },
+  parties: [
+    {
+      actions: [],
+      appointmentDate: '2020-10-10',
+      cessationDate: null,
+      deliveryAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      },
+      endEventId: '1',
+      id: 1,
+      mailingAddress: {
+        actions: [],
+        addressCity: 'Victoria',
+        addressCountry: 'Canada',
+        addressId: 1,
+        addressRegion: 'BC',
+        deliveryInstructions: '',
+        postalCode: '123 456',
+        streetAddress: '123 Test St',
+        streetAddressAdditional: ''
+      },
+      officer: {
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        middleInitial: 'T',
+        orgName: 'Test Org 3000'
+      },
+      roles: [
+        {
+          appointmentDate: '2020-10-10',
+          cessationDate: null,
+          roleType: 'Director'
+        }
+      ],
+      startEventId: '',
+      title: 'Director'
+    }
+  ]
 }
