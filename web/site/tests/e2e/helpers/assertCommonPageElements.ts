@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test'
 
-export class CommonPageElements {
+class CommonPageElements {
   readonly page: Page
 
   constructor (page: Page) {
@@ -22,4 +22,9 @@ export class CommonPageElements {
     await expect(localeDropdown).toBeInViewport()
     await expect(localeDropdown).toBeEnabled()
   }
+}
+
+export async function assertCommonElements (page: Page) {
+  const commonEls = new CommonPageElements(page)
+  await commonEls.assertCommonPageElements()
 }

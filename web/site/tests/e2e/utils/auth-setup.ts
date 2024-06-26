@@ -1,4 +1,4 @@
-import { test as setup, expect, Browser, chromium, Page } from '@playwright/test'
+import { expect, type Browser, chromium, type Page } from '@playwright/test'
 import dotenv from 'dotenv'
 import { mockedBusinessNano } from '../../mocks/mockedData'
 // load default env
@@ -6,7 +6,7 @@ import { mockedBusinessNano } from '../../mocks/mockedData'
 dotenv.config()
 
 // checks if site is available before running setup
-async function isServerReady(url: string, timeout: number = 30000): Promise<boolean> {
+async function isServerReady (url: string, timeout: number = 30000): Promise<boolean> {
   const startTime = Date.now()
   while (Date.now() - startTime < timeout) { // loop until timeout is reached
     try {
@@ -23,21 +23,27 @@ async function isServerReady(url: string, timeout: number = 30000): Promise<bool
   return false // return false if reached timeout and no site is loaded
 }
 
-async function authSetup() {
+// handle auth setup
+async function authSetup () {
   const baseURL = process.env.NUXT_BASE_URL!
 
-  console.log('Waiting for the server to be ready...');
-  const serverReady = await isServerReady(baseURL);
+  console.log('Waiting for the server to be ready...')
+  const serverReady = await isServerReady(baseURL)
   if (!serverReady) {
-    throw new Error(`Server at ${baseURL} did not become ready within the timeout period.`);
+    throw new Error(`Server at ${baseURL} did not become ready within the timeout period.`)
   }
 
+  // launch browser and create page context
   const browser: Browser = await chromium.launch()
   const context = await browser.newContext()
   const page: Page = await context.newPage()
+
+  // mock api call so login button is available
   await page.route('**/business/token/123', async (route) => { // mock 200 response with nanoid GET
     await route.fulfill({ json: mockedBusinessNano })
   })
+
+  // do login steps
   await page.goto(`${baseURL}en-CA?nanoid=123`) // navigate to home page with mocked token response
   await expect(page.getByText('File your BC Annual Report', { exact: true })).toBeVisible() // wait for page to be rendered
   await page.getByRole('button', { name: 'Login with BC Services Card' }).click()
@@ -50,8 +56,9 @@ async function authSetup() {
   await page.reload() // keycloak redirect not working for some reason after login, refreshing the page works though
   expect(page.url()).toContain(`${baseURL}en-CA`)
 
+  // write user data to file for re-use
   await page.context().storageState({ path: 'tests/e2e/.auth/user.json' })
-  await browser.close()
+  await browser.close() // cleanup browser
 }
 
 export default authSetup
