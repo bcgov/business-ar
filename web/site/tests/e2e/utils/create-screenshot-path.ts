@@ -1,6 +1,6 @@
 // create a screenshot path based on titlePath
 export function createScreenshotPath (titlePath: string[]): string {
-  const baseDir = 'test-results/screenshots'
+  const baseDir = 'tests/e2e/screenshots'
   const filePath = titlePath[0]
   const testHierarchy = titlePath.slice(1) // get describe and test names
   const filePathWithoutFileName = filePath.substring(0, filePath.lastIndexOf('/')) // remove extension from filename
