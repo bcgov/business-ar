@@ -34,7 +34,7 @@ export default defineConfig<ConfigOptions>({
     actionTimeout: 0,
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
-    screenshot: 'on',
+    screenshot: 'off',
     // do not open browser
     headless: true
   },

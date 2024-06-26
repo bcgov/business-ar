@@ -5,14 +5,14 @@
       "value": "supported",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/protocol/openid-connect/3p-cookies",
-      "expires": 1719440283.798428,
+      "expires": 1719445230.834628,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "AUTH_SESSION_ID",
-      "value": "057f53a2-2959-4708-9dfa-12ddc12e46d9.eycloak-98c985d65-g5fdm",
+      "value": "3418a5c5-33d6-43db-935b-4c31a81ac6d8.eycloak-98c985d65-g5fdm",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
       "expires": -1,
@@ -22,7 +22,7 @@
     },
     {
       "name": "AUTH_SESSION_ID_LEGACY",
-      "value": "057f53a2-2959-4708-9dfa-12ddc12e46d9.eycloak-98c985d65-g5fdm",
+      "value": "3418a5c5-33d6-43db-935b-4c31a81ac6d8.eycloak-98c985d65-g5fdm",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
       "expires": -1,
@@ -32,7 +32,7 @@
     },
     {
       "name": "KEYCLOAK_IDENTITY",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3ODU4MjcsImlhdCI6MTcxOTQ0MDIyNywianRpIjoiZDdjMzM0ZGEtOTc3Ni00MTY3LTljYzItNzhkMjRkYTMyZDIwIiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiMDU3ZjUzYTItMjk1OS00NzA4LTlkZmEtMTJkZGMxMmU0NmQ5Iiwic2lkIjoiMDU3ZjUzYTItMjk1OS00NzA4LTlkZmEtMTJkZGMxMmU0NmQ5Iiwic3RhdGVfY2hlY2tlciI6Im9YektVaHBWdV8tYmdSSjNTbXhOY09nbkhOU04tX3FxamdEbF9YUHU5blkifQ.1OK5Y1CL0sO8qeNCvsTsTwB_7b2vQVovDPvzjcUo2mg",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3OTA3NzMsImlhdCI6MTcxOTQ0NTE3MywianRpIjoiMWEwYmIyNDAtNjVhMi00MGJmLWIxMTEtZDZiZTI2NmM5NzY5IiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiMzQxOGE1YzUtMzNkNi00M2RiLTkzNWItNGMzMWE4MWFjNmQ4Iiwic2lkIjoiMzQxOGE1YzUtMzNkNi00M2RiLTkzNWItNGMzMWE4MWFjNmQ4Iiwic3RhdGVfY2hlY2tlciI6Imp6ZUUwd0RKdjNkcWFwOHk3MlpBQ2JTNlp2Nlc5OUIyZm1vQnNpbWluUVkifQ.G4VHtKe4RojNx9SdQz1JHhjTG-SxGG6thu9eryZFeSc",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
       "expires": -1,
@@ -42,7 +42,7 @@
     },
     {
       "name": "KEYCLOAK_IDENTITY_LEGACY",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3ODU4MjcsImlhdCI6MTcxOTQ0MDIyNywianRpIjoiZDdjMzM0ZGEtOTc3Ni00MTY3LTljYzItNzhkMjRkYTMyZDIwIiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiMDU3ZjUzYTItMjk1OS00NzA4LTlkZmEtMTJkZGMxMmU0NmQ5Iiwic2lkIjoiMDU3ZjUzYTItMjk1OS00NzA4LTlkZmEtMTJkZGMxMmU0NmQ5Iiwic3RhdGVfY2hlY2tlciI6Im9YektVaHBWdV8tYmdSSjNTbXhOY09nbkhOU04tX3FxamdEbF9YUHU5blkifQ.1OK5Y1CL0sO8qeNCvsTsTwB_7b2vQVovDPvzjcUo2mg",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhOTcyNmYyMy04Y2Y0LTQxNjktYjFmMi1lYTczZjAyNzAwMDgifQ.eyJleHAiOjE3MTk3OTA3NzMsImlhdCI6MTcxOTQ0NTE3MywianRpIjoiMWEwYmIyNDAtNjVhMi00MGJmLWIxMTEtZDZiZTI2NmM5NzY5IiwiaXNzIjoiaHR0cHM6Ly9kZXYubG9naW5wcm94eS5nb3YuYmMuY2EvYXV0aC9yZWFsbXMvYmNyZWdpc3RyeSIsInN1YiI6IjA2Yzc4MjgwLWY1OTItNDllZC04ZGUwLTI0YjhlZjg5ZGVhNSIsInR5cCI6IlNlcmlhbGl6ZWQtSUQiLCJzZXNzaW9uX3N0YXRlIjoiMzQxOGE1YzUtMzNkNi00M2RiLTkzNWItNGMzMWE4MWFjNmQ4Iiwic2lkIjoiMzQxOGE1YzUtMzNkNi00M2RiLTkzNWItNGMzMWE4MWFjNmQ4Iiwic3RhdGVfY2hlY2tlciI6Imp6ZUUwd0RKdjNkcWFwOHk3MlpBQ2JTNlp2Nlc5OUIyZm1vQnNpbWluUVkifQ.G4VHtKe4RojNx9SdQz1JHhjTG-SxGG6thu9eryZFeSc",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
       "expires": -1,
@@ -52,50 +52,50 @@
     },
     {
       "name": "KEYCLOAK_SESSION",
-      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/057f53a2-2959-4708-9dfa-12ddc12e46d9",
+      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/3418a5c5-33d6-43db-935b-4c31a81ac6d8",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
-      "expires": 1719785827.024046,
+      "expires": 1719790773.337994,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "KEYCLOAK_SESSION_LEGACY",
-      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/057f53a2-2959-4708-9dfa-12ddc12e46d9",
+      "value": "bcregistry/06c78280-f592-49ed-8de0-24b8ef89dea5/3418a5c5-33d6-43db-935b-4c31a81ac6d8",
       "domain": "dev.loginproxy.gov.bc.ca",
       "path": "/auth/realms/bcregistry/",
-      "expires": 1719785827.024056,
+      "expires": 1719790773.33805,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "JSESSIONID",
-      "value": "E3082084E5FF7CF9F0CAA4A942D3075A.nugget2",
+      "value": "6F24E65B382D7559DC48202825B6B2E3.nugget3",
       "domain": "idtest.gov.bc.ca",
       "path": "/cardtap",
-      "expires": 1719442024.576609,
+      "expires": 1719446971.61887,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "ias.login.returning-user",
-      "value": "\"2024-06-26T15:17:06.593\"",
+      "value": "\"2024-06-26T16:39:33.089\"",
       "domain": "idtest.gov.bc.ca",
       "path": "/cardtap",
-      "expires": 1754000226.561051,
+      "expires": 1754005173.075764,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "JSESSIONID",
-      "value": "4BF5CF345BA645374513374E6F298D31.nugget4",
+      "value": "3532CE9603FF79271F0B230420C9293F.nugget2",
       "domain": "idtest.gov.bc.ca",
       "path": "/login",
-      "expires": 1719442024.199267,
+      "expires": 1719446972.235149,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
@@ -105,38 +105,38 @@
       "value": "*",
       "domain": "idtest.gov.bc.ca",
       "path": "/",
-      "expires": 1719442025,
+      "expires": 1719446972,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_sp_id.af0c",
+      "value": "ced67e74-ffe5-4882-91fd-94ef2027f33f.1719445172.1.1719445172.1719445172.82b714ad-1eeb-4419-9512-d4ac61d34c86",
+      "domain": "idtest.gov.bc.ca",
+      "path": "/",
+      "expires": 1754005172.401826,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "sp",
-      "value": "48e83708-5d4b-4e6b-9be8-fea97558f1dd",
+      "value": "517c6885-cc66-4cc9-b1b9-5aceb0e2c687",
       "domain": "spt.apps.gov.bc.ca",
       "path": "/",
-      "expires": 1750976225.933188,
+      "expires": 1750981172.481258,
       "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "3c6aa5bf75cec870d6dde49c758533da",
-      "value": "fbd596e447ace2d9b6831eb3407bb9a9",
+      "value": "a7955435c17f06c52334fb3411c747df",
       "domain": "spt.apps.gov.bc.ca",
       "path": "/",
       "expires": -1,
       "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
-      "name": "_sp_id.af0c",
-      "value": "4be947b9-3a00-4c6a-a5ae-e164b628c9b5.1719440225.1.1719440226.1719440225.8b5b4230-36dc-4216-8a4f-ffd8fa230b2a",
-      "domain": "idtest.gov.bc.ca",
-      "path": "/",
-      "expires": 1754000225.857369,
-      "httpOnly": false,
       "secure": true,
       "sameSite": "None"
     }
@@ -158,8 +158,8 @@
           "value": "iconify2"
         },
         {
-          "name": "kc-callback-b1ffde28-d1c3-4eb4-b480-f439b680b051",
-          "value": "{\"state\":\"b1ffde28-d1c3-4eb4-b480-f439b680b051\",\"nonce\":\"a046bf66-e5d4-4715-87ef-fa2f3358f467\",\"redirectUri\":\"http%3A%2F%2Flocalhost%3A3000%2Fen-CA\",\"pkceCodeVerifier\":\"VfiwWUt1rCVBt0bZC5s9TC8HpMlZi0r4B6VxeOQGHCrBAZ5BpDY2avbGUPg5GB6QZPVwqfP3vajvbj1Q3usNjfWJbZVTdxQU\",\"expires\":1719443824054}"
+          "name": "kc-callback-409d6ee6-e881-46be-acda-1f595df36eab",
+          "value": "{\"state\":\"409d6ee6-e881-46be-acda-1f595df36eab\",\"nonce\":\"2b3b6f33-c206-486f-beb4-e20f48cc5d20\",\"redirectUri\":\"http%3A%2F%2Flocalhost%3A3000%2Fen-CA\",\"pkceCodeVerifier\":\"JRuKyfsDpMR8Xe6HE0WCDPzkRp7KAecqQ1WglaFs5zAtrBptOscWOGRcwMS8EX1kVOzeW1kWwxnTLBHYg0eHVNoKORTOaiQb\",\"expires\":1719448771121}"
         }
       ]
     },
@@ -172,7 +172,7 @@
         },
         {
           "name": "snowplowOutQueue_snowplow_rt_post2.expires",
-          "value": "1782512226364"
+          "value": "1782517172902"
         }
       ]
     }
