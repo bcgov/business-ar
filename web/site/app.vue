@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const pageLoading = useState('page-loading', () => false)
+const pageLoading = useState('page-loading', () => true) // global loading state
 const { locale } = useI18n()
 
 const i18nHead = useLocaleHead({
@@ -7,6 +7,7 @@ const i18nHead = useLocaleHead({
   addSeoAttributes: true
 })
 
+// set lang and dir attributes on head
 useHead({
   htmlAttrs: {
     lang: () => i18nHead.value.htmlAttrs!.lang,
@@ -14,9 +15,11 @@ useHead({
   }
 })
 
-const appVersion = await getAppMetaInfo()
+const appVersion = await getAppMetaInfo() // load ui and api version on app mount
 
-const { data: helpDocs } = await useAsyncData('help-docs-fetch', () => {
+// query help markdown and globally provide to use in either pages/help.vue or <SbcHelpModal />
+// if queried directly from modal, it wont be prerendered because modal is hidden initially
+const { data: helpDocs } = await useAsyncData('help-docs-query', () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: '/help' } })
     .findOne()
