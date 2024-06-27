@@ -102,7 +102,7 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
       return
     }
     // set data based off radio option
-    const arFiling: ARFiling = {
+    const arFiling: ArFormData = {
       agmDate: selectedRadio.value === 'option-1' ? datetimeStringToDateString(event.data.agmDate) : null,
       votedForNoAGM: selectedRadio.value === 'option-3',
       unanimousResolutionDate: selectedRadio.value === 'option-3' ? datetimeStringToDateString(event.data.voteDate) : null

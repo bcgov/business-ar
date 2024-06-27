@@ -88,10 +88,10 @@ export interface Party {
   actions: any[]
   appointmentDate: string
   cessationDate: string | null
-  deliveryAddress: Address
+  deliveryAddress: BusinessAddress
   endEventId: string
   id: number
-  mailingAddress: Address
+  mailingAddress: BusinessAddress
   officer: Officer
   roles: Role[]
   startEventId: string

@@ -201,7 +201,7 @@ export const mockFilingData: FilingData = {
   futureEffective: false
 }
 
-export const mockAddress: Address = {
+export const mockAddress: BusinessAddress = {
   actions: [],
   addressCity: 'Victoria',
   addressCountry: 'Canada',
