@@ -98,6 +98,7 @@ if (import.meta.client) {
               :disabled="setAccountLoading"
               :block="isSmallScreen"
               :loading="setAccountLoading && account.id === accountStore.currentAccount.id"
+              data-testid="choose-existing-account-button"
               @click="handleAccountSelect(account.id)"
             />
           </li>
