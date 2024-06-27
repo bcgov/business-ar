@@ -201,56 +201,28 @@ export const mockFilingData: FilingData = {
   futureEffective: false
 }
 
+export const mockAddress: Address = {
+  actions: [],
+  addressCity: 'Victoria',
+  addressCountry: 'Canada',
+  addressId: 1,
+  addressRegion: 'BC',
+  deliveryInstructions: '',
+  postalCode: '123 456',
+  streetAddress: '123 Test St',
+  streetAddressAdditional: ''
+}
+
 export const mockBusiness: Business = {
   business: mockedBusinessFull.business,
   offices: {
     recordsOffice: {
-      deliveryAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      },
-      mailingAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      }
+      deliveryAddress: mockAddress,
+      mailingAddress: mockAddress
     },
     registeredOffice: {
-      deliveryAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      },
-      mailingAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      }
+      deliveryAddress: mockAddress,
+      mailingAddress: mockAddress
     }
   },
   parties: [
@@ -258,30 +230,10 @@ export const mockBusiness: Business = {
       actions: [],
       appointmentDate: '2020-10-10',
       cessationDate: null,
-      deliveryAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      },
+      deliveryAddress: mockAddress,
       endEventId: '1',
       id: 1,
-      mailingAddress: {
-        actions: [],
-        addressCity: 'Victoria',
-        addressCountry: 'Canada',
-        addressId: 1,
-        addressRegion: 'BC',
-        deliveryInstructions: '',
-        postalCode: '123 456',
-        streetAddress: '123 Test St',
-        streetAddressAdditional: ''
-      },
+      mailingAddress: mockAddress,
       officer: {
         firstName: 'First Name',
         lastName: 'Last Name',
