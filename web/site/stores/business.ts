@@ -1,4 +1,3 @@
-import type { Business, BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const arStore = useAnnualReportStore()
@@ -94,7 +93,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // ping sbc pay to see if payment went through and return pay status details
   async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
-    const response = await useBarApi<ArFilingResponse>(
+    const response = await useBarApi<ArFiling>(
       `/business/${businessNano.value.identifier}/filings/${filingId}/payment`,
       { method: 'PUT' },
       'token',

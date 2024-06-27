@@ -1,13 +1,12 @@
-import type { ARFiling, ArFilingResponse } from '~/interfaces/ar-filing'
 export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
   const busStore = useBusinessStore()
   const alertStore = useAlertStore()
 
   // store values
   const loading = ref<boolean>(false)
-  const arFiling = ref<ArFilingResponse>({} as ArFilingResponse)
+  const arFiling = ref<ArFiling>({} as ArFiling)
 
-  async function submitAnnualReportFiling (arData: ARFiling): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
+  async function submitAnnualReportFiling (arData: ArFormData): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
     try {
       let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
       // add filing id to end of url if filing exists in the store
@@ -15,7 +14,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         apiSuffix += `/${arFiling.value.filing.header.id}`
       }
 
-      const response = await useBarApi<ArFilingResponse>(
+      const response = await useBarApi<ArFiling>(
         apiSuffix,
         {
           method: 'POST',
@@ -108,7 +107,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
 
   function $reset () {
     loading.value = false
-    arFiling.value = {} as ArFilingResponse
+    arFiling.value = {} as ArFiling
   }
 
   return {

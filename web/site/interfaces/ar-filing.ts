@@ -33,11 +33,11 @@ export interface Filing {
   documents: FilingDocument[]
 }
 
-export interface ArFilingResponse {
+export interface ArFiling {
   filing: Filing
 }
 
-export interface ARFiling {
+export interface ArFormData {
   agmDate: string | null,
   votedForNoAGM: boolean,
   unanimousResolutionDate: string | null
