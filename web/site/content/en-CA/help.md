@@ -1,28 +1,29 @@
 # Annual Report Overview
 
 ## Things to do prior to filing your Annual Report
-- Register your BC ServiceCard and install the BC ServiceCard application on your mobile phone
-- Ensure your business information is up to date. A summary will be shown in your Annual Report filing.
+- Setup your <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card (BCSC) Account</a>. The BCSC digital ID is a secure and easy way to login and access the Business Registry. It protects your identity and ensures no one can impersonate you when accessing services online. 
+- Review and confirm the registered office addresses and directors in Corporate Online. If updates are needed, go to <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> to complete those changes first.
+- Before you get started, <a href ="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/using-the-business-registry#account"> read more here </a> to ensure a Basic account is right for you.
 
 ## Home Page
-Use the BC Services Card app on your phone to log in and file your Annual Report
+- Setup your <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card (BCSC) Account</a> 
+- The BCSC digital ID is a secure and easy way to login and access the Business Registry. It protects your identity and ensures no one can impersonate you when accessing services online. 
 
 ## Terms of Use
-You will see the Terms of Use if you are a first time user of Service BC Connect Annual Report application or if the Terms of Use have been updated since an existing user last signed in. 
+You will see the "Terms of Use" if it is your first time accessing the Service BC Connect Annual Report application or if the "Terms of Use" have been updated since an existing person last logged in.
 
 ## Existing Account Found
-If you already have a Service BC Connect account or multiple accounts you will be provided with a  list of all your existing accounts. Here, you can:
-- Select an account to file an Annual Report, or
-- Create a new account by clicking on select “Create New Account”
+- If you already have an account(s), you will be able to select an existing account to file an Annual Report
 
-## Service BC Account Creation
-If you do not have a Service BC Connect account or, as an existing user, you require a new account, you will be asked to provide Primary Contact Details:
-- Your Name: this field is prepopulated with your name as it appears on your BC Services Card
-- Account Name: This must be a unique name for your account. As you type in a name, alerts will be provided should the name already exist.
-- Contact Details: Provide a phone number and email address to be used for the new account.
+## Service BC Connect Account Creation
+- You can also click "Create New Account” to create a new <a href ="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/using-the-business-registry#account">Basic account.</a>
+You will need to enter:
+- Name: this information is prepopulated with your name as it appears on your BC Services Card. It is also the only informaiton shared from the BC Services Card.
+- Account Name: This must be a unique name for your account. 
+- Contact Details: Provide a phone number and email address for your account.
 
 ## Annual Report
-Now you are ready to file your Annual Report. You will come to a page prepopulated with your business details. You will be asked to:
+Now you are ready to file your Annual Report. You will come to a page with your business details. You will need to:
 - Provide the Status of your Annual General Meeting. The following options are provided to select from: 
   - Our AGM was held - if selected, you will be asked to provide the date the AGM was held.
   - Our AGM is to be held
@@ -38,9 +39,9 @@ What is covered in an AGM
 - Other matters as set out in the notice of AGM
 
 ## Requirement to hold an AGM
-Companies registered in British Columbia are required to hold an AGM at least once each calendar year and not more than 15 months after the anniversary date of your company being registered in BC.
+Companies incorporated in British Columbia are required to hold an AGM at least once each calendar year and not more than 15 months after the anniversary date of your company being incorporated in BC.
  
-If your company is newly registered in BC, your first AGM must be held not more than 18 months after the date it was registered within BC.
+If your company is newly incorporated in B.C., your first AGM must be held not more than 18 months after the date it was registered within BC.
 
 The Annual Report asks the status of your AGM to help your company remain compliant with the requirements of the <a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi" target="_blank"> BC Corporations Act</a>.
 
