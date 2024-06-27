@@ -36,12 +36,10 @@ pnpm test:unit:cov
 
 Run Playwright e2e tests in headless mode
 ```bash
-cd business-ar/web/site
 pnpm test:e2e
 ```
 
 Run Playwright e2e tests in Playwright UI
 ```bash
-pnpm run dev
 pnpm test:e2e:ui
 ```
