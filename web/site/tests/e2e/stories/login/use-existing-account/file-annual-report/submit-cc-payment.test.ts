@@ -11,7 +11,7 @@ test('test', async ({ page }) => {
   const dayNumber: number = today.getDate() // use todays date for datepicker select
   const baseURL = process.env.NUXT_BASE_URL!
   // do login steps
-  await page.goto(`${baseURL}en-CA?nanoid=QgoA8BAchiV_hYpIQJQRh`) // will need to update this nanoid when reset is available
+  await page.goto(`${baseURL}en-CA?nanoid=QgoA8BAchiV_hYpIQJQRh`) // will need to update this nanoid when reset is available, using business BC0870574 from dev db, any changes to this business could break this test
   await expect(page.getByText(lang.page.home.h1, { exact: true })).toBeVisible() // wait for homepage to be rendered
   await page.getByRole('button', { name: lang.btn.loginBCSC }).click()
   await page.getByLabel('Log in with Test with').click()
