@@ -36,6 +36,7 @@ export function useSbcNav () {
         click: () => accountStore.selectUserAccount(account.id)
       }))
 
+    // only allow switching account if theres no filing
     if (accountOptions.length > 0 && (Object.keys(arStore.arFiling).length === 0)) {
       fullOptions.push([
         {
