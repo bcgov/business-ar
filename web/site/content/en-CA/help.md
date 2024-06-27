@@ -4,6 +4,9 @@
 - Setup your <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card (BCSC) Account</a>. The BCSC digital ID is a secure and easy way to login and access the Business Registry. It protects your identity and ensures no one can impersonate you when accessing services online. 
 - Review and confirm the registered office addresses and directors in Corporate Online. If updates are needed, go to <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> to complete those changes first.
 - Before you get started, <a href ="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/using-the-business-registry#account"> read more here </a> to ensure a Basic account is right for you.
+- If you would prefer to use a Premium account, which provides access to more digital services such as Business Search and Personal Property, along with additional payment methods, then setup your <a href ="https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization-updates/using-the-business-registry#account">Premium account</a> here first, then use the link in your Annual report reminder to complete your annual report filing. 
+
+## If this is your first time using the new Business Registry to file your annual report, the overview below will explain the steps required. 
 
 ## Home Page
 - Setup your <a href="https://id.gov.bc.ca/account/" target="_blank">BC Services Card (BCSC) Account</a> 
