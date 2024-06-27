@@ -54,9 +54,7 @@ export interface BusinessTask {
   tasks: Array<{ task: BusinessTodoTask | BusinessFilingTask }>
 }
 
-export type BusinessTaskName = 'filing' | 'todo' | 'none' | 'initial'
-
-export interface Address {
+export interface BusinessAddress {
   actions: any[]
   addressCity: string
   addressCountry: string
@@ -69,8 +67,8 @@ export interface Address {
 }
 
 export interface Office {
-  deliveryAddress: Address
-  mailingAddress: Address
+  deliveryAddress: BusinessAddress
+  mailingAddress: BusinessAddress
 }
 
 interface Officer {

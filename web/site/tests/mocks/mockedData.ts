@@ -68,7 +68,7 @@ export const mockNewAccount = {
   uuid: 'uuid3'
 }
 
-export const mockedArFilingResponse: ArFilingResponse = {
+export const mockedArFilingResponse: ArFiling = {
   filing: {
     annualReport: {
       annualGeneralMeetingDate: '2024-04-30',
