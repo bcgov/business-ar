@@ -57,7 +57,7 @@ const datePickerRef = ref<InstanceType<typeof VueDatePicker> | null>(null)
         icon="i-mdi-calendar"
         trailing
         :placeholder="placeholder || ''"
-        :ariaLabel="arialabel || ''"
+        :aria-label="arialabel || ''"
         @input="onInput"
         @keydown.enter.prevent="onEnter"
         @keydown.tab.stop="onTab"
