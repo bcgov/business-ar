@@ -38,7 +38,7 @@ const payFeesWidgetItems = [
     uiUuid: '1',
     filingFees: 100,
     filingType: 'Type 1',
-    filingTypeCode: 'ANNBC',
+    filingTypeCode: 'BCANN',
     futureEffectiveFees: 50,
     priorityFees: 75,
     processingFees: 25,
