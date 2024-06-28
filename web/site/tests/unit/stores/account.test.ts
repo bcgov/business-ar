@@ -107,12 +107,12 @@ describe('Account Store Tests', () => {
 
     // check store has values
     expect(accountStore.userAccounts.length).toEqual(3)
-    expect(Object.keys(accountStore.currentAccount).length).toBeGreaterThan(0)
+    expect(accountStore.currentAccount).not.toEqual({})
 
     // reset store
     accountStore.$reset()
 
     expect(accountStore.userAccounts.length).toEqual(0)
-    expect(Object.keys(accountStore.currentAccount).length).toBe(0)
+    expect(accountStore.currentAccount).toEqual({})
   })
 })

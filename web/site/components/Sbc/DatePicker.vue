@@ -1,62 +1,72 @@
 <script setup lang="ts">
 import VueDatePicker from '@vuepic/vue-datepicker'
-import { type MaybeElementRef, onClickOutside } from '@vueuse/core'
 const { locale } = useI18n()
 
-// props / emits
-const props = defineProps<{
-  defaultSelectedDate?: Date | null
-  error?: boolean
-  setMaxDate?: Date
-  setMinDate?: Date
+const dateModel = defineModel({ type: Date as PropType<Date | null>, default: null })
+
+defineProps<{
+  inputVariant: string
+  maxDate?: Date
+  minDate?: Date
+  placeholder?: string
+  arialabel?: string
 }>()
 
-// eslint-disable-next-line func-call-spacing
-const emit = defineEmits<{
-  (e: 'selectedDate', value: Date | null): void,
-  (e: 'clickOutside'): void,
-}>()
+const datePickerRef = ref<InstanceType<typeof VueDatePicker> | null>(null)
 
-const datePickerRef = ref<MaybeElementRef>(null)
+// leaving this for future reference
+// function validateDateInput (input: string): Date | null {
+//   const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+//   const inputDate = dateStringToDate(input) ?? null
+//   const validDate = inputDate && (!props.maxDate || inputDate < props.maxDate)
 
-// date selection
-const selectedDate: Ref<Date | null> = ref(props.defaultSelectedDate || null)
-watch(() => selectedDate.value, val => emit('selectedDate', val))
+//   if (!input || (input.match(dateRegex) !== null && validDate)) {
+//     return inputDate
+//   }
 
-// max/min
-const maxDate: Ref<Date | null> = ref(props.setMaxDate || null)
-watch(() => props.setMaxDate, (val) => { maxDate.value = val || null })
-
-const minDate: Ref<Date | null> = ref(props.setMinDate || null)
-watch(() => props.setMinDate, (val) => { minDate.value = val || null })
-
-onClickOutside(datePickerRef, () => {
-  emit('clickOutside')
-})
+//   return null
+// }
 </script>
 <template>
-  <!-- ignore custom class -->
-  <!-- eslint-disable-next-line -->
-  <div class="bcros-date-picker" :class="{ 'bcros-date-picker__err': error }">
-    <VueDatePicker
-      ref="datePickerRef"
-      v-model="selectedDate"
-      auto-apply
-      :action-row="{ showCancel: false, showNow: false, showPreview: false, showSelect: false }"
-      calendar-cell-class-name="bcros-date-picker__calendar__day"
-      calendar-class-name="bcros-date-picker__calendar"
-      :locale
-      :enable-time-picker="false"
-      format="yyyy-MM-dd"
-      hide-offset-dates
-      inline
-      :max-date="maxDate || ''"
-      :min-date="minDate || ''"
-      :month-change-on-scroll="false"
-      :week-start="0"
-      data-testid="date-picker"
-    />
-  </div>
+  <!-- required for UInput aria-label -->
+  <!-- eslint-disable vue/attribute-hyphenation -->
+  <VueDatePicker
+    ref="datePickerRef"
+    v-model="dateModel"
+    auto-apply
+    :action-row="{ showCancel: false, showNow: false, showPreview: false, showSelect: false }"
+    calendar-cell-class-name="bcros-date-picker__calendar__day"
+    calendar-class-name="bcros-date-picker__calendar"
+    :locale
+    :enable-time-picker="false"
+    format="yyyy-MM-dd"
+    text-input
+    hide-offset-dates
+    :clearable="false"
+    :max-date="maxDate || ''"
+    :min-date="minDate || ''"
+    :week-start="0"
+    arrow-navigation
+    data-testid="date-picker"
+  >
+    <template #dp-input="{ value, onInput, onEnter, onTab, onKeypress, onPaste, onFocus, isMenuOpen }">
+      <UInput
+        :ui="{ icon: { base: isMenuOpen ? 'text-primary-500' : 'text-gray-700' } }"
+        :value="value"
+        :variant="inputVariant"
+        icon="i-mdi-calendar"
+        trailing
+        :placeholder="placeholder || ''"
+        :aria-label="arialabel || ''"
+        @input="onInput"
+        @keydown.enter.prevent="onEnter"
+        @keydown.tab.stop="onTab"
+        @keyup="onKeypress"
+        @paste="onPaste"
+        @focus="onFocus"
+      />
+    </template>
+  </VueDatePicker>
 </template>
 <style lang="scss">
 @import '@vuepic/vue-datepicker/dist/main.css';

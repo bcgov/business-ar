@@ -264,7 +264,7 @@ if (import.meta.client) {
               :help="$t('page.annualReport.form.agmDate.format')"
               :ui="{ help: 'text-bcGovColor-midGray' }"
             >
-              <SbcDatepicker2
+              <SbcDatepicker
                 id="date-select-agm"
                 v-model="arData.agmDate"
                 :max-date="new Date()"
@@ -296,7 +296,7 @@ if (import.meta.client) {
               :help="$t('page.annualReport.form.voteDate.format')"
               :ui="{ help: 'text-bcGovColor-midGray' }"
             >
-              <SbcDatepicker2
+              <SbcDatepicker
                 id="date-select-vote"
                 v-model="arData.voteDate"
                 :max-date="new Date()"
