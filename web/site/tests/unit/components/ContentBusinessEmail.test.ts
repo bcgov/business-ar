@@ -5,7 +5,7 @@ import { useBusinessStore, useAccountStore } from '#imports'
 import { mockNewAccount, mockedBusinessFull } from '~/tests/mocks/mockedData'
 import BusinessEmail from '~/components/content/BusinessEmail.vue'
 
-describe('YourComponent', () => {
+describe('<BusinessEmail />', () => {
   beforeEach(() => {
     resetPiniaStores()
   })
