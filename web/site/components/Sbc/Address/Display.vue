@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  address: Address
+  address: BusinessAddress
 }>()
 </script>
 <template>
