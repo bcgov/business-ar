@@ -1,12 +1,10 @@
 <script setup lang="ts" generic="T">
-import { type PayFeesWidgetItem } from '~/interfaces/fees'
-
 const props = defineProps({
   fees: { type: Array<PayFeesWidgetItem>, required: true },
   isLoading: { type: Boolean, default: false }
 })
 
-defineEmits(['submit']) // fix typing ?
+defineEmits<{(e: 'submit'): void}>()
 
 // const hasEmptyFees = computed(() => !props.fees?.length)
 
@@ -71,17 +69,7 @@ const total = computed(() => {
             {{ fee.total === 0 ? $t('widgets.feeSummary.noFee') : displayCanadianDollars(fee.serviceFees) }}
           </span>
         </div>
-      <!-- <span v-if="fee.quantity > 1" class="float-right ml-2 text-sm font-normal text-gray-400">
-        {{ `X${fee.quantity}` }}
-      </span> -->
       </div>
-      <!-- <div class="flex items-center justify-between">
-        <span class="mr-auto text-sm font-bold text-bcGovColor-darkGray"> -->
-      <!-- {{ $t(`widgets.feeSummary.itemLabels.${fee.filingTypeCode}`) }} -->
-      <!-- Processing Fee
-        </span>
-        <span class="whitespace-nowrap text-sm font-bold">{{ displayCanadianDollars(1.80) }}</span>
-      </div> -->
 
       <template #footer>
         <div class="flex items-center justify-between" data-cy="pay-fees-widget-total">

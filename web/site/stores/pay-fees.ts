@@ -106,6 +106,5 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
     addPayFees,
     $reset
   }
-},
-{ persist: true } // persist store values in session storage
+}
 )
