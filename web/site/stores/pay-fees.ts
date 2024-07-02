@@ -79,7 +79,6 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
       if (feeInfo) {
         addFee(feeInfo)
       }
-      throw new Error('some-error')
     } catch {
       const alertStore = useAlertStore()
       alertStore.addAlert({
