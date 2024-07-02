@@ -4,40 +4,29 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const isSmallScreen = useMediaQuery('(max-width: 640px)')
 const accountStore = useAccountStore()
-const setAccountLoading = ref<boolean>(false)
-const pageLoading = useState('page-loading')
 
 useHead({
   title: t('page.existingAccount.title')
 })
 
 definePageMeta({
-  middleware: ['filing-paid', 'filing-in-progress']
+  middleware: ['filing-paid', 'filing-in-progress', 'init-page-account-choose-existing']
 })
 
 function handleAccountSelect (id: number) {
-  setAccountLoading.value = true
-  accountStore.selectUserAccount(id)
-  return navigateTo(localePath('/annual-report'))
-}
-
-async function initPage () {
   try {
-    pageLoading.value = true
-    const accounts = await accountStore.getUserAccounts()
-    if (accounts?.orgs.length === 0 || accounts === undefined) {
-      return navigateTo(localePath('/accounts/create-new'))
-    }
-    pageLoading.value = false
-  } catch {
-    return navigateTo(localePath('/accounts/create-new'))
+    accountStore.loading = true
+    accountStore.selectUserAccount(id)
+    return navigateTo(localePath('/annual-report'))
+  } catch {} finally {
+    accountStore.loading = false
   }
 }
 
-// init page in setup lifecycle
-if (import.meta.client) {
-  initPage()
-}
+onMounted(() => {
+  const pageLoading = useState('page-loading')
+  pageLoading.value = false
+})
 </script>
 <template>
   <ClientOnly>
@@ -95,9 +84,9 @@ if (import.meta.client) {
               :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
               icon="i-mdi-chevron-right"
               trailing
-              :disabled="setAccountLoading"
+              :disabled="accountStore.loading"
               :block="isSmallScreen"
-              :loading="setAccountLoading && account.id === accountStore.currentAccount.id"
+              :loading="accountStore.loading && account.id === accountStore.currentAccount.id"
               data-testid="choose-existing-account-button"
               @click="handleAccountSelect(account.id)"
             />
