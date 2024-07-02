@@ -30,6 +30,7 @@ provide('sbc-bar-help-docs', helpDocs)
   <div
     class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"
   >
+    <NuxtLoadingIndicator color="#1669bb" />
     <ClientOnly>
       <SbcLoadingSpinner v-if="pageLoading" overlay />
     </ClientOnly>
