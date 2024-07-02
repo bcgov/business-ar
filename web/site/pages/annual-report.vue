@@ -6,7 +6,7 @@ const localePath = useLocalePath()
 const keycloak = useKeycloak()
 const busStore = useBusinessStore()
 const arStore = useAnnualReportStore()
-const payFeesWidget = usePayFeesWidget()
+const feeStore = usePayFeesStore()
 const alertStore = useAlertStore()
 const pageLoading = useState('page-loading')
 
@@ -154,7 +154,7 @@ if (import.meta.client) {
   try {
     pageLoading.value = true
     // load fees for fee widget, might move into earlier setup
-    addBarPayFees()
+    feeStore.addPayFees('BCANN')
 
     // try to prefill form if a filing exists
     if (Object.keys(arStore.arFiling).length !== 0) {
@@ -198,7 +198,8 @@ if (import.meta.client) {
           :show-on-category="[
             AlertCategory.INTERNAL_SERVER_ERROR,
             AlertCategory.PAYMENT_ERROR,
-            AlertCategory.AR_SUBMIT_ERROR
+            AlertCategory.AR_SUBMIT_ERROR,
+            AlertCategory.FEE_INFO
           ]"
         />
 
@@ -355,7 +356,7 @@ if (import.meta.client) {
       </div>
       <SbcFeeWidget
         class="md:sticky md:top-10 md:mt-1 md:self-start"
-        :fees="payFeesWidget.fees"
+        :fees="feeStore.fees"
         :is-loading="arStore.loading"
         @submit="arFormRef?.submit()"
       />
