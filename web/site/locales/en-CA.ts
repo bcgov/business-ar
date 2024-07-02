@@ -59,6 +59,10 @@ export default {
     'inactive-corp-state': {
       title: 'Inactive Business',
       description: 'This business is currently inactive. You cannot proceed with this task until the business is reactivated. Please contact support for assistance.'
+    },
+    'fee-info': {
+      title: 'Fee Error',
+      description: 'Error retrieving fees, please try again or come back later.'
     }
   },
   btn: {

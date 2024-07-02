@@ -59,6 +59,10 @@ export default {
     'inactive-corp-state': {
       title: 'Entreprise Inactive',
       description: "Cette entreprise est actuellement inactive. Vous ne pouvez pas continuer cette tâche tant que l'entreprise n'est pas réactivée. Veuillez contacter le support pour obtenir de l'aide."
+    },
+    'fee-info': {
+      title: 'Erreur de Frais',
+      description: 'Erreur lors de la récupération des frais, veuillez réessayer ou revenir plus tard.'
     }
   },
   btn: {
