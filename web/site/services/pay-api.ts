@@ -44,6 +44,8 @@ const feeType: FeeType = {
 }
 
 export default {
+  constructFeeInfoURL,
+  getPayFeesApiQueryParams,
   fetchFee,
   feeType
 }
