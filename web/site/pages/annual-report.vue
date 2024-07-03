@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent } from '#ui/types'
+import { handleFormErrorEvent } from '~/utils/form/handleFormErrorEvent'
 import { UCheckbox, UTooltip, UForm } from '#components'
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -122,13 +123,6 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
   }
 }
 
-// focus errored field
-function onError (event: FormErrorEvent) {
-  const element = document.getElementById(event.errors[0].id)
-  element?.focus()
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-}
-
 // clear form errors anytime data changes
 watch(
   () => arData,
@@ -152,7 +146,6 @@ watch(selectedRadio, (newVal) => {
 // init page state in setup lifecycle
 if (import.meta.client) {
   try {
-    pageLoading.value = true
     // load fees for fee widget, might move into earlier setup
     feeStore.addPayFees('BCANN')
 
@@ -225,7 +218,7 @@ if (import.meta.client) {
             autocomplete="off"
             class="space-y-6"
             @submit="submitAnnualReport"
-            @error="onError"
+            @error="handleFormErrorEvent"
           >
             <UFormGroup name="radioGroup">
               <template #label>
