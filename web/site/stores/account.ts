@@ -41,7 +41,9 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       if (callback) {
         callback()
       }
-    } catch {} finally {
+    } catch (error) {
+      console.error('Error selecting user account:', error)
+    } finally {
       loading.value = false
     }
   }
