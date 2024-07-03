@@ -80,6 +80,9 @@ export default defineNuxtConfig({
           additionalData: '@use "../assets/styles/theme.scss" as *;'
         }
       }
+    },
+    optimizeDeps: { // optimize immediately instead of after visiting page, prevents page reload in dev when initially visiting a page with these deps
+      include: ['zod', 'uuid', 'vitest']
     }
   },
   build: {
