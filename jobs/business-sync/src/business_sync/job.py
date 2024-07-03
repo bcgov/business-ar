@@ -54,7 +54,6 @@ def run():
             warehouse_uri = application.config.get("WAREHOUSE_URI")
             engine = sqlalchemy.create_engine(warehouse_uri)
             with engine.connect() as connection:
-                # TODO: Add filter for BC company legal types
                 result_set = connection.execute(
                     text(
                         """
