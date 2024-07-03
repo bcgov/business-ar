@@ -57,8 +57,23 @@ def run():
                 # TODO: Add filter for BC company legal types
                 result_set = connection.execute(
                     text(
-                        "select c.*, s.state_typ_cd as corp_state, cn.corp_nme as corp_name from colin.corporation c join colin.CORP_STATE s on s.corp_num = c.corp_num and s.end_event_id is null join colin.corp_name cn on cn.end_event_id is null and cn.corp_num=c.corp_num where c.send_ar_ind = 'Y' and c.admin_email is not null and c.recognition_dts is NOT NULL and (date_part('doy', c.recognition_dts) between date_part('doy', current_date) and "
-                        + "date_part('doy', current_date + interval '2 days')) order by c.recognition_dts limit 5"
+                        """
+                        SELECT C.*,
+                        S.STATE_TYP_CD AS CORP_STATE,
+                        CN.CORP_NME AS CORP_NAME
+                        FROM COLIN.CORPORATION C
+                        JOIN COLIN.CORP_STATE S ON S.CORP_NUM = C.CORP_NUM
+                        AND S.END_EVENT_ID IS NULL
+                        JOIN COLIN.CORP_NAME CN ON CN.END_EVENT_ID IS NULL
+                        AND CN.CORP_NUM = C.CORP_NUM
+                        WHERE C.SEND_AR_IND = 'Y'
+                        AND C.ADMIN_EMAIL IS NOT NULL
+                        AND C.RECOGNITION_DTS IS NOT NULL
+                        AND C.CORP_TYP_CD IN ('BC', 'C', 'ULC', 'CC', 'CCC')
+                        AND (DATE_PART('doy',C.RECOGNITION_DTS) BETWEEN DATE_PART('doy',CURRENT_DATE) AND DATE_PART('doy',CURRENT_DATE + interval '14 days'))
+                        ORDER BY C.RECOGNITION_DTS
+                        LIMIT 5
+                        """
                     )
                 )
                 results = result_set.all()
