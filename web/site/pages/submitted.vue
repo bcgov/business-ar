@@ -15,7 +15,6 @@ definePageMeta({
 
 async function initPage () {
   try {
-    pageLoading.value = true
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')
     } else {
