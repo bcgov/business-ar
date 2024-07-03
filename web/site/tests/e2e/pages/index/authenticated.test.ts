@@ -20,6 +20,7 @@ test.describe('Authenticated', () => {
     assertCommonElements(page)
 
     // validate a11y after every test
+    // @ts-ignore // 'page' type from axe-core mismatch with playwright after upgrading but tests still passing
     const a11yResults = await new AxeBuilder({ page })
       .exclude('#locale-select-dropdown') // headless ui dropdown fails the axe check
       .exclude('#account-options-dropdown')

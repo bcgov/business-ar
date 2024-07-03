@@ -18,6 +18,7 @@ test.describe('Unauthenticated', () => {
     await assertNuxtContent(page, 'initial', true)
 
     // validate a11y after every test
+    // @ts-ignore // 'page' type from axe-core mismatch with playwright after upgrading but tests still passing
     const a11yResults = await new AxeBuilder({ page })
       .exclude(['#locale-select-dropdown']) // headless ui dropdown fails the axe check
       .disableRules(['heading-order']) // disable heading order rule because the nuxt content card has an h3
