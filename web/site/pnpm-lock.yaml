@@ -18,8 +18,8 @@ dependencies:
     specifier: ^2.3.0
     version: 2.3.0
   keycloak-js:
-    specifier: ^24.0.3
-    version: 24.0.3
+    specifier: ^25.0.1
+    version: 25.0.1
   launchdarkly-vue-client-sdk:
     specifier: ^2.2.0
     version: 2.2.0(vue@3.4.31)
@@ -8515,8 +8515,8 @@ packages:
     engines: {node: '>=18'}
     dev: false
 
-  /keycloak-js@24.0.3:
-    resolution: {integrity: sha512-4L0zTiQATKZiGQ6WM5qjjUIrN7pntzHDy4JebvgWA+im3oUDQ8UmQhIU0wnhONKrUK8pM4chyE/vDNStBNcR8w==}
+  /keycloak-js@25.0.1:
+    resolution: {integrity: sha512-ns5sKQ5Iz3UyVGIKq2XBBXNZTlTCg9bzybR+JB2Vn+fDHIo9EGgAY4kzrBWMwbeFuegY+qJwGs05N+W9jgY9tg==}
     dependencies:
       js-sha256: 0.11.0
       jwt-decode: 4.0.0
