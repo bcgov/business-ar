@@ -2,18 +2,36 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: true,
+
+  nitro: {
+    prerender: {
+      routes: [
+        '/en-CA',
+        '/en-CA/help',
+        '/en-CA/submitted',
+        '/fr-CA',
+        '/fr-CA/help',
+        '/fr-CA/submitted'
+      ]
+    }
+  },
+
   routeRules: {
     '/': { redirect: '/en-CA' }
   },
+
   modules: [
     '@nuxtjs/eslint-module',
     '@nuxt/test-utils/module',
     '@pinia-plugin-persistedstate/nuxt'
   ],
+
   extends: ['@daxiom/sbc-nuxt-assets-layer'],
+
   imports: {
     dirs: ['stores', 'composables', 'enums', 'interfaces', 'types', 'utils']
   },
+
   i18n: {
     locales: [
       {
@@ -38,6 +56,7 @@ export default defineNuxtConfig({
     detectBrowserLanguage: false,
     vueI18n: './i18n.config.ts'
   },
+
   content: {
     locales: [
       'en-CA',
@@ -51,10 +70,12 @@ export default defineNuxtConfig({
     //   clientDB: true
     // }
   },
+
   colorMode: {
     preference: 'light',
     fallback: 'light'
   },
+
   runtimeConfig: {
     public: {
       // Keys within public, will be also exposed to the client-side
@@ -73,6 +94,7 @@ export default defineNuxtConfig({
       ldClientId: process.env.NUXT_LD_CLIENT_ID || ''
     }
   },
+
   vite: {
     css: {
       preprocessorOptions: {
@@ -85,10 +107,13 @@ export default defineNuxtConfig({
       include: ['zod', 'uuid', 'vitest']
     }
   },
+
   build: {
     transpile: ['@vuepic/vue-datepicker']
   },
+
   piniaPersistedstate: {
     storage: 'sessionStorage'
   }
+  // compatibilityDate: '2024-07-03' add compatibility date?
 })
