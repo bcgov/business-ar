@@ -2,7 +2,7 @@ import { vi, describe, expect, it } from 'vitest'
 import { renderSuspended, mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import { fireEvent, screen, waitFor } from '@testing-library/vue'
-import { SbcDatepicker } from '#components'
+import { SbcDatePicker } from '#components'
 import { enI18n } from '~/tests/mocks/i18n'
 
 const setLocaleMock = vi.fn()
@@ -35,7 +35,7 @@ mockNuxtImport('useI18n', () => {
 
 describe('<SbcDatePicker/>', () => {
   it('mounts', async () => {
-    const component = await renderSuspended(SbcDatepicker, {
+    const component = await renderSuspended(SbcDatePicker, {
       global: {
         plugins: [enI18n]
       },
@@ -48,7 +48,7 @@ describe('<SbcDatePicker/>', () => {
   })
 
   it('renders the datepicker', async () => {
-    const component = await mountSuspended(SbcDatepicker, {
+    const component = await mountSuspended(SbcDatePicker, {
       global: {
         plugins: [enI18n]
       },
@@ -60,7 +60,7 @@ describe('<SbcDatePicker/>', () => {
   })
 
   it('selecting a datepicker value updates the dateModel', async () => {
-    await renderSuspended(SbcDatepicker, {
+    await renderSuspended(SbcDatePicker, {
       global: {
         plugins: [enI18n]
       },
