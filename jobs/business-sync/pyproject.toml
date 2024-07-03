@@ -21,8 +21,6 @@ flask-jwt-oidc = "^0.7.0"
 gunicorn = "^21.2.0"
 nanoid = "^2.0.0"
 business-ar-api = {git = "https://github.com/bcgov/business-ar.git", rev = "main", subdirectory = "api"}
-google-auth = "^2.31.0"
-cloud-sql-python-connector = {extras = ["pg8000"], version = "^1.10.0"}
 
 [tool.poetry.group.test.dependencies]
 freezegun = "^1.4.0"
