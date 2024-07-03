@@ -29,11 +29,20 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   }
 
   // assign existing account as users current account
-  function selectUserAccount (accountId: number): void {
-    for (const i in userAccounts.value) {
-      if (userAccounts.value[i].id === accountId) {
-        currentAccount.value = userAccounts.value[i]
+  function selectUserAccount (accountId: number, callback?: Function): void {
+    try {
+      loading.value = true
+      const account = userAccounts.value.find(account => account.id === accountId)
+      if (account) {
+        currentAccount.value = account
+      } else {
+        console.warn(`Account with ID ${accountId} not found`)
       }
+      if (callback) {
+        callback()
+      }
+    } catch {} finally {
+      loading.value = false
     }
   }
 

@@ -10,18 +10,8 @@ useHead({
 })
 
 definePageMeta({
-  middleware: ['filing-paid', 'filing-in-progress', 'init-page-account-choose-existing']
+  middleware: ['filing-paid', 'filing-in-progress', 'check-accounts']
 })
-
-function handleAccountSelect (id: number) {
-  try {
-    accountStore.loading = true
-    accountStore.selectUserAccount(id)
-    return navigateTo(localePath('/annual-report'))
-  } catch {} finally {
-    accountStore.loading = false
-  }
-}
 
 onMounted(() => {
   const pageLoading = useState('page-loading')
@@ -88,7 +78,7 @@ onMounted(() => {
               :block="isSmallScreen"
               :loading="accountStore.loading && account.id === accountStore.currentAccount.id"
               data-testid="choose-existing-account-button"
-              @click="handleAccountSelect(account.id)"
+              @click="accountStore.selectUserAccount(account.id, () => navigateTo(localePath('/annual-report')))"
             />
           </li>
         </ul>
