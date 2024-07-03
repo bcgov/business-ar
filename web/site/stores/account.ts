@@ -49,8 +49,9 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
   }
 
   // create new account
-  async function createNewAccount (data: NewAccount): Promise<void> {
+  async function createNewAccount (data: NewAccount, callback?: Function): Promise<void> {
     try {
+      loading.value = true
       // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
@@ -77,12 +78,17 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
       currentAccount.value = response
       userAccounts.value.push(response)
-    } catch (e) {
+
+      if (callback) {
+        callback()
+      }
+    } catch {
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
       })
-      throw e
+    } finally {
+      loading.value = false
     }
   }
 
