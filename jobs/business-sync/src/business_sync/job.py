@@ -52,6 +52,7 @@ def run():
     with application.app_context():
         try:
             warehouse_uri = application.config.get("WAREHOUSE_URI")
+            env = application.config.get("DEPLOYMENT_ENVIRONMENT")
             engine = sqlalchemy.create_engine(warehouse_uri)
             with engine.connect() as connection:
                 result_set = connection.execute(
@@ -60,12 +61,15 @@ def run():
                         SELECT C.*,
                         S.STATE_TYP_CD AS CORP_STATE,
                         CN.CORP_NME AS CORP_NAME
-                        FROM COLIN.CORPORATION C
-                        JOIN COLIN.CORP_STATE S ON S.CORP_NUM = C.CORP_NUM
+                        FROM 
+                        COLIN.CORPORATION C,
+                        COLIN.CORP_STATE S,
+                        COLIN.CORP_NAME CN
+                        WHERE
+                        C.CORP_NUM = S.CORP_NUM
                         AND S.END_EVENT_ID IS NULL
-                        JOIN COLIN.CORP_NAME CN ON CN.END_EVENT_ID IS NULL
-                        AND CN.CORP_NUM = C.CORP_NUM
-                        WHERE C.SEND_AR_IND = 'Y'
+                        AND C.CORP_NUM = CN.CORP_NUM
+                        AND CN.END_EVENT_ID IS NULL
                         AND C.ADMIN_EMAIL IS NOT NULL
                         AND C.RECOGNITION_DTS IS NOT NULL
                         AND C.CORP_TYP_CD IN ('BC', 'C', 'ULC', 'CC', 'CCC')
@@ -94,12 +98,16 @@ def run():
                                 founding_date=row.recognition_dts,
                             )
                         business.legal_name = row.corp_name
-                        business.email = row.admin_email
+                        business.email = (
+                            row.admin_email if env == "production" else "test@email.com"
+                        )
                         business.ar_reminder_flag = (
                             False if row.send_ar_ind == "N" else True
                         )
+                        business.state = row.corp_state
+                        # business.op_state = row.op_state
                         business.tax_id = row.bn_15
-                        # TODO: Update the state of the corp
+                        # business.corp_class = row.corp_class
                         business.save()
                     except Exception as exc:
                         application.logger.error(exc)
