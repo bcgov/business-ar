@@ -22,9 +22,15 @@ from business_ar_api.exceptions.exceptions import (
     ExternalServiceException,
 )
 from business_ar_api.exceptions.responses import error_response
+from business_ar_api.models import AnnualReportReminder as AnnualReportReminderModel
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Invitations as InvitationsModel
-from business_ar_api.services import AccountService, BusinessService, InvitationService
+from business_ar_api.services import (
+    AccountService,
+    AnnualReportReminderService,
+    BusinessService,
+    InvitationService,
+)
 from flask import Blueprint, current_app, jsonify, request
 from flask_cors import cross_origin
 
@@ -37,26 +43,35 @@ def get_business_details_using_token(token):
     """Get business details using nano id."""
     if not token:
         return error_response("Please provide token.", HTTPStatus.BAD_REQUEST)
+    business_id = None
 
     invitation = InvitationService.find_invitation_by_token(token)
+    if invitation and invitation.status == InvitationsModel.Status.SENT:
+        business_id = invitation.business_id
+    else:
+        reminder: AnnualReportReminderModel = (
+            AnnualReportReminderService.find_ar_reminder_by_token(token)
+        )
+        if reminder and reminder.status == AnnualReportReminderModel.Status.SENT:
+            business_id = reminder.business_id
 
-    if not invitation or invitation.status != InvitationsModel.Status.SENT:
+    if business_id:
+        business: BusinessModel = BusinessModel.find_by_id(business_id)
+        if not business:
+            return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
+        business_json = business.json()
+        business_details_from_colin = BusinessService.get_business_details_from_colin(
+            business.identifier, business.legal_type, business.id
+        )
+        business_json["legalName"] = business_details_from_colin.get("business").get(
+            "legalName"
+        )
+        business_json["status"] = business_details_from_colin.get("business").get(
+            "corpState"
+        )
+        return business_json, HTTPStatus.OK
+    else:
         return error_response("Invalid token.", HTTPStatus.BAD_REQUEST)
-
-    business: BusinessModel = BusinessModel.find_by_id(invitation.business_id)
-    if not business:
-        return error_response(f"No matching business.", HTTPStatus.NOT_FOUND)
-    business_json = business.json()
-    business_details_from_colin = BusinessService.get_business_details_from_colin(
-        business.identifier, business.legal_type, business.id
-    )
-    business_json["legalName"] = business_details_from_colin.get("business").get(
-        "legalName"
-    )
-    business_json["status"] = business_details_from_colin.get("business").get(
-        "corpState"
-    )
-    return business_json, HTTPStatus.OK
 
 
 @bp.route("/<string:identifier>", methods=["GET"])

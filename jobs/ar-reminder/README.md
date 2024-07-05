@@ -2,7 +2,7 @@
 
 
 # Application Name
-Process Paid Filings Job
+AR Reminder Job
 
 
 ## Technology Stack Used

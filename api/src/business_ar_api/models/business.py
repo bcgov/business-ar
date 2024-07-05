@@ -49,6 +49,9 @@ class Business(BaseModel):
     founding_date = db.Column("founding_date", db.DateTime(timezone=True))
     last_ar_reminder_year = db.Column("last_ar_reminder_year", db.Integer)
     ar_reminder_flag = db.Column("ar_reminder_flag", db.Boolean, default=True)
+    state = db.Column("state", db.String(5), index=True)
+    op_state = db.Column("op_state", db.String(5), index=True)
+    corp_class = db.Column("corp_class", db.String(10), index=True)
 
     filings = db.relationship("Filing", lazy="dynamic", backref="business")
     invitations = db.relationship("Invitations", lazy="dynamic")
