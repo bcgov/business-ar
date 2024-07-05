@@ -258,7 +258,10 @@ export default {
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
-        complianceWarning: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
+        complianceWarning: {
+          main: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
+          link: 'See the {link} for more information.'
+        },
         certify: {
           question: 'certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'

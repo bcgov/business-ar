@@ -273,7 +273,19 @@ if (import.meta.client) {
               :ui="{ description: 'mt-1 text-sm leading-4 opacity-90 text-bcGovColor-midGray', variant: { subtle: 'ring-2' }, rounded: 'rounded-none' }"
             >
               <template #description>
-                <SbcI18nBold translation-path="page.annualReport.form.complianceWarning" />
+                <div class="flex flex-col gap-1">
+                  <SbcI18nBold translation-path="page.annualReport.form.complianceWarning.main" />
+                  <i18n-t keypath="page.annualReport.form.complianceWarning.link" tag="span" scope="global">
+                    <template #link>
+                      <a class="text-sm text-bcGovBlue-500 underline" target="_blank" href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182">
+                        Business Corporations ACT
+                      </a>
+                      <span class="ml-1 inline-flex pb-1 align-middle">
+                        <UIcon name="i-mdi-open-in-new" class="size-4 shrink-0 text-bcGovBlue-500" />
+                      </span>
+                    </template>
+                  </i18n-t>
+                </div>
               </template>
             </UAlert>
 

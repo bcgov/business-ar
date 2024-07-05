@@ -233,7 +233,10 @@ export default {
       title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
-      reviewAndConfirm: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
+      reviewAndConfirm: {
+        main: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
+        help: 'Accédez à Corporate Online pour mettre à jour les adresses de vos bureaux et celles de vos administrateurs, puis revenez ici pour déposer votre rapport annuel. Si une adresse de bureau a été mise à jour, vous devrez attendre le lendemain pour compléter votre rapport annuel.'
+      },
       form: { // TODO: review annual report form translations
         agmStatus: {
           question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
@@ -255,7 +258,10 @@ export default {
           format: 'Format: AAAA-MM-JJ',
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
-        complianceWarning: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
+        complianceWarning: {
+          main: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
+          link: "Consultez la {link} pour plus d'informations."
+        },
         certify: {
           question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
