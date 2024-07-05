@@ -94,7 +94,11 @@ export default {
     close: 'Close',
     openHelpDocs: 'Read the Overview',
     downloadReceipt: 'Download Receipt',
-    downloadReport: 'Download Report'
+    downloadReport: 'Download Report',
+    info: {
+      show: 'Show information',
+      hide: 'Hide information'
+    }
   },
   currency: {
     cad: 'CAD',
@@ -229,7 +233,10 @@ export default {
       title: 'File Your BC Annual Report - Service BC Annual Report',
       h1: '{year} Annual Report',
       h2: 'Annual Report for: {name}',
-      reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
+      reviewAndConfirm: {
+        main: 'Please review the office addresses and current directors below. This information needs to be correct before you proceed.',
+        help: 'Go to Corporate Online to update your office addresses and directors, then come back here to file your annual report. If an office address was updated, you will need to wait until the next day to complete your annual report.'
+      },
       form: {
         agmStatus: {
           question: 'The {year} Annual General Meeting (AGM) status of this business',

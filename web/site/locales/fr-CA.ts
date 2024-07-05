@@ -94,7 +94,11 @@ export default {
     close: 'Fermer',
     openHelpDocs: "Lire la Vue d'Ensemble",
     downloadReceipt: 'Télécharger le Reçu',
-    downloadReport: 'Télécharger le Rapport'
+    downloadReport: 'Télécharger le Rapport',
+    info: {
+      show: 'Afficher les informations',
+      hide: 'Masquer les informations'
+    }
   },
   currency: {
     cad: 'CAD',
@@ -229,7 +233,7 @@ export default {
       title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
-      reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
+      reviewAndConfirm: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
       form: { // TODO: review annual report form translations
         agmStatus: {
           question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
