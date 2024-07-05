@@ -263,7 +263,7 @@ export default {
           link: "Consultez la {link} pour plus d'informations."
         },
         certify: {
-          question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
+          question: 'Je {boldStart}{name}{boldEnd} certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
       },

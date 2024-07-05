@@ -347,9 +347,7 @@ if (import.meta.client) {
               v-model="arData.officeAndDirectorsConfirmed"
             >
               <template #label>
-                <span>{{ $t('words.i') }}</span>
-                <span class="mx-1 font-semibold">{{ parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale) }}</span>
-                <span>{{ $t('page.annualReport.form.certify.question') }}</span>
+                <SbcI18nBold translation-path="page.annualReport.form.certify.question" :name="parseSpecialChars(keycloak.kcUser.value.fullName, 'USER').toLocaleUpperCase($i18n.locale)" />
               </template>
             </UCheckbox>
           </UFormGroup>

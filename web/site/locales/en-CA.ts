@@ -263,7 +263,7 @@ export default {
           link: 'See the {link} for more information.'
         },
         certify: {
-          question: 'certify all information about the Office Addresses and Current Directors is correct.',
+          question: 'I {boldStart}{name}{boldEnd} certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
       },
