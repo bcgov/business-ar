@@ -298,7 +298,7 @@ export default {
       noFee: 'No Fee',
       priorityFees: 'Priority Fees',
       futureEffectiveFees: 'Future Effective Fees',
-      serviceFees: 'Service Fees',
+      serviceFees: 'Service Fee',
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',
