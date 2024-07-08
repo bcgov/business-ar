@@ -32,7 +32,7 @@ const isTouchScreen = useMediaQuery('(pointer: coarse)')
       </template>
 
       <template #panel>
-        <p class="px-2 py-1 text-sm font-normal text-white">
+        <p class="p-2.5 text-sm font-normal text-white">
           {{ text }}
         </p>
       </template>
