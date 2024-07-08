@@ -28,16 +28,12 @@ function resolvePath () {
 </script>
 
 <template>
-  <UButton
-    :to="resolvePath()"
-    :target
-    :download
-    variant="link"
-    class="-mx-2 -my-4"
-    size="sm"
-    trailing
-    :icon="target === '_blank' ? 'i-mdi-open-in-new' : ''"
-  >
-    <slot />
-  </UButton>
+  <span>
+    <a class="text-bcGovBlue-500 underline" :target :download :href="resolvePath()">
+      <slot />
+    </a>
+    <span v-if="target === '_blank'" class="ml-1 inline-flex pb-1 align-middle">
+      <UIcon name="i-mdi-open-in-new" class="size-4 shrink-0 text-bcGovBlue-500" />
+    </span>
+  </span>
 </template>
