@@ -3,8 +3,8 @@ const { t } = useI18n()
 
 const props = defineProps<{
   offices: {
-    recordsOffice: Office
-    registeredOffice: Office
+    recordsOffice?: Office
+    registeredOffice?: Office
   } | undefined
 }>()
 
@@ -24,19 +24,22 @@ const columns = [
 ]
 
 const addresses = computed(() => {
-  if (!props.offices) { return [] }
-  return [
-    {
+  const offices = []
+  if (props.offices?.registeredOffice) {
+    offices.push({
       name: t('labels.registeredOffice'),
       mailingAddress: props.offices.registeredOffice.mailingAddress,
       deliveryAddress: props.offices.registeredOffice.deliveryAddress
-    },
-    {
+    })
+  }
+  if (props.offices?.recordsOffice) {
+    offices.push({
       name: t('labels.recordsOffice'),
       mailingAddress: props.offices.recordsOffice.mailingAddress,
       deliveryAddress: props.offices.recordsOffice.deliveryAddress
-    }
-  ]
+    })
+  }
+  return offices
 })
 </script>
 <template>
