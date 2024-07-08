@@ -60,16 +60,20 @@ def run():
                         """
                         SELECT C.*,
                         S.STATE_TYP_CD AS CORP_STATE,
-                        CN.CORP_NME AS CORP_NAME
+                        CN.CORP_NME AS CORP_NAME,
+                        CT.CORP_CLASS AS CORP_CLASS
                         FROM 
                         COLIN.CORPORATION C,
                         COLIN.CORP_STATE S,
-                        COLIN.CORP_NAME CN
+                        COLIN.CORP_NAME CN,
+                        COLIN.CORP_TYPE CT
                         WHERE
                         C.CORP_NUM = S.CORP_NUM
                         AND S.END_EVENT_ID IS NULL
                         AND C.CORP_NUM = CN.CORP_NUM
                         AND CN.END_EVENT_ID IS NULL
+                        AND C.CORP_TYP_CD = CT.CORP_TYP_CD
+                        AND CT.CORP_CLASS IN ('BC', 'XPRO')
                         AND C.ADMIN_EMAIL IS NOT NULL
                         AND C.RECOGNITION_DTS IS NOT NULL
                         AND C.CORP_TYP_CD IN ('BC', 'C', 'ULC', 'CC', 'CCC')
@@ -107,7 +111,7 @@ def run():
                         business.state = row.corp_state
                         # business.op_state = row.op_state
                         business.tax_id = row.bn_15
-                        # business.corp_class = row.corp_class
+                        business.corp_class = row.corp_class
                         business.save()
                     except Exception as exc:
                         application.logger.error(exc)
