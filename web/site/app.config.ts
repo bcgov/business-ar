@@ -126,7 +126,7 @@ export default defineAppConfig({
     popover: {
       background: 'bg-gray-700',
       ring: 'ring-1 ring-gray-700',
-      width: 'max-w-sm',
+      width: 'max-w-xs sm:max-w-sm',
       popper: {
         // arrow: true
       },
