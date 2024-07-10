@@ -36,6 +36,7 @@ from flask import Flask
 from .accounts import bp as accounts_bp
 from .base import bp as base_endpoint
 from .business import bp as business_bp
+from .documents import bp as documents_bp
 from .filing import bp as filings_bp
 from .internal import bp as internal_bp
 from .invitation import bp as invitation_bp
@@ -61,3 +62,4 @@ def register_endpoints(app: Flask):
     app.register_blueprint(meta_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(reports_bp)
+    app.register_blueprint(documents_bp)

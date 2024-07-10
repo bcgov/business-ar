@@ -1,13 +1,12 @@
-import { type FeeInfo } from '~/interfaces/fees'
-import type { FilingData, PayFeesApiQueryParams } from '~/interfaces/filing-data'
+import type { FeeData, FeeInfo, FeeType, PayFeesApiQueryParams } from '~/interfaces/fees'
 
-const constructFeeInfoURL = (filingData: FilingData) => {
+function constructFeeInfoURL (filingData: FeeData): string {
   const runtimeConfig = useRuntimeConfig()
   const payApiURL = runtimeConfig.public.payApiURL
   return `${payApiURL}/fees/${filingData.entityType}/${filingData.filingTypeCode}`
 }
 
-const getPayFeesApiQueryParams = (filingData: FilingData): PayFeesApiQueryParams => {
+function getPayFeesApiQueryParams (filingData: FeeData): PayFeesApiQueryParams {
   return {
     waiveFees: filingData.waiveFees || undefined,
     futureEffective: filingData.futureEffective || undefined,
@@ -15,17 +14,38 @@ const getPayFeesApiQueryParams = (filingData: FilingData): PayFeesApiQueryParams
   }
 }
 
-const getFeeInfoRefs = async (filingData: FilingData) => {
-  const url = constructFeeInfoURL(filingData)
-  const queryParams = getPayFeesApiQueryParams(filingData)
-  return await useFetchSbc<FeeInfo>(url, { query: queryParams })
+function fetchFee (filingData: FeeData): Promise<FeeInfo> | undefined {
+  try {
+    const { $keycloak } = useNuxtApp()
+    const accountStore = useAccountStore()
+    const url = constructFeeInfoURL(filingData)
+    const queryParams = getPayFeesApiQueryParams(filingData)
+    return $fetch<FeeInfo>(url, {
+      query: queryParams,
+      headers: {
+        Authorization: `Bearer ${$keycloak.token}`,
+        'Account-Id': accountStore.currentAccount.id.toString()
+      }
+    })
+  } catch (e) {
+    console.error('Error fetching fee:', e)
+    throw e
+  }
 }
 
-const getFeeInfo = async (filingData: FilingData) => {
-  return await getFeeInfoRefs(filingData)
+const feeType: FeeType = {
+  BCANN: {
+    entityType: 'BC',
+    filingTypeCode: 'BCANN',
+    futureEffective: false,
+    priority: false,
+    waiveFees: false
+  }
 }
 
 export default {
-  getFeeInfoRefs,
-  getFeeInfo
+  constructFeeInfoURL,
+  getPayFeesApiQueryParams,
+  fetchFee,
+  feeType
 }

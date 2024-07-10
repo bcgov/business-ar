@@ -51,6 +51,10 @@ export default {
     'requires-staff-user': {
       title: 'Utilisateur du Personnel Requis',
       description: 'Ce site nécessite un utilisateur du personnel. Veuillez vous connecter avec un compte personnel.'
+    },
+    'document-download': {
+      title: 'Échec du Téléchargement',
+      description: 'Impossible de télécharger le document pour le moment. Veuillez réessayer ou contacter le support si le problème persiste.'
     }
   },
   btn: {
@@ -85,9 +89,11 @@ export default {
     viewDetails: 'Voir les détails', // TODO: start review
     yearAnnualReport: 'Rapport Annuel {year}',
     viewRaw: {
-      open: 'Voir Brut',
-      close: 'Fermer Brut'
-    } // TODO: end review
+      open: 'Ouvrir le JSON Brut',
+      close: 'Fermer JSON Brut'
+    },
+    downloadReceipt: 'Télécharger le Reçu',
+    downloadReport: 'Télécharger le Rapport' // TODO: end review
   },
   currency: {
     cad: 'CAD',

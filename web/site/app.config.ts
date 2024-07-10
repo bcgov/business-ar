@@ -123,6 +123,21 @@ export default defineAppConfig({
         }
       }
     },
+    popover: {
+      background: 'bg-gray-700',
+      ring: 'ring-1 ring-gray-700',
+      width: 'max-w-xs sm:max-w-sm',
+      popper: {
+        // arrow: true
+      },
+      arrow: {
+        base: 'before:w-3 before:h-3',
+        ring: 'before:ring-1 before:ring-gray-700',
+        background: 'before:bg-gray-700',
+        rounded: 'before:rounded-none',
+        placement: "group-data-[popper-placement*='right']:-left-1 group-data-[popper-placement*='left']:-right-1 group-data-[popper-placement*='top']:-bottom-1 group-data-[popper-placement*='bottom']:-top-1"
+      }
+    },
     radio: {
       border: 'border-gray-500'
     },
@@ -218,7 +233,7 @@ export default defineAppConfig({
       color: 'text-white',
       ring: 'ring-1 ring-gray-700',
       rounded: 'rounded',
-      base: '[@media(pointer:coarse)]:hidden h-auto px-2 py-1 text-sm font-normal relative whitespace-normal',
+      base: 'h-auto px-2 py-1 text-sm font-normal relative whitespace-normal',
       arrow: {
         base: 'before:w-3 before:h-3',
         ring: 'before:ring-1 before:ring-gray-700',

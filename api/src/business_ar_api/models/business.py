@@ -45,18 +45,16 @@ class Business(BaseModel):
     legal_type = db.Column("legal_type", db.String(10))
     identifier = db.Column("identifier", db.String(10), index=True)
     tax_id = db.Column("tax_id", db.String(15), index=True)
-    nano_id = db.Column("nano_id", db.String(25), index=True)
+    email = db.Column("email", db.String(1000), index=True)
+    founding_date = db.Column("founding_date", db.DateTime(timezone=True))
+    last_ar_reminder_year = db.Column("last_ar_reminder_year", db.Integer)
+    ar_reminder_flag = db.Column("ar_reminder_flag", db.Boolean, default=True)
+    state = db.Column("state", db.String(5), index=True)
+    op_state = db.Column("op_state", db.String(5), index=True)
+    corp_class = db.Column("corp_class", db.String(10), index=True)
 
-    filings = db.relationship("Filing", lazy="dynamic")
+    filings = db.relationship("Filing", lazy="dynamic", backref="business")
     invitations = db.relationship("Invitations", lazy="dynamic")
-
-    @classmethod
-    def find_by_nano_id(cls, nano_id: str):
-        """Return a Business by the nano_id."""
-        business = None
-        if nano_id:
-            business = cls.query.filter_by(nano_id=nano_id).one_or_none()
-        return business
 
     @classmethod
     def find_by_identifier(cls, identifier: str):

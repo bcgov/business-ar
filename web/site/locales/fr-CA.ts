@@ -47,6 +47,22 @@ export default {
     'filing-in-progress': {
       title: 'Soumission en Cours',
       description: 'Votre soumission a été payée et est actuellement en cours de traitement.'
+    },
+    'document-download': {
+      title: 'Échec du Téléchargement',
+      description: 'Impossible de télécharger le document pour le moment. Veuillez réessayer ou contacter le support si le problème persiste.'
+    },
+    'future-effective-filings': {
+      title: 'Dépôt en Attente Trouvé',
+      description: 'Il y a un dossier en attente pour cette entreprise trouvé dans CorporateOnLine qui doit être complété avant que vous puissiez poursuivre cette tâche. Veuillez revenir une fois ce dépôt terminé.'
+    },
+    'inactive-corp-state': {
+      title: 'Entreprise Inactive',
+      description: "Cette entreprise est actuellement inactive. Vous ne pouvez pas continuer cette tâche tant que l'entreprise n'est pas réactivée. Veuillez contacter le support pour obtenir de l'aide."
+    },
+    'fee-info': {
+      title: 'Erreur de Frais',
+      description: 'Erreur lors de la récupération des frais, veuillez réessayer ou revenir plus tard.'
     }
   },
   btn: {
@@ -75,7 +91,14 @@ export default {
     accountOptions: "Menu d'options pour Compte",
     accept: 'Accepter',
     decline: 'Déclin',
-    close: 'Fermer'
+    close: 'Fermer',
+    openHelpDocs: "Lire la Vue d'Ensemble",
+    downloadReceipt: 'Télécharger le Reçu',
+    downloadReport: 'Télécharger le Rapport',
+    info: {
+      show: 'Afficher les informations',
+      hide: 'Masquer les informations'
+    }
   },
   currency: {
     cad: 'CAD',
@@ -210,7 +233,10 @@ export default {
       title: 'Déposez votre rapport annuel - Rapport Annuel de Service CB',
       h1: 'Rapport Annuel {year}',
       h2: 'Rapport Annuel pour: {name}',
-      reviewAndConfirm: 'Veuillez confirmer les adresses des bureaux et les administrateurs actuels ci-dessous.',
+      reviewAndConfirm: {
+        main: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
+        help: 'Accédez à Corporate Online pour mettre à jour les adresses de vos bureaux et celles de vos administrateurs, puis revenez ici pour déposer votre rapport annuel. Si une adresse de bureau a été mise à jour, vous devrez attendre le lendemain pour compléter votre rapport annuel.'
+      },
       form: { // TODO: review annual report form translations
         agmStatus: {
           question: "Le statut de l'Assemblée Générale Annuelle (AGA) {year} de cette entreprise",
@@ -232,9 +258,12 @@ export default {
           format: 'Format: AAAA-MM-JJ',
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
-        complianceWarning: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
+        complianceWarning: {
+          main: "{boldStart}Important:{boldEnd} Veuillez vous assurer que vous respectez les exigences de l'AGA avant de déposer votre rapport annuel.",
+          link: "Consultez la {link} pour plus d'informations."
+        },
         certify: {
-          question: 'certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
+          question: 'Je {boldStart}{name}{boldEnd} certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',
           error: 'Vous devez confirmer pour continuer'
         }
       },
@@ -257,6 +286,9 @@ export default {
         title: "Refuser les Conditions d'Utilisation",
         content: "En refusant les Conditions d'Utilisation, vous ne pourrez pas continuer à utiliser ce service. Veuillez accepter les Conditions d'Utilisation pour continuer."
       }
+    },
+    help: { // TODO: review help page translations
+      title: "Vue d'Ensemble du Rapport Annuel - Rapport Annuel de Service CB"
     }
   },
   widgets: {

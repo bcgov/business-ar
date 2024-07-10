@@ -32,6 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """This exports all of the models and schemas used by the application."""
+from .ar_reminder import AnnualReportReminder
 from .business import Business
 from .colin_event_id import ColinEventId
 from .db import db
@@ -42,6 +43,7 @@ from .filing import Filing
 
 __all__ = (
     "db",
+    "AnnualReportReminder",
     "Business",
     "ColinEventId",
     "Filing",

@@ -38,7 +38,7 @@ const payFeesWidgetItems = [
     uiUuid: '1',
     filingFees: 100,
     filingType: 'Type 1',
-    filingTypeCode: 'ANNBC',
+    filingTypeCode: 'BCANN',
     futureEffectiveFees: 50,
     priorityFees: 75,
     processingFees: 25,
@@ -95,7 +95,7 @@ describe('<SbcFeeWidget />', () => {
   })
 
   // submit not being emitted in test, but works in prod
-  it.skip('emits submit event when clicking submit button', async () => {
+  it('emits submit event when clicking submit button', async () => {
     const component = await renderSuspended(SbcFeeWidget, {
       global: {
         plugins: [enI18n]
@@ -108,8 +108,6 @@ describe('<SbcFeeWidget />', () => {
     const button = screen.getByText('Submit & Pay')
     await fireEvent.click(button)
 
-    console.log(component.emitted())
-
-    expect(component.emitted('submit')).toBe(true)
+    expect(component.emitted('submit')).toBeTruthy()
   })
 })

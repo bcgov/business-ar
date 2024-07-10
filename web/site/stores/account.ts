@@ -9,41 +9,49 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
   // get signed in users accounts
   async function getUserAccounts (): Promise<{ orgs: Org[] }> {
-    try {
-      // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
-      // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
-      // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
-      //   await useBarApi('/users', { method: 'POST' }, 'token')
-      await keycloak.getToken(true) // force refresh
-      // }
+    // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
+    // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
+    // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
+    //   await useBarApi('/users', { method: 'POST' }, 'token')
+    await keycloak.getToken(true) // force refresh
+    // }
 
-      const response = await useBarApi<{ orgs: Org[] }>(
-        '/user/accounts',
-        {},
-        'token',
-        'Error retrieving user accounts.'
-      )
+    const response = await useBarApi<{ orgs: Org[] }>(
+      '/user/accounts',
+      {},
+      'token',
+      'Error retrieving user accounts.'
+    )
 
-      userAccounts.value = response.orgs
+    userAccounts.value = response.orgs
 
-      return response
-    } catch (e: any) {
-      throw new Error(e)
-    }
+    return response
   }
 
   // assign existing account as users current account
-  function selectUserAccount (accountId: number): void {
-    for (const i in userAccounts.value) {
-      if (userAccounts.value[i].id === accountId) {
-        currentAccount.value = userAccounts.value[i]
+  function selectUserAccount (accountId: number, callback?: Function): void {
+    try {
+      loading.value = true
+      const account = userAccounts.value.find(account => account.id === accountId)
+      if (account) {
+        currentAccount.value = account
+      } else {
+        console.warn(`Account with ID ${accountId} not found`)
       }
+      if (callback) {
+        callback()
+      }
+    } catch (error) {
+      console.error('Error selecting user account:', error)
+    } finally {
+      loading.value = false
     }
   }
 
   // create new account
-  async function createNewAccount (data: NewAccount): Promise<void> {
+  async function createNewAccount (data: NewAccount, callback?: Function): Promise<void> {
     try {
+      loading.value = true
       // TODO: fix this so it only makes the post request and refreshes token if the user doesnt have the proper roles
       // only update if user doesnt have role, not currently working so need to make call in index page initPage function still
       // if (!$keycloak.tokenParsed?.roles.includes('public_user')) {
@@ -70,12 +78,17 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
       currentAccount.value = response
       userAccounts.value.push(response)
-    } catch (e) {
+
+      if (callback) {
+        callback()
+      }
+    } catch {
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
       })
-      throw e
+    } finally {
+      loading.value = false
     }
   }
 
@@ -131,16 +144,12 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
 
   // add roles to new sign in so user has roles in sbc auth
   async function updateUserProfile ():Promise<void> {
-    try {
-      await useBarApi(
-        '/users',
-        { method: 'POST' },
-        'token',
-        'An error occured while trying to update the user roles.'
-      )
-    } catch (e: any) {
-      throw new Error(e)
-    }
+    await useBarApi(
+      '/users',
+      { method: 'POST' },
+      'token',
+      'An error occured while trying to update the user roles.'
+    )
   }
 
   return {

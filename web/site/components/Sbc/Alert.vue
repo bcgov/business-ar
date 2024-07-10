@@ -29,5 +29,6 @@ const showAlert = computed(() => {
       title: 'text-base text-bcGovColor-midGray font-semibold',
       description: 'mt-1 text-base leading-4 text-bcGovColor-midGray'
     }"
+    data-testid="sbc-alert"
   />
 </template>

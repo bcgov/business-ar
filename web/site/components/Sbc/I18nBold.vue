@@ -3,17 +3,16 @@ const props = defineProps({
   translationPath: { type: String, required: true }
 })
 
+const attrs = useAttrs()
 const { t } = useI18n()
 
-const text = t(props.translationPath as string, {
-  boldStart: '{b}',
-  boldEnd: '{/b}'
-})
+const translationProps = {
+  ...attrs,
+  boldStart: '<strong>',
+  boldEnd: '</strong>'
+}
 
-const textToDisplay = text.replace(
-  /\{b\}(.*?)\{\/b\}/g,
-  '<strong>$1</strong>'
-)
+const textToDisplay = t(props.translationPath, translationProps)
 </script>
 <template>
   <!-- eslint-disable-next-line -->

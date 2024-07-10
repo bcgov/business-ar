@@ -99,6 +99,11 @@ class BusinessService:
                 0
             ].recipients
 
+        fed_filings_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/filings/future"
+        fed_filings = RestService.get(endpoint=fed_filings_endpoint, token=token).json()
+        business_details["business"]["hasFutureEffectiveFilings"] = (
+            True if fed_filings and len(fed_filings) > 0 else False
+        )
         return business_details
 
     @classmethod

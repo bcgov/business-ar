@@ -98,6 +98,7 @@ class Config:
         + os.getenv("REPORT_API_VERSION", "")
         + "/reports"
     )
+    BUSINESS_AR_API_BASE_URL = os.getenv("BUSINESS_AR_API_URL", "")
 
     REPORT_TEMPLATE_PATH = os.getenv("REPORT_PATH", "report-templates")
 

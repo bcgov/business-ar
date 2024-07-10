@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "341e52ef-7c59-4e06-a618-93bc9d313558",
+		"_postman_id": "d3aa91b1-6be1-41ed-a20f-8f1f5551896c",
 		"name": "business-ar-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31792407"
@@ -953,6 +953,37 @@
 					"path": [
 						"users",
 						"tos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Filing Documents",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api_url}}/business/{{business_identifier}}/filings/{{filing_id}}/documents",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"business",
+						"{{business_identifier}}",
+						"filings",
+						"{{filing_id}}",
+						"documents"
 					]
 				}
 			},

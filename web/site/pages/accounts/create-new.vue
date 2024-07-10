@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { FormError, FormSubmitEvent, FormErrorEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
+import { handleFormErrorEvent } from '~/utils/form/handleFormErrorEvent'
 import { UForm } from '#components'
 const localePath = useLocalePath()
 const { t } = useI18n()
@@ -38,21 +39,7 @@ const accountSchema = z.object({
 type FormSchema = z.output<typeof accountSchema>
 
 async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
-  try {
-    accountStore.loading = true
-    await accountStore.createNewAccount(event.data)
-    return navigateTo(localePath('/annual-report'))
-  } catch (e) {
-    console.error(e)
-  } finally {
-    accountStore.loading = false
-  }
-}
-
-function onError (event: FormErrorEvent) {
-  const element = document.getElementById(event.errors[0].id)
-  element?.focus()
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  await accountStore.createNewAccount(event.data, () => navigateTo(localePath('/annual-report')))
 }
 
 // custom validate account name on blur, using debounced on input is giving me issues currently
@@ -73,12 +60,11 @@ const validate = async (state: any): Promise<FormError[]> => {
 // try to prefill account name on page load
 if (import.meta.client) {
   try {
-    pageLoading.value = true
     const name = parseSpecialChars(keycloak.kcUser.value.fullName, '') // parse name if special chars
     accountDetails.accountName = await accountStore.findAvailableAccountName(name) // find account name using users name
-    pageLoading.value = false
-  } catch (error) {
-    console.error((error as Error).message)
+  } catch (e) {
+    console.error(`Could not prefill account name: ${e}`)
+  } finally {
     pageLoading.value = false
   }
 }
@@ -118,18 +104,16 @@ if (import.meta.client) {
           :schema="accountSchema"
           :validate="validate"
           class="flex flex-col gap-y-4 md:grid md:grid-cols-6 md:gap-y-8"
-          @error="onError"
+          @error="handleFormErrorEvent"
           @submit="submitCreateAccountForm"
         >
-          <!-- required for camel case aria label :aria-label does not work -->
-          <!-- eslint-disable vue/attribute-hyphenation -->
           <!-- account name -->
           <span aria-hidden="true" class="col-span-1 col-start-1 row-span-1 row-start-1 font-semibold text-bcGovColor-darkGray">{{ $t('page.createAccount.form.accountNameSection.fieldSet') }}</span>
           <UFormGroup name="accountName" class="col-span-full col-start-2 row-span-1 row-start-1">
             <UInput
               v-model="accountDetails.accountName"
               :variant="handleFormInputVariant('accountName', accountFormRef?.errors)"
-              :ariaLabel="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
+              :aria-label="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
               :placeholder="$t('page.createAccount.form.accountNameSection.accountNameInputLabel')"
               class="placeholder:text-bcGovColor-midGray"
             />
@@ -145,7 +129,7 @@ if (import.meta.client) {
                   v-model="accountDetails.contact.phone"
                   :variant="handleFormInputVariant('contact.phone', accountFormRef?.errors)"
                   :placeholder="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
-                  :ariaLabel="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
+                  :aria-label="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
                 />
               </UFormGroup>
               <!-- phone number extension -->
@@ -154,7 +138,7 @@ if (import.meta.client) {
                   v-model="accountDetails.contact.phoneExt"
                   :variant="handleFormInputVariant('contact.phoneExt', accountFormRef?.errors)"
                   :placeholder="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.main')"
-                  :ariaLabel="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
+                  :aria-label="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
                 />
               </UFormGroup>
             </div>
@@ -165,7 +149,7 @@ if (import.meta.client) {
               v-model="accountDetails.contact.email"
               :variant="handleFormInputVariant('contact.email', accountFormRef?.errors)"
               :placeholder="$t('page.createAccount.form.contactDetailsSection.emailInputLabel')"
-              :ariaLabel="$t('page.createAccount.form.contactDetailsSection.emailInputLabel')"
+              :aria-label="$t('page.createAccount.form.contactDetailsSection.emailInputLabel')"
             />
           </UFormGroup>
 

@@ -40,6 +40,9 @@ from flask import current_app
 from flask_jwt_oidc import JwtManager
 
 from business_ar_api.exceptions import ExternalServiceException
+from business_ar_api.models import Filing as FilingModel
+from business_ar_api.services import AccountService
+from business_ar_api.services import BusinessService
 from business_ar_api.services.rest_service import RestService
 
 
@@ -121,3 +124,37 @@ class PaymentService:
         token = user_jwt.get_token_auth_header()
         payment_details = RestService.get(endpoint=endpoint, token=token).json()
         return payment_details
+
+    @staticmethod
+    def get_payment_receipt(filing_id: int):
+        filing = FilingModel.find_filing_by_id(filing_id)
+        if filing.status not in [FilingModel.Status.PAID, FilingModel.Status.COMPLETED]:
+            return "Filing not in Paid or Completed State", HTTPStatus.BAD_REQUEST
+        business = BusinessService.find_by_internal_id(filing.business_id)
+
+        client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
+        client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
+        token = AccountService.get_service_client_token(client_id, client_secret)
+        url = f'{current_app.config.get("PAY_API_URL")}/payment-requests/{filing.invoice_id}/receipts'
+        headers = {"Accept": "application/pdf", "Authorization": f"Bearer {token}"}
+        payload = {
+            "corpName": business.legal_name,
+            "filingDateTime": filing.filing_date.isoformat(),
+            "effectiveDateTime": "",
+            "filingIdentifier": str(filing.id),
+        }
+        response = requests.post(
+            url,
+            json=payload,
+            headers=headers,
+        )
+        if response.status_code != HTTPStatus.CREATED:
+            current_app.logger.error(
+                "Failed to get receipt pdf for filing: %s", filing_id
+            )
+
+        return current_app.response_class(
+            response=response.content,
+            status=response.status_code,
+            mimetype="application/pdf",
+        )

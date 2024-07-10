@@ -35,6 +35,7 @@
 from __future__ import annotations
 
 import copy
+from flask import current_app, url_for
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
@@ -135,6 +136,27 @@ class Filing(BaseModel):
         """Return filings by payment token."""
         return cls.query.filter_by(invoice_id=payment_token).one_or_none()
 
+    def get_documents(self):
+        reports = [{"type": "annualReport", "name": "Annual Report"}]
+        api_url = f"{current_app.config.get('BUSINESS_AR_API_BASE_URL')}"
+        identifier = self.business.identifier
+        doc_url = url_for(
+            "DOCUMENTS.get_document",
+            **{"identifier": identifier, "filing_id": self.id, "document_type": None},
+        )
+        documents = []
+        if self.status in [Filing.Status.PAID, Filing.Status.COMPLETED]:
+            documents.append({"name": "Receipt", "url": f"{api_url}{doc_url}/receipt"})
+        if self.status == Filing.Status.COMPLETED:
+            for report in reports:
+                documents.append(
+                    {
+                        "name": report.get("name"),
+                        "url": f"{api_url}{doc_url}/{report.get('type')}",
+                    }
+                )
+        return documents
+
 
 class FilingSerializer:
     """Serializer for filings. Can convert to dict, string from filing model."""
@@ -186,5 +208,8 @@ class FilingSerializer:
         filing_dict["filing"]["header"]["colinIds"] = ColinEventId.get_by_filing_id(
             filing.id
         )
+
+        documents = filing.get_documents()
+        filing_dict["filing"]["documents"] = documents
 
         return filing_dict

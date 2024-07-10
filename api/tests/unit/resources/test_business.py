@@ -45,17 +45,13 @@ from business_ar_api.models import Business, Invitations
 
 
 def mock_colin_details(corp_state, legal_name, mocker):
-        # Mock the colin callback
-    colin_details = {
-        "business": {
-            "legalName": legal_name,
-            "corpState": corp_state
-        }
-    }
+    # Mock the colin callback
+    colin_details = {"business": {"legalName": legal_name, "corpState": corp_state}}
     return mocker.patch(
-     "business_ar_api.services.BusinessService.get_business_details_from_colin",
-     return_value=colin_details)
-    
+        "business_ar_api.services.BusinessService.get_business_details_from_colin",
+        return_value=colin_details,
+    )
+
 
 def test_business_look_up_by_nano_id(session, client, mocker):
     """Assert that a Business can be looked up using the nano id."""
@@ -75,7 +71,6 @@ def test_business_look_up_by_nano_id(session, client, mocker):
         legal_type="BC",
         identifier="BC1217715",
         tax_id="BN1234567899876",
-        nano_id=nano_id,
     )
     business.save()
     assert business.id is not None
@@ -115,7 +110,6 @@ def test_business_does_not_exist(session, client):
         legal_type="BC",
         identifier="BC1215715",
         tax_id="BN1234567899876",
-        nano_id="V1StGXR8_Z5jdBj7B-12T",
     )
     business.save()
     assert business.id is not None

@@ -47,6 +47,22 @@ export default {
     'filing-in-progress': {
       title: 'Filing in Progress',
       description: 'Your filing has been paid and is currently being processed.'
+    },
+    'document-download': {
+      title: 'Download Failed',
+      description: 'Unable to download the document at this time. Please try again or contact support if the issue persists.'
+    },
+    'future-effective-filings': {
+      title: 'Pending Filing Found',
+      description: 'There is a pending filing for this business found in CorporateOnLine that needs to be completed before you can proceed with this task. Please return after that filing has been completed.'
+    },
+    'inactive-corp-state': {
+      title: 'Inactive Business',
+      description: 'This business is currently inactive. You cannot proceed with this task until the business is reactivated. Please contact support for assistance.'
+    },
+    'fee-info': {
+      title: 'Fee Error',
+      description: 'Error retrieving fees, please try again or come back later.'
     }
   },
   btn: {
@@ -75,7 +91,14 @@ export default {
     accountOptions: 'Account Options Menu',
     accept: 'Accept',
     decline: 'Decline',
-    close: 'Close'
+    close: 'Close',
+    openHelpDocs: 'Read the Overview',
+    downloadReceipt: 'Download Receipt',
+    downloadReport: 'Download Report',
+    info: {
+      show: 'Show information',
+      hide: 'Hide information'
+    }
   },
   currency: {
     cad: 'CAD',
@@ -210,7 +233,10 @@ export default {
       title: 'File Your BC Annual Report - Service BC Annual Report',
       h1: '{year} Annual Report',
       h2: 'Annual Report for: {name}',
-      reviewAndConfirm: 'Please review the Office Addresses and Current Directors below.',
+      reviewAndConfirm: {
+        main: 'Please review the office addresses and current directors below. This information needs to be correct before you proceed.',
+        help: 'Go to Corporate Online to update your office addresses and directors, then come back here to file your annual report. If an office address was updated, you will need to wait until the next day to complete your annual report.'
+      },
       form: {
         agmStatus: {
           question: 'The {year} Annual General Meeting (AGM) status of this business',
@@ -232,9 +258,12 @@ export default {
           format: 'Format: YYYY-MM-DD',
           error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
-        complianceWarning: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
+        complianceWarning: {
+          main: '{boldStart}Important:{boldEnd} Please ensure that you meet the AGM compliance before filing your annual report.',
+          link: 'See the {link} for more information.'
+        },
         certify: {
-          question: 'certify all information about the Office Addresses and Current Directors is correct.',
+          question: 'I {boldStart}{name}{boldEnd} certify all information about the Office Addresses and Current Directors is correct.',
           error: 'You must confirm to continue'
         }
       },
@@ -257,6 +286,9 @@ export default {
         title: 'Decline Terms of Use',
         content: 'By declining the Terms of Use, you will not be able to continue using this service. Please accept the Terms of Use to proceed.'
       }
+    },
+    help: {
+      title: 'Annual Report Overview - Service BC Annual Report'
     }
   },
   widgets: {
@@ -266,7 +298,7 @@ export default {
       noFee: 'No Fee',
       priorityFees: 'Priority Fees',
       futureEffectiveFees: 'Future Effective Fees',
-      serviceFees: 'Service Fees',
+      serviceFees: 'Service Fee',
       itemLabels: {
         TEST: 'This is test entry',
         REGSIGIN: 'Significant Individual Change',

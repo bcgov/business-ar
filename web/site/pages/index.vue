@@ -102,9 +102,13 @@ if (import.meta.client) {
           AlertCategory.INVALID_TOKEN,
           AlertCategory.BUSINESS_DETAILS,
           AlertCategory.ACCOUNT_ACCESS,
-          AlertCategory.FILING_IN_PROGRESS
+          AlertCategory.FILING_IN_PROGRESS,
+          AlertCategory.FUTURE_EFFECTIVE_FILINGS,
+          AlertCategory.INACTIVE_CORP_STATE
         ]"
       />
+
+      <SbcHelpTrigger />
 
       <!-- show business details -->
       <UCard v-show="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
@@ -113,7 +117,7 @@ if (import.meta.client) {
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
             { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
-            { label: $t('labels.busNum'), value: busStore.businessNano.taxId },
+            { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
           ]"
         />
       </UCard>

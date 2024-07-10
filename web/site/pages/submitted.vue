@@ -15,7 +15,6 @@ definePageMeta({
 
 async function initPage () {
   try {
-    pageLoading.value = true
     if (!route.query.filing_id) {
       throw new Error('Missing filing id in url.')
     } else {
@@ -47,6 +46,13 @@ if (import.meta.client) {
         class="size-10 shrink-0 text-outcomes-approved"
       />
     </SbcPageSectionH1>
-    <SbcNuxtContentCard id="submitted" />
+    <SbcAlert
+      :show-on-category="[
+        AlertCategory.INTERNAL_SERVER_ERROR,
+        AlertCategory.DOCUMENT_DOWNLOAD
+      ]"
+    />
+    <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" />
+    <SbcNuxtContentCard id="submitted-platform-info" route-suffix="/platform-info" />
   </div>
 </template>

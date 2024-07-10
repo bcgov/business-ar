@@ -35,7 +35,6 @@ def create_business():
         legal_type="BC",
         identifier="BC1214453",
         tax_id="BN1234567899875",
-        nano_id="V1StGXR8_Z5jdHi6B-NyT",
     )
     business.save()
     assert business.id is not None

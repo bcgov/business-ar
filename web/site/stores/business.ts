@@ -1,4 +1,3 @@
-import type { Business, BusinessFull, BusinessNano, BusinessTask } from '~/interfaces/business'
 export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   // config imports
   const arStore = useAnnualReportStore()
@@ -48,6 +47,24 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   function assignBusinessStoreValues (bus: BusinessFull) {
     currentBusiness.value = bus
 
+    // throw error if business not in ACT corpState
+    if (bus.corpState !== 'ACT') {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.INACTIVE_CORP_STATE
+      })
+      throw new Error(`${bus.legalName || 'This business'} is not in an active state.`)
+    }
+
+    // throw error if business has future effective filings
+    if (bus.hasFutureEffectiveFilings) {
+      alertStore.addAlert({
+        severity: 'error',
+        category: AlertCategory.FUTURE_EFFECTIVE_FILINGS
+      })
+      throw new Error(`${bus.legalName || 'This business'} has future effective filings.`)
+    }
+
     // throw an error if the nextArYear is invalid
     if (!bus.nextARYear || bus.nextARYear === -1) {
       alertStore.addAlert({
@@ -61,7 +78,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     if (!bus.lastArDate) {
       nextArDate.value = addOneYear(bus.foundingDate)
     } else {
-      nextArDate.value = addOneYear(bus.lastArDate)
+      nextArDate.value = addOneYear(bus.lastArDate!)
     }
 
     // throw error if next ar date is in the future
@@ -76,7 +93,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
   // ping sbc pay to see if payment went through and return pay status details
   async function updatePaymentStatusForBusiness (filingId: string | number): Promise<void> {
-    const response = await useBarApi<ArFilingResponse>(
+    const response = await useBarApi<ArFiling>(
       `/business/${businessNano.value.identifier}/filings/${filingId}/payment`,
       { method: 'PUT' },
       'token',
@@ -85,6 +102,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
 
     if (response) {
       payStatus.value = response.filing.header.status
+      arStore.arFiling = response
     }
   }
 
@@ -120,7 +138,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
           throw new Error('Access Denied: Your account does not have permission to complete this task.')
         }
         // assignBusinessStoreValues(taskValue.filing.business)
-        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport } }
+        arStore.arFiling = { filing: { header: taskValue.filing.header, annualReport: taskValue.filing.annualReport, documents: taskValue.filing.documents } }
         payStatus.value = taskValue.filing.header.status
       }
       return { task: taskName, taskValue }

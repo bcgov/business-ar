@@ -53,9 +53,11 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
 </script>
 <template>
   <UModal v-model="modalModel" :fullscreen="isSmallScreen">
-    <UCard :ui="{ base: isSmallScreen ? 'h-screen overflow-y-auto' : 'min-w-fit overflow-hidden', body: { base: isSmallScreen ? 'space-y-2' : 'max-h-[75vh] space-y-2 overflow-y-auto' }}">
+    <UCard
+      :ui="{ base: isSmallScreen ? 'h-screen overflow-y-auto' : 'max-w-2xl overflow-hidden', body: { base: isSmallScreen ? 'space-y-2' : 'max-h-[75vh] space-y-2 overflow-y-auto' }}"
+    >
       <template #header>
-        <header class="flex justify-between">
+        <header class="flex items-start justify-between">
           <div class="flex flex-col">
             <h2 class="text-xl font-semibold text-bcGovColor-darkGray">
               {{ business.legalName }}
@@ -63,13 +65,14 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
             <span class="text-bcGovColor-midGray">{{ business.identifier }}</span>
             <span class="text-bcGovColor-midGray">{{ business.recipients }}</span>
           </div>
-          <UButton
-            icon="i-mdi-close"
-            variant="ghost"
-            :aria-label="$t('page.admin.table.invite.detailModal.closeBtn')"
-            class="self-start"
-            @click="modalModel = false"
-          />
+          <UTooltip :text="$t('page.admin.table.invite.detailModal.closeBtn')" :popper="{ arrow: true }">
+            <UButton
+              icon="i-mdi-close"
+              variant="ghost"
+              :aria-label="$t('page.admin.table.invite.detailModal.closeBtn')"
+              @click="modalModel = false"
+            />
+          </UTooltip>
         </header>
       </template>
 
@@ -114,13 +117,51 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
                   $t('page.admin.table.invite.detailModal.section.reportData.noVote', { value: item.annualReport.votedForNoAGM ?? 'null' }),
                 ]"
               />
-              <UButton
-                class="self-start"
-                size="sm"
-                :label="showRawYears.includes(item.header.filingYear) ? $t('btn.viewRaw.close') : $t('btn.viewRaw.open')"
-                icon="i-mdi-code-json"
-                @click="handleViewRaw(item.header.filingYear)"
-              />
+              <UButtonGroup orientation="vertical">
+                <UTooltip
+                  :text="showRawYears.includes(item.header.filingYear) ? $t('btn.viewRaw.close') : $t('btn.viewRaw.open')"
+                  :popper="{ arrow: true }"
+                >
+                  <UButton
+                    size="sm"
+                    :aria-label="showRawYears.includes(item.header.filingYear) ? $t('btn.viewRaw.close') : $t('btn.viewRaw.open')"
+                    icon="i-mdi-code-json"
+                    color="gray"
+                    @click="handleViewRaw(item.header.filingYear)"
+                  />
+                </UTooltip>
+                <UTooltip
+                  v-for="doc in item.documents"
+                  :key="doc.name"
+                  :text="doc.name === 'Receipt' ? $t('btn.downloadReceipt') : $t('btn.downloadReport')"
+                  :popper="{ arrow: true }"
+                >
+                  <UButton
+                    size="sm"
+                    :icon="doc.name === 'Receipt' ? 'i-mdi-currency-usd' : 'i-mdi-file-download-outline'"
+                    color="gray"
+                    :aria-label="doc.name === 'Receipt' ? $t('btn.downloadReceipt') : $t('btn.downloadReport')"
+                    @click="handleDocumentDownload(doc, business.identifier)"
+                  />
+                </UTooltip>
+              </UButtonGroup>
+              <!-- <div class="flex flex-col gap-1">
+                <UButton
+                  class="self-start"
+                  size="sm"
+                  :label="showRawYears.includes(item.header.filingYear) ? $t('btn.viewRaw.close') : $t('btn.viewRaw.open')"
+                  icon="i-mdi-code-json"
+                  @click="handleViewRaw(item.header.filingYear)"
+                />
+                <UButton
+                  v-for="doc in item.documents"
+                  :key="doc.name"
+                  size="sm"
+                  icon="i-mdi-tray-arrow-down"
+                  :label="doc.name === 'Receipt' ? $t('btn.downloadReceipt') : $t('btn.downloadReport')"
+                  @click="handleDocumentDownload(doc)"
+                />
+              </div> -->
             </div>
             <SbcModalAnnualReportDetailsDataSection
               :title="$t('page.admin.table.invite.detailModal.section.filingData.title')"
@@ -135,7 +176,11 @@ const errorText = computed(() => useErrorMessage(error.value as ApiError, t('pag
               v-if="showRawYears.includes(item.header.filingYear)"
               :title="$t('page.admin.table.invite.detailModal.section.rawData.title')"
             >
-              <pre class="mt-1 max-w-[90vw] overflow-x-auto"> {{ item }} </pre>
+              <pre
+                class="mt-1 overflow-x-auto"
+              >
+                {{ item }}
+              </pre>
             </SbcModalAnnualReportDetailsDataSection>
           </div>
         </template>

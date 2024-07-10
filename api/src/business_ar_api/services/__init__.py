@@ -33,6 +33,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """This module wraps helper services used by the API."""
 from .account_service import AccountService
+from .ar_reminder_service import AnnualReportReminderService
 from .business_service import BusinessService
 from .payment_service import PaymentService
 from .filing_service import FilingService
