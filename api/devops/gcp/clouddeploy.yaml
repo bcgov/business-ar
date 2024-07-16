@@ -43,7 +43,6 @@ serialPipeline:
       deploy-project-id: "a083gt-test"
       service-name: "business-ar-api-test"
       container-name: "business-ar-api-test"
-      app-env: "test"
       cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
       service-account: "sa-api@a083gt-test.iam.gserviceaccount.com"
  - targetId: a083gt-sandbox
@@ -57,7 +56,6 @@ serialPipeline:
       deploy-project-id: "a083gt-integration"
       service-name: "business-ar-api-sandbox"
       container-name: "business-ar-api-sandbox"
-      app-env: "sandbox"
       cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
       service-account: "sa-api@a083gt-integration.iam.gserviceaccount.com"
  - targetId: a083gt-prod
@@ -71,7 +69,6 @@ serialPipeline:
       deploy-project-id: "a083gt-prod"
       service-name: "business-ar-api-prod"
       container-name: "business-ar-api-prod"
-      app-env: "production"
       cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
       service-account: "sa-api@a083gt-prod.iam.gserviceaccount.com"
       max-scale: "10"
