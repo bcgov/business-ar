@@ -165,6 +165,12 @@ export default {
     recordsOffice: 'Records Office',
     office: 'Office'
   },
+  links: {
+    busCorpAct: {
+      main: 'Business Corporations Act',
+      sect182: 'Business Corporations Act (Section 182)'
+    }
+  },
   words: {
     i: 'I',
     addresses: 'Addresses',
@@ -259,8 +265,8 @@ export default {
           error: 'You must select a resolution date if the board voted to not hold an AGM'
         },
         complianceWarning: {
-          main: '{boldStart}Important:{boldEnd} Generally, companies hold AGMs every year. Review the <a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182" target="_blank">Business Corporations Act (Section 182)</a> to make sure you meet the legislative requirements.',
-          link: 'See the {link} for more information.'
+          main: '{boldStart}Important:{boldEnd} Generally, companies hold AGMs every year.',
+          link: 'Review the {link} to make sure you meet the legislative requirements.'
         },
         certify: {
           question: 'I {boldStart}{name}{boldEnd} certify all information about the Office Addresses and Current Directors is correct.',

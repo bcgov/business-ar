@@ -165,6 +165,12 @@ export default {
     recordsOffice: 'Bureau des Archives',
     office: 'Bureau'
   },
+  links: {
+    busCorpAct: {
+      main: 'Business Corporations Act',
+      sect182: 'Business Corporations Act (Section 182)'
+    }
+  },
   words: {
     i: 'Je',
     addresses: 'Adresses',
@@ -259,8 +265,8 @@ export default {
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
         complianceWarning: {
-          main: '{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année. Consultez la Business Corporations Act (Section 182) pour vous assurer de respecter les exigences législatives.',
-          link: "Consultez la {link} pour plus d'informations."
+          main: '{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année.',
+          link: 'Consultez la {link} pour vous assurer de respecter les exigences législatives.'
         },
         certify: {
           question: 'Je {boldStart}{name}{boldEnd} certifie que toutes les informations concernant les adresses des bureaux et les directeurs actuels sont exactes.',

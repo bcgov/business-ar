@@ -278,7 +278,7 @@ if (import.meta.client) {
                   <i18n-t keypath="page.annualReport.form.complianceWarning.link" tag="span" scope="global">
                     <template #link>
                       <a class="text-sm text-bcGovBlue-500 underline" target="_blank" href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182">
-                        Business Corporations ACT
+                        {{ $t('links.busCorpAct.sect182') }}
                       </a>
                       <span class="ml-1 inline-flex pb-1 align-middle">
                         <UIcon name="i-mdi-open-in-new" class="size-4 shrink-0 text-bcGovBlue-500" />
