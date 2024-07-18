@@ -235,7 +235,7 @@ export default {
       h2: 'Rapport Annuel pour: {name}',
       reviewAndConfirm: {
         main: 'Veuillez consulter les adresses des bureaux et les administrateurs actuels ci-dessous. Ces informations doivent être correctes avant de continuer.',
-        help: 'Pour mettre à jour les adresses de vos bureaux et vos administrateurs, visitez Corporate Online. Attendez jusqu'à un jour ouvrable pour que les changements prennent effet avant de revenir ici pour déposer votre rapport annuel.'
+        help: "Pour mettre à jour les adresses de vos bureaux et vos administrateurs, visitez Corporate Online. Attendez jusqu'à un jour ouvrable pour que les changements prennent effet avant de revenir ici pour déposer votre rapport annuel."
       },
       form: { // TODO: review annual report form translations
         agmStatus: {
@@ -259,7 +259,7 @@ export default {
           error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
         },
         complianceWarning: {
-          main: "{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année. Consultez la Business Corporations Act (Section 182) pour vous assurer de respecter les exigences législatives.",
+          main: '{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année. Consultez la Business Corporations Act (Section 182) pour vous assurer de respecter les exigences législatives.',
           link: "Consultez la {link} pour plus d'informations."
         },
         certify: {
