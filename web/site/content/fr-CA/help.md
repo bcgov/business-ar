@@ -1,48 +1,48 @@
-# Annual Report Overview
+# Aperçu du rapport annuel
 
-## Things to do prior to filing your Annual Report
-- Register your BC ServiceCard and install the BC ServiceCard application on your mobile phone
-- Ensure your business information is up to date. A summary will be shown in your Annual Report filing.
+## Choses à faire avant de déposer votre rapport annuel
+- Enregistrez votre carte BC Services et installez l'application BC Services Card sur votre téléphone mobile
+- Assurez-vous que les informations de votre entreprise sont à jour. Un résumé sera affiché dans le dépôt de votre rapport annuel.
 
-## Home Page
-Use the BC Services Card app on your phone to log in and file your Annual Report
+## Page d'accueil
+Utilisez l'application BC Services Card sur votre téléphone pour vous connecter et déposer votre rapport annuel.
 
-## Terms of Use
-You will see the Terms of Use if you are a first time user of Service BC Connect Annual Report application or if the Terms of Use have been updated since an existing user last signed in. 
+## Conditions d'utilisation
+Vous verrez les conditions d'utilisation si vous utilisez pour la première fois l'application de rapport annuel de Service BC Connect ou si les conditions d'utilisation ont été mises à jour depuis la dernière connexion d'un utilisateur existant.
 
-## Existing Account Found
-If you already have a Service BC Connect account or multiple accounts you will be provided with a  list of all your existing accounts. Here, you can:
-- Select an account to file an Annual Report, or
-- Create a new account by clicking on select “Create New Account”
+## Compte existant trouvé
+Si vous avez déjà un compte Service BC Connect ou plusieurs comptes, une liste de tous vos comptes existants vous sera fournie. Ici, vous pouvez :
+- Sélectionner un compte pour déposer un rapport annuel, ou
+- Créer un nouveau compte en cliquant sur "Créer un nouveau compte"
 
-## Service BC Account Creation
-If you do not have a Service BC Connect account or, as an existing user, you require a new account, you will be asked to provide Primary Contact Details:
-- Your Name: this field is prepopulated with your name as it appears on your BC Services Card
-- Account Name: This must be a unique name for your account. As you type in a name, alerts will be provided should the name already exist.
-- Contact Details: Provide a phone number and email address to be used for the new account.
+## Création de compte Service BC
+Si vous n'avez pas de compte Service BC Connect ou, en tant qu'utilisateur existant, vous avez besoin d'un nouveau compte, vous serez invité à fournir les détails de contact principaux :
+- Votre nom : ce champ est pré-rempli avec votre nom tel qu'il apparaît sur votre carte BC Services
+- Nom du compte : cela doit être un nom unique pour votre compte. Lorsque vous tapez un nom, des alertes seront fournies si le nom existe déjà.
+- Coordonnées : fournissez un numéro de téléphone et une adresse électronique à utiliser pour le nouveau compte.
 
-## Annual Report
-Now you are ready to file your Annual Report. You will come to a page prepopulated with your business details. You will be asked to:
-- Provide the Status of your Annual General Meeting. The following options are provided to select from: 
-  - Our AGM was held - if selected, you will be asked to provide the date the AGM was held.
-  - Our AGM is to be held
-  - The board voted to not hold an AGM
-- For more information on Annual General Meetings, please see the section below.
-- Review and confirm the addresses and directors prior to certifying and filing your Annual Report. If you need to update your business address and/or directors, you will need to go to <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> to complete those changes first.
+## Rapport annuel
+Vous êtes maintenant prêt à déposer votre rapport annuel. Vous arriverez sur une page pré-remplie avec les détails de votre entreprise. Vous serez invité à :
+- Fournir le statut de votre assemblée générale annuelle (AGA). Les options suivantes sont proposées :
+  - Notre AGA a eu lieu - si sélectionné, vous serez invité à fournir la date à laquelle l'AGA a eu lieu.
+  - Notre AGA doit se tenir
+  - Le conseil a voté pour ne pas tenir d'AGA
+- Pour plus d'informations sur les assemblées générales annuelles, veuillez consulter la section ci-dessous.
+- Examiner et confirmer les adresses et les administrateurs avant de certifier et de déposer votre rapport annuel. Si vous devez mettre à jour l'adresse de votre entreprise et/ou les administrateurs, vous devrez vous rendre sur <a href="https://www.corporateonline.gov.bc.ca" target="_blank">Corporate Online</a> pour effectuer ces modifications d'abord.
 
-## Want to know more about Annual General Meetings (AGM)?
-What is covered in an AGM
-- Presentation of Financial Statements
-- Appointments of Auditor (unless waived by special resolution)
-- Election of Directors
-- Other matters as set out in the notice of AGM
+## Vous voulez en savoir plus sur les assemblées générales annuelles (AGA) ?
+Ce qui est couvert dans une AGA :
+- Présentation des états financiers
+- Nominations de l'auditeur (sauf renonciation par résolution spéciale)
+- Élection des administrateurs
+- Autres questions comme indiqué dans l'avis de l'AGA
 
-## Requirement to hold an AGM
-Companies registered in British Columbia are required to hold an AGM at least once each calendar year and not more than 15 months after the anniversary date of your company being registered in BC.
- 
-If your company is newly registered in BC, your first AGM must be held not more than 18 months after the date it was registered within BC.
+## Obligation de tenir une AGA
+Les entreprises enregistrées en Colombie-Britannique sont tenues de tenir une AGA au moins une fois par an et pas plus de 15 mois après la date anniversaire de l'enregistrement de votre entreprise en Colombie-Britannique.
 
-The Annual Report asks the status of your AGM to help your company remain compliant with the requirements of the <a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi" target="_blank"> BC Corporations Act</a>.
+Si votre entreprise est nouvellement enregistrée en Colombie-Britannique, votre première AGA doit avoir lieu au plus tard 18 mois après la date de son enregistrement en Colombie-Britannique.
 
-## Pay and Filing Confirmation
-You will be redirected to the PayBC site to provide your payment information. Once your payment is complete you will see a confirmation page your Annual Report was successfully filed followed by an email with a copy of your filing and receipt to the contact email on file.
+Le rapport annuel demande le statut de votre AGA pour aider votre entreprise à rester conforme aux exigences de la<a href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_00_multi" target="_blank"> Loi sur les sociétés de la Colombie-Britannique</a>.
+
+## Paiement et confirmation de dépôt
+Vous serez redirigé vers le site PayBC pour fournir vos informations de paiement. Une fois votre paiement terminé, vous verrez une page de confirmation indiquant que votre rapport annuel a été déposé avec succès, suivie d'un courriel contenant une copie de votre dépôt et un reçu envoyé à l'adresse électronique de contact enregistrée.

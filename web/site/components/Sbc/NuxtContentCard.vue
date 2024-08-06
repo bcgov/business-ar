@@ -18,11 +18,15 @@ const props = defineProps({
 
 const fullId = 'content-data-' + props.id
 
+// Fetch the content data based on the current locale and route
 const { data } = await useAsyncData(fullId, () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + props.routeSuffix } })
     .findOne()
+}, {
+  watch: [locale, routeWithoutLocale]
 })
+
 </script>
 <template>
   <UCard class="w-full" :data-testid="fullId">

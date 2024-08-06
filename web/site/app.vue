@@ -17,15 +17,18 @@ useHead({
 
 const appVersion = await getAppMetaInfo() // load ui and api version on app mount
 
-// query help markdown and globally provide to use in either pages/help.vue or <SbcHelpModal />
-// if queried directly from modal, it wont be prerendered because modal is hidden initially
+// Query help markdown and globally provide it for use in either pages/help.vue or <SbcHelpModal />
 const { data: helpDocs } = await useAsyncData('help-docs-query', () => {
   return queryContent()
     .where({ _locale: locale.value, _path: { $eq: '/help' } })
     .findOne()
+}, {
+  watch: [locale]
 })
+
 provide('sbc-bar-help-docs', helpDocs)
 </script>
+
 <template>
   <div
     class="relative flex min-h-screen flex-col bg-bcGovColor-gray1 dark:bg-bcGovGray-900"

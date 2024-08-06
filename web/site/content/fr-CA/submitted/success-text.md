@@ -1,6 +1,6 @@
-You have successfully filed your BC Annual Report on the Business Registry. 
-A receipt has been emailed to :BusinessEmail.
+Vous avez réussi à déposer votre rapport annuel de la Colombie-Britannique sur le registre des entreprises. 
+Un reçu a été envoyé par courriel à :BusinessEmail.
 
 :DocumentDownload
 
-Want to share your feedback on the BC Annual Report? <a href="https://forms.gle/5niYLfjrymAqbLpr9" target="_blank">Complete our short survey now</a>.
+Vous souhaitez partager votre avis sur le rapport annuel de la Colombie-Britannique ? <a href="https://forms.gle/5niYLfjrymAqbLpr9" target="_blank">Complétez notre court sondage maintenant</a>.
