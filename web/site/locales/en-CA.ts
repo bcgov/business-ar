@@ -70,7 +70,7 @@ export default {
     goHome: 'Go Home',
     goBack: 'Go Back',
     dashboard: 'Dashboard',
-    sbcConnect: 'Service BC Connect',
+    sbcConnect: 'BC Registries and Digital Services',
     copy: 'Copy',
     copied: 'Copied!',
     submit: 'Submit',
