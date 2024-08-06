@@ -70,7 +70,7 @@ export default {
     goHome: 'Accueil',
     goBack: 'Retourner',
     dashboard: 'Dashboard',
-    sbcConnect: 'Service Connect CB',
+    sbcConnect: 'Registres et services numériques de la Colombie-Britannique',
     copy: 'Copier',
     copied: 'Copié!',
     submit: 'Soumettre',
