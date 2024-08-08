@@ -249,7 +249,7 @@ export default {
           tooltip: "Les informations sur les AGA sont utilisées pour calculer les dates des prolongations et les changements de lieu des AGA. Cela aide aussi à s'assurer que votre entreprise reste conforme et en règle.",
           opt1: 'Notre AGA {year} a eu lieu',
           opt2: 'Notre AGA {year} aura lieu',
-          opt3: "Le conseil d'administration a voté contre la tenue de notre AGA {year}",
+          opt3: 'Notre AGA {year} est dispensée, considérée comme tenue',
           error: "Veuillez sélectionner un statut d'AGA pour continuer"
         },
         agmDate: {
@@ -262,7 +262,7 @@ export default {
           placeholder: 'Date de Résolution Unanime',
           label: 'Date de Résolution Unanime',
           format: 'Format: AAAA-MM-JJ',
-          error: "Vous devez sélectionner une date de résolution si le conseil d'administration a voté pour ne pas tenir d'AGA."
+          error: "Vous devez sélectionner une date de résolution si l'AGA a été dispensée."
         },
         complianceWarning: {
           main: '{boldStart}Important:{boldEnd} En général, les entreprises tiennent des AGA chaque année.',

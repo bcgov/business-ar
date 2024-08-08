@@ -266,7 +266,7 @@ if (import.meta.client) {
 
             <!-- did not hold agm warning -->
             <UAlert
-              v-else-if="selectedRadio && selectedRadio === 'option-2'"
+              v-if="selectedRadio && (selectedRadio === 'option-2' || selectedRadio === 'option-3')"
               icon="i-mdi-warning"
               variant="subtle"
               color="red"
@@ -291,7 +291,7 @@ if (import.meta.client) {
 
             <!-- Unanimous vote date -->
             <UFormGroup
-              v-else-if="selectedRadio && selectedRadio === 'option-3'"
+              v-if="selectedRadio && selectedRadio === 'option-3'"
               name="voteDate"
               class="mt-4"
               :help="$t('page.annualReport.form.voteDate.format')"

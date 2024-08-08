@@ -249,7 +249,7 @@ export default {
           tooltip: 'AGM information is used to calculate dates for AGM extensions and location changes. It also helps ensure your business stays compliant and in good standing.',
           opt1: 'Our {year} AGM was held',
           opt2: 'Our {year} AGM is to be held',
-          opt3: 'The board voted to not hold our {year} AGM',
+          opt3: 'Our {year} AGM is waived, deemed to have been held',
           error: 'Please select an AGM status to continue'
         },
         agmDate: {
@@ -262,7 +262,7 @@ export default {
           placeholder: 'Unanimous Resolution Date',
           label: 'Unanimous Resolution Date',
           format: 'Format: YYYY-MM-DD',
-          error: 'You must select a resolution date if the board voted to not hold an AGM'
+          error: 'You must select a resolution date if the AGM was waived'
         },
         complianceWarning: {
           main: '{boldStart}Important:{boldEnd} Generally, companies hold AGMs every year.',
