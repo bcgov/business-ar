@@ -74,6 +74,8 @@ def _process_and_send_email(
             "business_legal_name": business.legal_name,
             "token": nano_id,
             "access_url": access_url,
+            "ar_start_date": business.founding_date,
+            "bc_number": business.identifier
         }
 
         html_out = email_template.render(email_kwargs)
