@@ -39,6 +39,11 @@ const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
 const selectedRadio = ref<string | null>(null)
 
+// Mobile View dropdowns
+const isMobile = ref(false)
+const showAddressesRef = ref<boolean>(true)
+const showDirectorsRef = ref<boolean>(true)
+
 // form state
 const arData = reactive<{ agmDate: Date | null, voteDate: Date | null, officeAndDirectorsConfirmed: boolean}>({
   agmDate: null,
@@ -140,6 +145,19 @@ watch(selectedRadio, (newVal) => {
     arData.voteDate = null
     arData.officeAndDirectorsConfirmed = false
   }
+})
+
+function handleResize () {
+  isMobile.value = window.innerWidth < 640
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+  handleResize()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
 })
 
 // init page state in setup lifecycle
@@ -319,22 +337,30 @@ if (import.meta.client) {
           :heading="$t('words.addresses')"
           heading-icon="i-mdi-map-marker"
           heading-level="h3"
+          :is-mobile="isMobile"
+          :show-content="showAddressesRef"
+          @toggle-content="showAddressesRef = !showAddressesRef"
         >
-          <SbcTableAddress :offices="busStore.fullDetails.offices" />
+          <SbcTableAddress v-if="showAddressesRef || !isMobile" :offices="busStore.fullDetails.offices" />
         </SbcPageSectionCard>
 
         <SbcPageSectionCard
           :heading="$t('words.directors')"
           heading-icon="i-mdi-account-multiple-plus"
           heading-level="h3"
+          :is-mobile="isMobile"
+          :show-content="showDirectorsRef"
+          @toggle-content="showDirectorsRef = !showDirectorsRef"
         >
-          <SbcTableDirectors :directors="busStore.fullDetails.parties" />
+          <SbcTableDirectors v-if="showDirectorsRef || !isMobile" :directors="busStore.fullDetails.parties" />
         </SbcPageSectionCard>
 
         <SbcPageSectionCard
           :heading="$t('words.confirm')"
           heading-icon="i-mdi-text-box-check"
           heading-level="h3"
+          :is-mobile="isMobile"
+          :show-content="undefined"
         >
           <UFormGroup
             :ui="{

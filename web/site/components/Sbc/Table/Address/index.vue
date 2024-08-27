@@ -43,22 +43,53 @@ const addresses = computed(() => {
 })
 </script>
 <template>
-  <UTable
-    :rows="addresses"
-    :columns
-    :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: $t('page.annualReport.noAddresses') }"
-  >
-    <template #mailingAddress-data="{ row }">
-      <SbcAddressDisplay :address="row.mailingAddress" />
-    </template>
+  <div>
+    <!-- Desktop / Tablet View -->
+    <div class="hidden sm:block">
+      <UTable
+        :rows="addresses"
+        :columns
+        :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: $t('page.annualReport.noAddresses') }"
+      >
+        <template #mailingAddress-data="{ row }">
+          <SbcAddressDisplay :address="row.mailingAddress" />
+        </template>
 
-    <template #name-data="{ row }">
-      <span class="font-semibold text-bcGovColor-darkGray"> {{ row.name }} </span>
-    </template>
+        <template #name-data="{ row }">
+          <span class="font-semibold text-bcGovColor-darkGray"> {{ row.name }} </span>
+        </template>
 
-    <template #deliveryAddress-data="{ row }">
-      <SbcAddressDisplay v-if="!deepEqual(row.mailingAddress, row.deliveryAddress, ['addressId'])" :address="row.deliveryAddress" />
-      <span v-else> {{ $t('labels.sameAsMailAddress') }} </span>
-    </template>
-  </UTable>
+        <template #deliveryAddress-data="{ row }">
+          <SbcAddressDisplay v-if="!deepEqual(row.mailingAddress, row.deliveryAddress, ['addressId'])" :address="row.deliveryAddress" />
+          <span v-else> {{ $t('labels.sameAsMailAddress') }} </span>
+        </template>
+      </UTable>
+    </div>
+
+    <!-- Mobile View -->
+    <div class="block sm:hidden">
+      <div v-for="(row, index) in addresses" :key="index" :class="{'pt-3': index !== 0}">
+        <div class="text-lg font-bold">
+          {{ t('labels.office') }}
+        </div>
+
+        <div class="px-4 pt-2">
+          <div class="font-bold">
+            {{ t('labels.mailingAddress') }}
+          </div>
+          <SbcAddressDisplay :address="row.mailingAddress" />
+        </div>
+
+        <div class="px-4 pt-3">
+          <div class="font-bold">
+            {{ t('labels.deliveryAddress') }}
+          </div>
+          <div v-if="!deepEqual(row.mailingAddress, row.deliveryAddress, ['addressId'])">
+            <SbcAddressDisplay :address="row.deliveryAddress" />
+          </div>
+          <span v-else>{{ $t('labels.sameAsMailAddress') }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
