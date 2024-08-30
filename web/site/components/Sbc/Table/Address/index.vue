@@ -70,7 +70,7 @@ const addresses = computed(() => {
     <div class="block sm:hidden">
       <div v-for="(row, index) in addresses" :key="index" :class="{'pt-3': index !== 0}">
         <div class="text-lg font-bold">
-          {{ t('labels.office') }}
+          {{ row.name }}
         </div>
 
         <div class="px-4 pt-2">
