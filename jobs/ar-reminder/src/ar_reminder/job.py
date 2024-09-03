@@ -17,7 +17,6 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-import base64
 
 import sentry_sdk
 from flask import Flask
@@ -80,21 +79,13 @@ def _process_and_send_email(
         }
 
         html_out = email_template.render(email_kwargs)
-        with open(f"{app.config.get('EMAIL_TEMPLATE_PATH')}/assets/ServiceBC-BCROS_CROP_H_RGB_pos.jpg", "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode()
+
         email_dict = {
             "recipients": recipient,
             "content": {
                 "subject": "Annual Report Reminder",
                 "body": html_out,
-                "attachments": [
-                    {
-                        "fileName": "logo.jpg",
-                        "fileContent": encoded_image,
-                        "contentType": "image/jpeg",
-                        "contentId": "logo"
-                    }
-                ],
+                "attachments": [],
             },
         }
 
