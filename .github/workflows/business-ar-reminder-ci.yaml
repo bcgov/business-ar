@@ -1,0 +1,20 @@
+name: Business AR Reminder CI
+
+on:
+  pull_request:
+    paths:
+      - "jobs/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./jobs
+
+jobs:
+  business-ar-reminder-ci:
+    uses: bcgov/bcregistry-sre/.github/workflows/cloud-run-job-ci.yaml@main
+    with:
+      app_name: "business-ar-reminder"
+      working_directory: "./jobs"
+      codecov_flag: "businessarreminder"
