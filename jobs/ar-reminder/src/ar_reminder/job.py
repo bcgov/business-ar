@@ -132,8 +132,11 @@ def run():
             businesses = _get_businesses()
             for business in businesses:
                 try:
-                    application.logger.info("Business: %s, Last AR Reminder Year: %s",
-                                            business.identifier, business.last_ar_reminder_year)
+                    application.logger.info(
+                        "Business: %s, Last AR Reminder Year: %s",
+                        business.identifier,
+                        business.last_ar_reminder_year,
+                    )
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
@@ -146,9 +149,7 @@ def run():
                             business_details.get("business").get("nextARYear")
                         )
                     current_year = datetime.utcnow().year
-                    application.logger.info(
-                        "Next AR year: %s", next_ar_reminder_year
-                    )
+                    application.logger.info("Next AR year: %s", next_ar_reminder_year)
                     if next_ar_reminder_year > current_year:
                         business.last_ar_reminder_year = current_year
                         business.save()
@@ -163,8 +164,11 @@ def run():
                     business.last_ar_reminder_year = next_ar_reminder_year
                     business.save()
                 except KeyError as err:
-                    application.logger.error("Error processing business %s: %s",
-                                             business.identifier, str(err))
+                    application.logger.error(
+                        "Error processing business %s: %s",
+                        business.identifier,
+                        str(err),
+                    )
         except KeyError as err:
             application.logger.error("General error occurred: %s", str(err))
 
