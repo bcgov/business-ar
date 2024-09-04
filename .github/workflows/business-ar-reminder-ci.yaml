@@ -3,7 +3,7 @@ name: Business AR Reminder CI
 on:
   pull_request:
     paths:
-      - "jobs/**"
+      - "jobs/ar-reminder/**"
   workflow_dispatch:
 
 defaults:
