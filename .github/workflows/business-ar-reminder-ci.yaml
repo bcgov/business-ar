@@ -16,5 +16,5 @@ jobs:
     uses: bcgov/bcregistry-sre/.github/workflows/backend-ci.yaml@main
     with:
       app_name: "business-ar-reminder"
-      working_directory: "./jobs"
+      working_directory: "./jobs/ar-reminder"
       codecov_flag: "businessarreminder"

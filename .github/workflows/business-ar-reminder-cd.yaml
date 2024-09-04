@@ -24,7 +24,7 @@ jobs:
     with:
       target: ${{ inputs.target }}
       app_name: "business-ar-reminder"
-      working_directory: "./jobs"
+      working_directory: "./jobs/ar-reminder"
     secrets:
       WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
       GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
