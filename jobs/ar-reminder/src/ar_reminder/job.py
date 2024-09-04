@@ -18,7 +18,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-import sentry_sdk
 from flask import Flask
 from jinja2 import Template
 from nanoid import generate
