@@ -19,10 +19,6 @@ from datetime import datetime
 from pathlib import Path
 
 import sentry_sdk
-from business_ar_api.models import AnnualReportReminder, Business, db
-from business_ar_api.services import AccountService
-from business_ar_api.services.business_service import BusinessService
-from business_ar_api.services.rest_service import RestService
 from flask import Flask
 from jinja2 import Template
 from nanoid import generate
@@ -31,6 +27,10 @@ from sqlalchemy.sql.expression import text  # noqa: I001
 
 from ar_reminder.config import CONFIGURATION
 from ar_reminder.utils.logging import setup_logging
+from business_ar_api.models import AnnualReportReminder, Business, db
+from business_ar_api.services import AccountService
+from business_ar_api.services.business_service import BusinessService
+from business_ar_api.services.rest_service import RestService
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
