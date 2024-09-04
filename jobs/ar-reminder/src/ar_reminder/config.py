@@ -50,18 +50,12 @@ class _Config(object):  # pylint: disable=too-few-public-methods
 
     AUTH_SVC_URL = os.getenv("AUTH_SVC_URL")
 
-    BUSINESS_AR_API_URL = os.getenv("BUSINESS_AR_API_URL", "") + os.getenv(
-        "BUSINESS_AR_API_VERSION", ""
-    )
+    BUSINESS_AR_API_URL = os.getenv("BUSINESS_AR_API_URL", "") + os.getenv("BUSINESS_AR_API_VERSION", "")
 
-    NOTIFY_API_URL = os.getenv("NOTIFY_API_URL", "") + os.getenv(
-        "NOTIFY_API_VERSION", ""
-    )
+    NOTIFY_API_URL = os.getenv("NOTIFY_API_URL", "") + os.getenv("NOTIFY_API_VERSION", "")
     NOTIFY_API_SVC_CLIENT_ID = os.getenv("NOTIFY_API_SVC_CLIENT_ID")
     NOTIFY_API_SVC_CLIENT_SECRET = os.getenv("NOTIFY_API_SVC_CLIENT_SECRET")
-    EMAIL_TEMPLATE_PATH = os.getenv(
-        "EMAIL_TEMPLATE_PATH", "src/ar_reminder/email_templates"
-    )
+    EMAIL_TEMPLATE_PATH = os.getenv("EMAIL_TEMPLATE_PATH", "src/ar_reminder/email_templates")
 
     COLIN_API_URL = os.getenv("COLIN_API_URL", "") + os.getenv("COLIN_API_VERSION", "")
     COLIN_API_SVC_CLIENT_ID = os.getenv("COLIN_API_SVC_CLIENT_ID")
@@ -76,11 +70,11 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     DB_PORT = int(os.getenv("DATABASE_PORT", "5432"))  # POSTGRESQL
     # POSTGRESQL
     if DB_UNIX_SOCKET := os.getenv("DATABASE_UNIX_SOCKET", None):
-        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
-    else:
         SQLALCHEMY_DATABASE_URI = (
-            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
         )
+    else:
+        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
     TESTING = False
     DEBUG = False
