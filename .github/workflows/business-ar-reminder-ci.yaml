@@ -18,3 +18,4 @@ jobs:
       app_name: "business-ar-reminder"
       working_directory: "./jobs/ar-reminder"
       codecov_flag: "businessarreminder"
+      skip_isort: "true"
