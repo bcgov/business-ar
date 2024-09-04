@@ -127,16 +127,13 @@ def run():
             token = AccountService.get_service_client_token(client_id, client_secret)
             filled_template = Path(
                 f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html"
-            ).read_text()
+            ).read_text(encoding="utf-8")
 
             businesses = _get_businesses()
             for business in businesses:
                 try:
-                    application.logger.info(
-                        "Business: {}, Last AR Reminder Year: {}".format(
-                            business.identifier, business.last_ar_reminder_year
-                        )
-                    )
+                    application.logger.info("Business: %s, Last AR Reminder Year: %s",
+                                            business.identifier, business.last_ar_reminder_year)
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
@@ -150,7 +147,7 @@ def run():
                         )
                     current_year = datetime.utcnow().year
                     application.logger.info(
-                        "Next AR year : {}".format(next_ar_reminder_year)
+                        "Next AR year: %s", next_ar_reminder_year
                     )
                     if next_ar_reminder_year > current_year:
                         business.last_ar_reminder_year = current_year
@@ -165,18 +162,21 @@ def run():
                     )
                     business.last_ar_reminder_year = next_ar_reminder_year
                     business.save()
-                except Exception as err:
-                    application.logger.error(err)
-        except Exception as err:
-            application.logger.error(err)
+                except KeyError as err:
+                    application.logger.error("Error processing business %s: %s",
+                                             business.identifier, str(err))
+        except KeyError as err:
+            application.logger.error("General error occurred: %s", str(err))
 
 
 def _get_businesses():
     where_clause = text(
-        "state='ACT' and ar_reminder_flag is true and (date_part('doy', founding_date) between date_part('doy', current_Date) and "
-        + "date_part('doy', current_Date + interval '14 days')) and (last_ar_reminder_year is NULL "
-        + "or last_ar_reminder_year < extract(year from current_date))"
+        "state='ACT' and ar_reminder_flag is true and "
+        "(date_part('doy', founding_date) between date_part('doy', current_Date) and "
+        "date_part('doy', current_Date + interval '14 days')) and "
+        "(last_ar_reminder_year is NULL or last_ar_reminder_year < extract(year from current_date))"
     )
+
     businesses = (
         db.session.query(Business)
         .filter(where_clause)
