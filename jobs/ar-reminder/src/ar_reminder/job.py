@@ -13,6 +13,7 @@
 # limitations under the License.
 """Job to send AR reminder.
 """
+import logging
 import os
 from datetime import datetime
 from pathlib import Path
@@ -53,7 +54,9 @@ def register_shellcontext(app):
     app.shell_context_processor(shell_context)
 
 
-def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_year: int, filled_template):
+def _process_and_send_email(
+    app: Flask, token: str, business: Business, fiscal_year: int, filled_template
+):
     try:
         recipient = business.email
         nano_id = generate()
@@ -93,7 +96,9 @@ def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_y
             ar_reminder.save()
 
     except Exception as exception:
-        app.logger.error(f"Failed to send reminder for business {business.identifier}", exception)
+        app.logger.error(
+            f"Failed to send reminder for business {business.identifier}", exception
+        )
         raise exception
 
 
@@ -113,9 +118,9 @@ def run():
             client_id = application.config.get("NOTIFY_API_SVC_CLIENT_ID")
             client_secret = application.config.get("NOTIFY_API_SVC_CLIENT_SECRET")
             token = AccountService.get_service_client_token(client_id, client_secret)
-            filled_template = Path(f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html").read_text(
-                encoding="utf-8"
-            )
+            filled_template = Path(
+                f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html"
+            ).read_text(encoding="utf-8")
 
             businesses = _get_businesses()
             for business in businesses:
@@ -128,10 +133,14 @@ def run():
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
-                        business_details = BusinessService.get_business_details_from_colin(
-                            business.identifier, business.legal_type, business.id
+                        business_details = (
+                            BusinessService.get_business_details_from_colin(
+                                business.identifier, business.legal_type, business.id
+                            )
                         )
-                        next_ar_reminder_year = int(business_details.get("business").get("nextARYear"))
+                        next_ar_reminder_year = int(
+                            business_details.get("business").get("nextARYear")
+                        )
                     current_year = datetime.utcnow().year
                     application.logger.info("Next AR year: %s", next_ar_reminder_year)
                     if next_ar_reminder_year > current_year:
@@ -165,6 +174,12 @@ def _get_businesses():
         "(last_ar_reminder_year is NULL or last_ar_reminder_year < extract(year from current_date))"
     )
 
-    businesses = db.session.query(Business).filter(where_clause).order_by(Business.founding_date).limit(25).all()
+    businesses = (
+        db.session.query(Business)
+        .filter(where_clause)
+        .order_by(Business.founding_date)
+        .limit(25)
+        .all()
+    )
 
     return businesses

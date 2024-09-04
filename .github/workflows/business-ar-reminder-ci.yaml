@@ -19,3 +19,4 @@ jobs:
       working_directory: "./jobs/ar-reminder"
       codecov_flag: "businessarreminder"
       skip_isort: "true"
+      skip_black: "true"
