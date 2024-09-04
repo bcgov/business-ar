@@ -13,7 +13,6 @@
 # limitations under the License.
 """Job to send AR reminder.
 """
-import logging
 import os
 from datetime import datetime
 from pathlib import Path
@@ -21,7 +20,6 @@ from pathlib import Path
 from flask import Flask
 from jinja2 import Template
 from nanoid import generate
-from sentry_sdk.integrations.logging import LoggingIntegration
 from sqlalchemy.sql.expression import text  # noqa: I001
 
 from ar_reminder.config import CONFIGURATION
@@ -33,17 +31,12 @@ from business_ar_api.services.rest_service import RestService
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
-SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
-
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
     app.config.from_object(CONFIGURATION[run_mode])
     db.init_app(app)
-    # Configure Sentry
-    if app.config.get("SENTRY_DSN", None):
-        sentry_sdk.init(dsn=app.config.get("SENTRY_DSN"), integrations=[SENTRY_LOGGING])
 
     register_shellcontext(app)
 
