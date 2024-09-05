@@ -114,9 +114,9 @@ def run():
             client_id = application.config.get("NOTIFY_API_SVC_CLIENT_ID")
             client_secret = application.config.get("NOTIFY_API_SVC_CLIENT_SECRET")
             token = AccountService.get_service_client_token(client_id, client_secret)
-            filled_template = Path(f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html").read_text(
-                encoding="utf-8"
-            )
+            template_path = f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html"
+            filled_template = Path(template_path).read_text(encoding="utf-8")
+
 
             businesses = _get_businesses()
             for business in businesses:
