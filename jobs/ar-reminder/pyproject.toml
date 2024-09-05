@@ -91,6 +91,7 @@ exclude = [
     ".history",
     "devops",
     "*migrations*",
+    "tests",
 ]
 per-file-ignores = [
     "__init__.py:F401",
