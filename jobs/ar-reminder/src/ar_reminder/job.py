@@ -80,7 +80,6 @@ def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_y
             }
         }
 
-
         if email_dict:
             send_email(app, email_dict, token=token)
             ar_reminder = AnnualReportReminder(
