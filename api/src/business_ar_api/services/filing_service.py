@@ -182,6 +182,8 @@ class FilingService:
         for colin_id in colin_ids:
             filing.colin_event_ids.append(ColinEventId(colin_event_id=colin_id))
         filing.status = FilingModel.Status.COMPLETED
-        filing.completion_date = filing.payment_completion_date
+        filing.filing_date = datetime.utcnow()
+        filing.completion_date = filing.filing_date
+        filing.payment_completion_date = filing.filing_date
         filing.save()
         return filing
