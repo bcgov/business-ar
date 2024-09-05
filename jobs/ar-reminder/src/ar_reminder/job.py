@@ -76,9 +76,10 @@ def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_y
             "content": {
                 "subject": "Annual Report Reminder",
                 "body": html_out,
-                "attachments": [],
-            },
+                "attachments": []
+            }
         }
+
 
         if email_dict:
             send_email(app, email_dict, token=token)
@@ -114,9 +115,9 @@ def run():
             client_id = application.config.get("NOTIFY_API_SVC_CLIENT_ID")
             client_secret = application.config.get("NOTIFY_API_SVC_CLIENT_SECRET")
             token = AccountService.get_service_client_token(client_id, client_secret)
-            template_path = f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html"
-            filled_template = Path(template_path).read_text(encoding="utf-8")
-
+            filled_template = Path(f"{application.config.get('EMAIL_TEMPLATE_PATH')}/ar_reminder.html").read_text(
+                encoding="utf-8"
+            )
 
             businesses = _get_businesses()
             for business in businesses:
