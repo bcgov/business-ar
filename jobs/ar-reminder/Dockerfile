@@ -87,4 +87,4 @@ COPY --chown=web:web . /code
 
 # ENV PYTHONPATH=/opt/app-root/src
 
-CMD [ "python", "-m", "ar_reminder" ]
+CMD [ "/bin/sh", "run.sh" ]
