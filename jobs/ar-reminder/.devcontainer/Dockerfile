@@ -10,3 +10,12 @@ ENV PYTHONUNBUFFERED 1
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends postgresql-client libpq-dev
+
+RUN chown -R $user:root $HOME \
+    && chmod -R ug+rw $HOME \
+    && chmod ug+x $HOME/*.sh \
+    && chmod g+rw /etc/passwd \
+    && chmod g-w $HOME/cron/crontab
+
+USER $user
+ENTRYPOINT ["bash", "docker-entrypoint.sh"]
