@@ -68,6 +68,11 @@ COPY --chown=web:web ./poetry.lock ./pyproject.toml /code/
 COPY --chown=web:web ./src /code/src
 COPY --chown=web:web ./README.md /code
 
+# Copy the run.sh script from jobs/ar-reminder/ to the /code directory
+# Ensure run.sh has execute permissions
+COPY --chown=web:web ./run.sh /code/run.sh
+RUN chmod +x /code/run.sh
+
 # Project initialization:
 RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
   echo "$APP_ENV" \
