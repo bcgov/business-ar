@@ -71,7 +71,7 @@ COPY --chown=web:web ./README.md /code
 # Copy the run.sh script from jobs/ar-reminder/ to the /code directory
 # Ensure run.sh has execute permissions
 COPY --chown=web:web ./run.sh /code/run.sh
-RUN chmod +x /code/run.sh
+RUN chmod 755 /code/run.sh
 
 # Project initialization:
 RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
@@ -90,7 +90,8 @@ USER web
 # The following stage is only for production:
 FROM development_build AS production_build
 COPY --chown=web:web . /code
+RUN chmod -R 755 /code
 
 # ENV PYTHONPATH=/opt/app-root/src
 
-CMD [ "/bin/sh", "run.sh" ]
+CMD [ "/bin/sh", "/code/run.sh" ]
