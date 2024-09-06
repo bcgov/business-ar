@@ -1,3 +1,3 @@
-cd /opt/app-root
+#! /bin/sh
 echo 'run ar_reminder'
 python -m ar_reminder

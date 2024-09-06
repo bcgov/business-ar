@@ -83,6 +83,7 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
     $(if [ -z ${APP_ENV+x} ] | [ "$APP_ENV" = 'production' ]; then echo '--only main'; fi) \
     --no-interaction --no-ansi
 
+COPY --chown=web:web . /code
 # Running as non-root user:
 USER web
 
