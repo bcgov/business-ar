@@ -139,7 +139,7 @@ def send_email(app: Flask, filing_id: str, token: str):
         )
         if not req or req.status_code != 200:
             app.logger.error(f"Failed to send email for filing {filing_id}")
-    except Exception as exception:
+    except Exception:
         app.logger.error(f"Failed to send email for filing {filing_id}")
 
 
