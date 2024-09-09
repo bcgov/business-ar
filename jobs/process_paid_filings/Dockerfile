@@ -68,6 +68,8 @@ COPY --chown=web:web ./poetry.lock ./pyproject.toml /code/
 COPY --chown=web:web ./src /code/src
 COPY --chown=web:web ./README.md /code
 
+COPY --chown=web:web ./run.sh /code/run.sh
+RUN chmod 755 /code/run.sh
 # Project initialization:
 RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
   echo "$APP_ENV" \
@@ -79,12 +81,14 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
     --no-interaction --no-ansi
 
 # Running as non-root user:
-USER web
-
-# The following stage is only for production:
-FROM development_build AS production_build
-COPY --chown=web:web . /code
-
-# ENV PYTHONPATH=/opt/app-root/src
-
-CMD [ "python", "-m", "process_paid_filings" ]
+  COPY --chown=web:web . /code
+  RUN chmod -R 755 /code
+  
+  USER web
+  
+  # The following stage is only for production:
+  FROM development_build AS production_build
+  
+  # ENV PYTHONPATH=/opt/app-root/src
+  
+  CMD [ "/bin/sh", "/code/run.sh" ]
