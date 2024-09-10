@@ -43,7 +43,7 @@ serialPipeline:
       deploy-env: "development"
       deploy-project-id: "a083gt-dev"
       job-name: "business-ar-process-paid-filings-dev"
-      cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
+      cloudsql-instances: ""
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
  - targetId: a083gt-test
@@ -56,7 +56,7 @@ serialPipeline:
       deploy-env: "development"
       deploy-project-id: "a083gt-test"
       job-name: "business-ar-process-paid-filings-test"
-      cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
+      cloudsql-instances: ""
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
  - targetId: a083gt-sandbox
@@ -69,7 +69,7 @@ serialPipeline:
       deploy-env: "sandbox"
       deploy-project-id: "a083gt-integration"
       job-name: "business-ar-process-paid-filings-sandbox"
-      cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
+      cloudsql-instances: ""
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-integration.iam.gserviceaccount.com"
  - targetId: a083gt-prod
@@ -82,6 +82,6 @@ serialPipeline:
       deploy-env: "production"
       deploy-project-id: "a083gt-prod"
       job-name: "business-ar-process-paid-filings-prod"
-      cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
+      cloudsql-instances: ""
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"

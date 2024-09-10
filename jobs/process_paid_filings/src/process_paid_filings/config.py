@@ -74,18 +74,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     DEBUG = True
     TESTING = True
-
-    DATABASE_TEST_USERNAME = os.getenv("DATABASE_TEST_USERNAME", "")
-    DATABASE_TEST_PASSWORD = os.getenv("DATABASE_TEST_PASSWORD", "")
-    DATABASE_TEST_NAME = os.getenv("DATABASE_TEST_NAME", "")
-    DATABASE_TEST_HOST = os.getenv("DATABASE_TEST_HOST", "")
-    DATABASE_TEST_PORT = int(os.getenv("DATABASE_TEST_PORT", "5432"))  # POSTGRESQL
-
-    SQLALCHEMY_DATABASE_URI = (
-        f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}"
-        f"@{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
-    )
-
+    
     COLIN_URL = os.getenv("COLIN_URL_TEST", "")
     LEGAL_URL = os.getenv("LEGAL_URL_TEST", "")
 
