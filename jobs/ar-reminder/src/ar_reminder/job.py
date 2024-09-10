@@ -18,6 +18,8 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+import requests
+from http import HTTPStatus
 from flask import Flask
 from jinja2 import Template
 from nanoid import generate
@@ -25,6 +27,7 @@ from sqlalchemy.sql.expression import text  # noqa: I001
 
 from ar_reminder.config import CONFIGURATION
 from ar_reminder.utils.logging import setup_logging
+from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.models import AnnualReportReminder, Business, db
 from business_ar_api.services import AccountService
 from business_ar_api.services.business_service import BusinessService
@@ -32,6 +35,8 @@ from business_ar_api.services.rest_service import RestService
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
+CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
+TIMEOUT = 20
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
@@ -106,8 +111,34 @@ def send_email(app: Flask, notify_body: dict, token: str):
     app.logger.info(f'Email sent to {notify_body.get("recipients")}')
 
 
+def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, token: str):
+    """Calls Colin API in Lear: turns off ar reminder flag and insert into set_ar_to_no"""
+    url=f'{app.config["COLIN_API_URL"]}/{app.config["COLIN_API_VERSION"]}/businesses/{legal_type}/{identifier}/filings/reminder'
+    headers={
+        **CONTENT_TYPE_JSON,
+        "Authorization": AuthHeaderType.BEARER.value.format(token),
+    }
+
+    try:
+        req = requests.post(url, headers, timeout=TIMEOUT)
+
+        if req.status_code == HTTPStatus.OK:
+            app.logger.info(f'Successfully updated AR status for corporation {identifier} in Colin.')
+            return True
+
+        app.logger.error(
+            f'Failed to update AR status for corporation {identifier}. '
+            f'Status Code: {req.status_code}, Response: {req.text}'
+        )
+        return False
+
+    except Exception as e:
+        app.logger.error(f'Error updating AR status for corporation {identifier}: {str(e)}')
+        return False
+
+
 def run():
-    """Get filings that haven't been synced with colin and send them to the colin-api."""
+    """Get corporations from the GCP businesses table and send out AR Reminder emails."""
     application = create_app()
     with application.app_context():
         try:
@@ -148,13 +179,14 @@ def run():
                     )
                     business.last_ar_reminder_year = next_ar_reminder_year
                     business.save()
-                except KeyError as err:
+                    update_ar_indicator_in_colin(application, business.legal_type, business.identifier, token)
+                except Exception as err:
                     application.logger.error(
                         "Error processing business %s: %s",
                         business.identifier,
                         str(err),
                     )
-        except KeyError as err:
+        except Exception as err:
             application.logger.error("General error occurred: %s", str(err))
 
 
