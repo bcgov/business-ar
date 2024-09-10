@@ -13,30 +13,30 @@
 # limitations under the License.
 """Job to send AR reminder.
 """
-import logging
 import os
 from datetime import datetime
 from pathlib import Path
+from http import HTTPStatus
 
 import requests
-from http import HTTPStatus
 from flask import Flask
 from jinja2 import Template
 from nanoid import generate
 from sqlalchemy.sql.expression import text  # noqa: I001
-
-from ar_reminder.config import CONFIGURATION
-from ar_reminder.utils.logging import setup_logging
 from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.models import AnnualReportReminder, Business, db
 from business_ar_api.services import AccountService
 from business_ar_api.services.business_service import BusinessService
 from business_ar_api.services.rest_service import RestService
 
+from ar_reminder.config import CONFIGURATION
+from ar_reminder.utils.logging import setup_logging
+
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
 TIMEOUT = 20
+
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
@@ -113,8 +113,11 @@ def send_email(app: Flask, notify_body: dict, token: str):
 
 def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, token: str):
     """Calls Colin API in Lear: turns off ar reminder flag and insert into set_ar_to_no"""
-    url=f'{app.config["COLIN_API_URL"]}/{app.config["COLIN_API_VERSION"]}/businesses/{legal_type}/{identifier}/filings/reminder'
-    headers={
+    url = (
+        f'{app.config["COLIN_API_URL"]}/{app.config["COLIN_API_VERSION"]}/'
+        f'businesses/{legal_type}/{identifier}/filings/reminder'
+    )
+    headers = {
         **CONTENT_TYPE_JSON,
         "Authorization": AuthHeaderType.BEARER.value.format(token),
     }
