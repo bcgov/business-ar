@@ -74,7 +74,6 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     DEBUG = True
     TESTING = True
-    
     COLIN_URL = os.getenv("COLIN_URL_TEST", "")
     LEGAL_URL = os.getenv("LEGAL_URL_TEST", "")
 
