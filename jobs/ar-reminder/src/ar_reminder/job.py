@@ -120,7 +120,7 @@ def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, t
     }
 
     try:
-        req = requests.post(url, headers, timeout=TIMEOUT)
+        req = requests.post(url, headers=headers, timeout=TIMEOUT)
 
         if req.status_code == HTTPStatus.OK:
             app.logger.info(f'Successfully updated AR status for corporation {identifier} in Colin.')
