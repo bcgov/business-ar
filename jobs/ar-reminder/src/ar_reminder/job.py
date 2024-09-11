@@ -163,18 +163,21 @@ def run():
                         business.identifier,
                         business.last_ar_reminder_year,
                     )
+                    # Always get business details
+                    business_details = BusinessService.get_business_details_from_colin(
+                        business.identifier, business.legal_type, business.id
+                    )
+                    
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
-                        business_details = BusinessService.get_business_details_from_colin(
-                            business.identifier, business.legal_type, business.id
-                        )
                         next_ar_reminder_year = int(
-                            business_details.get("business").get("nextARYear"))
+                            business_details.get("business", {}).get("nextARYear", 0))
                     # check if it is an admin freeze first. If it is, then skip the processing
                     adminFreeze = business_details.get(
                         "business").get("adminFreeze")
                     application.logger.info("Admin Freeze is: %s", adminFreeze)
+                    
                     if adminFreeze != 'True':
                         current_year = datetime.utcnow().year
                         application.logger.info(
