@@ -141,7 +141,24 @@ def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str
             f"Failed to complete filing {filing_id} with colin id {colin_ids}",
             exception,
         )
-
+        
+def delete_ar_prompt(app: Flask, identifier: str, token: str):
+    """Delete AR Prompt for corporation."""
+    try:
+        req = requests.post(
+            f'{app.config["COLIN_API_URL"]}/businesses/{identifier}/filings',
+            headers={
+                **CONTENT_TYPE_JSON,
+                "Authorization": AuthHeaderType.BEARER.value.format(token),
+            },
+            timeout=TIMEOUT,
+        )
+        if req.status_code == 200:
+            app.logger.info(f"Successfully deleted AR prompt for corporation {identifier}.")
+        else:
+            app.logger.error(f"Failed to delete AR prompt for corporation {identifier}. Status code: {req.status_code}")
+    except Exception as exception:
+        app.logger.error(f"Error deleting AR prompt for corporation {identifier}: {str(exception)}")
 
 def send_email(app: Flask, filing_id: str, token: str):
     try:
@@ -220,6 +237,11 @@ def run():
                             filing_id=filing_id,
                             token=token,
                         )
+                        delete_ar_prompt(
+                        app=application,
+                        identifier=filing["filing"]["business"]["identifier"],
+                        token=token
+                    )
                     else:
                         corps_with_failed_filing.append(
                             filing["filing"]["business"]["identifier"]
