@@ -113,10 +113,7 @@ def send_email(app: Flask, notify_body: dict, token: str):
 
 def update_ar_indicator_in_colin(app: Flask, legal_type: str, identifier: str, token: str):
     """Calls Colin API in Lear: turns off ar reminder flag and insert into set_ar_to_no"""
-    url = (
-        f'{app.config["COLIN_API_URL"]}/{app.config["COLIN_API_VERSION"]}/'
-        f'businesses/{legal_type}/{identifier}/filings/reminder'
-    )
+    url = f'{app.config["COLIN_API_URL"]}/businesses/{legal_type}/{identifier}/filings/reminder'
     headers = {
         **CONTENT_TYPE_JSON,
         "Authorization": AuthHeaderType.BEARER.value.format(token),
