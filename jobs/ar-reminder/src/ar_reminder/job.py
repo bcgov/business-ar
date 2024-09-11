@@ -167,7 +167,6 @@ def run():
                     business_details = BusinessService.get_business_details_from_colin(
                         business.identifier, business.legal_type, business.id
                     )
-                    
                     if business.last_ar_reminder_year:
                         next_ar_reminder_year = business.last_ar_reminder_year + 1
                     else:
@@ -177,7 +176,6 @@ def run():
                     adminFreeze = business_details.get(
                         "business").get("adminFreeze")
                     application.logger.info("Admin Freeze is: %s", adminFreeze)
-                    
                     if adminFreeze != 'True':
                         current_year = datetime.utcnow().year
                         application.logger.info(
