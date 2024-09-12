@@ -143,23 +143,32 @@ def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str
         )
 
 
-def delete_ar_prompt(app: Flask, identifier: str, token: str):
+def delete_ar_prompt(app: Flask, legal_type: str, identifier: str, token: str):
     """Delete AR Prompt for corporation."""
     try:
+        # Log the identifier and token for debugging purposes
+        app.logger.info(f"Attempting to delete AR prompt for corporation {identifier}.")
+        app.logger.debug(f"Token used for deletion: {token}")
+
+        # Make the DELETE request to the COLIN API
         req = requests.delete(
-            f'{app.config["COLIN_API_URL"]}/businesses/{identifier}/filings/reminder',
+            f'{app.config["COLIN_API_URL"]}/businesses/{legal_type}/{identifier}/filings/reminder',
             headers={
                 **CONTENT_TYPE_JSON,
                 "Authorization": AuthHeaderType.BEARER.value.format(token),
             },
             timeout=TIMEOUT,
         )
+
+        # Log the response status and content
         if req.status_code == 200:
             app.logger.info(f"Successfully deleted AR prompt for corporation {identifier}.")
         else:
-            app.logger.error(f"Failed to delete AR prompt for corporation {identifier}. Status code: {req.status_code}")
+            app.logger.error(f"Failed to delete AR prompt for corporation {identifier}. "
+                             f"Status code: {req.status_code}, Response: {req.text}")
     except Exception as exception:
-        app.logger.error(f"Error deleting AR prompt for corporation {identifier}: {str(exception)}")
+        # Log the exception with full traceback details
+        app.logger.error(f"Error deleting AR prompt for corporation {identifier}: {str(exception)}", exc_info=True)
 
 
 def send_email(app: Flask, filing_id: str, token: str):
@@ -205,7 +214,8 @@ def run():
             for filing in filings:
                 filing_id = filing["filing"]["header"]["id"]
                 identifier = filing["filing"]["business"]["identifier"]
-
+                legal_type = filing["filing"]["business"]["legalType"]
+                
                 filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
                     "header"
                 ]["filingDateTime"]
@@ -240,10 +250,10 @@ def run():
                             token=token,
                         )
                         delete_ar_prompt(
-                            app=application,
-                            identifier=filing["filing"]["business"]["identifier"],
-                            token=token
-                        )
+                            app=application, 
+                            legal_type=legal_type, 
+                            identifier=identifier, 
+                            token=token)
                     else:
                         corps_with_failed_filing.append(
                             filing["filing"]["business"]["identifier"]
