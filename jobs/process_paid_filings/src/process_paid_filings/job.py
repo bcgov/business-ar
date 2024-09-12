@@ -209,6 +209,7 @@ def run():
                 filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
                     "header"
                 ]["filingDateTime"]
+                filing["filing"]["header"]["date"] = filing["filing"]["header"]["learEffectiveDate"]
                 filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["source"] = "BAR"
