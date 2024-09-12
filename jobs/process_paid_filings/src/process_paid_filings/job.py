@@ -26,9 +26,9 @@ from flask import Flask
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .config import CONFIGURATION
-from .utils.logging import setup_logging
+from .utils.logging import initialize_logging
 
-setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
+initialize_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
 
 SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
@@ -93,7 +93,7 @@ def send_filing(
     app.logger.info(f"Legal Type: {legal_type}")
 
     app.logger.info("Filing details to be sent:")
-    app.logger.info(json.dumps(filing, indent=4)) 
+    app.logger.info(json.dumps(filing, indent=4))
 
     req = None
     if legal_type and identifier and filing_type:
@@ -112,7 +112,7 @@ def send_filing(
     if not req or req.status_code != 201:
         app.logger.error(f"Filing {filing_id} not created in colin {identifier}.")
         return None
-    
+
     app.logger.info("Filing created successfully in COLIN.")
     app.logger.info(f"Response: {req.json()}")
 
@@ -141,7 +141,8 @@ def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str
             f"Failed to complete filing {filing_id} with colin id {colin_ids}",
             exception,
         )
-        
+
+
 def delete_ar_prompt(app: Flask, identifier: str, token: str):
     """Delete AR Prompt for corporation."""
     try:
@@ -160,6 +161,7 @@ def delete_ar_prompt(app: Flask, identifier: str, token: str):
     except Exception as exception:
         app.logger.error(f"Error deleting AR prompt for corporation {identifier}: {str(exception)}")
 
+
 def send_email(app: Flask, filing_id: str, token: str):
     try:
         req = requests.post(
@@ -173,7 +175,7 @@ def send_email(app: Flask, filing_id: str, token: str):
         if not req or req.status_code != 200:
             app.logger.error(f"Failed to send email for filing {filing_id}")
     except Exception as exception:
-        app.logger.error(f"Failed to send email for filing {filing_id}")
+        app.logger.error(f"Failed to send email for filing {filing_id}: {exception}")
 
 
 def clean_none(dictionary: dict = None):
@@ -238,10 +240,10 @@ def run():
                             token=token,
                         )
                         delete_ar_prompt(
-                        app=application,
-                        identifier=filing["filing"]["business"]["identifier"],
-                        token=token
-                    )
+                            app=application,
+                            identifier=filing["filing"]["business"]["identifier"],
+                            token=token
+                        )
                     else:
                         corps_with_failed_filing.append(
                             filing["filing"]["business"]["identifier"]
