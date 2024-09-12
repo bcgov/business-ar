@@ -17,9 +17,10 @@ import logging.config
 import os
 import sys
 import google.cloud.logging
-from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
+from google.cloud.logging.handlers import CloudLoggingHandler
 
-def setup_logging(conf):
+
+def initialize_logging(conf):
     """Create the services logger."""
     if conf and os.path.isfile(conf):
         logging.config.fileConfig(conf)
@@ -37,8 +38,11 @@ def setup_logging(conf):
         # Set up a handler for Google Cloud Logging
         handler = CloudLoggingHandler(client)
 
-        # Optionally configure additional loggers or the root logger
-        setup_logging(handler)
+        # Add the handler to the root logger
+        root_logger = logging.getLogger()
+        root_logger.addHandler(handler)
 
-        logging.getLogger().setLevel(logging.INFO)  # Set the logging level
+        # Set the logging level
+        root_logger.setLevel(logging.INFO)
+
         logging.info("Logging is now set up in Google Cloud!")
