@@ -43,6 +43,6 @@ def initialize_logging(conf):
         root_logger.addHandler(handler)
 
         # Set the logging level
-        root_logger.setLevel(logging.INFO)
+        root_logger.setLevel(logging.DEBUG)
 
         logging.info("Logging is now set up in Google Cloud!")
