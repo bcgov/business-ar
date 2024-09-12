@@ -215,7 +215,6 @@ def run():
                 filing_id = filing["filing"]["header"]["id"]
                 identifier = filing["filing"]["business"]["identifier"]
                 legal_type = filing["filing"]["business"]["legalType"]
-                
                 filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
                     "header"
                 ]["filingDateTime"]
@@ -250,9 +249,9 @@ def run():
                             token=token,
                         )
                         delete_ar_prompt(
-                            app=application, 
-                            legal_type=legal_type, 
-                            identifier=identifier, 
+                            app=application,
+                            legal_type=legal_type,
+                            identifier=identifier,
                             token=token)
                     else:
                         corps_with_failed_filing.append(
