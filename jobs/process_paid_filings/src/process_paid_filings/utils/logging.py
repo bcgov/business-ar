@@ -12,20 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Centralized setup of logging for the service."""
+import logging
 import logging.config
+import os
 import sys
-from os import path
-
+import google.cloud.logging
+from google.cloud.logging.handlers import CloudLoggingHandler, setup_logging
 
 def setup_logging(conf):
     """Create the services logger."""
-    # log_file_path = path.join(path.abspath(path.dirname(__file__)), conf)
-
-    if conf and path.isfile(conf):
+    if conf and os.path.isfile(conf):
         logging.config.fileConfig(conf)
-        print("Configure logging, from conf:{}".format(conf), file=sys.stdout)
+        print("Configure logging, from conf: {}".format(conf), file=sys.stdout)
     else:
+        # Fallback to Google Cloud Logging
         print(
-            "Unable to configure logging, attempted conf:{}".format(conf),
+            "Unable to configure logging, attempted conf: {}. Falling back to Google Cloud Logging.".format(conf),
             file=sys.stderr,
         )
+
+        # Initialize Google Cloud Logging client
+        client = google.cloud.logging.Client()
+
+        # Set up a handler for Google Cloud Logging
+        handler = CloudLoggingHandler(client)
+
+        # Optionally configure additional loggers or the root logger
+        setup_logging(handler)
+
+        logging.getLogger().setLevel(logging.INFO)  # Set the logging level
+        logging.info("Logging is now set up in Google Cloud!")
