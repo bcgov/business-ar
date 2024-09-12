@@ -146,8 +146,8 @@ def complete_filing(app: Flask, filing_id: str, colin_ids: List[int], token: str
 def delete_ar_prompt(app: Flask, identifier: str, token: str):
     """Delete AR Prompt for corporation."""
     try:
-        req = requests.post(
-            f'{app.config["COLIN_API_URL"]}/businesses/{identifier}/filings',
+        req = requests.delete(
+            f'{app.config["COLIN_API_URL"]}/businesses/{identifier}/filings/reminder',
             headers={
                 **CONTENT_TYPE_JSON,
                 "Authorization": AuthHeaderType.BEARER.value.format(token),
