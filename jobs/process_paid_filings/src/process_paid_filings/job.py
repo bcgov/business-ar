@@ -86,15 +86,6 @@ def send_filing(
     identifier = filing["filing"]["business"].get("identifier", None)
     legal_type = filing["filing"]["business"].get("legalType")
 
-    app.logger.info("send_filing function called.")
-    app.logger.info(f"Filing ID: {filing_id}")
-    app.logger.info(f"Filing Type: {filing_type}")
-    app.logger.info(f"Business Identifier: {identifier}")
-    app.logger.info(f"Legal Type: {legal_type}")
-
-    app.logger.info("Filing details to be sent:")
-    app.logger.info(json.dumps(filing, indent=4))
-
     req = None
     if legal_type and identifier and filing_type:
         req = requests.post(
@@ -107,14 +98,9 @@ def send_filing(
             timeout=TIMEOUT,
         )
 
-        app.logger.info(f"POST request made. Status Code: {req.status_code}")
-
     if not req or req.status_code != 201:
         app.logger.error(f"Filing {filing_id} not created in colin {identifier}.")
         return None
-
-    app.logger.info("Filing created successfully in COLIN.")
-    app.logger.info(f"Response: {req.json()}")
 
     # if it's an AR containing multiple filings it will have multiple colinIds
     return req.json()["filing"]["header"]["colinIds"]
