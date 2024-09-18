@@ -17,6 +17,8 @@ import logging
 import json
 import os
 from typing import List
+from datetime import datetime
+import pytz
 
 import requests
 import sentry_sdk
@@ -208,6 +210,14 @@ def run():
                 filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["source"] = "BAR"
+
+                # Convert the founding date from UTC to Pacific Time.
+                # The Colin API sends us the founding date in UTC, but we need to convert it
+                # back to the local Pacific Time zone to ensure the last_ar_filed_date reflects
+                # the same calendar day locally as when the business was founded.
+                utc_founding_date = datetime.fromisoformat(filing["filing"]["business"]["foundingDate"]).replace(tzinfo=pytz.utc)
+                pacific_founding_date = utc_founding_date.astimezone(pytz.timezone('America/Los_Angeles'))
+                filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
 
                 if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive
