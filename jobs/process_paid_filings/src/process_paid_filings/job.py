@@ -215,7 +215,10 @@ def run():
                 # The Colin API sends us the founding date in UTC, but we need to convert it
                 # back to the local Pacific Time zone to ensure the last_ar_filed_date reflects
                 # the same calendar day locally as when the business was founded.
-                utc_founding_date = datetime.fromisoformat(filing["filing"]["business"]["foundingDate"]).replace(tzinfo=pytz.utc)
+                utc_founding_date = (
+                    datetime.fromisoformat(filing["filing"]["business"]["foundingDate"])
+                    .replace(tzinfo=pytz.utc)
+                )
                 pacific_founding_date = utc_founding_date.astimezone(pytz.timezone('America/Los_Angeles'))
                 filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
 
