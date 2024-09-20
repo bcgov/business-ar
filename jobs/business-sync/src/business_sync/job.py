@@ -58,28 +58,43 @@ def run():
                 result_set = connection.execute(
                     text(
                         """
-                        SELECT C.*,
-                        S.STATE_TYP_CD AS CORP_STATE,
-                        CN.CORP_NME AS CORP_NAME,
-                        CT.CORP_CLASS AS CORP_CLASS
-                        FROM 
-                        COLIN.CORPORATION C,
-                        COLIN.CORP_STATE S,
-                        COLIN.CORP_NAME CN,
-                        COLIN.CORP_TYPE CT
-                        WHERE
-                        C.CORP_NUM = S.CORP_NUM
-                        AND S.END_EVENT_ID IS NULL
-                        AND C.CORP_NUM = CN.CORP_NUM
-                        AND CN.END_EVENT_ID IS NULL
-                        AND C.CORP_TYP_CD = CT.CORP_TYP_CD
-                        AND CT.CORP_CLASS IN ('BC', 'XPRO')
-                        AND C.ADMIN_EMAIL IS NOT NULL
-                        AND C.RECOGNITION_DTS IS NOT NULL
-                        AND C.CORP_TYP_CD IN ('BC', 'C', 'ULC', 'CC', 'CCC')
-                        AND (DATE_PART('doy',C.RECOGNITION_DTS) BETWEEN DATE_PART('doy',CURRENT_DATE) AND DATE_PART('doy',CURRENT_DATE + interval '14 days'))
-                        ORDER BY C.RECOGNITION_DTS
-                        LIMIT 5
+                        SELECT co.corp_num
+                            , co.recognition_dts
+                            , EXTRACT(YEAR FROM co.last_ar_filed_dt) AS last_ar_filed_year
+                            , co.admin_email
+                            , cn.CORP_NME
+                            , ct.corp_class
+                        FROM "colin"."corporation"   co
+                        , "colin".corp_type       ct
+                        , "colin".corp_state      cs
+                        , "colin".corp_name       cn
+                        WHERE co.corp_typ_cd    = ct.corp_typ_cd
+                        AND co.corp_num       = cs.corp_num
+                        AND co.corp_num       = cn.corp_num
+                        AND cs.end_event_id   IS NULL
+                        and cn.end_event_id is null
+                        and cn.corp_name_typ_cd = 'CO'
+                        AND cs.state_typ_cd   = 'ACT'
+                        AND ct.corp_class     = 'BC'
+                        AND co.corp_typ_cd   <> 'BEN'
+                        AND co.admin_email IS NOT NULL
+                        AND co.send_ar_ind = 'Y'
+                        AND NOT EXISTS (SELECT 'x'
+                                        FROM "colin".filing f, "colin".event e, "colin".filing_user u
+                                        WHERE f.event_id = e.event_id
+                                        AND f.event_id = u.event_id
+                                        AND e.corp_num = co.corp_num
+                                        AND u.role_typ_cd = 'bcol')
+                        AND NOT EXISTS (SELECT 'x'
+                                        FROM "colin".corporation
+                                        WHERE admin_email = co.admin_email
+                                        AND corp_num <> co.corp_num)
+                        AND (date_part('doy', co.recognition_dts) BETWEEN date_part('doy', current_date)
+                            AND date_part('doy', current_date))
+                        AND (
+                            (EXTRACT(YEAR FROM co.recognition_dts) = EXTRACT(YEAR FROM current_date) - 1 AND co.last_ar_filed_dt IS NULL)
+                            OR (co.last_ar_filed_dt IS NOT NULL AND EXTRACT(YEAR FROM co.last_ar_filed_dt) = EXTRACT(YEAR FROM current_date) - 1)
+                        );
                         """
                     )
                 )
@@ -112,6 +127,7 @@ def run():
                         # business.op_state = row.op_state
                         business.tax_id = row.bn_15
                         business.corp_class = row.corp_class
+                        business.last_ar_filed_year = row.last_ar_filed_year
                         business.save()
                     except Exception as exc:
                         application.logger.error(exc)
