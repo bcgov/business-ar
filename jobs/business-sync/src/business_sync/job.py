@@ -92,6 +92,9 @@ def run():
                         AND NOT EXISTS (SELECT 'x'
                                         FROM "auth"."users" u
                                         WHERE co.admin_email = u.email)                                                              -- no SBC Connect account associated with the email
+                        AND NOT EXISTS (SELECT 'x'
+                                        FROM "auth"."entities" auth
+                                        WHERE TRIM(LEADING 'BC' FROM auth.business_identifier) = co.corp_num)                        -- exclude if business identifier already exists in Auth-db
                         AND (date_part('doy', co.recognition_dts) BETWEEN date_part('doy', current_date)                            -- AR reminder within the next 14 days based on the day of year
                             AND date_part('doy', current_date))                                                                     -- AR reminder on the anniversary date
                         AND (
