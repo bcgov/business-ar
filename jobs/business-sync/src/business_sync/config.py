@@ -41,7 +41,7 @@ def get_named_config(config_name: str = "production"):
     return config
 
 
-class _Config(object):  # pylint: disable=too-few-public-methods
+class _Config:  # pylint: disable=too-few-public-methods
     """Base class configuration."""
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -57,11 +57,13 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     DB_PORT = int(os.getenv("DATABASE_PORT", "5432"))  # POSTGRESQL
     # POSTGRESQL
     if DB_UNIX_SOCKET := os.getenv("DATABASE_UNIX_SOCKET", None):
-        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
+        SQLALCHEMY_DATABASE_URI = (
+            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}"
+            f"?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
+    )
     else:
         SQLALCHEMY_DATABASE_URI = (
-            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        )
+            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
     WAREHOUSE_DB_UNIX_SOCKET = os.getenv("WAREHOUSE_DB_UNIX_SOCKET")
     WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
@@ -77,9 +79,9 @@ class _Config(object):  # pylint: disable=too-few-public-methods
         f"{WAREHOUSE_DB_NAME}?host=/cloudsql/{AUTH_PROXY_CONNECT}"
     )
 
-
     TESTING = False
     DEBUG = False
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
@@ -100,7 +102,10 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     DATABASE_TEST_HOST = os.getenv("DATABASE_TEST_HOST", "")
     DATABASE_TEST_PORT = int(os.getenv("DATABASE_TEST_PORT", "5432"))  # POSTGRESQL
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@"
+        f"{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    )
 
 
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
