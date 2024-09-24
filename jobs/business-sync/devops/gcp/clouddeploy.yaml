@@ -59,6 +59,19 @@ serialPipeline:
       cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
+ - targetId: a083gt-sandbox
+   profiles: [sandbox]
+   strategy:
+    standard:
+      verify: false
+   deployParameters:
+   - values:
+      deploy-env: "production"
+      deploy-project-id: "a083gt-integration"
+      job-name: "business-business-sync-sandbox"
+      cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
+      run-command: "./run.sh"
+      service-account: "sa-job@a083gt-integration.iam.gserviceaccount.com"
  - targetId: a083gt-prod
    profiles: [prod]
    strategy:
