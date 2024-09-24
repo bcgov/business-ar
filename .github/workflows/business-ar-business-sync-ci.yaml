@@ -1,0 +1,22 @@
+name: Business AR Business Sync CI
+
+on:
+  pull_request:
+    paths:
+      - "jobs/business-sync/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./jobs/business-sync
+
+jobs:
+  business-ar-job-business-sync-ci:
+    uses: bcgov/bcregistry-sre/.github/workflows/backend-ci.yaml@main
+    with:
+      app_name: "business-ar-job-business-sync"
+      working_directory: "./jobs/business-sync"
+      codecov_flag: "businessarbusiness_sync"
+      skip_isort: "true"
+      skip_black: "true"

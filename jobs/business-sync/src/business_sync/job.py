@@ -14,6 +14,9 @@
 """Job to sync business info from colin warehouse to business ar db.
 """
 import os
+import subprocess
+import time
+
 
 import sqlalchemy
 from business_ar_api.models import Business, db
@@ -34,6 +37,16 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     return app
 
+def start_cloud_sql_proxy(app):
+    cmd = [
+        "cloud-sql-proxy",
+        f"--credentials-file={app.config['WAREHOUSE_CREDENTIALS_FILE']}",
+        "--unix-socket=/cloudsql",
+        app.config['AUTH_PROXY_CONNECT']
+    ]
+    subprocess.Popen(cmd)
+
+
 
 def register_shellcontext(app):
     """Register shell context objects."""
@@ -49,6 +62,8 @@ def run():
     """Get the businesses from warehouse that has anniversary in next 2 days and sync the info
     with the Business AR db."""
     application = create_app()
+    start_cloud_sql_proxy(application)
+    time.sleep(5)
     with application.app_context():
         try:
             warehouse_uri = application.config.get("WAREHOUSE_URI")
@@ -61,6 +76,7 @@ def run():
                         SELECT co.corp_num
                             , co.recognition_dts
                             , EXTRACT(YEAR FROM co.last_ar_filed_dt) AS last_ar_filed_year
+                            , co.corp_typ_cd
                             , co.admin_email
                             , cn.CORP_NME
                             , ct.corp_class

@@ -63,19 +63,23 @@ class _Config(object):  # pylint: disable=too-few-public-methods
             f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
         )
 
-    WAREHOUSE_USER = os.getenv("WAREHOUSE_USER", "")
-    WAREHOUSE_PASSWORD = os.getenv("WAREHOUSE_PASSWORD", "")
-    WAREHOUSE_HOST = os.getenv("WAREHOUSE_HOST", "")
-    WAREHOUSE_PORT = int(os.getenv("WAREHOUSE_PORT", "5432"))  # POSTGRESQL
-    WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "")
-    if WAREHOUSE_DB_UNIX_SOCKET := os.getenv("WAREHOUSE_DB_UNIX_SOCKET", None):
-        WAREHOUSE_URI = f"postgresql+pg8000://{WAREHOUSE_USER}:{WAREHOUSE_PASSWORD}@/{WAREHOUSE_DB_NAME}?unix_sock={WAREHOUSE_DB_UNIX_SOCKET}/.s.PGSQL.5432"
-    else:
-        WAREHOUSE_URI = f"postgresql+pg8000://{WAREHOUSE_USER}:{WAREHOUSE_PASSWORD}@{WAREHOUSE_HOST}:{WAREHOUSE_PORT}/{WAREHOUSE_DB_NAME}"
+    WAREHOUSE_DB_UNIX_SOCKET = os.getenv("WAREHOUSE_DB_UNIX_SOCKET")
+    WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
+    AUTH_PROXY_CONNECT = os.getenv("AUTH_PROXY_CONNECT")
+    WAREHOUSE_DB_USER = os.getenv("WAREHOUSE_DB_USER", "")
+    WAREHOUSE_DB_PASSWORD = os.getenv("WAREHOUSE_DB_PASSWORD", "")
+    WAREHOUSE_DB_HOST = os.getenv("WAREHOUSE_DB_HOST", "localhost")
+    WAREHOUSE_DB_PORT = os.getenv("WAREHOUSE_DB_PORT", "6003")
+    WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "fin_warehouse")
+
+    WAREHOUSE_URI = (
+        f"postgresql+psycopg2://{WAREHOUSE_DB_USER}:{WAREHOUSE_DB_PASSWORD}@/"
+        f"{WAREHOUSE_DB_NAME}?host=/cloudsql/{AUTH_PROXY_CONNECT}"
+    )
+
 
     TESTING = False
     DEBUG = False
-
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
