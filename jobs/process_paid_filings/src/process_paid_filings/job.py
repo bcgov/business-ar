@@ -212,7 +212,7 @@ def run():
                 filing["filing"]["header"]["source"] = "BAR"
 
                 # Convert the founding date from UTC to Pacific Time.
-                # The Colin API sends us the founding date in UTC, but we need to convert it
+                # The Colin API sends the founding date in UTC, but we need to convert it
                 # back to the local Pacific Time zone to ensure the last_ar_filed_date reflects
                 # the same calendar day locally as when the business was founded.
                 utc_founding_date = (
