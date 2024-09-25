@@ -46,8 +46,8 @@ def start_cloud_sql_proxy(app):
         "--unix-socket=/cloudsql",
         app.config["AUTH_PROXY_CONNECT"],
     ]
-    with subprocess.Popen(cmd):
-        pass
+    process = subprocess.Popen(cmd)
+    return process
 
 
 def register_shellcontext(app):

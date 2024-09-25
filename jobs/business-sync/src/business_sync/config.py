@@ -15,6 +15,8 @@
 
 import os
 import sys
+import tempfile
+import atexit
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -66,14 +68,41 @@ class _Config:  # pylint: disable=too-few-public-methods
             f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
     WAREHOUSE_DB_UNIX_SOCKET = os.getenv("WAREHOUSE_DB_UNIX_SOCKET")
-    WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
+    #WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
     AUTH_PROXY_CONNECT = os.getenv("AUTH_PROXY_CONNECT")
     WAREHOUSE_DB_USER = os.getenv("WAREHOUSE_DB_USER", "")
     WAREHOUSE_DB_PASSWORD = os.getenv("WAREHOUSE_DB_PASSWORD", "")
     WAREHOUSE_DB_HOST = os.getenv("WAREHOUSE_DB_HOST", "localhost")
     WAREHOUSE_DB_PORT = os.getenv("WAREHOUSE_DB_PORT", "6003")
     WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "fin_warehouse")
+    WAREHOUSE_CREDENTIALS_FILE_PATH = None
 
+    # Get the contents of the credentials from the environment variable
+    WAREHOUSE_CREDENTIALS_FILE_CONTENTS = os.getenv("WAREHOUSE_CREDENTIALS_FILE", None)
+
+    if WAREHOUSE_CREDENTIALS_FILE_CONTENTS:
+        # Optionally strip leading/trailing quotes if necessary
+        if WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith("'") and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith("'"):
+            WAREHOUSE_CREDENTIALS_FILE_CONTENTS = WAREHOUSE_CREDENTIALS_FILE_CONTENTS[1:-1]
+
+        # Write the credentials contents to a temporary file
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_cred_file:
+            temp_cred_file.write(WAREHOUSE_CREDENTIALS_FILE_CONTENTS)
+            WAREHOUSE_CREDENTIALS_FILE_PATH = temp_cred_file.name  # Assign directly without '_Config'
+
+        # Register cleanup function to delete the temp file at exit
+        @staticmethod
+        def remove_temp_file():
+            try:
+                if _Config.WAREHOUSE_CREDENTIALS_FILE_PATH:
+                    os.remove(_Config.WAREHOUSE_CREDENTIALS_FILE_PATH)
+            except OSError:
+                pass
+
+        atexit.register(remove_temp_file)
+
+    # Update the config to use the temporary file path
+    WAREHOUSE_CREDENTIALS_FILE = WAREHOUSE_CREDENTIALS_FILE_PATH
     WAREHOUSE_URI = (
         f"postgresql+psycopg2://{WAREHOUSE_DB_USER}:{WAREHOUSE_DB_PASSWORD}@/"
         f"{WAREHOUSE_DB_NAME}?host=/cloudsql/{AUTH_PROXY_CONNECT}"
