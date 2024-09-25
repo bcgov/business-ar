@@ -68,7 +68,7 @@ class _Config:  # pylint: disable=too-few-public-methods
             f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
     WAREHOUSE_DB_UNIX_SOCKET = os.getenv("WAREHOUSE_DB_UNIX_SOCKET")
-    #WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
+    # WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
     AUTH_PROXY_CONNECT = os.getenv("AUTH_PROXY_CONNECT")
     WAREHOUSE_DB_USER = os.getenv("WAREHOUSE_DB_USER", "")
     WAREHOUSE_DB_PASSWORD = os.getenv("WAREHOUSE_DB_PASSWORD", "")
@@ -93,6 +93,7 @@ class _Config:  # pylint: disable=too-few-public-methods
         # Register cleanup function to delete the temp file at exit
         @staticmethod
         def remove_temp_file():
+            """Remove temp file generated"""
             try:
                 if _Config.WAREHOUSE_CREDENTIALS_FILE_PATH:
                     os.remove(_Config.WAREHOUSE_CREDENTIALS_FILE_PATH)

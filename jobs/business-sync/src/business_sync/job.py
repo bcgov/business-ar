@@ -46,7 +46,8 @@ def start_cloud_sql_proxy(app):
         "--unix-socket=/cloudsql",
         app.config["AUTH_PROXY_CONNECT"],
     ]
-    process = subprocess.Popen(cmd)
+    process = subprocess.Popen(cmd)  # pylint: disable=consider-using-with
+    # intentionally avoid using 'with' here to prevent blocking, and manage the subprocess manually.
     return process
 
 
