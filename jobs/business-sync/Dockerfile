@@ -86,6 +86,7 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
 # Running as non-root user:
   FROM development_build AS production_build
   COPY --chown=web:web . /code
+  COPY --from=development_build /usr/local/bin/cloud-sql-proxy /usr/local/bin/cloud-sql-proxy
 
 USER web
 
