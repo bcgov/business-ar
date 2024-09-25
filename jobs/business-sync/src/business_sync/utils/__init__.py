@@ -17,6 +17,7 @@ Utility functions and classes for the business-sync application.
 This module provides helper functions and reusable utilities to support the main business-sync job.
 """
 
+
 def convert_to_json_date(date):
     """Convert datetime to string formatted as YYYY-MM-DD, per JSON Schema specs.
 

@@ -50,7 +50,6 @@ def start_cloud_sql_proxy(app):
         pass
 
 
-
 def register_shellcontext(app):
     """Register shell context objects."""
 

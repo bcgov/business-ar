@@ -84,7 +84,7 @@ valid-classmethod-first-arg = ["cls"]
 valid-metaclass-classmethod-first-arg = ["mcs"]
 
 [tool.flake8]
-ignore = ["F401","E402", "Q000", "E203", "W503"]
+ignore = ["F401","E402", "Q000", "E203", "W503", "E501"]
 exclude = [
     ".venv",
     ".git",
