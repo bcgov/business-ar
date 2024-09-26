@@ -17,6 +17,8 @@ import os
 import sys
 import tempfile
 import atexit
+import base64
+import json
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -77,18 +79,27 @@ class _Config:  # pylint: disable=too-few-public-methods
     WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "fin_warehouse")
     WAREHOUSE_CREDENTIALS_FILE_PATH = None
 
-    # Get the contents of the credentials from the environment variable
+    # Get the base64-encoded credentials from the environment variable
     WAREHOUSE_CREDENTIALS_FILE_CONTENTS = os.getenv("WAREHOUSE_CREDENTIALS_FILE", None)
 
     if WAREHOUSE_CREDENTIALS_FILE_CONTENTS:
         # Optionally strip leading/trailing quotes if necessary
-        if WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith("'") and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith("'"):
+        if (WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith("'") and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith("'")) or \
+           (WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith('"') and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith('"')):
             WAREHOUSE_CREDENTIALS_FILE_CONTENTS = WAREHOUSE_CREDENTIALS_FILE_CONTENTS[1:-1]
 
-        # Write the credentials contents to a temporary file
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_cred_file:
-            temp_cred_file.write(WAREHOUSE_CREDENTIALS_FILE_CONTENTS)
-            WAREHOUSE_CREDENTIALS_FILE_PATH = temp_cred_file.name  # Assign directly without '_Config'
+        try:
+            # Decode the base64-encoded content
+            decoded_credentials = base64.b64decode(WAREHOUSE_CREDENTIALS_FILE_CONTENTS).decode('utf-8')
+            credentials_dict = json.loads(decoded_credentials)
+
+            # Write the decoded content to a temporary file
+            with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_cred_file:
+                json.dump(credentials_dict, temp_cred_file)
+                WAREHOUSE_CREDENTIALS_FILE_PATH = temp_cred_file.name  # Assign the file path to the temp file
+
+        except (base64.binascii.Error, UnicodeDecodeError, json.JSONDecodeError) as e:
+            raise ValueError("Invalid base64-encoded credentials") from e
 
         # Register cleanup function to delete the temp file at exit
         @staticmethod
@@ -100,8 +111,6 @@ class _Config:  # pylint: disable=too-few-public-methods
             except OSError:
                 pass
 
-        atexit.register(remove_temp_file)
-
     # Update the config to use the temporary file path
     WAREHOUSE_CREDENTIALS_FILE = WAREHOUSE_CREDENTIALS_FILE_PATH
     WAREHOUSE_URI = (
@@ -112,6 +121,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     TESTING = False
     DEBUG = False
 
+atexit.register(_Config.remove_temp_file)
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
