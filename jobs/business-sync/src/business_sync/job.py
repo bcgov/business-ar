@@ -78,7 +78,7 @@ def run():
                         """
                         SELECT co.corp_num
                             , co.recognition_dts
-                            , EXTRACT(YEAR FROM co.last_ar_filed_dt) AS last_ar_filed_year
+                            , EXTRACT(YEAR FROM co.last_ar_filed_dt)::INTEGER AS last_ar_filed_year, -- Explicitly cast to integer
                             , co.corp_typ_cd
                             , co.admin_email
                             , cn.CORP_NME
