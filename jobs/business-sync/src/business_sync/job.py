@@ -82,6 +82,9 @@ def run():
                             , co.corp_typ_cd
                             , co.admin_email
                             , cn.CORP_NME
+                            , co.send_ar_ind
+                            , co.bn_15
+                            , cs.state_typ_cd
                             , ct.corp_class
                         FROM "colin"."corporation"   co
                         , "colin".corp_type       ct
