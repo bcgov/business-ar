@@ -139,7 +139,7 @@ def run():
                                 legal_type=row.corp_typ_cd,
                                 founding_date=row.recognition_dts,
                             )
-                        business.legal_name = row.corp_name
+                        business.legal_name = row.corp_nme
                         business.email = row.admin_email if env == "production" else "test@email.com"
                         business.ar_reminder_flag = row.send_ar_ind != "N"
                         business.state = row.corp_state
