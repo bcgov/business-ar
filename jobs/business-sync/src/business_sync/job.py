@@ -84,7 +84,7 @@ def run():
                             , cn.CORP_NME
                             , co.send_ar_ind
                             , co.bn_15
-                            , cs.state_typ_cd
+                            , cs.state_typ_cd as corp_state
                             , ct.corp_class
                         FROM "colin"."corporation"   co
                         , "colin".corp_type       ct
