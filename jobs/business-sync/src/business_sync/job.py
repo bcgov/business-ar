@@ -39,15 +39,15 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
 
 def start_cloud_sql_proxy(app):
-    """Start a cloud sql proxy"""
+    """Start a cloud sql proxy using TCP port."""
     cmd = [
         "cloud-sql-proxy",
         f"--credentials-file={app.config['WAREHOUSE_CREDENTIALS_FILE']}",
-        "--unix-socket=/cloudsql",
+        f"--address=0.0.0.0",
+        f"--port={app.config['WAREHOUSE_DB_PORT']}",
         app.config["AUTH_PROXY_CONNECT"],
     ]
     process = subprocess.Popen(cmd)  # pylint: disable=consider-using-with
-    # intentionally avoid using 'with' here to prevent blocking, and manage the subprocess manually.
     return process
 
 

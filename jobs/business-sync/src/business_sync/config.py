@@ -114,8 +114,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     # Update the config to use the temporary file path
     WAREHOUSE_CREDENTIALS_FILE = WAREHOUSE_CREDENTIALS_FILE_PATH
     WAREHOUSE_URI = (
-        f"postgresql+psycopg2://{WAREHOUSE_DB_USER}:{WAREHOUSE_DB_PASSWORD}@/"
-        f"{WAREHOUSE_DB_NAME}?host=/cloudsql/{AUTH_PROXY_CONNECT}"
+        f"postgresql+psycopg2://{WAREHOUSE_DB_USER}:{WAREHOUSE_DB_PASSWORD}@"
+        f"{WAREHOUSE_DB_HOST}:{WAREHOUSE_DB_PORT}/"
+        f"{WAREHOUSE_DB_NAME}"
     )
 
     TESTING = False
