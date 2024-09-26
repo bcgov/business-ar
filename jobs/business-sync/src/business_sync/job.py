@@ -43,7 +43,7 @@ def start_cloud_sql_proxy(app):
     cmd = [
         "cloud-sql-proxy",
         f"--credentials-file={app.config['WAREHOUSE_CREDENTIALS_FILE']}",
-        f"--address=0.0.0.0",
+        "--address=0.0.0.0",
         f"--port={app.config['WAREHOUSE_DB_PORT']}",
         app.config["AUTH_PROXY_CONNECT"],
     ]
