@@ -121,7 +121,9 @@ class _Config:  # pylint: disable=too-few-public-methods
     TESTING = False
     DEBUG = False
 
+
 atexit.register(_Config.remove_temp_file)
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
