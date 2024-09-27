@@ -15,6 +15,10 @@
 
 import os
 import sys
+import tempfile
+import atexit
+import base64
+import json
 
 from dotenv import find_dotenv, load_dotenv
 
@@ -41,7 +45,7 @@ def get_named_config(config_name: str = "production"):
     return config
 
 
-class _Config(object):  # pylint: disable=too-few-public-methods
+class _Config:  # pylint: disable=too-few-public-methods
     """Base class configuration."""
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -57,24 +61,69 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     DB_PORT = int(os.getenv("DATABASE_PORT", "5432"))  # POSTGRESQL
     # POSTGRESQL
     if DB_UNIX_SOCKET := os.getenv("DATABASE_UNIX_SOCKET", None):
-        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
+        SQLALCHEMY_DATABASE_URI = (
+            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@/{DB_NAME}"
+            f"?unix_sock={DB_UNIX_SOCKET}/.s.PGSQL.5432"
+        )
     else:
         SQLALCHEMY_DATABASE_URI = (
-            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        )
+            f"postgresql+pg8000://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
-    WAREHOUSE_USER = os.getenv("WAREHOUSE_USER", "")
-    WAREHOUSE_PASSWORD = os.getenv("WAREHOUSE_PASSWORD", "")
-    WAREHOUSE_HOST = os.getenv("WAREHOUSE_HOST", "")
-    WAREHOUSE_PORT = int(os.getenv("WAREHOUSE_PORT", "5432"))  # POSTGRESQL
-    WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "")
-    if WAREHOUSE_DB_UNIX_SOCKET := os.getenv("WAREHOUSE_DB_UNIX_SOCKET", None):
-        WAREHOUSE_URI = f"postgresql+pg8000://{WAREHOUSE_USER}:{WAREHOUSE_PASSWORD}@/{WAREHOUSE_DB_NAME}?unix_sock={WAREHOUSE_DB_UNIX_SOCKET}/.s.PGSQL.5432"
-    else:
-        WAREHOUSE_URI = f"postgresql+pg8000://{WAREHOUSE_USER}:{WAREHOUSE_PASSWORD}@{WAREHOUSE_HOST}:{WAREHOUSE_PORT}/{WAREHOUSE_DB_NAME}"
+    WAREHOUSE_DB_UNIX_SOCKET = os.getenv("WAREHOUSE_DB_UNIX_SOCKET")
+    # WAREHOUSE_CREDENTIALS_FILE = os.getenv("WAREHOUSE_CREDENTIALS_FILE")
+    AUTH_PROXY_CONNECT = os.getenv("AUTH_PROXY_CONNECT")
+    WAREHOUSE_DB_USER = os.getenv("WAREHOUSE_DB_USER", "")
+    WAREHOUSE_DB_PASSWORD = os.getenv("WAREHOUSE_DB_PASSWORD", "")
+    WAREHOUSE_DB_HOST = os.getenv("WAREHOUSE_DB_HOST", "localhost")
+    WAREHOUSE_DB_PORT = os.getenv("WAREHOUSE_DB_PORT", "6003")
+    WAREHOUSE_DB_NAME = os.getenv("WAREHOUSE_DB_NAME", "fin_warehouse")
+    WAREHOUSE_CREDENTIALS_FILE_PATH = None
+
+    # Get the base64-encoded credentials from the environment variable
+    WAREHOUSE_CREDENTIALS_FILE_CONTENTS = os.getenv("WAREHOUSE_CREDENTIALS_FILE", None)
+
+    if WAREHOUSE_CREDENTIALS_FILE_CONTENTS:
+        # Optionally strip leading/trailing quotes if necessary
+        if (WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith("'") and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith("'")) or \
+           (WAREHOUSE_CREDENTIALS_FILE_CONTENTS.startswith('"') and WAREHOUSE_CREDENTIALS_FILE_CONTENTS.endswith('"')):
+            WAREHOUSE_CREDENTIALS_FILE_CONTENTS = WAREHOUSE_CREDENTIALS_FILE_CONTENTS[1:-1]
+
+        try:
+            # Decode the base64-encoded content
+            decoded_credentials = base64.b64decode(WAREHOUSE_CREDENTIALS_FILE_CONTENTS).decode('utf-8')
+            credentials_dict = json.loads(decoded_credentials)
+
+            # Write the decoded content to a temporary file
+            with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_cred_file:
+                json.dump(credentials_dict, temp_cred_file)
+                WAREHOUSE_CREDENTIALS_FILE_PATH = temp_cred_file.name  # Assign the file path to the temp file
+
+        except (base64.binascii.Error, UnicodeDecodeError, json.JSONDecodeError) as e:
+            raise ValueError("Invalid base64-encoded credentials") from e
+
+        # Register cleanup function to delete the temp file at exit
+        @staticmethod
+        def remove_temp_file():
+            """Remove temp file generated"""
+            try:
+                if _Config.WAREHOUSE_CREDENTIALS_FILE_PATH:
+                    os.remove(_Config.WAREHOUSE_CREDENTIALS_FILE_PATH)
+            except OSError:
+                pass
+
+    # Update the config to use the temporary file path
+    WAREHOUSE_CREDENTIALS_FILE = WAREHOUSE_CREDENTIALS_FILE_PATH
+    WAREHOUSE_URI = (
+        f"postgresql+psycopg2://{WAREHOUSE_DB_USER}:{WAREHOUSE_DB_PASSWORD}@"
+        f"{WAREHOUSE_DB_HOST}:{WAREHOUSE_DB_PORT}/"
+        f"{WAREHOUSE_DB_NAME}"
+    )
 
     TESTING = False
     DEBUG = False
+
+
+atexit.register(_Config.remove_temp_file)
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
@@ -96,7 +145,10 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     DATABASE_TEST_HOST = os.getenv("DATABASE_TEST_HOST", "")
     DATABASE_TEST_PORT = int(os.getenv("DATABASE_TEST_PORT", "5432"))  # POSTGRESQL
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@"
+        f"{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    )
 
 
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods

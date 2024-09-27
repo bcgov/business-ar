@@ -11,6 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Utility functions and classes for the business-sync application.
+
+This module provides helper functions and reusable utilities to support the main business-sync job.
+"""
 
 
 def convert_to_json_date(date):

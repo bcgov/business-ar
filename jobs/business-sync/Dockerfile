@@ -48,8 +48,11 @@ RUN apt-get update && apt-get upgrade -y \
     curl \
     gettext \
     git \
+    gcc \
     libpq-dev \
     wait-for-it \
+  && curl -o /usr/local/bin/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.1.0/cloud-sql-proxy.linux.amd64 \
+  && chmod +x /usr/local/bin/cloud-sql-proxy \
   && curl -sSL 'https://install.python-poetry.org' | python - \
   && poetry --version \
   # Cleaning cache:
@@ -62,9 +65,11 @@ RUN groupadd -g "${GID}" -r web \
   && useradd -d '/code' -g web -l -r -u "${UID}" web \
   && chown web:web -R '/code'
 
+RUN mkdir /cloudsql && chown web:web /cloudsql
+
 # Copy only requirements, to cache them in docker layer
 COPY --chown=web:web ./poetry.lock ./pyproject.toml /code/
-
+COPY --chown=web:web ./run.sh /code
 COPY --chown=web:web ./src /code/src
 COPY --chown=web:web ./README.md /code
 
@@ -79,12 +84,14 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
     --no-interaction --no-ansi
 
 # Running as non-root user:
+  FROM development_build AS production_build
+  COPY --chown=web:web . /code
+  COPY --from=development_build /usr/local/bin/cloud-sql-proxy /usr/local/bin/cloud-sql-proxy
+
 USER web
 
 # The following stage is only for production:
-FROM development_build AS production_build
-COPY --chown=web:web . /code
 
 # ENV PYTHONPATH=/opt/app-root/src
 
-CMD [ "python", "-m", "business_sync" ]
+CMD [ "/bin/sh", "/code/run.sh" ]

@@ -1,0 +1,30 @@
+name: Business AR Business Sync CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "jobs/business-sync/**"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deploy To"
+        required: true
+        type: choice
+        options:
+        - dev
+        - test
+        - sandbox
+        - prod
+
+jobs:
+  business-ar-job-business-sync-cd:
+    uses: bcgov/bcregistry-sre/.github/workflows/backend-job-cd.yaml@main
+    with:
+      target: ${{ inputs.target }}
+      app_name: "business-ar-job-business-sync"
+      working_directory: "./jobs/business-sync"
+    secrets:
+      WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}

@@ -73,6 +73,7 @@ def _process_and_send_email(app: Flask, token: str, business: Business, fiscal_y
             "access_url": access_url,
             "ar_start_date": business.founding_date,
             "bc_number": business.identifier,
+            "legal_type": business.legal_type,
         }
 
         html_out = email_template.render(email_kwargs)

@@ -17,6 +17,8 @@ import logging
 import json
 import os
 from typing import List
+from datetime import datetime
+import pytz
 
 import requests
 import sentry_sdk
@@ -87,15 +89,6 @@ def send_filing(
     identifier = filing["filing"]["business"].get("identifier", None)
     legal_type = filing["filing"]["business"].get("legalType")
 
-    app.logger.info("send_filing function called.")
-    app.logger.info(f"Filing ID: {filing_id}")
-    app.logger.info(f"Filing Type: {filing_type}")
-    app.logger.info(f"Business Identifier: {identifier}")
-    app.logger.info(f"Legal Type: {legal_type}")
-
-    app.logger.info("Filing details to be sent:")
-    app.logger.info(json.dumps(filing, indent=4))
-
     req = None
     if legal_type and identifier and filing_type:
         req = requests.post(
@@ -108,14 +101,9 @@ def send_filing(
             timeout=TIMEOUT,
         )
 
-        app.logger.info(f"POST request made. Status Code: {req.status_code}")
-
     if not req or req.status_code != 201:
         app.logger.error(f"Filing {filing_id} not created in colin {identifier}.")
         return None
-
-    app.logger.info("Filing created successfully in COLIN.")
-    app.logger.info(f"Response: {req.json()}")
 
     # if it's an AR containing multiple filings it will have multiple colinIds
     return req.json()["filing"]["header"]["colinIds"]
@@ -227,55 +215,97 @@ def run():
                 filing_id = filing["filing"]["header"]["id"]
                 identifier = filing["filing"]["business"]["identifier"]
                 legal_type = filing["filing"]["business"]["legalType"]
-                
                 filing["filing"]["header"]["learEffectiveDate"] = filing["filing"][
                     "header"
                 ]["filingDateTime"]
+                filing["filing"]["header"]["date"] = filing["filing"]["header"]["learEffectiveDate"]
                 filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["source"] = "BAR"
 
-                if identifier in corps_with_failed_filing or len(ColinEventId.get_by_filing_id(filing_id)) > 0 :
-                    print('########### filing_id 666 is: {}'.format(filing_id))
+                # Convert the founding date from UTC to Pacific Time.
+                # The Colin API sends the founding date in UTC, but we need to convert it
+                # back to the local Pacific Time zone to ensure the last_ar_filed_date reflects
+                # the same calendar day locally as when the business was founded.
+                utc_founding_date = (
+                    datetime.fromisoformat(filing["filing"]["business"]["foundingDate"])
+                    .replace(tzinfo=pytz.utc)
+                )
+                pacific_founding_date = utc_founding_date.astimezone(pytz.timezone('America/Los_Angeles'))
+                filing["filing"]["business"]["foundingDate"] = pacific_founding_date.isoformat()
+
+                if identifier in corps_with_failed_filing:
                     # pylint: disable=no-member; false positive
                     application.logger.debug(
                         f"Skipping filing {filing_id} for"
                         f' {filing["filing"]["business"]["identifier"]}.'
                     )
-                else:    
-                    print('########### filing_id 777 is: {}'.format(filing_id))    
-                    # colin_ids = send_filing(
-                    #     app=application, filing=filing, filing_id=filing_id, token=token
-                    # )
-                    # if colin_ids:
-                    #     application.logger.info(
-                    #         f"Successfully filed {filing_id}. Colin id {colin_ids}"
-                    #     )
-                    #     # Call Patch endpoint to mark the filing as complete.
-                    #     complete_filing(
-                    #         app=application,
-                    #         filing_id=filing_id,
-                    #         colin_ids=colin_ids,
-                    #         token=token,
-                    #     )
-                    #     send_email(
-                    #         app=application,
-                    #         filing_id=filing_id,
-                    #         token=token,
-                    #     )
-                    #     delete_ar_prompt(
-                    #         app=application, 
-                    #         legal_type=legal_type, 
-                    #         identifier=identifier, 
-                    #         token=token)
-                    # else:
-                    #     corps_with_failed_filing.append(
-                    #         filing["filing"]["business"]["identifier"]
-                    #     )
-                    #     # pylint: disable=no-member; false positive
-                    #     application.logger.error(
-                    #         f"Failed to update filing {filing_id} with colin event id."
-                    #     )
+                else:
+                    colin_ids = send_filing(
+                        app=application, filing=filing, filing_id=filing_id, token=token
+                    )
+                    if colin_ids:
+                        application.logger.info(
+                            f"Successfully filed {filing_id}. Colin id {colin_ids}"
+                        )
+                        # Call Patch endpoint to mark the filing as complete.
+                        complete_filing(
+                            app=application,
+                            filing_id=filing_id,
+                            colin_ids=colin_ids,
+                            token=token,
+                        )
+                        send_email(
+                            app=application,
+                            filing_id=filing_id,
+                            token=token,
+                        )
+                        delete_ar_prompt(
+                            app=application, 
+                            legal_type=legal_type, 
+                            identifier=identifier, 
+                            token=token)
+                    else:
+                        corps_with_failed_filing.append(
+                            filing["filing"]["business"]["identifier"]
+                        )
+                        # pylint: disable=no-member; false positive
+                        application.logger.error(
+                            f"Failed to update filing {filing_id} with colin event id."
+                        )
+                else:
+                    colin_ids = send_filing(
+                        app=application, filing=filing, filing_id=filing_id, token=token
+                    )
+                    if colin_ids:
+                        application.logger.info(
+                            f"Successfully filed {filing_id}. Colin id {colin_ids}"
+                        )
+                        # Call Patch endpoint to mark the filing as complete.
+                        complete_filing(
+                            app=application,
+                            filing_id=filing_id,
+                            colin_ids=colin_ids,
+                            token=token,
+                        )
+                        send_email(
+                            app=application,
+                            filing_id=filing_id,
+                            token=token,
+                        )
+                        delete_ar_prompt(
+                            app=application,
+                            legal_type=legal_type,
+                            identifier=identifier,
+                            token=token)
+                    else:
+                        corps_with_failed_filing.append(
+                            filing["filing"]["business"]["identifier"]
+                        )
+                        # pylint: disable=no-member; false positive
+                        application.logger.error(
+                            f"Failed to update filing {filing_id} with colin event id."
+                        )
 
         except Exception as err:  # noqa: B902
             # pylint: disable=no-member; false positive
