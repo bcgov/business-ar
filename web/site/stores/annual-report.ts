@@ -14,6 +14,13 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         apiSuffix += `/${arFiling.value.filing.header.id}`
       }
 
+      // format the ar date to be sent
+      const arDate = busStore.nextArDate
+        ? (busStore.nextArDate instanceof Date
+            ? busStore.nextArDate.toISOString().slice(0, 10)
+            : new Date(busStore.nextArDate).toISOString().slice(0, 10))
+        : null
+
       const response = await useBarApi<ArFiling>(
         apiSuffix,
         {
@@ -21,11 +28,11 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
           body: {
             filing: {
               header: {
-                filingYear: busStore.currentBusiness.nextARYear
+                filingYear: busStore.nextArYear
               },
               annualReport: {
                 annualGeneralMeetingDate: arData.agmDate,
-                annualReportDate: busStore.nextArDate,
+                annualReportDate: arDate,
                 votedForNoAGM: arData.votedForNoAGM,
                 unanimousResolutionDate: arData.unanimousResolutionDate
               }
