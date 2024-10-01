@@ -6,13 +6,15 @@ const arStore = useAnnualReportStore()
 <template>
   <ClientOnly>
     <div
-      v-if="arStore.arFiling.filing.documents && arStore.arFiling.filing.documents.length > 0"
-      class="flex w-full items-center justify-center gap-2"
+      v-if="arStore.arFiling.filing?.documents && arStore.arFiling.filing.documents.length > 0"
+      class="flex w-full"
     >
       <UButton
         v-for="doc in arStore.arFiling.filing.documents"
         :key="doc.name"
-        size="sm"
+        size="lg"
+        color="blue"
+        variant="outline"
         icon="i-mdi-tray-arrow-down"
         :loading="arStore.loading"
         :label="doc.name === 'Receipt' ? $t('btn.downloadReceipt') : $t('btn.downloadReport')"
