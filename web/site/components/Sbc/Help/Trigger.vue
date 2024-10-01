@@ -6,7 +6,7 @@ const localePath = useLocalePath()
   <!-- open modal on touch screen, open new tab on desktop -->
   <!-- hide modal trigger on desktop -->
   <UButton
-    class="[@media(pointer:fine)]:hidden text-blue-600 underline bg-transparent border-0 p-0"
+    class="border-0 bg-transparent p-0 text-blue-600 underline [@media(pointer:fine)]:hidden"
     variant="link"
     :label="$t('btn.openHelpDocs')"
     icon="i-mdi-open-in-new"
@@ -16,7 +16,7 @@ const localePath = useLocalePath()
   />
   <!-- hide link on touch screen -->
   <UButton
-    class="[@media(pointer:coarse)]:hidden text-blue-600 underline bg-transparent border-0 p-0"
+    class="border-0 bg-transparent p-0 text-blue-600 underline [@media(pointer:coarse)]:hidden"
     variant="link"
     :label="$t('btn.openHelpDocs')"
     icon="i-mdi-open-in-new"
