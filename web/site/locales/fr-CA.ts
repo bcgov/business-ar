@@ -183,7 +183,8 @@ export default {
     },
     home: {
       title: 'Accueil - Rapport Annuel de Service CB',
-      h1: 'Déposez votre rapport annuel de la Colombie-Britannique'
+      h1: 'Déposez votre rapport annuel de la Colombie-Britannique',
+      h1Date: 'Déposez votre rapport annuel de la Colombie-Britannique pour {date}'
     },
     createAccount: {
       title: 'Création de Compte - Rapport Annuel de Service CB',

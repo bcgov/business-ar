@@ -132,6 +132,42 @@ class Filing(BaseModel):
         return query.all()
 
     @classmethod
+    def get_next_ar_fiscal_year(cls, business_id: str) -> int|None:
+        try:
+            status = [Filing.Status.COMPLETED, Filing.Status.PAID]
+            query = (
+                db.session.query(Filing)
+                .filter(Filing.business_id == int(business_id))
+                .filter(Filing.status.in_(status))
+                .order_by(Filing.fiscal_year.desc())
+            )
+            filings = query.all()
+            if filings:
+                return filings[0].fiscal_year + 1
+            return None
+        except Exception:
+            return None
+
+    @classmethod
+    def get_last_ar_filed_date(cls, business_id: str) -> str|None:
+        try:
+            status = [Filing.Status.COMPLETED, Filing.Status.PAID]
+            query = (
+                db.session.query(Filing)
+                .filter(Filing.business_id == int(business_id))
+                .filter(Filing.status.in_(status))
+                .order_by(Filing.fiscal_year.desc())
+            )
+            filings = query.all()
+            if filings:
+                filing_json = filings[0].filing_json
+                last_ar_date = filing_json.get('filing', {}).get('annualReport', {}).get('annualReportDate')
+                return last_ar_date
+            return None
+        except Exception:
+            return None
+
+    @classmethod
     def get_filing_by_payment_token(cls, payment_token: str) -> Filing:
         """Return filings by payment token."""
         return cls.query.filter_by(invoice_id=payment_token).one_or_none()

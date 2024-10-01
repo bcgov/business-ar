@@ -183,7 +183,8 @@ export default {
     },
     home: {
       title: 'Home - Service BC Annual Report',
-      h1: 'File your BC Annual Report'
+      h1: 'File your BC Annual Report',
+      h1Date: 'File your {date} BC Annual Report'
     },
     createAccount: {
       title: 'Account Creation - Service BC Annual Report',

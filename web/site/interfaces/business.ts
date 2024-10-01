@@ -28,6 +28,9 @@ export interface BusinessNano {
   legalName: string
   legalType: string
   taxId: string | null
+  nextARYear: number
+  lastARDate: string | null
+  foundingDate: string
 }
 
 export interface BusinessFilingTask {

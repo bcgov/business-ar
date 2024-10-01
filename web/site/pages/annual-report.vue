@@ -15,9 +15,9 @@ useHead({
   title: t('page.annualReport.title')
 })
 
-definePageMeta({
-  middleware: ['filing-paid', 'require-account']
-})
+// definePageMeta({
+//   middleware: ['filing-paid', 'require-account']
+// })
 
 // options for radio buttons
 const options = [
@@ -127,6 +127,15 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
   }
 }
 
+// Compute latest next AR date as a string
+const nextArDate = computed(() => {
+  if (busStore.nextArDate) {
+    const date = new Date(busStore.nextArDate)
+    return !isNaN(date.getTime()) ? date.toISOString().slice(0, 10) : null
+  }
+  return null
+})
+
 // clear form errors anytime data changes
 watch(
   () => arData,
@@ -200,9 +209,11 @@ if (import.meta.client) {
 </script>
 <template>
   <ClientOnly>
-    <div v-show="!pageLoading" class="relative mx-auto flex w-full max-w-[1360px] flex-col gap-4 text-left sm:gap-4 md:flex-row md:gap-6">
+    <div v-show="!pageLoading" class="mx-auto flex w-3/4 items-center justify-center gap-4 text-left">
       <div class="flex w-full flex-col gap-6">
-        <SbcPageSectionH1 :heading="$t('page.annualReport.h1', { year: busStore.currentBusiness.nextARYear})" />
+        <SbcPageSectionH1
+          :heading="$t('page.annualReport.h1', { year: busStore.nextArYear})"
+        />
 
         <SbcAlert
           :show-on-category="[
@@ -221,8 +232,10 @@ if (import.meta.client) {
             :items="[
               { label: $t('labels.busName'), value: busStore.currentBusiness.legalName },
               { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
-              { label: $t('labels.arDate'), value: busStore.nextArDate },
+              { label: $t('labels.arDate'), value: nextArDate },
             ]"
+            :is-selecting-filing="false"
+            :is-authenticated="keycloak.isAuthenticated()"
           />
 
           <UDivider class="mb-4 mt-8" />
@@ -240,14 +253,14 @@ if (import.meta.client) {
             <UFormGroup name="radioGroup">
               <!-- label for visual -->
               <template #label>
-                <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}
+                <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.nextArYear }) }}
                   <SbcTooltip id="agm-status-tooltip" :text="$t('page.annualReport.form.agmStatus.tooltip')" />
                 </span>
               </template>
               <fieldset>
                 <!-- legend for accessibility -->
                 <legend class="sr-only">
-                  {{ $t('page.annualReport.form.agmStatus.question', { year: busStore.currentBusiness.nextARYear }) }}
+                  {{ $t('page.annualReport.form.agmStatus.question', { year: busStore.nextArYear }) }}
                 </legend>
                 <!-- use radio instead of radio group, allows aria-describedby property -->
                 <div class="space-y-1">

@@ -5,12 +5,18 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
   const alertStore = useAlertStore()
 
   // store values
+  const nanoID = ref<string | null>(null)
   const loading = ref<boolean>(true)
   const currentBusiness = ref<BusinessFull>({} as BusinessFull)
   const fullDetails = ref<Business>({} as Business)
   const businessNano = ref<BusinessNano>({} as BusinessNano)
-  const nextArDate = ref<string>('')
   const payStatus = ref<string | null>(null)
+
+  // date values
+  const nextArYear = ref<number | null>(null)
+  const nextArDate = ref<Date | null>(null)
+  const lastArDate = ref<Date | null>(null)
+  const foundingDate = ref<Date | null>(null)
 
   // get basic business info by nano id
   async function getBusinessByNanoId (id: string): Promise<void> {
@@ -18,6 +24,16 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       const response = await useBarApi<BusinessNano>(`/business/token/${id}`)
       if (response) {
         businessNano.value = response
+        nanoID.value = id
+        foundingDate.value = isoDateStringToLocalDate(response.foundingDate)
+        lastArDate.value = response.lastARDate ? dateStringToDate(response.lastARDate) : foundingDate.value
+        nextArYear.value = response.nextARYear || null
+
+        if (response.nextARYear) {
+          nextArDate.value = new Date(response.nextARYear, lastArDate.value!.getUTCMonth(), lastArDate.value!.getUTCDate())
+        } else {
+          nextArDate.value = null
+        }
       }
     } catch (e) {
       alertStore.addAlert({
@@ -34,6 +50,15 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       const response = await useBarApi<Business>(`/business/${businessNano.value.identifier}`, {}, 'token')
       if (response) {
         fullDetails.value = response
+        foundingDate.value = isoDateStringToLocalDate(response.business.foundingDate)
+        lastArDate.value = response.business.lastArDate ? isoDateStringToLocalDate(response.business.lastArDate) : foundingDate.value
+        nextArYear.value = response.business.nextARYear || null
+
+        if (nextArYear.value) {
+          nextArDate.value = new Date(nextArYear.value, lastArDate.value!.getMonth(), lastArDate.value!.getDate())
+        } else {
+          nextArDate.value = null
+        }
       }
     } catch (e) {
       alertStore.addAlert({
@@ -74,20 +99,37 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
       throw new Error(`${bus.legalName || 'This business'} is not eligible to file an Annual Report`)
     }
 
-    // if no lastArDate, it means this is the companies first AR, so need to use founding date instead
-    if (!bus.lastArDate) {
-      nextArDate.value = addOneYear(bus.foundingDate)
-    } else {
-      nextArDate.value = addOneYear(bus.lastArDate!)
-    }
-
     // throw error if next ar date is in the future
-    if (new Date(nextArDate.value) > new Date()) {
+    if (!nextArYear.value || nextArYear.value! > new Date().getFullYear()) {
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.FUTURE_FILING
       })
       throw new Error(`Annual Report not due until ${nextArDate.value}`)
+    }
+  }
+
+  // Returns the available report dates or an empty date array for the current business
+  function getArDueDates (): Date[] {
+    const reportDates: Date[] = []
+    if (!lastArDate.value || !nextArYear.value) {
+      return reportDates
+    }
+
+    try {
+      const referenceDate = lastArDate.value ? new Date(lastArDate.value) : new Date(foundingDate.value!)
+      const currYear = new Date().getFullYear()
+      const dueMonth = referenceDate.getUTCMonth()
+      const dueDay = referenceDate.getUTCDate()
+
+      // Starts from the next AR year and computes all due dates up to the current year.
+      for (let year = nextArYear.value; year <= currYear; year++) {
+        const reportDueDate = new Date(year, dueMonth, dueDay)
+        reportDates.push(reportDueDate)
+      }
+      return reportDates
+    } catch (e) {
+      return reportDates
     }
   }
 
@@ -158,9 +200,13 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     loading.value = true
     currentBusiness.value = {} as BusinessFull
     businessNano.value = {} as BusinessNano
-    nextArDate.value = ''
-    payStatus.value = null
     fullDetails.value = {} as Business
+    nanoID.value = null
+    nextArYear.value = null
+    nextArDate.value = null
+    lastArDate.value = null
+    foundingDate.value = null
+    payStatus.value = null
   }
 
   return {
@@ -169,13 +215,18 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     getBusinessTask,
     assignBusinessStoreValues,
     getFullBusinessDetails,
+    getArDueDates,
     $reset,
     loading,
     currentBusiness,
     businessNano,
     nextArDate,
     payStatus,
-    fullDetails
+    fullDetails,
+    nextArYear,
+    lastArDate,
+    nanoID,
+    foundingDate
   }
 },
 { persist: true } // persist store values in session storage

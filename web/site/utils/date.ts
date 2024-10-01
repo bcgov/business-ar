@@ -30,6 +30,14 @@ export function datetimeStringToDateString (datetimeString: string) {
   return (date) ? moment(date).local().format('YYYY-MM-DD') : ''
 }
 
+/** Return the date string as a date object in local time
+ * @param dateString expected dateString format: YYYY-MM-DDTHH:MM:SS-00:00 or any valid ISO string
+ */
+export function isoDateStringToLocalDate (dateString: string) {
+  const dateMoment = moment(dateString)
+  return dateMoment.isValid() ? dateMoment.local().toDate() : null
+}
+
 export function addOneYear (dateString: string) {
   const date = dateStringToDate(dateString)
   return moment(date).add(1, 'year').format('YYYY-MM-DD')

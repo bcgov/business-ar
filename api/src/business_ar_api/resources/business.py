@@ -69,6 +69,15 @@ def get_business_details_using_token(token):
         business_json["status"] = business_details_from_colin.get("business").get(
             "corpState"
         )
+        business_json["nextARYear"] = business_details_from_colin.get("business").get(
+            "nextARYear"
+        )
+        business_json["lastARDate"] =  business_details_from_colin.get("business").get(
+            "lastArDate"
+        )
+        business_json["foundingDate"] = business_details_from_colin.get("business").get(
+            "foundingDate"
+        )
         return business_json, HTTPStatus.OK
     else:
         return error_response("Invalid token.", HTTPStatus.BAD_REQUEST)
