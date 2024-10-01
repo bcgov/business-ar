@@ -11,6 +11,7 @@ const accountStore = useAccountStore()
 const pageLoading = useState('page-loading')
 const alertStore = useAlertStore()
 const environment = useRuntimeConfig().public.environment
+const nextARYearRef = ref<number | null>(null)
 
 const nanoid = ref(route.query.nanoid || '')
 async function useNanoId () {
@@ -70,7 +71,10 @@ async function initPage () {
       // load business details if valid nano id and no user logged in (fresh start of flow)
       await busStore.getBusinessByNanoId(route.query.nanoid as string)
       pageLoading.value = false // only set false if not navigating to new page
-    } else { // throw error if no valid nano id
+    } else if (busStore.nanoID) {
+      // Business has already been loaded
+      pageLoading.value = false
+    } else {
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.MISSING_TOKEN
@@ -83,6 +87,37 @@ async function initPage () {
   }
 }
 
+// Compute page heading based on next AR year
+const heading = computed(() => {
+  return nextARYearRef.value
+    ? t('page.home.h1Date', { date: nextARYearRef.value })
+    : t('page.home.h1')
+})
+
+// Compute latest next AR date as a string
+const nextArDate = computed(() => {
+  if (busStore.nextArDate) {
+    const date = new Date(busStore.nextArDate)
+    return !isNaN(date.getTime()) ? date.toISOString().slice(0, 10) : null
+  }
+  return null
+})
+
+// Watch next AR year for header reactivity
+watch(
+  () => busStore.nextArYear,
+  (newYear) => {
+    if (newYear) {
+      nextARYearRef.value = newYear
+    }
+  },
+  { immediate: true }
+)
+
+const handleLogin = () => {
+  keycloak.login()
+}
+
 // init page in setup lifecycle
 if (import.meta.client) {
   initPage()
@@ -91,9 +126,9 @@ if (import.meta.client) {
 <template>
   <!-- TODO: find hydration error only when being redirected from tos page -->
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!pageLoading" class="mx-auto flex max-w-[95vw] flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!pageLoading" class="mx-auto flex w-2/3 flex-col items-center justify-center gap-4 text-center">
     <ClientOnly>
-      <SbcPageSectionH1 :heading="$t('page.home.h1')" />
+      <SbcPageSectionH1 :heading="heading" />
 
       <SbcAlert
         :show-on-category="[
@@ -110,8 +145,6 @@ if (import.meta.client) {
         ]"
       />
 
-      <SbcHelpTrigger />
-
       <!-- show business details -->
       <UCard v-show="!deepEqual(busStore.businessNano, {})" class="w-full" data-testid="bus-details-card">
         <SbcBusinessInfo
@@ -120,7 +153,12 @@ if (import.meta.client) {
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
             { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
             { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
+            { label: $t('labels.arDate'), value: nextArDate },
           ]"
+          :is-selecting-filing="true"
+          :ar-due-dates="busStore.getArDueDates()"
+          :is-authenticated="keycloak.isAuthenticated()"
+          @login="handleLogin"
         />
       </UCard>
     </ClientOnly>
@@ -133,13 +171,9 @@ if (import.meta.client) {
       route-suffix="2"
       :content="index2"
     />
+
+    <!-- Only displays in Dev and Test -->
     <ClientOnly>
-      <UButton
-        v-if="!keycloak.isAuthenticated() && !alertStore.hasAlerts"
-        :label="$t('btn.loginBCSC')"
-        icon="i-mdi-card-account-details-outline"
-        @click="keycloak.login"
-      />
       <div
         v-if="environment.includes('Development') || environment.includes('Test')"
         class="flex gap-2"
