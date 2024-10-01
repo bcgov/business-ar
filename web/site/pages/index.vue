@@ -94,15 +94,6 @@ const heading = computed(() => {
     : t('page.home.h1')
 })
 
-// Compute latest next AR date as a string
-const nextArDate = computed(() => {
-  if (busStore.nextArDate) {
-    const date = new Date(busStore.nextArDate)
-    return !isNaN(date.getTime()) ? date.toISOString().slice(0, 10) : null
-  }
-  return null
-})
-
 // Watch next AR year for header reactivity
 watch(
   () => busStore.nextArYear,
@@ -126,7 +117,7 @@ if (import.meta.client) {
 <template>
   <!-- TODO: find hydration error only when being redirected from tos page -->
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!pageLoading" class="mx-auto flex w-2/3 flex-col items-center justify-center gap-4 text-center">
+  <div v-show="!pageLoading" class="mx-auto flex w-full flex-col items-center justify-center gap-4 text-center md:w-2/3">
     <ClientOnly>
       <SbcPageSectionH1 :heading="heading" />
 
@@ -153,7 +144,6 @@ if (import.meta.client) {
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
             { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
             { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
-            { label: $t('labels.arDate'), value: nextArDate },
           ]"
           :is-selecting-filing="true"
           :ar-due-dates="busStore.getArDueDates()"

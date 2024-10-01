@@ -3,24 +3,26 @@ const helpModal = useHelpModal()
 const localePath = useLocalePath()
 </script>
 <template>
-  <!-- Open modal on touch screen, open new tab on desktop -->
-  <!-- Hide modal trigger on desktop -->
-  <a
-    class="inline-flex items-center text-blue-600 underline [@media(pointer:fine)]:hidden"
-    href="#"
-    @click.prevent="helpModal.open()"
-  >
-    {{ $t('btn.openHelpDocs') }}
-    <i icon="i-mdi-open-in-new ml-1" />
-  </a>
-
-  <!-- Hide link on touch screen -->
-  <a
-    class="inline-flex items-center text-blue-600 underline [@media(pointer:coarse)]:hidden"
-    :href="localePath('/help')"
+  <!-- open modal on touch screen, open new tab on desktop -->
+  <!-- hide modal trigger on desktop -->
+  <UButton
+    class="border-0 bg-transparent p-0 text-blue-600 underline [@media(pointer:fine)]:hidden"
+    variant="link"
+    :label="$t('btn.openHelpDocs')"
+    icon="i-mdi-open-in-new"
+    trailing
+    size="sm"
+    @click="helpModal.open()"
+  />
+  <!-- hide link on touch screen -->
+  <UButton
+    class="border-0 bg-transparent p-0 text-blue-600 underline [@media(pointer:coarse)]:hidden"
+    variant="link"
+    :label="$t('btn.openHelpDocs')"
+    icon="i-mdi-open-in-new"
+    trailing
+    size="sm"
     target="_blank"
-  >
-    {{ $t('btn.openHelpDocs') }}
-    <i icon="i-mdi-open-in-new ml-1" />
-  </a>
+    :to="localePath('/help')"
+  />
 </template>
