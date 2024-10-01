@@ -77,54 +77,63 @@ def run():
                     text(
                         """
                         SELECT co.corp_num
-                            , co.recognition_dts
-                            , EXTRACT(YEAR FROM co.last_ar_filed_dt)::INTEGER AS last_ar_filed_year, -- Explicitly cast to integer
-                            , co.corp_typ_cd
-                            , co.admin_email
-                            , cn.CORP_NME
-                            , co.send_ar_ind
-                            , co.bn_15
-                            , cs.state_typ_cd as corp_state
-                            , ct.corp_class
-                        FROM "colin"."corporation"   co
-                        , "colin".corp_type       ct
-                        , "colin".corp_state      cs
-                        , "colin".corp_name       cn
-                        WHERE co.corp_typ_cd    = ct.corp_typ_cd
-                        AND co.corp_num       = cs.corp_num
-                        AND co.corp_num       = cn.corp_num
-                        AND cs.end_event_id   IS NULL
+                        , co.recognition_dts
+                        , EXTRACT(YEAR FROM co.last_ar_filed_dt)::INTEGER AS last_ar_filed_year -- Explicitly cast to integer
+                        , co.corp_typ_cd
+                        , co.admin_email
+                        , cn.CORP_NME
+                        , co.send_ar_ind
+                        , co.bn_15
+                        , cs.state_typ_cd as corp_state
+                        , ct.corp_class
+                    FROM "colin"."corporation" co
+                        , "colin".corp_type ct
+                        , "colin".corp_state cs
+                        , "colin".corp_name cn
+                    WHERE co.corp_typ_cd = ct.corp_typ_cd
+                        AND co.corp_num = cs.corp_num
+                        AND co.corp_num = cn.corp_num
+                        AND cs.end_event_id IS NULL
                         AND cn.end_event_id IS NULL
                         AND cn.corp_name_typ_cd = 'CO'
-                        AND cs.state_typ_cd   = 'ACT'                                                                                -- active
-                        AND ct.corp_class     = 'BC'                                                                                 -- BC Corporations
-                        AND co.corp_typ_cd   <> 'BEN'                                                                                -- no Benefit Companies
-                        AND co.admin_email IS NOT NULL                                                                               -- they have an email
-                        AND co.send_ar_ind = 'Y'                                                                                     -- AR reminder indicator is "Y"
-                        AND NOT EXISTS (SELECT 'x'
-                                        FROM "colin".filing f, "colin".event e, "colin".filing_user u
-                                        WHERE f.event_id = e.event_id
-                                            AND f.event_id = u.event_id                                                                -- no previous BCOL filings
-                                            AND e.corp_num = co.corp_num
-                                            AND u.role_typ_cd = 'bcol')
-                        AND NOT EXISTS (SELECT 'x'
-                                        FROM "colin".corporation
-                                        WHERE admin_email = co.admin_email
-                                            AND corp_num <> co.corp_num)                                                               -- no other business using the same email
-                        AND NOT EXISTS (SELECT 'x'
-                                        FROM "auth"."users" u
-                                        WHERE co.admin_email = u.email)                                                              -- no SBC Connect account associated with the email
-                        AND NOT EXISTS (SELECT 'x'
-                                        FROM "auth"."entities" auth
-                                        WHERE TRIM(LEADING 'BC' FROM auth.business_identifier) = co.corp_num)                        -- exclude if business identifier already exists in Auth-db
-                        AND (date_part('doy', co.recognition_dts) BETWEEN date_part('doy', current_date)                            -- AR reminder within the next 14 days based on the day of year
-                            AND date_part('doy', current_date))                                                                     -- AR reminder on the anniversary date
+                        AND cs.state_typ_cd = 'ACT' -- active
+                        AND ct.corp_class = 'BC' -- BC Corporations
+                        AND co.corp_typ_cd <> 'BEN' -- no Benefit Companies
+                        AND co.admin_email IS NOT NULL -- they have an email
+                        AND co.send_ar_ind = 'Y' -- AR reminder indicator is "Y"
+                        AND NOT EXISTS (
+                            SELECT 'x'
+                            FROM "colin".filing f
+                                , "colin".event e
+                                , "colin".filing_user u
+                            WHERE f.event_id = e.event_id
+                                AND f.event_id = u.event_id -- no previous BCOL filings
+                                AND e.corp_num = co.corp_num
+                                AND u.role_typ_cd = 'bcol'
+                        )
+                        AND NOT EXISTS (
+                            SELECT 'x'
+                            FROM "colin".corporation
+                            WHERE admin_email = co.admin_email
+                                AND corp_num <> co.corp_num -- no other business using the same email
+                        )
+                        AND NOT EXISTS (
+                            SELECT 'x'
+                            FROM "auth"."users" u
+                            WHERE co.admin_email = u.email -- no SBC Connect account associated with the email
+                        )
+                        AND NOT EXISTS (
+                            SELECT 'x'
+                            FROM "auth"."entities" auth
+                            WHERE TRIM(LEADING 'BC' FROM auth.business_identifier) = co.corp_num -- exclude if business identifier already exists in Auth-db
+                        )
+                        AND date_part('doy', co.recognition_dts) BETWEEN date_part('doy', current_date) AND date_part('doy', current_date + INTERVAL '14 days') -- AR reminder within the next 14 days based on the day of year
                         AND (
                             -- Exclude companies founded in the current year, include those from previous year
                             (EXTRACT(YEAR FROM co.recognition_dts) = EXTRACT(YEAR FROM current_date) - 1 AND co.last_ar_filed_dt IS NULL)
                             -- Or include if last_ar_filed_dt is not NULL and was filed in the previous year
                             OR (co.last_ar_filed_dt IS NOT NULL AND EXTRACT(YEAR FROM co.last_ar_filed_dt) = EXTRACT(YEAR FROM current_date) - 1)
-                            );
+                        );
                         """
                     )
                 )
