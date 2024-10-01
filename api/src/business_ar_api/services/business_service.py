@@ -99,10 +99,19 @@ class BusinessService:
                 0
             ].recipients
 
+        # Check for any unsynced filings in GCP and adjust
+        next_ar_year_gcp = FilingModel.get_next_ar_fiscal_year(business_id)
+        next_ar_adjustment = next_ar_year_gcp and next_ar_year_gcp > business_details["business"]["nextARYear"]
+        if next_ar_adjustment:
+            last_ar_date_gcp = FilingModel.get_last_ar_filed_date(business_id)
+            business_details["business"]["nextARYear"] = next_ar_year_gcp
+            business_details["business"]['lastArDate'] = datetime.strptime(last_ar_date_gcp, "%Y-%m-%d").strftime("%Y-%m-%d")
+
+        # Check for any future effective filings, ignoring ones due to unsynced filings in GCP
         fed_filings_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/filings/future"
         fed_filings = RestService.get(endpoint=fed_filings_endpoint, token=token).json()
         business_details["business"]["hasFutureEffectiveFilings"] = (
-            True if fed_filings and len(fed_filings) > 0 else False
+            True if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment else False
         )
         return business_details
 
@@ -186,22 +195,23 @@ class BusinessService:
             business.identifier, business.legal_type, business.id
         ).get("business", {})
 
-        # Retrieve filings that are either incomplete, or drafts
-        pending_filings = FilingModel.find_business_filings_by_status(
+        # Retrieve Incomplete filings
+        incomplete_filings = FilingModel.find_business_filings_by_status(
             business.id,
             [
                 FilingModel.Status.DRAFT,
                 FilingModel.Status.PENDING,
-                FilingModel.Status.PAID,
             ],
         )
-        # Create a todo item for each pending filing
-        for filing in pending_filings:
+
+        # Create a todo item for each incomplete filing
+        for filing in incomplete_filings:
             filing_json = FilingSerializer.to_dict(filing)
             filing_json["filing"]["business"] = business_details_dict
             task = {"task": filing_json}
             tasks.append(task)
 
+        # Create a todo item for the next ar year
         if not tasks:
             next_ar_year = business_details_dict.get("nextARYear")
             if next_ar_year and next_ar_year <= datetime.utcnow().year:
