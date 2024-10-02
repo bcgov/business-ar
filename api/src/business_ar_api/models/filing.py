@@ -35,16 +35,17 @@
 from __future__ import annotations
 
 import copy
+from typing import List
+
 from flask import current_app, url_for
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
-from typing import List
 
-from business_ar_api.common.enum import auto
-from business_ar_api.common.enum import BaseEnum
+from business_ar_api.common.enum import BaseEnum, auto
 from business_ar_api.models.base_model import BaseModel
 from business_ar_api.models.colin_event_id import ColinEventId
+
 from .db import db
 
 

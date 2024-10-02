@@ -13,10 +13,10 @@
 # limitations under the License.
 """This model manages an AR Reminder item."""
 
+from business_ar_api.common.enum import BaseEnum, auto
+
 from .base_model import BaseModel
 from .db import db
-from business_ar_api.common.enum import auto
-from business_ar_api.common.enum import BaseEnum
 
 
 class AnnualReportReminder(BaseModel):  # pylint: disable=too-many-instance-attributes

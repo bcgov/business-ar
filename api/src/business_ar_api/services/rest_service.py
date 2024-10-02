@@ -21,14 +21,12 @@ from typing import Dict
 import requests
 from flask import current_app, request
 from requests.adapters import HTTPAdapter  # pylint:disable=ungrouped-imports
-
 # pylint:disable=ungrouped-imports
 from requests.exceptions import ConnectionError as ReqConnectionError
 from requests.exceptions import ConnectTimeout, HTTPError
 from urllib3.util.retry import Retry
 
-from business_ar_api.enums.enum import AuthHeaderType
-from business_ar_api.enums.enum import ContentType
+from business_ar_api.enums.enum import AuthHeaderType, ContentType
 from business_ar_api.exceptions import ExternalServiceException
 
 RETRY_ADAPTER = HTTPAdapter(

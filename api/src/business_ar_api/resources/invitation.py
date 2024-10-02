@@ -14,18 +14,17 @@
 """API endpoints for managing invitation."""
 
 from http import HTTPStatus
+
 from flask import Blueprint, current_app, jsonify, request
 from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
-from business_ar_api.exceptions.exceptions import (
-    BusinessException,
-    ExternalServiceException,
-)
+from business_ar_api.exceptions.exceptions import (BusinessException,
+                                                   ExternalServiceException)
 from business_ar_api.models.dataclass import InvitationSearch
-from business_ar_api.services import AccountService, BusinessService, InvitationService
-
+from business_ar_api.services import (AccountService, BusinessService,
+                                      InvitationService)
 
 bp = Blueprint("invitation", __name__, url_prefix=f"/v1/invitations")
 

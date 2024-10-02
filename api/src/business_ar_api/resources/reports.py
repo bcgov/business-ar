@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """API endpoints for reports."""
+from http import HTTPStatus
+
 from flask import Blueprint, current_app
 from flask_cors import cross_origin
-from http import HTTPStatus
 
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.exceptions.responses import error_response
-from business_ar_api.services import BusinessService
-from business_ar_api.services import FilingService
-from business_ar_api.services import ReportService
+from business_ar_api.services import (BusinessService, FilingService,
+                                      ReportService)
 
 bp = Blueprint(
     "reports",

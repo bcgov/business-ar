@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Application Specific Exceptions/Responses, to manage handled errors."""
-from .exceptions import (
-    AuthException,
-    BusinessException,
-    DatabaseException,  # noqa: I001
-    ExternalServiceException,
-)  # noqa: I001
+from .exceptions import DatabaseException  # noqa: I001; noqa: I001
+from .exceptions import (AuthException, BusinessException,
+                         ExternalServiceException)
 from .responses import error_response, exception_response

@@ -35,14 +35,15 @@
 This module contains the services necessary for handling Filings,
 including creating a filing. 
 """
-from http import HTTPStatus
 from datetime import datetime, timezone
+from http import HTTPStatus
 from typing import List
 
 from flask_jwt_oidc import JwtManager
 
 from business_ar_api.exceptions import BusinessException
-from business_ar_api.models import Filing as FilingModel, ColinEventId
+from business_ar_api.models import ColinEventId
+from business_ar_api.models import Filing as FilingModel
 from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import PaymentService
 
