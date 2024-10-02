@@ -22,10 +22,14 @@ const isOverdue = (date: Date) => {
   const today = new Date()
   return date < today
 }
+
+const isMoreReports = () => {
+  return props.arDueDates && props.arDueDates.length > 0
+}
 </script>
 <template>
   <div class="w-full text-left">
-    <h1 v-if="props.isSelectingFiling" class="mb-5 text-2xl font-bold">
+    <h1 v-if="props.isSelectingFiling && isMoreReports()" class="mb-5 text-2xl font-bold">
       {{ $t('SbcHeader.loginBCReg') }}
     </h1>
 
@@ -44,7 +48,7 @@ const isOverdue = (date: Date) => {
     </table>
 
     <!-- Login Screen when a valid Nano ID has been entered -->
-    <div v-if="props.isSelectingFiling">
+    <div v-if="props.isSelectingFiling && isMoreReports()">
       <hr class="my-4 border-t border-gray-300">
       <h1 class="text-xl font-bold text-bcGovColor-darkGray">
         {{ $t('page.home.annualReports') }}
