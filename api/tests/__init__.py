@@ -14,8 +14,8 @@
 """Methods common for multiple test cases.
 """
 from datetime import datetime
-from business_ar_api.models import Business, Filing
 
+from business_ar_api.models import Business, Filing
 
 FILING_JSON = {
     "filing": {

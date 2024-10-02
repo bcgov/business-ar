@@ -33,8 +33,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 import os
 
-from dotenv import find_dotenv
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -204,4 +203,3 @@ W0mOp436T6ZaELBfbFNulNLOzLLi5YzNRPLppfG1SRNZjbIrvTIKVL4N/YxLvQbT
 NrQw+2OdQACBJiEHsdZzAkBcsTk7frTH4yGx0VfHxXDPjfTj4wmD6gZIlcIr9lZg
 4H8UZcVFN95vEKxJiLRjAmj6g273pu9kK4ymXNEjWWJn
 -----END RSA PRIVATE KEY-----"""
-

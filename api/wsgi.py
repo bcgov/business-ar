@@ -15,8 +15,9 @@
 """
 import os
 
+from flask_migrate import Migrate
+
 from business_ar_api import create_app, db
-from flask_migrate import Migrate 
 
 app = create_app() # pylint: disable=invalid-name
 migrate = Migrate(app, db)
