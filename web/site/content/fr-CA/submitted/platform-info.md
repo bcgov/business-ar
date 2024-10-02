@@ -1,3 +1,5 @@
-Le saviez-vous ? Le «Business Registry» offrira bientôt plus de services numériques en format libre-service pour vous aider à garder votre entreprise à jour. [Abonnez-vous ici pour obtenir les mises à jour.](https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization)
+Vous souhaitez donner votre avis sur le Rapport Annuel de la CB? <a href="https://forms.gle/5niYLfjrymAqbLpr9" target="_blank">Complétez notre court sondage maintenant</a>.
 
-Qu'est-ce que le «Business Registry» ? Le «Business Registry» est utilisé pour créer et maintenir les dossiers à jour d’une entreprise. Il est accessible depuis Service BC (SBC) Connect, une plateforme numérique vous donnant accès aux services du gouvernement de la Colombie-Britannique.
+Le saviez-vous ? Le Registre des Entreprises va bientôt s'élargir avec encore plus de services numériques en libre-service pour vous aider à maintenir votre entreprise à jour. [ Abonnez-vous ici pour des mises à jour.](https://www2.gov.bc.ca/gov/content/employment-business/business/managing-a-business/permits-licences/news-updates/modernization)
+
+Qu'est-ce que le Registre des Entreprises? Le Registre des Entreprises est utilisé pour créer une entreprise et maintenir les dossiers commerciaux à jour. Il est accessible depuis [Service de Connexion de la CB](https://www.bcregistry.gov.bc.ca), une plateforme numérique qui vous garde connecté aux services du gouvernement de la CB.
