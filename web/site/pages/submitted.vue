@@ -51,6 +51,7 @@ const lastARDate = computed(() => {
 // Reset store and navigate back to filing page
 const handleFileNextReport = async () => {
   arStore.$reset()
+  busStore.payStatus = null
   await nextTick()
   return navigateTo(localePath('/annual-report'))
 }

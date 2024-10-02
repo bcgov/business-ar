@@ -15,9 +15,9 @@ useHead({
   title: t('page.annualReport.title')
 })
 
-// definePageMeta({
-//   middleware: ['filing-paid', 'require-account']
-// })
+definePageMeta({
+  middleware: ['filing-paid', 'require-account']
+})
 
 // options for radio buttons
 const options = [
