@@ -209,7 +209,7 @@ if (import.meta.client) {
 </script>
 <template>
   <ClientOnly>
-    <div v-show="!pageLoading" class="mx-auto flex w-3/4 items-center justify-center gap-4 text-left">
+    <div v-show="!pageLoading" class="relative mx-auto flex w-full flex-col gap-4 text-left md:w-4/5 lg:flex-row lg:gap-6 xl:w-3/4">
       <div class="flex w-full flex-col gap-6">
         <SbcPageSectionH1
           :heading="$t('page.annualReport.h1', { year: busStore.nextArYear})"

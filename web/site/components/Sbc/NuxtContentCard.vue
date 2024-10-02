@@ -46,7 +46,7 @@ watch([locale, routeWithoutLocale], () => {
 </script>
 <template>
   <UCard class="w-full" :data-testid="fullId">
-    <ContentRenderer v-if="data" :value="data" class="prose prose-bcGov w-full max-w-none text-left" />
+    <ContentRenderer v-if="data" :value="data" class="prose prose-bcGov w-full max-w-none text-left text-black" />
     <div v-else class="text-center">
       <UIcon name="i-mdi-loading" class="animate-spin" />
     </div>

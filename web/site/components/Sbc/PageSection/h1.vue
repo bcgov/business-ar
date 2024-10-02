@@ -4,7 +4,7 @@ defineProps<{
 }>()
 </script>
 <template>
-  <h1 class="text-3xl font-semibold text-bcGovColor-darkGray dark:text-white">
+  <h1 class="text-3xl font-semibold dark:text-white">
     {{ heading || '' }}
     <slot />
   </h1>

@@ -55,6 +55,11 @@ const handleFileNextReport = async () => {
   return navigateTo(localePath('/annual-report'))
 }
 
+// Compute whether there are more reports (TO_DO)
+const isMoreReports = () => {
+  return true
+}
+
 if (import.meta.client) {
   initPage()
 }
@@ -62,9 +67,9 @@ if (import.meta.client) {
 
 <template>
   <client-only>
-    <div v-if="!pageLoading && !deepEqual(busStore.businessNano, {})" class="mx-auto flex w-2/3 flex-col items-center justify-center gap-4 text-center">
+    <div v-if="!pageLoading && !deepEqual(busStore.businessNano, {})" class="mx-auto flex flex-col items-center justify-center gap-4 text-center sm:w-4/5 xl:w-3/5">
       <SbcPageSectionH1 class="mb-2 mt-3 flex items-center">
-        <span>{{ lastARDate!.getFullYear() }} {{ $t('page.submitted.h1') }}</span>
+        <span>{{ $t('page.submitted.h1', { year: lastARDate!.getFullYear() }) }}</span>
         <UIcon name="i-mdi-check-circle-outline" class="size-10 shrink-0 text-outcomes-approved" />
       </SbcPageSectionH1>
 
@@ -72,8 +77,13 @@ if (import.meta.client) {
 
       <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" />
 
-      <UCard class="w-full" data-testid="bus-details-card">
+      <UCard v-if="isMoreReports()" class="w-full" data-testid="bus-details-card">
         <SbcFileAnotherReport
+          :items="[
+            { label: $t('labels.busName'), value: busStore.businessNano.legalName },
+            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+            { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
+          ]"
           :last-a-r-completed-year="lastARDate!.getFullYear()"
           :next-a-r-year="busStore.nextArYear"
           :ar-due-dates="busStore.getArDueDates()"
