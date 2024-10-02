@@ -34,6 +34,14 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         } else {
           nextArDate.value = null
         }
+        // throw error if next ar date is in the future
+        if (!nextArYear.value || nextArYear.value! > new Date().getFullYear()) {
+          alertStore.addAlert({
+            severity: 'error',
+            category: AlertCategory.FUTURE_FILING
+          })
+          throw new Error(`Annual Report not due until ${nextArDate.value}`)
+        }
       }
     } catch (e) {
       alertStore.addAlert({
