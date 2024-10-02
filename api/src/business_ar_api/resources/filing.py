@@ -38,21 +38,18 @@ It provides endpoints to create and retrieve filing objects.
 
 """
 from http import HTTPStatus
+from typing import Optional
 
 from flask import Blueprint, g, jsonify, request
 from flask_cors import cross_origin
-from typing import Optional
 
 from business_ar_api.common.auth import jwt
-from business_ar_api.exceptions import error_response, exception_response, AuthException
+from business_ar_api.exceptions import (AuthException, error_response,
+                                        exception_response)
 from business_ar_api.models import User as UserModel
-from business_ar_api.services import (
-    SchemaService,
-    FilingService,
-    AccountService,
-    BusinessService,
-    PaymentService,
-)
+from business_ar_api.services import (AccountService, BusinessService,
+                                      FilingService, PaymentService,
+                                      SchemaService)
 
 bp = Blueprint(
     "filing", __name__, url_prefix=f"/v1/business/<string:identifier>/filings"

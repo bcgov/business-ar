@@ -36,10 +36,9 @@ from .ar_reminder import AnnualReportReminder
 from .business import Business
 from .colin_event_id import ColinEventId
 from .db import db
-from .invitations import Invitations
-from .user import User
-from .user import UserRoles
 from .filing import Filing
+from .invitations import Invitations
+from .user import User, UserRoles
 
 __all__ = (
     "db",

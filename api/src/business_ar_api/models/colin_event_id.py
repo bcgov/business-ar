@@ -16,8 +16,9 @@
 The ColinEventId class and Schema are held in this module.
 """
 
-from .db import db
 from business_ar_api.models.base_model import BaseModel
+
+from .db import db
 
 
 class ColinEventId(BaseModel):

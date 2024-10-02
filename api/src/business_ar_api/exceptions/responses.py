@@ -34,7 +34,7 @@
 """Exception responses."""
 from http import HTTPStatus
 
-from flask import jsonify, current_app
+from flask import current_app, jsonify
 
 from .exceptions import BaseExceptionE
 

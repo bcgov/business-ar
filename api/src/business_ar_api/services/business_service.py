@@ -35,6 +35,8 @@
 from datetime import date, datetime
 from http import HTTPStatus
 
+from flask import current_app
+
 from business_ar_api.exceptions.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
@@ -42,7 +44,6 @@ from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import AccountService
 from business_ar_api.services.invitation_service import InvitationService
 from business_ar_api.services.rest_service import RestService
-from flask import current_app
 
 
 class BusinessService:

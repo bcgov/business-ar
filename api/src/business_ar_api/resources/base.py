@@ -31,10 +31,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-from flask import Blueprint
-from flask import jsonify
-from flask import request
-
+from flask import Blueprint, jsonify, request
 
 bp = Blueprint("base", __name__)
 

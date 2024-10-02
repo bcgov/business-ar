@@ -40,9 +40,8 @@ from __future__ import annotations
 
 from flask import current_app
 
+from ..common.enum import BaseEnum, auto
 from .db import db
-from ..common.enum import auto
-from ..common.enum import BaseEnum
 
 
 class UserRoles(BaseEnum):

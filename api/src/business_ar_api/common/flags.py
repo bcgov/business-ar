@@ -38,11 +38,9 @@ from contextlib import suppress
 from typing import Union
 
 import ldclient
-from ldclient import LDClient, Config
+from flask import Flask, current_app, has_app_context
+from ldclient import Config, LDClient
 from ldclient.integrations.test_data import TestData
-from flask import current_app
-from flask import has_app_context
-from flask import Flask
 
 import business_ar_api
 

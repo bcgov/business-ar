@@ -41,19 +41,16 @@ from http import HTTPStatus
 from pathlib import Path
 
 import requests
+from flask import current_app
+from jinja2 import Template
+
 from business_ar_api.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
-from business_ar_api.services import (
-    AccountService,
-    BusinessService,
-    FilingService,
-    InvitationService,
-)
+from business_ar_api.services import (AccountService, BusinessService,
+                                      FilingService, InvitationService)
 from business_ar_api.services.report_service import ReportService
 from business_ar_api.utils.legislation_datetime import LegislationDatetime
-from flask import current_app
-from jinja2 import Template
 
 
 class NotificationService:
