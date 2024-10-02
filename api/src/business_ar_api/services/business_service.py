@@ -101,7 +101,7 @@ class BusinessService:
 
         # Check for any unsynced filings in GCP and adjust
         next_ar_year_gcp = FilingModel.get_next_ar_fiscal_year(business_id)
-        next_ar_adjustment = next_ar_year_gcp and next_ar_year_gcp > business_details["business"]["nextARYear"]
+        next_ar_adjustment = next_ar_year_gcp and next_ar_year_gcp >= business_details["business"]["nextARYear"]
         if next_ar_adjustment:
             last_ar_date_gcp = FilingModel.get_last_ar_filed_date(business_id)
             business_details["business"]["nextARYear"] = next_ar_year_gcp
