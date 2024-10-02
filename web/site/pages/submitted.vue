@@ -32,9 +32,11 @@ async function initPage () {
       await busStore.getBusinessTask()
     }
   } catch (e) {
-    // go back to ar page if no filing id or error in the PUT request
-    console.error((e as Error).message)
-    return navigateTo(localePath('/annual-report'))
+    const errorMessage = (e as Error).message;
+    if (!errorMessage.includes('Annual Report not due until')) {
+      console.error(errorMessage);
+      return navigateTo(localePath('/annual-report'));
+    }
   } finally {
     pageLoading.value = false
   }
@@ -51,13 +53,15 @@ const lastARDate = computed(() => {
 // Reset store and navigate back to filing page
 const handleFileNextReport = async () => {
   arStore.$reset()
+  busStore.payStatus = null
   await nextTick()
   return navigateTo(localePath('/annual-report'))
 }
 
 // Compute whether there are more reports (TO_DO)
 const isMoreReports = () => {
-  return true
+  const dueDates = busStore.getArDueDates()
+  return dueDates && dueDates.length > 0
 }
 
 if (import.meta.client) {

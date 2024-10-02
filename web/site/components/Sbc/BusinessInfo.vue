@@ -17,10 +17,19 @@ const emit = defineEmits(['login'])
 const filteredItems = computed(() => {
   return props.items.filter(item => item.value !== null)
 })
+
+const isOverdue = (date: Date) => {
+  const today = new Date()
+  return date < today
+}
+
+const isMoreReports = () => {
+  return props.arDueDates && props.arDueDates.length > 0
+}
 </script>
 <template>
   <div class="w-full text-left">
-    <h1 v-if="props.isSelectingFiling" class="mb-5 text-2xl font-bold">
+    <h1 v-if="props.isSelectingFiling && isMoreReports()" class="mb-5 text-2xl font-bold">
       {{ $t('SbcHeader.loginBCReg') }}
     </h1>
 
@@ -39,7 +48,7 @@ const filteredItems = computed(() => {
     </table>
 
     <!-- Login Screen when a valid Nano ID has been entered -->
-    <div v-if="props.isSelectingFiling">
+    <div v-if="props.isSelectingFiling && isMoreReports()">
       <hr class="my-4 border-t border-gray-300">
       <h1 class="text-xl font-bold text-bcGovColor-darkGray">
         {{ $t('page.home.annualReports') }}
@@ -47,15 +56,22 @@ const filteredItems = computed(() => {
       <p class="mb-5 mt-1 text-sm text-bcGovColor-midGray">
         {{ $t('labels.reportsSequential') }}
       </p>
-      <!-- isplay all report dates until up to date with option to login -->
+      <!-- display all report dates until up to date with option to login -->
       <div v-for="(date, index) in arDueDates" :key="index" class="mb-4">
-        <div class="flex flex-col items-center rounded-sm border border-red-500 bg-red-100 p-4 md:flex-row md:justify-between">
-          <!-- First column: Red Alert Icon and date of report -->
+        <div
+          class="flex flex-col items-center rounded-sm border p-4 md:flex-row md:justify-between"
+          :class="isOverdue(date)
+            ? 'border-red-500 bg-red-100'
+            : 'border-bcGovColor-midGray bg-gray-100'"
+        >
+          <!-- First column: Date of report and red alert icon if overdue -->
           <div class="mb-4 flex w-full items-center md:mb-0 md:w-auto">
             <UAlert
+              v-if="isOverdue(date)"
               class="mr-2 size-7 shrink-0 !rounded-none !bg-transparent !p-0 !pt-1 text-red-500 !ring-0"
               icon="i-mdi-alert"
             />
+            <div v-else class="mr-2 size-7 shrink-0 !p-0 !pt-1" />
             <div class="flex-1">
               <h2 class="font-bold text-bcGovColor-darkGray md:text-lg">
                 {{ $t('labels.annualReportWithDate', { year: date.getFullYear() }) }}
