@@ -21,9 +21,9 @@ const showAlert = computed(() => {
   <UAlert
     v-if="showAlert.length > 0"
     :title="$t(`alerts.${showAlert[0].category}.title`)"
-    :description="$t(`alerts.${showAlert[0].category}.description`, { 
-      date: busStore.nextArDate 
-        ? new Date(busStore.nextArDate).toLocaleDateString($i18n.locale, { year: 'numeric', month: 'short', day: 'numeric' }) 
+    :description="$t(`alerts.${showAlert[0].category}.description`, {
+      date: busStore.nextArDate
+        ? new Date(busStore.nextArDate).toLocaleDateString($i18n.locale, { year: 'numeric', month: 'short', day: 'numeric' })
         : null
     })"
     class="text-left"

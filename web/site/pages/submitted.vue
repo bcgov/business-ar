@@ -32,10 +32,10 @@ async function initPage () {
       await busStore.getBusinessTask()
     }
   } catch (e) {
-    const errorMessage = (e as Error).message;
+    const errorMessage = (e as Error).message
     if (!errorMessage.includes('Annual Report not due until')) {
-      console.error(errorMessage);
-      return navigateTo(localePath('/annual-report'));
+      console.error(errorMessage)
+      return navigateTo(localePath('/annual-report'))
     }
   } finally {
     pageLoading.value = false
