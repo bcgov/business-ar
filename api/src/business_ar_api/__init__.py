@@ -38,17 +38,16 @@ This module is the API for the Legal Entity system.
 import os
 
 import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
 from flask import Flask
 from flask_cors import CORS
+from sentry_sdk.integrations.flask import FlaskIntegration
 
-from .config import Config
-from .config import Production
+from .common.auth import jwt
+from .common.flags import Flags
+from .common.run_version import get_run_version
+from .config import Config, Production
 from .models import db
 from .resources import register_endpoints
-from .common.flags import Flags
-from .common.auth import jwt
-from .common.run_version import get_run_version
 
 
 def create_app(environment: Config = Production, **kwargs) -> Flask:

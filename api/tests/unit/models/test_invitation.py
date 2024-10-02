@@ -16,6 +16,7 @@
 Test suite to ensure that the Invitations model routines are working as expected.
 """
 from datetime import datetime
+
 from business_ar_api.models import Business, Invitations
 from tests import create_business
 

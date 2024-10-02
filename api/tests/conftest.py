@@ -24,8 +24,8 @@ from sqlalchemy import event, text
 
 from business_ar_api import create_app
 from business_ar_api import jwt as _jwt
-from business_ar_api.models import db as _db
 from business_ar_api.config import Testing
+from business_ar_api.models import db as _db
 
 
 def create_test_db(
