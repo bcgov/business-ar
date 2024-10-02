@@ -39,6 +39,7 @@ nanoid = "^2.0.0"
 pre-commit = "^3.7.0"
 faker = "^24.4.0"
 lovely-pytest-docker = "^0.3.1"
+isort = "^5.10.1"
 
 [build-system]
 requires = ["poetry-core"]
