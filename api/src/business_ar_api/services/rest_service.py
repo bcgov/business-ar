@@ -21,6 +21,7 @@ from typing import Dict
 import requests
 from flask import current_app, request
 from requests.adapters import HTTPAdapter  # pylint:disable=ungrouped-imports
+
 # pylint:disable=ungrouped-imports
 from requests.exceptions import ConnectionError as ReqConnectionError
 from requests.exceptions import ConnectTimeout, HTTPError

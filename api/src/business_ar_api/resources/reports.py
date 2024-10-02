@@ -19,8 +19,7 @@ from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.exceptions.responses import error_response
-from business_ar_api.services import (BusinessService, FilingService,
-                                      ReportService)
+from business_ar_api.services import BusinessService, FilingService, ReportService
 
 bp = Blueprint(
     "reports",

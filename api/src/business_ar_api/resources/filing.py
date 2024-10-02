@@ -44,12 +44,15 @@ from flask import Blueprint, g, jsonify, request
 from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt
-from business_ar_api.exceptions import (AuthException, error_response,
-                                        exception_response)
+from business_ar_api.exceptions import AuthException, error_response, exception_response
 from business_ar_api.models import User as UserModel
-from business_ar_api.services import (AccountService, BusinessService,
-                                      FilingService, PaymentService,
-                                      SchemaService)
+from business_ar_api.services import (
+    AccountService,
+    BusinessService,
+    FilingService,
+    PaymentService,
+    SchemaService,
+)
 
 bp = Blueprint(
     "filing", __name__, url_prefix=f"/v1/business/<string:identifier>/filings"
