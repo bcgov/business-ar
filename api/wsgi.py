@@ -19,9 +19,9 @@ from flask_migrate import Migrate
 
 from business_ar_api import create_app, db
 
-app = create_app() # pylint: disable=invalid-name
+app = create_app()  # pylint: disable=invalid-name
 migrate = Migrate(app, db)
 
 if __name__ == "__main__":
-    server_port = os.environ.get('PORT', '8080')
-    app.run(debug=False, port=server_port, host='0.0.0.0')
+    server_port = os.environ.get("PORT", "8080")
+    app.run(debug=False, port=server_port, host="0.0.0.0")

@@ -40,9 +40,11 @@ from requests.exceptions import HTTPError
 
 from business_ar_api.common.auth import jwt
 from business_ar_api.enums.enum import AuthHeaderType, ContentType, Role
-from business_ar_api.exceptions.exceptions import (AuthException,
-                                                   BusinessException,
-                                                   ExternalServiceException)
+from business_ar_api.exceptions.exceptions import (
+    AuthException,
+    BusinessException,
+    ExternalServiceException,
+)
 from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
 

@@ -102,19 +102,28 @@ class BusinessService:
 
         # Check for any unsynced filings in GCP and adjust
         next_ar_year_gcp = FilingModel.get_next_ar_fiscal_year(business_id)
-        next_ar_adjustment = next_ar_year_gcp and next_ar_year_gcp >= business_details["business"]["nextARYear"]
+        next_ar_adjustment = (
+            next_ar_year_gcp
+            and next_ar_year_gcp >= business_details["business"]["nextARYear"]
+        )
         if next_ar_adjustment:
             last_ar_date_gcp = FilingModel.get_last_ar_filed_date(business_id)
             business_details["business"]["nextARYear"] = next_ar_year_gcp
-            business_details["business"]['lastArDate'] = datetime.strptime(last_ar_date_gcp, "%Y-%m-%d").strftime("%Y-%m-%d")
+            business_details["business"]["lastArDate"] = datetime.strptime(
+                last_ar_date_gcp, "%Y-%m-%d"
+            ).strftime("%Y-%m-%d")
 
         # Check for any future effective filings, ignoring ones due to unsynced filings in GCP
         fed_filings_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/filings/future"
         fed_filings = RestService.get(endpoint=fed_filings_endpoint, token=token).json()
         business_details["business"]["hasFutureEffectiveFilings"] = (
-            True if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment else False
+            True
+            if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment
+            else False
         )
-        if next_ar_year_gcp and next_ar_year_gcp > datetime.now().year: # Ignore when filings are up to date (will trigger different error)
+        if (
+            next_ar_year_gcp and next_ar_year_gcp > datetime.now().year
+        ):  # Ignore when filings are up to date (will trigger different error)
             business_details["business"]["hasFutureEffectiveFilings"] = False
 
         return business_details

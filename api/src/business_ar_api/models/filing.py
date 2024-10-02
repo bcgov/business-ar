@@ -133,7 +133,7 @@ class Filing(BaseModel):
         return query.all()
 
     @classmethod
-    def get_next_ar_fiscal_year(cls, business_id: str) -> int|None:
+    def get_next_ar_fiscal_year(cls, business_id: str) -> int | None:
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -150,7 +150,7 @@ class Filing(BaseModel):
             return None
 
     @classmethod
-    def get_last_ar_filed_date(cls, business_id: str) -> str|None:
+    def get_last_ar_filed_date(cls, business_id: str) -> str | None:
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -162,7 +162,11 @@ class Filing(BaseModel):
             filings = query.all()
             if filings:
                 filing_json = filings[0].filing_json
-                last_ar_date = filing_json.get('filing', {}).get('annualReport', {}).get('annualReportDate')
+                last_ar_date = (
+                    filing_json.get("filing", {})
+                    .get("annualReport", {})
+                    .get("annualReportDate")
+                )
                 return last_ar_date
             return None
         except Exception:

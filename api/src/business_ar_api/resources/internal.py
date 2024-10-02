@@ -44,10 +44,13 @@ from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt
 from business_ar_api.enums.enum import Role
-from business_ar_api.exceptions import (AuthException, error_response,
-                                        exception_response)
-from business_ar_api.services import (AccountService, BusinessService,
-                                      FilingService, NotificationService)
+from business_ar_api.exceptions import AuthException, error_response, exception_response
+from business_ar_api.services import (
+    AccountService,
+    BusinessService,
+    FilingService,
+    NotificationService,
+)
 
 bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 

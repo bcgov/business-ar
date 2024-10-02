@@ -133,7 +133,7 @@ class PaymentService:
             return "Filing not in Paid or Completed State", HTTPStatus.BAD_REQUEST
         business = BusinessService.find_by_internal_id(filing.business_id)
 
-        pacific_tz = timezone('America/Los_Angeles')
+        pacific_tz = timezone("America/Los_Angeles")
         pacific_time_filing_date = filing.filing_date.astimezone(pacific_tz)
 
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
@@ -143,7 +143,9 @@ class PaymentService:
         headers = {"Accept": "application/pdf", "Authorization": f"Bearer {token}"}
         payload = {
             "corpName": business.legal_name,
-            "filingDateTime": pacific_time_filing_date.strftime("%B %d, %Y %I:%M %p Pacific Time"),
+            "filingDateTime": pacific_time_filing_date.strftime(
+                "%B %d, %Y %I:%M %p Pacific Time"
+            ),
             "effectiveDateTime": "",
             "filingIdentifier": str(filing.id),
         }

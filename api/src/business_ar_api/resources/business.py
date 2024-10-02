@@ -20,16 +20,20 @@ from flask_cors import cross_origin
 
 from business_ar_api.common.auth import jwt as _jwt
 from business_ar_api.enums.enum import Role
-from business_ar_api.exceptions.exceptions import (BusinessException,
-                                                   ExternalServiceException)
+from business_ar_api.exceptions.exceptions import (
+    BusinessException,
+    ExternalServiceException,
+)
 from business_ar_api.exceptions.responses import error_response
-from business_ar_api.models import \
-    AnnualReportReminder as AnnualReportReminderModel
+from business_ar_api.models import AnnualReportReminder as AnnualReportReminderModel
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Invitations as InvitationsModel
-from business_ar_api.services import (AccountService,
-                                      AnnualReportReminderService,
-                                      BusinessService, InvitationService)
+from business_ar_api.services import (
+    AccountService,
+    AnnualReportReminderService,
+    BusinessService,
+    InvitationService,
+)
 
 bp = Blueprint("business_keys", __name__, url_prefix=f"/v1/business")
 
@@ -69,7 +73,7 @@ def get_business_details_using_token(token):
         business_json["nextARYear"] = business_details_from_colin.get("business").get(
             "nextARYear"
         )
-        business_json["lastARDate"] =  business_details_from_colin.get("business").get(
+        business_json["lastARDate"] = business_details_from_colin.get("business").get(
             "lastArDate"
         )
         business_json["foundingDate"] = business_details_from_colin.get("business").get(
