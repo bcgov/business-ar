@@ -95,6 +95,7 @@ export default {
     openHelpDocs: 'Annual Report Overview',
     downloadReceipt: 'Download Receipt',
     downloadReport: 'Download Report',
+    fileAnotherReport: 'File Another Report',
     info: {
       show: 'Show information',
       hide: 'Hide information'
@@ -283,7 +284,7 @@ export default {
     },
     submitted: {
       title: 'Annual Report Complete - Service BC Annual Report',
-      h1: 'Annual Report Complete'
+      h1: '{year} Annual Report Complete'
     },
     tos: {
       title: 'Terms of Use - Service BC Annual Report',
@@ -321,7 +322,8 @@ export default {
     title: 'Service BC Connect',
     logoBtnLabel: 'Home', // <img> link aria-label
     navLabel: 'Main Navigation', // <nav> aria-label
-    loginBCReg: 'Log in to BC Registries'
+    loginBCReg: 'Log in to BC Registries',
+    fileAnotherReport: 'File Another Report'
   },
   SbcFooter: {
     navLabel: 'Useful Links', // <nav> aria-label

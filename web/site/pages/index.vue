@@ -117,7 +117,7 @@ if (import.meta.client) {
 <template>
   <!-- TODO: find hydration error only when being redirected from tos page -->
   <!-- must use v-show for nuxt content to prerender correctly -->
-  <div v-show="!pageLoading" class="mx-auto flex w-full flex-col items-center justify-center gap-4 text-center md:w-2/3">
+  <div v-show="!pageLoading" class="mx-auto flex w-full flex-col items-center justify-center gap-4 text-center md:mt-3 md:w-4/5 lg:w-3/5">
     <ClientOnly>
       <SbcPageSectionH1 :heading="heading" />
 

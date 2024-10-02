@@ -1,5 +1,6 @@
-Vous avez réussi à déposer votre «Annual Report» de la Colombie-Britannique sur le «Business Registry». Un reçu a été envoyé par courriel à l'adresse électronique de l'entreprise.
+<p style="font-size: 24px; font-weight: bold; margin: 0; padding: 0;">Votre Reçu</p>
+
+Vous avez réussi à déposer votre Rapport Annuel de la CB sur le Registre des Entreprises. Un reçu a été envoyé par e-mail à 
+:BusinessEmail.
 
 :DocumentDownload
-
-Vous souhaitez partager votre avis sur le «Annual Report» de la Colombie-Britannique? <a href="https://forms.gle/5niYLfjrymAqbLpr9" target="_blank">Complétez notre court sondage maintenant</a>.

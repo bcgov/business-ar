@@ -32,7 +32,7 @@ defineProps<{
     >
       <div class="flex items-center gap-6">
         <SbcLogo />
-        <span class="text-lg font-semibold text-white"> {{ $t('btn.sbcConnect') }} </span>
+        <span class="hidden text-lg font-semibold text-white lg:block"> {{ $t('btn.sbcConnect') }} </span>
       </div>
       <div class="flex gap-1">
         <ClientOnly>
