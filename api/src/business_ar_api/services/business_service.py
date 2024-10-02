@@ -113,6 +113,9 @@ class BusinessService:
         business_details["business"]["hasFutureEffectiveFilings"] = (
             True if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment else False
         )
+        if next_ar_year_gcp and next_ar_year_gcp > datetime.now().year: # Ignore when filings are up to date (will trigger different error)
+            business_details["business"]["hasFutureEffectiveFilings"] = False
+
         return business_details
 
     @classmethod
