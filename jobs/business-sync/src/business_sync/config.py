@@ -52,7 +52,7 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     SENTRY_DSN = os.getenv("SENTRY_DSN", "")
 
-    DEPLOYMENT_ENVIRONMENT = os.getenv("DEPLOYMENT_ENVIRONMENT", "development")
+    DEPLOYMENT_ENVIRONMENT = os.getenv("DEPLOYMENT_ENV", "development")
 
     DB_USER = os.getenv("DATABASE_USERNAME", "")
     DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "")
