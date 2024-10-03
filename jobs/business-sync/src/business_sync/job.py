@@ -133,8 +133,8 @@ def run():
                 for row in results:
                     try:
                         identifier = row.corp_num
-                        if row.corp_typ_cd == "BC" and not row.corp_num.startswith("BC"):
-                            identifier = f"BC{row.corp_num}"
+                        #if row.corp_typ_cd == "BC" and not row.corp_num.startswith("BC"):
+                            #identifier = f"BC{row.corp_num}"
                         business = Business.find_by_identifier(identifier)
                         if not business:
                             business = Business(
