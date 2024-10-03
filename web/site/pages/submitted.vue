@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const submittedSuccessText = inject('sbc-bar-success-text')
+const submittedPlatformInfo = inject('sbc-bar-platform-info')
 const { t } = useI18n()
 const route = useRoute()
 const busStore = useBusinessStore()
@@ -79,7 +81,7 @@ if (import.meta.client) {
 
       <SbcAlert :show-on-category="[AlertCategory.INTERNAL_SERVER_ERROR, AlertCategory.DOCUMENT_DOWNLOAD]" />
 
-      <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" />
+      <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" :content="submittedSuccessText" />
 
       <UCard v-if="isMoreReports()" class="w-full" data-testid="bus-details-card">
         <SbcFileAnotherReport
@@ -96,7 +98,7 @@ if (import.meta.client) {
       </UCard>
 
       <!-- Render platform info -->
-      <SbcNuxtContentCard id="submitted-platform-info" route-suffix="/platform-info" />
+      <SbcNuxtContentCard id="submitted-platform-info" route-suffix="/platform-info" :content="submittedPlatformInfo" />
     </div>
   </client-only>
 </template>

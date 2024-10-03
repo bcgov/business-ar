@@ -32,13 +32,20 @@ const helpDocs = computed(() =>
 const index1 = computed(() =>
   contentDocs.value?.find(doc => doc._path === '/index/1')
 )
-
 const index2 = computed(() =>
   contentDocs.value?.find(doc => doc._path === '/index/2')
 )
+const submittedSuccessText = computed(() => {
+  contentDocs.value?.find(doc => doc._path === '/submitted/success-text')
+})
+const submittedPlatformInfo = computed(() => {
+  contentDocs.value?.find(doc => doc._path === '/submitted/platform-info')
+})
 provide('sbc-bar-help-docs', helpDocs)
 provide('sbc-bar-index1', index1)
 provide('sbc-bar-index2', index2)
+provide('sbc-bar-success-text', submittedSuccessText)
+provide('sbc-bar-platform-info', submittedPlatformInfo)
 </script>
 
 <template>
