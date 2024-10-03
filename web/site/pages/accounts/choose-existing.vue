@@ -55,7 +55,7 @@ onMounted(() => {
                   {{ account.name }}
                 </span>
                 <span
-                  v-if="account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
+                  v-if="Array.isArray(account.mailingAddress) && account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
                   :id="`account-address-${account.id}`"
                   class="text-bcGovColor-midGray dark:text-gray-300"
                 >
@@ -70,7 +70,7 @@ onMounted(() => {
             <UButton
               class="sm:ml-auto"
               :label="$t('btn.useThisAccount.main')"
-              :aria-describedby="account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
+              :aria-describedby="Array.isArray(account.mailingAddress) && account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
               :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
               icon="i-mdi-chevron-right"
               trailing
