@@ -220,6 +220,6 @@ def _get_businesses():
     )
 
     businesses = db.session.query(Business).filter(
-        where_clause).order_by(Business.founding_date).limit(25).all()
+        where_clause).order_by(Business.founding_date).limit(300).all()
 
     return businesses
