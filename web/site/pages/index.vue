@@ -142,7 +142,7 @@ if (import.meta.client) {
           break-value="sm"
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
-            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+            { label: $t('labels.corpNum'), value: `${busStore.businessNano.legalType}${busStore.businessNano.identifier.replace(/\D/g, '')}`},
             { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
           ]"
           :is-selecting-filing="true"

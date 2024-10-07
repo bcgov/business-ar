@@ -87,7 +87,7 @@ if (import.meta.client) {
         <SbcFileAnotherReport
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
-            { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+            { label: $t('labels.corpNum'), value: `${busStore.businessNano.legalType}${busStore.businessNano.identifier.replace(/\D/g, '')}`},
             { label: $t('labels.busNum'), value: busStore.businessNano.taxId ? `${busStore.businessNano.taxId.slice(0, 9)} ${busStore.businessNano.taxId.slice(9)}` : null },
           ]"
           :last-a-r-completed-year="lastARDate!.getFullYear()"

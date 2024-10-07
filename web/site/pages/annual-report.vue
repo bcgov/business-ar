@@ -231,7 +231,7 @@ if (import.meta.client) {
             break-value="lg"
             :items="[
               { label: $t('labels.busName'), value: busStore.currentBusiness.legalName },
-              { label: $t('labels.corpNum'), value: busStore.businessNano.identifier },
+              { label: $t('labels.corpNum'), value: `${busStore.businessNano.legalType}${busStore.businessNano.identifier.replace(/\D/g, '')}`},
               { label: $t('labels.arDate'), value: nextArDate },
             ]"
             :is-selecting-filing="false"
