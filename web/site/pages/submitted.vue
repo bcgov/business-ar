@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const submittedSuccessText = inject('sbc-bar-success-text')
-const submittedPlatformInfo = inject('sbc-bar-platform-info')
+const submittedSuccessText = inject<Record<string, any>>('sbc-bar-success-text')
+const submittedPlatformInfo = inject<Record<string, any>>('sbc-bar-platform-info')
 const { t } = useI18n()
 const route = useRoute()
 const busStore = useBusinessStore()
@@ -60,7 +60,7 @@ const handleFileNextReport = async () => {
   return navigateTo(localePath('/annual-report'))
 }
 
-// Compute whether there are more reports (TO_DO)
+// Compute whether there are more reports
 const isMoreReports = () => {
   const dueDates = busStore.getArDueDates()
   return dueDates && dueDates.length > 0
@@ -73,7 +73,7 @@ if (import.meta.client) {
 
 <template>
   <client-only>
-    <div v-if="!pageLoading && !deepEqual(busStore.businessNano, {})" class="mx-auto flex flex-col items-center justify-center gap-4 text-center sm:w-4/5 xl:w-3/5">
+    <div v-show="!pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center sm:w-4/5 xl:w-3/5">
       <SbcPageSectionH1 class="mb-2 mt-3 flex items-center">
         <span>{{ $t('page.submitted.h1', { year: lastARDate!.getFullYear() }) }}</span>
         <UIcon name="i-mdi-check-circle-outline" class="size-10 shrink-0 text-outcomes-approved" />
@@ -83,7 +83,7 @@ if (import.meta.client) {
 
       <SbcNuxtContentCard id="submitted-success-text" route-suffix="/success-text" :content="submittedSuccessText" />
 
-      <UCard v-if="isMoreReports()" class="w-full" data-testid="bus-details-card">
+      <UCard v-show="isMoreReports()" class="w-full" data-testid="bus-details-card">
         <SbcFileAnotherReport
           :items="[
             { label: $t('labels.busName'), value: busStore.businessNano.legalName },
