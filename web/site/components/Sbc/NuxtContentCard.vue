@@ -26,10 +26,16 @@ const fullId = 'content-data-' + props.id
 const fetchData = async () => {
   if (props.content) {
     return props.content
+  } else {
+    try {
+      const result = await queryContent()
+        .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + props.routeSuffix } })
+        .findOne()
+      return result
+    } catch (error) {
+      return null
+    }
   }
-  return await queryContent()
-    .where({ _locale: locale.value, _path: { $eq: routeWithoutLocale.value + props.routeSuffix } })
-    .findOne()
 }
 
 const { data, refresh } = await useAsyncData(fullId, fetchData)
