@@ -15,7 +15,7 @@ export interface Org {
   hasApiAccess: boolean
   id: number
   isBusinessAccount: boolean
-  mailingAddress: OrgAddress[]
+  contacts: OrgAddress[]
   modified: string
   name: string
   orgStatus: string
