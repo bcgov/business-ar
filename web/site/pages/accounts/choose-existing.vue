@@ -55,22 +55,22 @@ onMounted(() => {
                   {{ account.name }}
                 </span>
                 <span
-                  v-if="Array.isArray(account.mailingAddress) && account.mailingAddress.length !== 0 && 'street' in account.mailingAddress[0]"
+                  v-if="Array.isArray(account.contacts) && account.contacts.length !== 0 && 'street' in account.contacts[0]"
                   :id="`account-address-${account.id}`"
                   class="text-bcGovColor-midGray dark:text-gray-300"
                 >
-                  {{ account.mailingAddress[0].street }},
-                  {{ account.mailingAddress[0].city }},
-                  {{ account.mailingAddress[0].region }}
-                  {{ account.mailingAddress[0].postalCode }},
-                  {{ isoCountriesList.find((country: SbcCountry) => country.alpha_2 === account.mailingAddress[0].country)?.name || account.mailingAddress[0].country }}
+                  {{ account.contacts[0].street }},
+                  {{ account.contacts[0].city }},
+                  {{ account.contacts[0].region }}
+                  {{ account.contacts[0].postalCode }},
+                  {{ isoCountriesList.find((country: SbcCountry) => country.alpha_2 === account.contacts[0].country)?.name || account.contacts[0].country }}
                 </span>
               </div>
             </div>
             <UButton
               class="sm:ml-auto"
               :label="$t('btn.useThisAccount.main')"
-              :aria-describedby="Array.isArray(account.mailingAddress) && account.mailingAddress.length !== 0 ? `account-address-${account.id}` : ''"
+              :aria-describedby="Array.isArray(account.contacts) && account.contacts.length !== 0 ? `account-address-${account.id}` : ''"
               :aria-label="$t('btn.useThisAccount.aria', { name: account.name})"
               icon="i-mdi-chevron-right"
               trailing
