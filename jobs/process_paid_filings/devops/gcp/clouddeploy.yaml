@@ -81,7 +81,7 @@ serialPipeline:
    - values:
       deploy-env: "production"
       deploy-project-id: "a083gt-prod"
-      job-name: "business-ar-process-paid-filings-prod"
+      job-name: "business-ar-job-process-paid-filings-prod"
       cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"
