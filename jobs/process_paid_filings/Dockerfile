@@ -79,7 +79,6 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
   && poetry install \
     $(if [ -z ${APP_ENV+x} ] | [ "$APP_ENV" = 'production' ]; then echo '--only main'; fi) \
     --no-interaction --no-ansi
-
 # Running as non-root user:
 COPY --chown=web:web . /code
 RUN chmod -R 755 /code
@@ -88,7 +87,7 @@ USER web
   
 # The following stage is only for production:
 FROM development_build AS production_build
-  
-# ENV PYTHONPATH=/opt/app-root/src
+COPY --chown=web:web . /code
+COPY --chown=web:web ./run.sh /code/run.sh
   
 CMD [ "/bin/sh", "/code/run.sh" ]
