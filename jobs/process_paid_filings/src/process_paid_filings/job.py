@@ -35,7 +35,7 @@ initialize_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "log
 
 SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
-TIMEOUT = 20
+TIMEOUT = 300
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
