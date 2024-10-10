@@ -123,7 +123,7 @@ def run():
                             -- Exclude companies founded in the current year, include those from previous year
                             (EXTRACT(YEAR FROM co.recognition_dts) = EXTRACT(YEAR FROM current_date) - 1 AND co.last_ar_filed_dt IS NULL)
                             -- Or include if last_ar_filed_dt is not NULL and was filed in the previous year
-                            OR (co.last_ar_filed_dt IS NOT NULL AND EXTRACT(YEAR FROM co.last_ar_filed_dt) = EXTRACT(YEAR FROM current_date) - 1)
+                            OR (co.last_ar_filed_dt IS NOT NULL AND EXTRACT(YEAR FROM co.last_ar_filed_dt) < EXTRACT(YEAR FROM current_date))
                             );
                         """
                     )
