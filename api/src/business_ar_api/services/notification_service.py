@@ -37,6 +37,7 @@ This module contains the services necessary for handling notifications.
 import base64
 import re
 from datetime import datetime
+from pytz import timezone
 from http import HTTPStatus
 from pathlib import Path
 
@@ -130,9 +131,13 @@ class NotificationService:
         if filing.status == FilingModel.Status.COMPLETED.value:
             # add receipt pdf
             url = f'{current_app.config.get("PAY_API_URL")}/payment-requests/{filing.invoice_id}/receipts'
+            # format date & time of filing to pacific time
+            pacific_tz = timezone('America/Los_Angeles')
+            pacific_time_filing_date = filing.filing_date.astimezone(pacific_tz)
+            filing_date_time_formatted = pacific_time_filing_date.strftime("%B %d, %Y %I:%M %p Pacific Time")
             payload = {
                 "corpName": business.legal_name,
-                "filingDateTime": filing.filing_date.isoformat(),
+                "filingDateTime": filing_date_time_formatted,
                 "effectiveDateTime": "",
                 "filingIdentifier": str(filing.id),
             }
