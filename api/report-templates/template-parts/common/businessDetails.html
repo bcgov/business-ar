@@ -18,7 +18,13 @@
                 {% endif %}
                 <div class="pt-2">{{filing_date_time}}</div>
                 <div class="pt-2">{{recognition_date_time}}</div>
-                <div class="pt-2">{{effective_date}}</div>
+                <div class="pt-2">
+                    {% if annualReport.annualGeneralMeetingDate %}
+                        {{ annualReport.annualGeneralMeetingDate | strftime("%B %d, %Y") }}
+                    {% else %}
+                        No AGM
+                    {% endif %}
+                </div>
                 <div class="pt-2">{{report_date_time}}</div>
             </td>
             <td class="business-details-registar-td">
