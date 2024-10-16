@@ -66,11 +66,9 @@ def get_filings_by_status(status):
         for filing in filings:
             filing_json = FilingService.serialize(filing)
             business = BusinessService.find_by_internal_id(filing.business_id)
-            filing_json["filing"]["business"] = (
-                BusinessService.get_business_details_from_colin(
-                    business.identifier, business.legal_type, business.id
-                ).get("business", {})
-            )
+            filing_json["filing"]["business"] = BusinessService.get_business_details_from_colin(
+                business.identifier, business.legal_type, business.id
+            ).get("business", {})
             filings_res.append(filing_json)
         return jsonify(filings=filings_res), HTTPStatus.OK
     except AuthException as aex:
@@ -91,9 +89,7 @@ def complete_filing(filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
         json_input = request.get_json()
 
         filing = FilingService.find_filing_by_id(filing_id)
@@ -123,9 +119,7 @@ def send_notifications(filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
 
         filing = FilingService.find_filing_by_id(filing_id)
         if not filing:

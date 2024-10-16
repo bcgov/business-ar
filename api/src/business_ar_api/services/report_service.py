@@ -63,9 +63,7 @@ class ReportService:
         }
         data = {
             "reportName": self._get_report_filename(),
-            "template": "'"
-            + base64.b64encode(bytes(self._get_template(), "utf-8")).decode()
-            + "'",
+            "template": "'" + base64.b64encode(bytes(self._get_template(), "utf-8")).decode() + "'",
             "templateVars": self._get_template_data(),
         }
         response = requests.post(
@@ -82,16 +80,12 @@ class ReportService:
         filing_date = str(self._filing.filing_date)[:19]
         legal_entity_number = self._business.identifier
         description = REPORTS_METADATA[self._report_key]["filingDescription"]
-        return "{}_{}_{}.pdf".format(
-            legal_entity_number, filing_date, description
-        ).replace(" ", "_")
+        return "{}_{}_{}.pdf".format(legal_entity_number, filing_date, description).replace(" ", "_")
 
     def _get_template(self):
         try:
             template_path = current_app.config.get("REPORT_TEMPLATE_PATH")
-            template_code = Path(
-                f"{template_path}/{self._get_template_filename()}"
-            ).read_text()
+            template_code = Path(f"{template_path}/{self._get_template_filename()}").read_text()
             # substitute template parts
             template_code = self._substitute_template_parts(template_code)
         except Exception as err:
@@ -113,32 +107,20 @@ class ReportService:
         return filing
 
     def _set_registrar_info(self, filing):
-        filing["registrarInfo"] = {
-            **RegistrarInfo.get_registrar_info(self._filing.filing_date)
-        }
+        filing["registrarInfo"] = {**RegistrarInfo.get_registrar_info(self._filing.filing_date)}
 
     def _set_description(self, filing):
-        corp_metadata = [
-            corp
-            for corp in CORPS_METADATA
-            if corp.get("corp_type_cd") == self._business.legal_type
-        ]
+        corp_metadata = [corp for corp in CORPS_METADATA if corp.get("corp_type_cd") == self._business.legal_type]
         if corp_metadata:
             filing["entityDescription"] = corp_metadata[0].get("full_desc")
             filing["entityAct"] = corp_metadata[0].get("legislation")
 
     def _set_dates(self, filing):
         # Filing Date
-        filing_datetime = LegislationDatetime.as_legislation_timezone(
-            self._filing.filing_date
-        )
-        filing["filing_date_time"] = LegislationDatetime.format_as_report_string(
-            filing_datetime
-        )
+        filing_datetime = LegislationDatetime.as_legislation_timezone(self._filing.filing_date)
+        filing["filing_date_time"] = LegislationDatetime.format_as_report_string(filing_datetime)
         # For Annual Report - Set AGM date as the effective date
-        agm_date_str = filing.get("annualReport", {}).get(
-            "annualGeneralMeetingDate", None
-        )
+        agm_date_str = filing.get("annualReport", {}).get("annualGeneralMeetingDate", None)
         if agm_date_str:
             agm_date = datetime.fromisoformat(agm_date_str)
             filing["agm_date"] = agm_date.strftime(OUTPUT_DATE_FORMAT)
@@ -147,20 +129,12 @@ class ReportService:
         else:
             filing["agm_date"] = "No AGM"
 
-        filing["report_date_time"] = LegislationDatetime.format_as_report_string(
-            self._report_date_time
-        )
-        recognition_date_time = LegislationDatetime.as_utc_timezone_datetime(
-            filing["business"]["foundingDate"]
-        )
-        filing["recognition_date_time"] = LegislationDatetime.format_as_report_string(
-            recognition_date_time
-        )
+        filing["report_date_time"] = LegislationDatetime.format_as_report_string(self._report_date_time)
+        recognition_date_time = LegislationDatetime.as_utc_timezone_datetime(filing["business"]["foundingDate"])
+        filing["recognition_date_time"] = LegislationDatetime.format_as_report_string(recognition_date_time)
 
     def _set_meta_info(self, filing):
-        filing["environment"] = (
-            f"{self._get_environment()} FILING #{self._filing.id}".lstrip()
-        )
+        filing["environment"] = f"{self._get_environment()} FILING #{self._filing.id}".lstrip()
         # Appears in the Description section of the PDF Document Properties as Title.
         filing["meta_title"] = "{} on {}".format(
             REPORTS_METADATA[self._report_key]["filingDescription"],
@@ -206,11 +180,7 @@ class ReportService:
         ]
         # substitute template parts - marked up by [[filename]]
         for template_part in template_parts:
-            template_part_code = Path(
-                f"{template_path}/template-parts/{template_part}.html"
-            ).read_text()
-            template_code = template_code.replace(
-                "[[{}.html]]".format(template_part), template_part_code
-            )
+            template_part_code = Path(f"{template_path}/template-parts/{template_part}.html").read_text()
+            template_code = template_code.replace("[[{}.html]]".format(template_part), template_part_code)
 
         return template_code

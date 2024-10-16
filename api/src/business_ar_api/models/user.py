@@ -83,9 +83,7 @@ class User(db.Model):
         If there is actual name info, return that; otherwise username.
         """
         if self.firstname or self.lastname or self.middlename:
-            return " ".join(
-                filter(None, [self.firstname, self.middlename, self.lastname])
-            ).strip()
+            return " ".join(filter(None, [self.firstname, self.middlename, self.lastname])).strip()
 
         # parse off idir\ or @idir
         if self.username[:4] == "idir":
@@ -142,9 +140,7 @@ class User(db.Model):
             user = User.find_by_jwt_token(jwt_oidc_token)
             current_app.logger.debug(f"finding user: {jwt_oidc_token}")
             if not user:
-                current_app.logger.debug(
-                    f"didnt find user, create new user:{jwt_oidc_token}"
-                )
+                current_app.logger.debug(f"didnt find user, create new user:{jwt_oidc_token}")
                 user = User.create_from_jwt_token(jwt_oidc_token)
 
             return user
@@ -159,11 +155,7 @@ class User(db.Model):
     @classmethod
     def find_by_username(cls, username) -> User | None:
         """Return the oldest User record for the provided username."""
-        return (
-            cls.query.filter_by(username=username)
-            .order_by(User.creation_date.desc())
-            .first()
-        )
+        return cls.query.filter_by(username=username).order_by(User.creation_date.desc()).first()
 
     @classmethod
     def find_by_sub(cls, sub) -> User | None:

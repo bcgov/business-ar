@@ -128,9 +128,7 @@ class SchemaService:
         """
         try:
             schema_file_name = f"{schema_name}.json"
-            schema_file_path = os.path.join(
-                SchemaService.scripts_directory(), "btr-bods", schema_file_name
-            )
+            schema_file_path = os.path.join(SchemaService.scripts_directory(), "btr-bods", schema_file_name)
             if not os.path.exists(schema_file_path):
                 raise ValueError(f"Schema file could not be found: {schema_file_name}")
             with open(schema_file_path, "r", encoding="UTF-8") as schema_file:
@@ -162,9 +160,7 @@ class SchemaService:
         if schema_name not in self.loaded_schemas:
             schema = self.load_schema(schema_name)
             if not schema:
-                raise Exception(
-                    f"invalid schema name: {schema_name}"
-                )  # pylint: disable=broad-exception-raised
+                raise Exception(f"invalid schema name: {schema_name}")  # pylint: disable=broad-exception-raised
             self.loaded_schemas[schema_name] = schema
 
         return self.loaded_schemas[schema_name]

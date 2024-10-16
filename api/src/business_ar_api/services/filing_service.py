@@ -72,9 +72,7 @@ class FilingService:
         return filing
 
     @staticmethod
-    def update_filing_invoice_details(
-        filing_id: int, invoice_response: dict
-    ) -> FilingModel:
+    def update_filing_invoice_details(filing_id: int, invoice_response: dict) -> FilingModel:
         """
         Update filing invoice details.
         """
@@ -84,9 +82,7 @@ class FilingService:
         filing.payment_status_code = invoice_response.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
             filing.status = FilingModel.Status.PAID
-            filing.payment_completion_date = datetime.fromisoformat(
-                invoice_response.get("paymentDate")
-            )
+            filing.payment_completion_date = datetime.fromisoformat(invoice_response.get("paymentDate"))
         elif filing.payment_status_code == "APPROVED":
             filing.payment_status_code = "COMPLETED"
             filing.status = FilingModel.Status.PAID
@@ -143,9 +139,7 @@ class FilingService:
         filing.payment_status_code = payment_details.get("statusCode")
         if filing.payment_status_code == "COMPLETED":
             filing.status = FilingModel.Status.PAID
-            filing.payment_completion_date = datetime.fromisoformat(
-                payment_details.get("paymentDate")
-            )
+            filing.payment_completion_date = datetime.fromisoformat(payment_details.get("paymentDate"))
         filing.save()
         return filing
 
@@ -167,9 +161,7 @@ class FilingService:
                 status_code=HTTPStatus.BAD_REQUEST,
                 message="No invoice for the filing.",
             )
-        payment_details = PaymentService.get_payment_details_by_invoice_id(
-            filing.invoice_id, user_jwt
-        )
+        payment_details = PaymentService.get_payment_details_by_invoice_id(filing.invoice_id, user_jwt)
         return payment_details
 
     @staticmethod

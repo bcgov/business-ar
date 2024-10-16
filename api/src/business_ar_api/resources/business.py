@@ -49,9 +49,7 @@ def get_business_details_using_token(token):
     if invitation and invitation.status == InvitationsModel.Status.SENT:
         business_id = invitation.business_id
     else:
-        reminder: AnnualReportReminderModel = (
-            AnnualReportReminderService.find_ar_reminder_by_token(token)
-        )
+        reminder: AnnualReportReminderModel = AnnualReportReminderService.find_ar_reminder_by_token(token)
         if reminder and reminder.status == AnnualReportReminderModel.Status.SENT:
             business_id = reminder.business_id
 
@@ -63,21 +61,11 @@ def get_business_details_using_token(token):
         business_details_from_colin = BusinessService.get_business_details_from_colin(
             business.identifier, business.legal_type, business.id
         )
-        business_json["legalName"] = business_details_from_colin.get("business").get(
-            "legalName"
-        )
-        business_json["status"] = business_details_from_colin.get("business").get(
-            "corpState"
-        )
-        business_json["nextARYear"] = business_details_from_colin.get("business").get(
-            "nextARYear"
-        )
-        business_json["lastARDate"] =  business_details_from_colin.get("business").get(
-            "lastArDate"
-        )
-        business_json["foundingDate"] = business_details_from_colin.get("business").get(
-            "foundingDate"
-        )
+        business_json["legalName"] = business_details_from_colin.get("business").get("legalName")
+        business_json["status"] = business_details_from_colin.get("business").get("corpState")
+        business_json["nextARYear"] = business_details_from_colin.get("business").get("nextARYear")
+        business_json["lastARDate"] = business_details_from_colin.get("business").get("lastArDate")
+        business_json["foundingDate"] = business_details_from_colin.get("business").get("foundingDate")
         return business_json, HTTPStatus.OK
     else:
         return error_response("Invalid token.", HTTPStatus.BAD_REQUEST)
@@ -89,9 +77,7 @@ def get_business_details_using_token(token):
 def get_business_details(identifier):
     """Get business details from colin"""
     if not identifier:
-        return error_response(
-            "Please provide business identifier.", HTTPStatus.BAD_REQUEST
-        )
+        return error_response("Please provide business identifier.", HTTPStatus.BAD_REQUEST)
 
     business: BusinessModel = BusinessService.find_by_business_identifier(identifier)
     if not business:
@@ -102,9 +88,7 @@ def get_business_details(identifier):
             business.identifier, business.legal_type, business.id
         )
     except Exception as exception:
-        current_app.logger.error(
-            "Error while fetching business details from Colin.", exception
-        )
+        current_app.logger.error("Error while fetching business details from Colin.", exception)
         return error_response(
             f"Error while fetching business details from Colin.",
             HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -112,16 +96,12 @@ def get_business_details(identifier):
 
     # If the call fails do not populate office details in the response.
     try:
-        business_office_details = (
-            BusinessService.get_business_office_details_from_colin(
-                business.identifier, business.legal_type
-            )
+        business_office_details = BusinessService.get_business_office_details_from_colin(
+            business.identifier, business.legal_type
         )
         business_details["offices"] = business_office_details
     except Exception as exception:
-        current_app.logger.error(
-            "Error while fetching business office from Colin.", exception
-        )
+        current_app.logger.error("Error while fetching business office from Colin.", exception)
 
     # If the call fails do not populate party details in the response.
     try:
@@ -130,9 +110,7 @@ def get_business_details(identifier):
         )
         business_details["parties"] = business_party_details.get("directors", [])
     except Exception as exception:
-        current_app.logger.error(
-            "Error while fetching business parties from Colin.", exception
-        )
+        current_app.logger.error("Error while fetching business parties from Colin.", exception)
 
     return business_details, HTTPStatus.OK
 
@@ -147,9 +125,7 @@ def create_business_in_auth():
     business_identifier = json_input.get("businessIdentifier")
 
     if not business_identifier:
-        return error_response(
-            "Please provide business identifier", HTTPStatus.BAD_REQUEST
-        )
+        return error_response("Please provide business identifier", HTTPStatus.BAD_REQUEST)
 
     business: BusinessModel = BusinessModel.find_by_identifier(business_identifier)
     if not business:
@@ -178,9 +154,7 @@ def get_tasks(identifier):
     except BusinessException as businessExcpetion:
         return error_response(businessExcpetion.error, businessExcpetion.status_code)
     except Exception as exception:
-        current_app.logger.error(
-            "Error occured while retrieving pending tasks", exception
-        )
+        current_app.logger.error("Error occured while retrieving pending tasks", exception)
         return error_response(
             "Error occured while retrieving pending tasks",
             HTTPStatus.INTERNAL_SERVER_ERROR,

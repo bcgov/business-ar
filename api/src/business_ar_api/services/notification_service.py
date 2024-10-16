@@ -78,14 +78,10 @@ class NotificationService:
         filing_data = filing_json["filing"]["annualReport"]
         filing_header = filing_json["filing"]["header"]
 
-        template = Path(
-            f'{current_app.config.get("EMAIL_TEMPLATE_PATH")}/BC-AR-PAID.html'
-        ).read_text()
+        template = Path(f'{current_app.config.get("EMAIL_TEMPLATE_PATH")}/BC-AR-PAID.html').read_text()
         filled_template = NotificationService._substitute_template_parts(template)
         jinja_template = Template(filled_template, autoescape=True)
-        filing_date_time = NotificationService._get_tmz_date_time_string(
-            filing.filing_date
-        )
+        filing_date_time = NotificationService._get_tmz_date_time_string(filing.filing_date)
 
         html_out = jinja_template.render(
             business=business.json(),
@@ -105,9 +101,7 @@ class NotificationService:
             if email := contact.get("email"):
                 recipients_list.append(email)
         if not recipients_list:
-            active_invitations = InvitationService.find_active_invitation_by_business(
-                business.id
-            )
+            active_invitations = InvitationService.find_active_invitation_by_business(business.id)
             if active_invitations:
                 recipients_list.append(active_invitations[0].recipients)
         if recipients_list:
@@ -132,7 +126,7 @@ class NotificationService:
             # add receipt pdf
             url = f'{current_app.config.get("PAY_API_URL")}/payment-requests/{filing.invoice_id}/receipts'
             # format date & time of filing to pacific time
-            pacific_tz = timezone('America/Los_Angeles')
+            pacific_tz = timezone("America/Los_Angeles")
             pacific_time_filing_date = filing.filing_date.astimezone(pacific_tz)
             filing_date_time_formatted = pacific_time_filing_date.strftime("%B %d, %Y %I:%M %p Pacific Time")
             payload = {
@@ -149,9 +143,7 @@ class NotificationService:
                 headers=headers,
             )
             if receipt.status_code != HTTPStatus.CREATED:
-                current_app.logger.error(
-                    "Failed to get receipt pdf for filing: %s", filing.id
-                )
+                current_app.logger.error("Failed to get receipt pdf for filing: %s", filing.id)
             else:
                 receipt_encoded = base64.b64encode(receipt.content)
                 pdfs.append(
@@ -167,17 +159,11 @@ class NotificationService:
             filing_type = "annualReport"
             filing_pdf, status_code = report_service.generate_report(filing.id, filing_type)
             if status_code != HTTPStatus.OK:
-                current_app.logger.error(f'Failed to generate pdfs for email receipt')
+                current_app.logger.error(f"Failed to generate pdfs for email receipt")
                 return []
             filing_pdf_encoded = base64.b64encode(filing_pdf)
-            file_name = filing_type[0].upper() + " ".join(
-                re.findall("[a-zA-Z][^A-Z]*", filing_type[1:])
-            )
-            if (
-                ar_date := filing.filing_json["filing"]
-                .get(filing_type, {})
-                .get("annualReportDate")
-            ):
+            file_name = filing_type[0].upper() + " ".join(re.findall("[a-zA-Z][^A-Z]*", filing_type[1:]))
+            if ar_date := filing.filing_json["filing"].get(filing_type, {}).get("annualReportDate"):
                 file_name = f"{ar_date[:4]} {file_name}"
 
             pdfs.append(
@@ -220,33 +206,18 @@ class NotificationService:
             template_part_code = Path(
                 f'{current_app.config.get("EMAIL_TEMPLATE_PATH")}/common/{template_part}.html'
             ).read_text()
-            template_code = template_code.replace(
-                "[[{}.html]]".format(template_part), template_part_code
-            )
+            template_code = template_code.replace("[[{}.html]]".format(template_part), template_part_code)
 
         return template_code
 
     @staticmethod
     def _send_email(email: dict, token: str):
         """Send the email."""
-        if (
-            not email
-            or "recipients" not in email
-            or "content" not in email
-            or "body" not in email["content"]
-        ):
-            raise BusinessException(
-                "Unsuccessful sending email - required email object(s) is empty."
-            )
+        if not email or "recipients" not in email or "content" not in email or "body" not in email["content"]:
+            raise BusinessException("Unsuccessful sending email - required email object(s) is empty.")
 
-        if (
-            not email["recipients"]
-            or not email["content"]
-            or not email["content"]["body"]
-        ):
-            raise BusinessException(
-                "Unsuccessful sending email - required email object(s) is missing. "
-            )
+        if not email["recipients"] or not email["content"] or not email["content"]["body"]:
+            raise BusinessException("Unsuccessful sending email - required email object(s) is missing. ")
 
         resp = requests.post(
             f'{current_app.config.get("NOTIFY_API_URL")}',
@@ -257,9 +228,7 @@ class NotificationService:
             },
         )
         if resp.status_code != HTTPStatus.OK:
-            raise BusinessException(
-                "Unsuccessful response when sending email.", "", resp.status_code
-            )
+            raise BusinessException("Unsuccessful response when sending email.", "", resp.status_code)
 
     @staticmethod
     def _get_tmz_date_time_string(filing_date):
@@ -267,7 +236,5 @@ class NotificationService:
         leg_tmz_filing_date = LegislationDatetime.as_legislation_timezone(filing_date)
         hour = leg_tmz_filing_date.strftime("%I").lstrip("0")
         am_pm = leg_tmz_filing_date.strftime("%p").lower()
-        leg_tmz_filing_date = leg_tmz_filing_date.strftime(
-            f"%B %d, %Y at {hour}:%M {am_pm} Pacific time"
-        )
+        leg_tmz_filing_date = leg_tmz_filing_date.strftime(f"%B %d, %Y at {hour}:%M {am_pm} Pacific time")
         return leg_tmz_filing_date

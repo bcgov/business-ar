@@ -37,9 +37,7 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
     __tablename__ = "invitations"
 
     id = db.Column(db.Integer, primary_key=True)
-    recipients = db.Column(
-        db.String(1000), nullable=False, index=True
-    )  # Comma separated value of recipient emails
+    recipients = db.Column(db.String(1000), nullable=False, index=True)  # Comma separated value of recipient emails
     message = db.Column(db.String(8000), nullable=False)  # Email content
     sent_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
     expiration_date = db.Column(db.DateTime(timezone=True), nullable=True)
@@ -57,14 +55,8 @@ class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes
     @classmethod
     def find_invitations_by_business_id(cls, business_id, status=None):
         """Find all AR invitations sent for specific entity filtered by status."""
-        results = db.session.query(Invitations).filter(
-            Invitations.business_id == business_id
-        )
-        return (
-            results.filter(Invitations.status == status).all()
-            if status
-            else results.all()
-        )
+        results = db.session.query(Invitations).filter(Invitations.business_id == business_id)
+        return results.filter(Invitations.status == status).all() if status else results.all()
 
     @classmethod
     def find_invitation_by_token(cls, token):

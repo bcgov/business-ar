@@ -31,9 +31,7 @@ from business_ar_api.enums.enum import AuthHeaderType
 from business_ar_api.enums.enum import ContentType
 from business_ar_api.exceptions import ExternalServiceException
 
-RETRY_ADAPTER = HTTPAdapter(
-    max_retries=Retry(total=5, backoff_factor=1, status_forcelist=[404])
-)
+RETRY_ADAPTER = HTTPAdapter(max_retries=Retry(total=5, backoff_factor=1, status_forcelist=[404]))
 
 
 class RestService:
@@ -58,9 +56,7 @@ class RestService:
         if not token and generate_token:
             token = _get_token()
 
-        headers = RestService._generate_headers(
-            content_type, additional_headers, token, auth_header_type
-        )
+        headers = RestService._generate_headers(content_type, additional_headers, token, auth_header_type)
         if content_type == ContentType.JSON:
             data = json.dumps(data)
 
@@ -83,8 +79,7 @@ class RestService:
             raise ExternalServiceException(exc) from exc
         except HTTPError as exc:
             current_app.logger.error(
-                f"HTTPError on POST {endpoint} with status code "
-                f"{exc.response.status_code if exc.response else ''}"
+                f"HTTPError on POST {endpoint} with status code " f"{exc.response.status_code if exc.response else ''}"
             )
             raise ExternalServiceException(exc) from exc
         finally:
@@ -103,9 +98,7 @@ class RestService:
                 and "Content-Type" in response.headers
                 and response.headers["Content-Type"] == ContentType.JSON.value
             ):
-                current_app.logger.info(
-                    f"response : {response.text if response else ''}"
-                )
+                current_app.logger.info(f"response : {response.text if response else ''}")
 
     @staticmethod
     def post(
@@ -216,9 +209,7 @@ class RestService:
         """GET service."""
         current_app.logger.debug("<GET")
 
-        headers = RestService._generate_headers(
-            content_type, additional_headers, token, auth_header_type
-        )
+        headers = RestService._generate_headers(content_type, additional_headers, token, auth_header_type)
 
         current_app.logger.debug(f"Endpoint : {endpoint}")
         current_app.logger.debug(f"headers : {headers}")
@@ -238,9 +229,7 @@ class RestService:
             current_app.logger.error(exc)
             raise ExternalServiceException(exc) from exc
         except HTTPError as exc:
-            if not (
-                exc.response and exc.response.status_code == 404 and skip_404_logging
-            ):
+            if not (exc.response and exc.response.status_code == 404 and skip_404_logging):
                 current_app.logger.error(
                     f"HTTPError on GET {endpoint} "
                     f"with status code {exc.response.status_code if exc.response else ''}"
@@ -249,9 +238,7 @@ class RestService:
                 raise ExternalServiceException(exc) from exc
             raise exc
         finally:
-            current_app.logger.debug(
-                response.headers if response else "Empty Response Headers"
-            )
+            current_app.logger.debug(response.headers if response else "Empty Response Headers")
             current_app.logger.info(f"response : {response.text if response else ''}")
 
         current_app.logger.debug(">GET")
@@ -263,16 +250,10 @@ class RestService:
         return {
             "Content-Type": content_type.value,
             **(additional_headers if additional_headers else {}),
-            **(
-                {"Authorization": auth_header_type.value.format(token)} if token else {}
-            ),
+            **({"Authorization": auth_header_type.value.format(token)} if token else {}),
         }
 
 
 def _get_token() -> str:
-    token: str = (
-        request.headers["Authorization"]
-        if request and "Authorization" in request.headers
-        else None
-    )
+    token: str = request.headers["Authorization"] if request and "Authorization" in request.headers else None
     return token.replace("Bearer ", "") if token else None

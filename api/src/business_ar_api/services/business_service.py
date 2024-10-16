@@ -58,15 +58,13 @@ class BusinessService:
         return BusinessModel.find_by_id(business_id)
 
     @classmethod
-    def get_business_details_from_colin(
-        cls, identifier: str, legal_type: str, business_id: int
-    ) -> dict:
+    def get_business_details_from_colin(cls, identifier: str, legal_type: str, business_id: int) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = (
-            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_api_endpoint = (
+            f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}"
         )
-        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
 
@@ -76,28 +74,18 @@ class BusinessService:
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
-        business_details = RestService.get(
-            endpoint=colin_api_endpoint, token=token
-        ).json()
+        business_details = RestService.get(endpoint=colin_api_endpoint, token=token).json()
 
         if business_details:
-            business_details["business"]["nextARYear"] = (
-                BusinessService._get_next_ar_year(business_details)
-            )
+            business_details["business"]["nextARYear"] = BusinessService._get_next_ar_year(business_details)
 
         if "businessNumber" in business_details.get("business"):
-            business_details["business"]["taxId"] = business_details["business"][
-                "businessNumber"
-            ]
+            business_details["business"]["taxId"] = business_details["business"]["businessNumber"]
             del business_details["business"]["businessNumber"]
 
-        active_invitations = InvitationService.find_active_invitation_by_business(
-            business_id
-        )
+        active_invitations = InvitationService.find_active_invitation_by_business(business_id)
         if active_invitations:
-            business_details["business"]["invitationEmail"] = active_invitations[
-                0
-            ].recipients
+            business_details["business"]["invitationEmail"] = active_invitations[0].recipients
 
         # Check for any unsynced filings in GCP and adjust
         next_ar_year_gcp = FilingModel.get_next_ar_fiscal_year(business_id)
@@ -105,7 +93,9 @@ class BusinessService:
         if next_ar_adjustment:
             last_ar_date_gcp = FilingModel.get_last_ar_filed_date(business_id)
             business_details["business"]["nextARYear"] = next_ar_year_gcp
-            business_details["business"]['lastArDate'] = datetime.strptime(last_ar_date_gcp, "%Y-%m-%d").strftime("%Y-%m-%d")
+            business_details["business"]["lastArDate"] = datetime.strptime(last_ar_date_gcp, "%Y-%m-%d").strftime(
+                "%Y-%m-%d"
+            )
 
         # Check for any future effective filings, ignoring ones due to unsynced filings in GCP
         fed_filings_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/filings/future"
@@ -113,21 +103,21 @@ class BusinessService:
         business_details["business"]["hasFutureEffectiveFilings"] = (
             True if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment else False
         )
-        if next_ar_year_gcp and next_ar_year_gcp > datetime.now().year: # Ignore when filings are up to date (will trigger different error)
+        if (
+            next_ar_year_gcp and next_ar_year_gcp > datetime.now().year
+        ):  # Ignore when filings are up to date (will trigger different error)
             business_details["business"]["hasFutureEffectiveFilings"] = False
 
         return business_details
 
     @classmethod
-    def get_business_party_details_from_colin(
-        cls, identifier: str, legal_type: str
-    ) -> dict:
+    def get_business_party_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = (
-            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_api_endpoint = (
+            f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/parties"
         )
-        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/parties"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
 
@@ -137,22 +127,18 @@ class BusinessService:
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
-        business_parties = RestService.get(
-            endpoint=colin_api_endpoint, token=token
-        ).json()
+        business_parties = RestService.get(endpoint=colin_api_endpoint, token=token).json()
 
         return business_parties
 
     @classmethod
-    def get_business_office_details_from_colin(
-        cls, identifier: str, legal_type: str
-    ) -> dict:
+    def get_business_office_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
-        colin_business_identifier = (
-            identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
+        colin_api_endpoint = (
+            f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/office"
         )
-        colin_api_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/office"
 
         token = AccountService.get_service_client_token(client_id, client_secret)
 
@@ -162,21 +148,15 @@ class BusinessService:
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
-        business_offices = RestService.get(
-            endpoint=colin_api_endpoint, token=token
-        ).json()
+        business_offices = RestService.get(endpoint=colin_api_endpoint, token=token).json()
 
         return business_offices
 
     @classmethod
     def _get_next_ar_year(cls, business_details: dict) -> int:
         next_ar_year = -1
-        last_ar_date_string = business_details.get("business", {}).get(
-            "lastArDate", None
-        )
-        founding_date_string = business_details.get("business", {}).get(
-            "foundingDate", None
-        )
+        last_ar_date_string = business_details.get("business", {}).get("lastArDate", None)
+        founding_date_string = business_details.get("business", {}).get("foundingDate", None)
         if last_ar_date_string:
             last_ar_date = datetime.strptime(last_ar_date_string, "%Y-%m-%d")
             next_ar_year = last_ar_date.year + 1
@@ -190,9 +170,7 @@ class BusinessService:
         tasks = []
         business = BusinessService.find_by_business_identifier(business_identifier)
         if not business:
-            raise BusinessException(
-                error="Business not found", status_code=HTTPStatus.NOT_FOUND
-            )
+            raise BusinessException(error="Business not found", status_code=HTTPStatus.NOT_FOUND)
 
         business_details_dict = BusinessService.get_business_details_from_colin(
             business.identifier, business.legal_type, business.id
