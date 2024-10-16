@@ -74,9 +74,9 @@ if (import.meta.client) {
 <template>
   <client-only>
     <div v-show="!pageLoading" class="mx-auto flex flex-col items-center justify-center gap-4 text-center sm:w-4/5 xl:w-3/5">
-      <SbcPageSectionH1 class="mb-2 mt-3 flex items-center">
+      <SbcPageSectionH1 class="mb-2 mt-3 text-center">
         <span>{{ $t('page.submitted.h1', { year: lastARDate!.getFullYear() }) }}</span>
-        <UIcon name="i-mdi-check-circle-outline" class="size-10 shrink-0 text-outcomes-approved" />
+        <UIcon name="i-mdi-check-circle-outline" class="mb-1 ml-1 inline-block align-middle text-outcomes-approved" />
       </SbcPageSectionH1>
 
       <SbcAlert :show-on-category="[AlertCategory.INTERNAL_SERVER_ERROR, AlertCategory.DOCUMENT_DOWNLOAD]" />
