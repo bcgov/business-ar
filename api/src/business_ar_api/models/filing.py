@@ -35,11 +35,11 @@
 from __future__ import annotations
 
 import copy
+from typing import List
 from flask import current_app, url_for
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
-from typing import List
 
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
@@ -91,12 +91,14 @@ class Filing(BaseModel):
 
     @property
     def is_locked(self):
+        """Check if the filing is locked."""
         if self.status in [Filing.Status.PAID, Filing.Status.COMPLETED]:
             return True
         return False
 
     @property
     def has_invoice(self):
+        """Check if the filing has an invoice."""
         if self.invoice_id:
             return True
         return False
@@ -129,6 +131,7 @@ class Filing(BaseModel):
 
     @classmethod
     def get_next_ar_fiscal_year(cls, business_id: str) -> int | None:
+        """Get the next AR fiscal year."""
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -146,6 +149,7 @@ class Filing(BaseModel):
 
     @classmethod
     def get_last_ar_filed_date(cls, business_id: str) -> str | None:
+        """Get the last AR filed date."""
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -169,6 +173,7 @@ class Filing(BaseModel):
         return cls.query.filter_by(invoice_id=payment_token).one_or_none()
 
     def get_documents(self):
+        """Get the documents."""
         reports = [{"type": "annualReport", "name": "Annual Report"}]
         api_url = f"{current_app.config.get('BUSINESS_AR_API_BASE_URL')}"
         identifier = self.business.identifier

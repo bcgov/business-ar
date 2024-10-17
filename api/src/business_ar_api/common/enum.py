@@ -41,7 +41,7 @@ from typing import Optional
 class BaseMeta(EnumMeta):
     """Meta class for the enum."""
 
-    def __contains__(self, other):
+    def __contains__(self, other):  # pylint: disable=method-hidden
         """Return True if 'in' the Enum."""
         try:
             self(other)

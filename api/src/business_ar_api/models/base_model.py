@@ -37,6 +37,7 @@ from .db import db
 
 
 class BaseModel(db.Model):
+    """Base Model."""
     __abstract__ = True
 
     @staticmethod

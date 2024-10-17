@@ -33,9 +33,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """Invitation Service."""
 from datetime import datetime
+from typing import Dict
 from flask import current_app
 from sqlalchemy import String, and_, desc, func, or_
-from typing import Dict
 
 from business_ar_api.models import db
 from business_ar_api.models import Business as BusinessModel
@@ -44,7 +44,7 @@ from business_ar_api.models.dataclass import InvitationSearch
 
 
 class InvitationService:
-
+    """Invitation Service."""
     def __init__(self):
         pass
 

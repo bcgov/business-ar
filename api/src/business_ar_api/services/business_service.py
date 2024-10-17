@@ -35,6 +35,7 @@
 from datetime import date, datetime
 from http import HTTPStatus
 
+from flask import current_app
 from business_ar_api.exceptions.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
@@ -42,11 +43,10 @@ from business_ar_api.models.filing import FilingSerializer
 from business_ar_api.services import AccountService
 from business_ar_api.services.invitation_service import InvitationService
 from business_ar_api.services.rest_service import RestService
-from flask import current_app
 
 
 class BusinessService:
-
+    """Business Service."""
     @classmethod
     def find_by_business_identifier(cls, business_identifier: str) -> BusinessModel:
         """Finds a business by its identifier"""
@@ -59,6 +59,7 @@ class BusinessService:
 
     @classmethod
     def get_business_details_from_colin(cls, identifier: str, legal_type: str, business_id: int) -> dict:
+        """Get the business details from Colin."""
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
         colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
@@ -98,7 +99,10 @@ class BusinessService:
             )
 
         # Check for any future effective filings, ignoring ones due to unsynced filings in GCP
-        fed_filings_endpoint = f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/{colin_business_identifier}/filings/future"
+        fed_filings_endpoint = (
+            f"{current_app.config.get('COLIN_API_URL')}/businesses/{legal_type}/"
+            f"{colin_business_identifier}/filings/future"
+        )
         fed_filings = RestService.get(endpoint=fed_filings_endpoint, token=token).json()
         business_details["business"]["hasFutureEffectiveFilings"] = (
             True if fed_filings and len(fed_filings) > 0 and not next_ar_adjustment else False
@@ -112,6 +116,7 @@ class BusinessService:
 
     @classmethod
     def get_business_party_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
+        """Get the business party details from Colin."""
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
         colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
@@ -133,6 +138,7 @@ class BusinessService:
 
     @classmethod
     def get_business_office_details_from_colin(cls, identifier: str, legal_type: str) -> dict:
+        """Get the business office details from Colin."""
         client_id = current_app.config.get("COLIN_API_SVC_CLIENT_ID")
         client_secret = current_app.config.get("COLIN_API_SVC_CLIENT_SECRET")
         colin_business_identifier = identifier[2:] if identifier.startswith("BC", 0, 2) else identifier
@@ -154,6 +160,7 @@ class BusinessService:
 
     @classmethod
     def _get_next_ar_year(cls, business_details: dict) -> int:
+        """Get the next AR year."""
         next_ar_year = -1
         last_ar_date_string = business_details.get("business", {}).get("lastArDate", None)
         founding_date_string = business_details.get("business", {}).get("foundingDate", None)
@@ -167,6 +174,7 @@ class BusinessService:
 
     @classmethod
     def get_business_pending_tasks(cls, business_identifier: int) -> dict:
+        """Get the business pending tasks."""
         tasks = []
         business = BusinessService.find_by_business_identifier(business_identifier)
         if not business:

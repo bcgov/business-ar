@@ -32,8 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """
-This module contains the services necessary for handling Filings,
-including creating a filing. 
+This module contains the services necessary for handling Filings,including creating a filing.
 """
 from http import HTTPStatus
 from datetime import datetime, timezone

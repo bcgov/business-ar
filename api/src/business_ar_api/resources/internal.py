@@ -39,6 +39,9 @@ It provides endpoints to create and retrieve filing objects.
 """
 from http import HTTPStatus
 
+from flask import Blueprint, current_app, jsonify, request
+from flask_cors import cross_origin
+
 from business_ar_api.common.auth import jwt
 from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions import AuthException, error_response, exception_response
@@ -48,8 +51,6 @@ from business_ar_api.services import (
     FilingService,
     NotificationService,
 )
-from flask import Blueprint, current_app, jsonify, request
-from flask_cors import cross_origin
 
 bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 

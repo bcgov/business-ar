@@ -15,11 +15,11 @@
 from datetime import timezone
 from sqlalchemy import func
 
-from .base_model import BaseModel
-from .db import db
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
 from business_ar_api.utils.legislation_datetime import LegislationDatetime
+from .base_model import BaseModel
+from .db import db
 
 
 class Invitations(BaseModel):  # pylint: disable=too-many-instance-attributes

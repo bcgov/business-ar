@@ -31,6 +31,9 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""
+Configuration settings for the Business AR API, including database and service URL configurations.
+"""
 import os
 
 from dotenv import find_dotenv
@@ -118,21 +121,25 @@ class Config:
 
 
 class Production(Config):
+    """Production-specific configuration settings."""
     DEBUG = False
     TESTING = False
 
 
 class Sandbox(Config):
+    """Sandbox-specific configuration settings."""
     DEVELOPMENT = True
     DEBUG = True
 
 
 class Development(Config):
+    """Development-specific configuration settings."""
     DEVELOPMENT = True
     DEBUG = True
 
 
 class Testing(Config):
+    """Testing-specific configuration settings."""
     TESTING = True
 
     DATABASE_TEST_USERNAME = os.getenv("DATABASE_TEST_USERNAME", "")
@@ -141,7 +148,10 @@ class Testing(Config):
     DATABASE_TEST_HOST = os.getenv("DATABASE_TEST_HOST", "")
     DATABASE_TEST_PORT = int(os.getenv("DATABASE_TEST_PORT", "5432"))  # POSTGRESQL
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql+pg8000://{DATABASE_TEST_USERNAME}:{DATABASE_TEST_PASSWORD}@"
+        f"{DATABASE_TEST_HOST}:{DATABASE_TEST_PORT}/{DATABASE_TEST_NAME}"
+    )
 
     # JWT OIDC settings
     # JWT_OIDC_TEST_MODE will set jwt_manager to use

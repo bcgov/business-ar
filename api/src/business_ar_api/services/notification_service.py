@@ -37,11 +37,13 @@ This module contains the services necessary for handling notifications.
 import base64
 import re
 from datetime import datetime
-from pytz import timezone
 from http import HTTPStatus
 from pathlib import Path
+from pytz import timezone
 
 import requests
+from flask import current_app
+from jinja2 import Template
 from business_ar_api.exceptions import BusinessException
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Filing as FilingModel
@@ -53,8 +55,6 @@ from business_ar_api.services import (
 )
 from business_ar_api.services.report_service import ReportService
 from business_ar_api.utils.legislation_datetime import LegislationDatetime
-from flask import current_app
-from jinja2 import Template
 
 
 class NotificationService:
@@ -64,6 +64,7 @@ class NotificationService:
 
     @staticmethod
     def send_filing_complete_email(filing_id: int):
+        """Send a filing complete email."""
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
         token = AccountService.get_service_client_token(client_id, client_secret)
@@ -72,6 +73,7 @@ class NotificationService:
 
     @staticmethod
     def _compose_email(filing_id: int, token: str):
+        """Compose the email."""
         filing = FilingService.find_filing_by_id(filing_id)
         business = BusinessService.find_by_internal_id(filing.business_id)
         filing_json = FilingService.serialize(filing)

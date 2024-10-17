@@ -35,6 +35,8 @@
 from http import HTTPStatus
 
 import requests
+from flask import current_app
+from requests.exceptions import HTTPError
 from business_ar_api.common.auth import jwt
 from business_ar_api.enums.enum import AuthHeaderType, ContentType, Role
 from business_ar_api.exceptions.exceptions import (
@@ -44,14 +46,13 @@ from business_ar_api.exceptions.exceptions import (
 )
 from business_ar_api.services.rest_service import RestService
 from business_ar_api.utils.user_context import UserContext, user_context
-from flask import current_app
-from requests.exceptions import HTTPError
 
 
 class AccountService:
-
+    """Account Service."""
     @classmethod
     def get_service_client_token(cls, client_id, client_secret):
+        """Get the service client token."""
         token_url = current_app.config.get("AUTH_SVC_URL")
         timeout = int(current_app.config.get("AUTH_SVC_TIMEOUT", 20))
 
@@ -74,6 +75,7 @@ class AccountService:
     @classmethod
     @user_context
     def get_user_accounts(cls, **kwargs):
+        """Get the user accounts."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/orgs"
         user_account_details = RestService.get(endpoint=endpoint, token=user.bearer_token).json()
@@ -82,6 +84,7 @@ class AccountService:
     @classmethod
     @user_context
     def get_user_tos(cls, **kwargs):
+        """Get the user terms of use."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/@me"
         user_details = RestService.get(endpoint=endpoint, token=user.bearer_token).json()
@@ -98,6 +101,7 @@ class AccountService:
     @classmethod
     @user_context
     def update_user_tos(cls, request_json: dict, **kwargs):
+        """Update the user terms of use."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/users/@me"
 
@@ -108,6 +112,7 @@ class AccountService:
     @classmethod
     @user_context
     def create_user_account(cls, account_details: dict, **kwargs):
+        """Create a user account."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs"
         create_account_payload = {
@@ -128,6 +133,7 @@ class AccountService:
     @classmethod
     @user_context
     def create_account_contact(cls, account_id: int, contact_details: dict, **kwargs):
+        """Create an account contact."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/contacts"
         create_account_contact_payload = {
@@ -148,6 +154,7 @@ class AccountService:
     @classmethod
     @user_context
     def get_account_contact(cls, account_id: int, **kwargs):
+        """Get the account contact."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/contacts"
         contact_details = RestService.get(
@@ -158,6 +165,7 @@ class AccountService:
 
     @classmethod
     def search_accounts(cls, account_name: str, **kwargs):
+        """Search accounts."""
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
 
@@ -168,6 +176,7 @@ class AccountService:
 
     @classmethod
     def create_entity(cls, entity_json: dict):
+        """Create an entity."""
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
@@ -186,6 +195,7 @@ class AccountService:
 
     @classmethod
     def find_or_create_entity(cls, entity_json: dict):
+        """Find or create an entity."""
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/entities"
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
         client_secret = current_app.config.get("AUTH_SVC_CLIENT_SECRET")
@@ -213,6 +223,7 @@ class AccountService:
     @classmethod
     @user_context
     def update_user_profile(cls, **kwargs):
+        """Update the user profile."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/users"
         try:
@@ -228,6 +239,7 @@ class AccountService:
     @classmethod
     @user_context
     def affiliate_entity_to_account(cls, account_id: int, business_identifier: str, **kwargs):
+        """Affiliate an entity to an account."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/affiliations"
         affiliation_payload = {
@@ -242,6 +254,7 @@ class AccountService:
     @classmethod
     @user_context
     def get_account_affiliations(cls, account_id: int, **kwargs):
+        """Get the account affiliations."""
         user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/affiliations"
         affiliations = RestService.get(endpoint=endpoint, token=user.bearer_token).json()

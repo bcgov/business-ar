@@ -106,6 +106,7 @@ class PaymentService:
 
     @staticmethod
     def get_payment_details_by_invoice_id(invoice_id: int, user_jwt: JwtManager):
+        """Get the payment details by invoice id."""
         endpoint = f"{current_app.config.get('PAY_API_URL')}/payment-requests/{invoice_id}"
         token = user_jwt.get_token_auth_header()
         payment_details = RestService.get(endpoint=endpoint, token=token).json()
@@ -113,6 +114,7 @@ class PaymentService:
 
     @staticmethod
     def get_payment_receipt(filing_id: int):
+        """Get the payment receipt by filing id."""
         filing = FilingModel.find_filing_by_id(filing_id)
         if filing.status not in [FilingModel.Status.PAID, FilingModel.Status.COMPLETED]:
             return "Filing not in Paid or Completed State", HTTPStatus.BAD_REQUEST

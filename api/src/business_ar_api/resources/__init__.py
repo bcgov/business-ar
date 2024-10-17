@@ -31,6 +31,9 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""
+This module contains the Flask Blueprint objects for the Business AR API.
+"""
 from flask import Flask
 
 from .accounts import bp as accounts_bp
@@ -46,6 +49,7 @@ from .user import bp as user_bp
 
 
 def register_endpoints(app: Flask):
+    """Register the Flask Blueprint objects for the Business AR API."""
     # Allow base route to match with, and without a trailing slash
     app.url_map.strict_slashes = False
 

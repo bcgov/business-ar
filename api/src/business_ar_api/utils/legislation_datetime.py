@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Legislation Date time utilities."""
+from datetime import date, datetime
+
 import pytz
 from dateutil.tz import gettz
 from flask import current_app
-
-from datetime import date, datetime
 
 
 class LegislationDatetime:

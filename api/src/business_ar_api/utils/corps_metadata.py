@@ -1,3 +1,5 @@
+"""Corps Metadata."""
+
 CORPS_METADATA = [
     {
         "corp_type_cd": "A",

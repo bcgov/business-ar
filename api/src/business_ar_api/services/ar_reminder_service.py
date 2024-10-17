@@ -36,7 +36,7 @@ from business_ar_api.models import AnnualReportReminder
 
 
 class AnnualReportReminderService:
-
+    """Annual Report Reminder Service."""
     def __init__(self):
         pass
 

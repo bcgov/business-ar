@@ -38,10 +38,10 @@ It provides endpoints to create and retrieve filing objects.
 
 """
 from http import HTTPStatus
+from typing import Optional
 
 from flask import Blueprint, g, jsonify, request
 from flask_cors import cross_origin
-from typing import Optional
 
 from business_ar_api.common.auth import jwt
 from business_ar_api.exceptions import error_response, exception_response, AuthException
