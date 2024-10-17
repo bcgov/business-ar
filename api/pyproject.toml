@@ -93,6 +93,14 @@ max-line-length = 120
 docstring-min-length=10
 count = true
 
+[tool.isort]
+atomic = true
+profile = "black"
+line_length = 120
+skip_gitignore = true
+skip_glob = ["devops"]
+known_first_party = ["ar_reminder", "business_ar_api"]
+
 [tool.black]
 target-version =  ["py310", "py311", "py312"]
 line-length = 120
