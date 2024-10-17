@@ -41,6 +41,8 @@ from business_ar_api.models import db
 from business_ar_api.models import Business as BusinessModel
 from business_ar_api.models import Invitations as InvitationsModel
 from business_ar_api.models.dataclass import InvitationSearch
+from business_ar_api.models import ar_reminder as ar_reminder_model
+from business_ar_api.models import AnnualReportReminder as AnnualReportReminderModel
 
 
 class InvitationService:
@@ -59,7 +61,12 @@ class InvitationService:
         return InvitationsModel.find_invitations_by_business_id(
             business_id, InvitationsModel.Status.SENT
         )
-
+    @classmethod
+    def find_active_ar_reminder_by_business(cls, business_id: int) -> AnnualReportReminderModel:
+        """Finds active AR reminders for a business."""
+        return AnnualReportReminderModel.find_reminder_by_business_id(
+            business_id, AnnualReportReminderModel.Status.SENT
+        )
     @classmethod
     def search_invitations(cls, search_criteria: InvitationSearch) -> InvitationsModel:
         """Finds invitations matching search text."""

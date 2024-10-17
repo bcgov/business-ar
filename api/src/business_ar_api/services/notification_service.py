@@ -110,6 +110,11 @@ class NotificationService:
             )
             if active_invitations:
                 recipients_list.append(active_invitations[0].recipients)
+            active_ar_reminders = InvitationService.find_active_ar_reminder_by_business(
+                business.id
+            )
+            if active_ar_reminders:
+                recipients_list.append(active_ar_reminders[0].recipients)
         if recipients_list:
             recipients = ",".join(recipients_list)
         else:

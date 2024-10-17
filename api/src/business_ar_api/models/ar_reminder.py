@@ -49,6 +49,18 @@ class AnnualReportReminder(BaseModel):  # pylint: disable=too-many-instance-attr
     def find_reminder_by_token(cls, token):
         """Find an AR reminder record that matches the token."""
         return cls.query.filter_by(token=token).first()
+    
+    @classmethod
+    def find_reminder_by_business_id(cls, business_id, status=None):
+        """Find all AR reminders sent for specific entity filtered by status."""
+        results = db.session.query(AnnualReportReminder).filter(
+            AnnualReportReminder.business_id == business_id
+        )
+        return (
+            results.filter(AnnualReportReminder.status == status).all()
+            if status
+            else results.all()
+        )
 
     @classmethod
     def find_reminders_by_business_id(cls, business_id):

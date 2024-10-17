@@ -33,7 +33,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """AR Reminder Service."""
 from business_ar_api.models import AnnualReportReminder
-
+from business_ar_api.models import db
+from business_ar_api.models import Business as BusinessModel
+from business_ar_api.models import ar_reminder as ar_reminder_model
 
 class AnnualReportReminderService:
 
@@ -44,3 +46,10 @@ class AnnualReportReminderService:
     def find_ar_reminder_by_token(cls, token: str) -> AnnualReportReminder:
         """Finds an AR reminder by its token"""
         return AnnualReportReminder.find_reminder_by_token(token)
+    
+    @classmethod
+    def find_active_ar_reminder_by_business(cls, business_id: int) -> AnnualReportReminder:
+        """Finds active AR reminders for a business."""
+        return AnnualReportReminder.find_reminder_by_business_id(
+            business_id, AnnualReportReminder.Status.SENT
+        )
