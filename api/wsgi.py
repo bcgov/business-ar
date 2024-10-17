@@ -15,12 +15,12 @@
 """
 import os
 
-from business_ar_api import create_app, db
-from flask_migrate import Migrate 
+from flask_migrate import Migrate  # Third-party import
+from business_ar_api import create_app, db  # First-party import
 
-app = create_app() # pylint: disable=invalid-name
+app = create_app()  # pylint: disable=invalid-name
 migrate = Migrate(app, db)
 
 if __name__ == "__main__":
-    server_port = os.environ.get('PORT', '8080')
-    app.run(debug=False, port=server_port, host='0.0.0.0')
+    server_port = os.environ.get("PORT", "8080")
+    app.run(debug=False, port=server_port, host="0.0.0.0")

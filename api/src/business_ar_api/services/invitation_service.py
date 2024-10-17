@@ -33,9 +33,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 """Invitation Service."""
 from datetime import datetime
+from typing import Dict
 from flask import current_app
 from sqlalchemy import String, and_, desc, func, or_
-from typing import Dict
 
 from business_ar_api.models import db
 from business_ar_api.models import Business as BusinessModel
@@ -44,7 +44,7 @@ from business_ar_api.models.dataclass import InvitationSearch
 
 
 class InvitationService:
-
+    """Invitation Service."""
     def __init__(self):
         pass
 
@@ -56,16 +56,12 @@ class InvitationService:
     @classmethod
     def find_active_invitation_by_business(cls, business_id: int) -> InvitationsModel:
         """Finds active invitations for a business."""
-        return InvitationsModel.find_invitations_by_business_id(
-            business_id, InvitationsModel.Status.SENT
-        )
+        return InvitationsModel.find_invitations_by_business_id(business_id, InvitationsModel.Status.SENT)
 
     @classmethod
     def search_invitations(cls, search_criteria: InvitationSearch) -> InvitationsModel:
         """Finds invitations matching search text."""
-        current_app.logger.info(
-            f"Search Invitations: {search_criteria.search_text}, {search_criteria.status}"
-        )
+        current_app.logger.info(f"Search Invitations: {search_criteria.search_text}, {search_criteria.status}")
 
         query = (
             db.session.query(InvitationsModel, BusinessModel)
@@ -92,13 +88,9 @@ class InvitationService:
             )
 
         if search_criteria.status:
-            query = query.filter(
-                InvitationsModel.status == search_criteria.status.upper()
-            )
+            query = query.filter(InvitationsModel.status == search_criteria.status.upper())
 
-        pagination = query.paginate(
-            per_page=search_criteria.limit, page=search_criteria.page
-        )
+        pagination = query.paginate(per_page=search_criteria.limit, page=search_criteria.page)
 
         search_results = []
         for item in pagination.items:

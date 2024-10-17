@@ -86,9 +86,7 @@ class Flags:
             if app and has_app_context():
                 app.logger.warn("issue registering flag service", err)
 
-    def teardown(
-        self, exception
-    ):  # pylint: disable=unused-argument,no-self-use; flask method signature
+    def teardown(self, exception):  # pylint: disable=unused-argument,no-self-use; flask method signature
         """Destroy all objects created by this extension.
 
         Ensure we close the client connection nicely.
@@ -145,9 +143,7 @@ class Flags:
         try:
             return client.variation(flag, flag_user, None)
         except Exception as err:  # noqa: B902
-            current_app.logger.error(
-                "Unable to read flags: %s" % repr(err), exc_info=True
-            )
+            current_app.logger.error("Unable to read flags: %s" % repr(err), exc_info=True)
             return None
 
     @staticmethod

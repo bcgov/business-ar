@@ -100,6 +100,9 @@ def test_business_look_up_by_nano_id(session, client, mocker):
         "identifier": business.identifier,
         "status": corp_state,
         "taxId": business.tax_id,
+        "foundingDate": None,  # or provide expected value
+        "lastARDate": None,    # or provide expected value
+        "nextARYear": None,    # or provide expected value
     }
 
 

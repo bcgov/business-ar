@@ -36,9 +36,7 @@ def search_accounts():
     try:
         account_name = request.args.get("name", None)
         if not account_name:
-            return error_response(
-                "Please provide account name.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response("Please provide account name.", HTTPStatus.BAD_REQUEST)
         return AccountService.search_accounts(account_name=account_name), HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)
@@ -70,9 +68,7 @@ def create_user_account():
     try:
         account_details = AccountService.create_user_account(json_input)
         account_id = account_details.get("id")
-        AccountService.create_account_contact(
-            account_id, json_input.get("contactPoint")
-        )
+        AccountService.create_account_contact(account_id, json_input.get("contactPoint"))
         return account_details, HTTPStatus.OK
     except ExternalServiceException as service_exception:
         return error_response(service_exception.message, service_exception.status_code)

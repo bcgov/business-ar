@@ -40,6 +40,7 @@ from .invitations import Invitations
 
 
 class Business(BaseModel):
+    """Business Model."""
     id = db.Column(db.Integer, primary_key=True)
     legal_name = db.Column("legal_name", db.String(1000), index=True)
     legal_type = db.Column("legal_type", db.String(10))

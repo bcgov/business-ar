@@ -31,6 +31,9 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+"""
+This module contains the base endpoints for the Business AR API.
+"""
 from flask import Blueprint
 from flask import jsonify
 from flask import request
@@ -41,6 +44,9 @@ bp = Blueprint("base", __name__)
 
 @bp.route("/", methods=("GET",))
 def home():
+    """
+    Home endpoint for the Business AR API.
+    """
     if request.method == "POST":
         return {}, 201
 

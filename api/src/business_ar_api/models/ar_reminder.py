@@ -13,10 +13,10 @@
 # limitations under the License.
 """This model manages an AR Reminder item."""
 
-from .base_model import BaseModel
-from .db import db
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
+from .base_model import BaseModel
+from .db import db
 
 
 class AnnualReportReminder(BaseModel):  # pylint: disable=too-many-instance-attributes
@@ -53,8 +53,4 @@ class AnnualReportReminder(BaseModel):  # pylint: disable=too-many-instance-attr
     @classmethod
     def find_reminders_by_business_id(cls, business_id):
         """Find all AR reminders sent for specific business."""
-        return (
-            db.session.query(AnnualReportReminder)
-            .filter(AnnualReportReminder.business_id == business_id)
-            .all()
-        )
+        return db.session.query(AnnualReportReminder).filter(AnnualReportReminder.business_id == business_id).all()

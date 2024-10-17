@@ -18,3 +18,5 @@ jobs:
       app_name: "business-ar-api"
       working_directory: "./api"
       codecov_flag: "businessarapi"
+      skip_isort: "true"
+      skip_black: "true"

@@ -40,9 +40,7 @@ def get_invitations():
         status = request.args.get("status", None)
         page = request.args.get("page", 1)
         limit = request.args.get("limit", 50)
-        search_criteria = InvitationSearch(
-            search_text=search_text, status=status, page=int(page), limit=int(limit)
-        )
+        search_criteria = InvitationSearch(search_text=search_text, status=status, page=int(page), limit=int(limit))
         data = InvitationService.search_invitations(search_criteria=search_criteria)
         response, status = data, HTTPStatus.OK
     except BusinessException as exception:

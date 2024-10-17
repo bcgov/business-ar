@@ -38,10 +38,10 @@ It provides endpoints to create and retrieve filing objects.
 
 """
 from http import HTTPStatus
+from typing import Optional
 
 from flask import Blueprint, g, jsonify, request
 from flask_cors import cross_origin
-from typing import Optional
 
 from business_ar_api.common.auth import jwt
 from business_ar_api.exceptions import error_response, exception_response, AuthException
@@ -54,9 +54,7 @@ from business_ar_api.services import (
     PaymentService,
 )
 
-bp = Blueprint(
-    "filing", __name__, url_prefix=f"/v1/business/<string:identifier>/filings"
-)
+bp = Blueprint("filing", __name__, url_prefix=f"/v1/business/<string:identifier>/filings")
 
 
 @bp.route("/", methods=["GET"])
@@ -151,14 +149,10 @@ def create_filing(identifier, filing_id: Optional[int] = None):
 
         # create invoice in pay system if the invoice does not exist for the filing.
         if not filing.invoice_id:
-            invoice_resp = PaymentService.create_invoice(
-                account_id, jwt, business.json()
-            )
+            invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json())
 
             # Update the filing with the payment token save it in the db.
-            filing = FilingService.update_filing_invoice_details(
-                filing.id, invoice_resp.json()
-            )
+            filing = FilingService.update_filing_invoice_details(filing.id, invoice_resp.json())
 
         return jsonify(FilingService.serialize(filing)), HTTPStatus.CREATED
 
@@ -180,9 +174,7 @@ def update_filing_payment_status(identifier, filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
 
         business = BusinessService.find_by_business_identifier(identifier)
         if not business:
@@ -214,9 +206,7 @@ def get_filing_payment_status(identifier, filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
 
         business = BusinessService.find_by_business_identifier(identifier)
         if not business:

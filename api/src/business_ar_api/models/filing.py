@@ -35,11 +35,11 @@
 from __future__ import annotations
 
 import copy
+from typing import List
 from flask import current_app, url_for
 from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import backref
-from typing import List
 
 from business_ar_api.common.enum import auto
 from business_ar_api.common.enum import BaseEnum
@@ -74,9 +74,7 @@ class Filing(BaseModel):
     # maps to invoice id created by the pay-api (used for getting receipt)
     invoice_id = db.Column(db.Integer, nullable=True)
     payment_status_code = db.Column("payment_status_code", db.String(50))
-    payment_completion_date = db.Column(
-        "payment_completion_date", db.DateTime(timezone=True)
-    )
+    payment_completion_date = db.Column("payment_completion_date", db.DateTime(timezone=True))
     payment_account = db.Column("payment_account", db.String(30))
 
     # Relationships
@@ -93,12 +91,14 @@ class Filing(BaseModel):
 
     @property
     def is_locked(self):
+        """Check if the filing is locked."""
         if self.status in [Filing.Status.PAID, Filing.Status.COMPLETED]:
             return True
         return False
 
     @property
     def has_invoice(self):
+        """Check if the filing has an invoice."""
         if self.invoice_id:
             return True
         return False
@@ -119,9 +119,7 @@ class Filing(BaseModel):
         return cls.query.filter_by(status=status).all()
 
     @classmethod
-    def find_business_filings_by_status(
-        cls, business_id: int, status: List
-    ) -> list[Filing]:
+    def find_business_filings_by_status(cls, business_id: int, status: List) -> list[Filing]:
         """Return filings by business id and status."""
         query = (
             db.session.query(Filing)
@@ -132,7 +130,8 @@ class Filing(BaseModel):
         return query.all()
 
     @classmethod
-    def get_next_ar_fiscal_year(cls, business_id: str) -> int|None:
+    def get_next_ar_fiscal_year(cls, business_id: str) -> int | None:
+        """Get the next AR fiscal year."""
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -149,7 +148,8 @@ class Filing(BaseModel):
             return None
 
     @classmethod
-    def get_last_ar_filed_date(cls, business_id: str) -> str|None:
+    def get_last_ar_filed_date(cls, business_id: str) -> str | None:
+        """Get the last AR filed date."""
         try:
             status = [Filing.Status.COMPLETED, Filing.Status.PAID]
             query = (
@@ -161,7 +161,7 @@ class Filing(BaseModel):
             filings = query.all()
             if filings:
                 filing_json = filings[0].filing_json
-                last_ar_date = filing_json.get('filing', {}).get('annualReport', {}).get('annualReportDate')
+                last_ar_date = filing_json.get("filing", {}).get("annualReport", {}).get("annualReportDate")
                 return last_ar_date
             return None
         except Exception:
@@ -173,6 +173,7 @@ class Filing(BaseModel):
         return cls.query.filter_by(invoice_id=payment_token).one_or_none()
 
     def get_documents(self):
+        """Get the documents."""
         reports = [{"type": "annualReport", "name": "Annual Report"}]
         api_url = f"{current_app.config.get('BUSINESS_AR_API_BASE_URL')}"
         identifier = self.business.identifier
@@ -212,12 +213,8 @@ class FilingSerializer:
         filing_dict["filing"]["header"]["paymentToken"] = filing.invoice_id
         filing_dict["filing"]["header"]["paymentStatus"] = filing.payment_status_code
         filing_dict["filing"]["header"]["status"] = filing.status
-        filing_dict["filing"]["header"][
-            "filingDateTime"
-        ] = filing.filing_date.isoformat()
-        filing_dict["filing"]["header"]["date"] = filing.filing_date.strftime(
-            "%Y-%m-%d"
-        )
+        filing_dict["filing"]["header"]["filingDateTime"] = filing.filing_date.isoformat()
+        filing_dict["filing"]["header"]["date"] = filing.filing_date.strftime("%Y-%m-%d")
         filing_dict["filing"]["header"]["completionDate"] = (
             filing.completion_date.isoformat() if filing.completion_date else None
         )
@@ -226,24 +223,16 @@ class FilingSerializer:
             filing_dict["filing"]["header"]["certifiedBy"] = filing.submitter.username
             certified_by_display_name = ""
             if filing.submitter.firstname:
-                certified_by_display_name = (
-                    f"{certified_by_display_name}{filing.submitter.firstname} "
-                )
+                certified_by_display_name = f"{certified_by_display_name}{filing.submitter.firstname} "
             if filing.submitter.lastname:
-                certified_by_display_name = (
-                    f"{certified_by_display_name}{filing.submitter.lastname}"
-                )
-            filing_dict["filing"]["header"][
-                "certifiedByDisplayName"
-            ] = certified_by_display_name
+                certified_by_display_name = f"{certified_by_display_name}{filing.submitter.lastname}"
+            filing_dict["filing"]["header"]["certifiedByDisplayName"] = certified_by_display_name
 
         if filing.payment_account:
             filing_dict["filing"]["header"]["paymentAccount"] = filing.payment_account
 
         # add colin_event_ids
-        filing_dict["filing"]["header"]["colinIds"] = ColinEventId.get_by_filing_id(
-            filing.id
-        )
+        filing_dict["filing"]["header"]["colinIds"] = ColinEventId.get_by_filing_id(filing.id)
 
         documents = filing.get_documents()
         filing_dict["filing"]["documents"] = documents

@@ -39,6 +39,9 @@ It provides endpoints to create and retrieve filing objects.
 """
 from http import HTTPStatus
 
+from flask import Blueprint, current_app, jsonify, request
+from flask_cors import cross_origin
+
 from business_ar_api.common.auth import jwt
 from business_ar_api.enums.enum import Role
 from business_ar_api.exceptions import AuthException, error_response, exception_response
@@ -48,8 +51,6 @@ from business_ar_api.services import (
     FilingService,
     NotificationService,
 )
-from flask import Blueprint, current_app, jsonify, request
-from flask_cors import cross_origin
 
 bp = Blueprint("internal", __name__, url_prefix=f"/v1/internal")
 
@@ -66,11 +67,9 @@ def get_filings_by_status(status):
         for filing in filings:
             filing_json = FilingService.serialize(filing)
             business = BusinessService.find_by_internal_id(filing.business_id)
-            filing_json["filing"]["business"] = (
-                BusinessService.get_business_details_from_colin(
-                    business.identifier, business.legal_type, business.id
-                ).get("business", {})
-            )
+            filing_json["filing"]["business"] = BusinessService.get_business_details_from_colin(
+                business.identifier, business.legal_type, business.id
+            ).get("business", {})
             filings_res.append(filing_json)
         return jsonify(filings=filings_res), HTTPStatus.OK
     except AuthException as aex:
@@ -91,9 +90,7 @@ def complete_filing(filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
         json_input = request.get_json()
 
         filing = FilingService.find_filing_by_id(filing_id)
@@ -123,9 +120,7 @@ def send_notifications(filing_id):
     """
     try:
         if not filing_id:
-            return error_response(
-                f"Please provide the filing id.", HTTPStatus.BAD_REQUEST
-            )
+            return error_response(f"Please provide the filing id.", HTTPStatus.BAD_REQUEST)
 
         filing = FilingService.find_filing_by_id(filing_id)
         if not filing:

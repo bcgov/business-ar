@@ -36,17 +36,13 @@ def _load_json_schema(filename: str):
     relative_path = path.join("schemas", filename)
     absolute_path = path.join(path.dirname(__file__), relative_path)
 
-    with open(
-        absolute_path, "r"
-    ) as schema_file:  # pylint: disable=unspecified-encoding
+    with open(absolute_path, "r") as schema_file:  # pylint: disable=unspecified-encoding
         schema = json.loads(schema_file.read())
 
         return schema
 
 
-def get_schema_store(
-    validate_schema: bool = False, schema_search_path: str = None
-) -> dict:
+def get_schema_store(validate_schema: bool = False, schema_search_path: str = None) -> dict:
     """Return a schema_store as a dict.
 
     The default returns schema_store of the default schemas found in this package.
@@ -59,9 +55,7 @@ def get_schema_store(
         for fname in fnames:
             fpath = path.join(schema_search_path, fname)
             if fpath[-5:] == ".json":
-                with open(
-                    fpath, "r"
-                ) as schema_fd:  # pylint: disable=unspecified-encoding
+                with open(fpath, "r") as schema_fd:  # pylint: disable=unspecified-encoding
                     schema = json.load(schema_fd)
                     if "$id" in schema:
                         schemastore[schema["$id"]] = schema
@@ -102,9 +96,7 @@ def validate(
             contents = schema_store.get(uri)
             return Resource.from_contents(contents)
 
-        registry = Registry(retrieve=retrieve_resource).with_resource(
-            schema_uri, DRAFT7.create_resource(schema)
-        )
+        registry = Registry(retrieve=retrieve_resource).with_resource(schema_uri, DRAFT7.create_resource(schema))
 
         validator = Draft7Validator(
             schema={"$ref": schema_uri},

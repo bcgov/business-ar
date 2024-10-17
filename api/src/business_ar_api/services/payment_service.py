@@ -53,9 +53,7 @@ class PaymentService:
     A class that provides utility functions for connecting with the BC Registries pay-api.
     """
 
-    def create_invoice(
-        account_id: str, user_jwt: JwtManager, business_details: dict
-    ) -> requests.Response:
+    def create_invoice(account_id: str, user_jwt: JwtManager, business_details: dict) -> requests.Response:
         """Create the invoice via the pay-api."""
         SVC_URL = current_app.config.get("PAY_API_URL")
         SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
@@ -70,9 +68,7 @@ class PaymentService:
             label_name = "Incorporation Number"
             payload["details"] = [{"label": f"{label_name}: ", "value": identifier}]
             payload["businessInfo"]["businessIdentifier"] = identifier
-            payload["businessInfo"]["corpType"] = business_details.get(
-                "legalType", None
-            )
+            payload["businessInfo"]["corpType"] = business_details.get("legalType", None)
 
         try:
             # make api call
@@ -89,14 +85,10 @@ class PaymentService:
                 timeout=SVC_TIMEOUT,
             )
 
-            if resp.status_code not in [HTTPStatus.OK, HTTPStatus.CREATED] or not (
-                resp.json()
-            ).get("id", None):
+            if resp.status_code not in [HTTPStatus.OK, HTTPStatus.CREATED] or not (resp.json()).get("id", None):
                 error = f"{resp.status_code} - {str(resp.json())}"
                 current_app.logger.debug("Invalid response from pay-api: %s", error)
-                raise ExternalServiceException(
-                    error=error, status_code=HTTPStatus.PAYMENT_REQUIRED
-                )
+                raise ExternalServiceException(error=error, status_code=HTTPStatus.PAYMENT_REQUIRED)
 
             return resp
 
@@ -107,34 +99,28 @@ class PaymentService:
             requests.exceptions.Timeout,
         ) as err:
             current_app.logger.debug("Pay-api connection failure:", repr(err))
-            raise ExternalServiceException(
-                error=repr(err), status_code=HTTPStatus.PAYMENT_REQUIRED
-            ) from err
+            raise ExternalServiceException(error=repr(err), status_code=HTTPStatus.PAYMENT_REQUIRED) from err
         except Exception as err:
-            current_app.logger.debug(
-                "Pay-api integration (create invoice) failure:", repr(err)
-            )
-            raise ExternalServiceException(
-                error=repr(err), status_code=HTTPStatus.PAYMENT_REQUIRED
-            ) from err
+            current_app.logger.debug("Pay-api integration (create invoice) failure:", repr(err))
+            raise ExternalServiceException(error=repr(err), status_code=HTTPStatus.PAYMENT_REQUIRED) from err
 
     @staticmethod
     def get_payment_details_by_invoice_id(invoice_id: int, user_jwt: JwtManager):
-        endpoint = (
-            f"{current_app.config.get('PAY_API_URL')}/payment-requests/{invoice_id}"
-        )
+        """Get the payment details by invoice id."""
+        endpoint = f"{current_app.config.get('PAY_API_URL')}/payment-requests/{invoice_id}"
         token = user_jwt.get_token_auth_header()
         payment_details = RestService.get(endpoint=endpoint, token=token).json()
         return payment_details
 
     @staticmethod
     def get_payment_receipt(filing_id: int):
+        """Get the payment receipt by filing id."""
         filing = FilingModel.find_filing_by_id(filing_id)
         if filing.status not in [FilingModel.Status.PAID, FilingModel.Status.COMPLETED]:
             return "Filing not in Paid or Completed State", HTTPStatus.BAD_REQUEST
         business = BusinessService.find_by_internal_id(filing.business_id)
 
-        pacific_tz = timezone('America/Los_Angeles')
+        pacific_tz = timezone("America/Los_Angeles")
         pacific_time_filing_date = filing.filing_date.astimezone(pacific_tz)
 
         client_id = current_app.config.get("AUTH_SVC_CLIENT_ID")
@@ -154,9 +140,7 @@ class PaymentService:
             headers=headers,
         )
         if response.status_code != HTTPStatus.CREATED:
-            current_app.logger.error(
-                "Failed to get receipt pdf for filing: %s", filing_id
-            )
+            current_app.logger.error("Failed to get receipt pdf for filing: %s", filing_id)
 
         return current_app.response_class(
             response=response.content,

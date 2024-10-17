@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Legislation Date time utilities."""
+from datetime import date, datetime
+
 import pytz
 from dateutil.tz import gettz
 from flask import current_app
-
-from datetime import date, datetime
 
 
 class LegislationDatetime:
@@ -25,9 +25,7 @@ class LegislationDatetime:
     @staticmethod
     def as_legislation_timezone(date_time: datetime) -> datetime:
         """Return a datetime adjusted to the legislation timezone."""
-        return date_time.astimezone(
-            pytz.timezone(current_app.config.get("LEGISLATIVE_TIMEZONE"))
-        )
+        return date_time.astimezone(pytz.timezone(current_app.config.get("LEGISLATIVE_TIMEZONE")))
 
     @staticmethod
     def as_legislation_timezone_from_date(_date: date) -> datetime:
@@ -58,9 +56,7 @@ class LegislationDatetime:
     @staticmethod
     def as_utc_timezone_from_legislation_date_str(date_string: str) -> datetime:
         """Return a datetime adjusted to the GMT timezone (aka UTC) from a date (1900-12-31) string."""
-        _date_time = LegislationDatetime.as_legislation_timezone_from_date_str(
-            date_string
-        )
+        _date_time = LegislationDatetime.as_legislation_timezone_from_date_str(date_string)
         return LegislationDatetime.as_utc_timezone(_date_time)
 
     @staticmethod
@@ -72,9 +68,7 @@ class LegislationDatetime:
     @staticmethod
     def now() -> datetime:
         """Construct a datetime using the legislation timezone."""
-        return datetime.now().astimezone(
-            pytz.timezone(current_app.config.get("LEGISLATIVE_TIMEZONE"))
-        )
+        return datetime.now().astimezone(pytz.timezone(current_app.config.get("LEGISLATIVE_TIMEZONE")))
 
     @staticmethod
     def format_as_report_string(date_time: datetime) -> str:
@@ -84,9 +78,7 @@ class LegislationDatetime:
         hour = date_time.strftime("%I").lstrip("0")
         # %p provides locale value: AM, PM (en_US); am, pm (de_DE); So forcing it to be lower in any case
         am_pm = date_time.strftime("%p").lower()
-        date_time_str = date_time.strftime(
-            f"%B %-d, %Y at {hour}:%M {am_pm} Pacific time"
-        )
+        date_time_str = date_time.strftime(f"%B %-d, %Y at {hour}:%M {am_pm} Pacific time")
         return date_time_str
 
     @staticmethod

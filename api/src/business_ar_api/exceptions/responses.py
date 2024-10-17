@@ -39,9 +39,7 @@ from flask import jsonify, current_app
 from .exceptions import BaseExceptionE
 
 
-def error_response(
-    message: str, http_status: HTTPStatus, errors: list[dict[str, str]] = None
-):
+def error_response(message: str, http_status: HTTPStatus, errors: list[dict[str, str]] = None):
     """Build generic request response with errors."""
     return jsonify({"message": message, "details": errors or []}), http_status
 
