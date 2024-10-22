@@ -30,7 +30,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         nextArYear.value = response.nextARYear || null
 
         if (response.nextARYear) {
-          nextArDate.value = new Date(response.nextARYear, lastArDate.value!.getUTCMonth(), lastArDate.value!.getUTCDate())
+          nextArDate.value = new Date(response.nextARYear, foundingDate.value!.getMonth(), foundingDate.value!.getDate())
         } else {
           nextArDate.value = null
         }
@@ -63,7 +63,7 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
         nextArYear.value = response.business.nextARYear || null
 
         if (nextArYear.value) {
-          nextArDate.value = new Date(nextArYear.value, lastArDate.value!.getMonth(), lastArDate.value!.getDate())
+          nextArDate.value = new Date(nextArYear.value, foundingDate.value!.getMonth(), foundingDate.value!.getDate())
         } else {
           nextArDate.value = null
         }
@@ -125,14 +125,12 @@ export const useBusinessStore = defineStore('bar-sbc-business-store', () => {
     }
 
     try {
-      const referenceDate = lastArDate.value ? new Date(lastArDate.value) : new Date(foundingDate.value!)
+      const referenceDate = new Date(foundingDate.value!)
       const currYear = new Date().getFullYear()
-      const dueMonth = referenceDate.getUTCMonth()
-      const dueDay = referenceDate.getUTCDate()
 
-      // Starts from the next AR year and computes all due dates up to the current year.
+      // Starts from the next AR year and computes all due dates up to the current year
       for (let year = nextArYear.value; year <= currYear; year++) {
-        const reportDueDate = new Date(year, dueMonth, dueDay)
+        const reportDueDate = new Date(year, referenceDate.getMonth(), referenceDate.getDate())
         reportDates.push(reportDueDate)
       }
       return reportDates
