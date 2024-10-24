@@ -79,6 +79,8 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       currentAccount.value = response
       userAccounts.value.push(response)
 
+      await getUserAccounts()
+
       if (callback) {
         callback()
       }
@@ -87,6 +89,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
       })
+      console.error('Error creating new account:', error)
     } finally {
       loading.value = false
     }
