@@ -79,7 +79,6 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       currentAccount.value = response
       userAccounts.value.push(response)
 
-
       if (callback) {
         callback()
       }
