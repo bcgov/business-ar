@@ -62,4 +62,4 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_ar_reminders_recipient'))
 
     op.drop_table('ar_reminders')
-    # ### end Alembic commands ### 
+    # ### end Alembic commands ###
