@@ -16,6 +16,7 @@ from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from typing import Final
+from datetime import datetime, date
 
 import requests
 from flask import current_app, jsonify
@@ -76,6 +77,21 @@ class ReportService:
         if response.status_code != HTTPStatus.OK:
             return jsonify(message=str(response.content)), response.status_code
         return response.content, response.status_code
+    
+    def _format_all_dates(self, obj):
+        """Recursively format all datetime objects in the data structure to strings."""
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                if isinstance(value, (datetime, date)):
+                    obj[key] = value.strftime(OUTPUT_DATE_FORMAT)
+                elif isinstance(value, (dict, list)):
+                    self._format_all_dates(value)
+        elif isinstance(obj, list):
+            for index, item in enumerate(obj):
+                if isinstance(item, (datetime, date)):
+                    obj[index] = item.strftime(OUTPUT_DATE_FORMAT)
+                elif isinstance(item, (dict, list)):
+                    self._format_all_dates(item)
 
     def _get_report_filename(self):
         """Get the report filename."""
@@ -109,6 +125,10 @@ class ReportService:
         self._set_description(filing)
         self._set_meta_info(filing)
         self._set_registrar_info(filing)
+
+        # Format all datetime objects in the filing data
+        self._format_all_dates(filing)
+
         return filing
 
     def _set_registrar_info(self, filing):

@@ -20,7 +20,7 @@
                 <div class="pt-2">{{recognition_date_time}}</div>
                 <div class="pt-2">
                     {% if annualReport.annualGeneralMeetingDate %}
-                        {{ annualReport.annualGeneralMeetingDate | strftime("%B %d, %Y") }}
+                        {{ annualReport.annualGeneralMeetingDate}}
                     {% else %}
                         No AGM
                     {% endif %}
