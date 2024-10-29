@@ -1,7 +1,9 @@
 """empty message
+
 Revision ID: fe1a62b01dfa
 Revises: b892c256d561
 Create Date: 2024-06-26 19:55:01.143148
+
 """
 from alembic import op
 import sqlalchemy as sa
@@ -61,3 +63,4 @@ def downgrade():
 
     op.drop_table('ar_reminders')
     # ### end Alembic commands ###
+    
