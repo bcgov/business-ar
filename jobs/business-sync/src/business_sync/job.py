@@ -131,7 +131,7 @@ def run():
                                 WHERE TRIM(LEADING 'BC' FROM auth.business_identifier) = co.corp_num
                             ) -- exclude if business identifier already exists in Auth-db
                             AND (
-                                (co.recognition_dts 
+                                (co.recognition_dts
                                 + ((EXTRACT(YEAR FROM current_date) - EXTRACT(YEAR FROM co.recognition_dts)) * interval '1 year')
                                 + interval '1 day')::date = current_date
                             )
