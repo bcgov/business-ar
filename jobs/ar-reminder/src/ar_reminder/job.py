@@ -213,13 +213,11 @@ def run():
 
 def _get_businesses():
     where_clause = text(
-        "state='ACT' and ar_reminder_flag is true and "
-        "(date_part('doy', founding_date) between date_part('doy', current_Date) and "
-        "date_part('doy', current_Date + interval '14 days')) and "
-        "(last_ar_reminder_year is NULL or last_ar_reminder_year < extract(year from current_date))"
+        "state = 'ACT' AND ar_reminder_flag = TRUE AND "
+        "DATE_PART('doy', founding_date) BETWEEN DATE_PART('doy', CURRENT_DATE - INTERVAL '7 days') "
+        "AND DATE_PART('doy', CURRENT_DATE + INTERVAL '7 days') AND "
+        "(last_ar_reminder_year IS NULL OR last_ar_reminder_year < EXTRACT(year FROM CURRENT_DATE))"
     )
-
-    businesses = db.session.query(Business).filter(
-        where_clause).order_by(Business.founding_date).limit(300).all()
+    businesses = db.session.query(Business).filter(where_clause).order_by(Business.founding_date).limit(300).all()
 
     return businesses
