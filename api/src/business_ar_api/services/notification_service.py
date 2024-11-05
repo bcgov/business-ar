@@ -70,6 +70,8 @@ class NotificationService:
         token = AccountService.get_service_client_token(client_id, client_secret)
         email_msg = NotificationService._compose_email(filing_id, token)
         NotificationService._send_email(email_msg, token)
+        # Log after sending email confirmation
+        current_app.logger.info(f'Email confirmation sent to {email_msg.get("recipients")}')
 
     @staticmethod
     def _compose_email(filing_id: int, token: str):

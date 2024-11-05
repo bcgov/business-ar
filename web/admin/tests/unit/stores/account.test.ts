@@ -116,3 +116,57 @@ describe('Account Store Tests', () => {
     expect(Object.keys(accountStore.currentAccount).length).toBe(0)
   })
 })
+it('creates a new account with email', async () => {
+  const accountStore = useAccountStore()
+  const newAccount = {
+    accountName: 'Mock New Account',
+    contact: {
+      phone: '1234567890',
+      email: 'test@email.com',
+      phoneExt: undefined
+    }
+  }
+
+  await accountStore.createNewAccount(newAccount)
+  expect(accountStore.currentAccount.name).toEqual(mockNewAccount.name)
+  expect(accountStore.userAccounts).toContainEqual(mockNewAccount)
+  expect(console.log).toHaveBeenCalledWith('Account created successfully with email:', newAccount.contact.email)
+})
+
+it('creates a new account without email', async () => {
+  const accountStore = useAccountStore()
+  const newAccount = {
+    accountName: 'Mock New Account',
+    contact: {
+      phone: '1234567890',
+      email: '',
+      phoneExt: undefined
+    }
+  }
+
+  await accountStore.createNewAccount(newAccount)
+  expect(accountStore.currentAccount.name).toEqual(newAccount.accountName)
+  expect(accountStore.userAccounts).toContainEqual(expect.objectContaining({ accountName: newAccount.accountName }))
+  expect(console.log).toHaveBeenCalledWith('Account created successfully with email:', newAccount.contact.email)
+})
+
+it('handles error when creating a new account fails', async () => {
+  const accountStore = useAccountStore()
+  const newAccount = {
+    accountName: 'Mock New Account',
+    contact: {
+      phone: '1234567890',
+      email: 'test@email.com',
+      phoneExt: undefined
+    }
+  }
+
+  vi.spyOn(accountStore, 'createNewAccount').mockRejectedValue(new Error('Failed to create account'))
+
+  await expect(accountStore.createNewAccount(newAccount)).rejects.toThrow('Failed to create account')
+  expect(console.error).toHaveBeenCalledWith('Failed to create account with email:', newAccount.contact.email, expect.any(Error))
+  expect(alertStore.addAlert).toHaveBeenCalledWith({
+    severity: 'error',
+    category: AlertCategory.CREATE_ACCOUNT
+  })
+})
