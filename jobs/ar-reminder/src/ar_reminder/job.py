@@ -213,7 +213,7 @@ def run():
 
 def _get_businesses():
     where_clause = text(
-        "state = 'ACT' AND ar_reminder_flag = TRUE AND "
+        "state = 'ACT' AND ar_reminder_flag is true AND "
         "DATE_PART('doy', founding_date) BETWEEN DATE_PART('doy', CURRENT_DATE - INTERVAL '7 days') "
         "AND DATE_PART('doy', CURRENT_DATE + INTERVAL '7 days') AND "
         "(last_ar_reminder_year IS NULL OR last_ar_reminder_year < EXTRACT(year FROM CURRENT_DATE))"
