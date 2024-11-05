@@ -86,12 +86,14 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       currentAccount.value = response
       userAccounts.value.push(response)
 
+      console.log('Account created successfully with email:', data.contact.email)
       await getUserAccounts()
 
       if (callback) {
         callback()
       }
     } catch {
+      console.error('Failed to create account with email:', data.contact.email, error)
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
