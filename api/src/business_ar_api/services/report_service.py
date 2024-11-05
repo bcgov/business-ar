@@ -12,7 +12,6 @@
 import base64
 import json
 import os
-from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 from typing import Final
@@ -77,7 +76,7 @@ class ReportService:
         if response.status_code != HTTPStatus.OK:
             return jsonify(message=str(response.content)), response.status_code
         return response.content, response.status_code
-    
+
     def _format_all_dates(self, obj):
         """Recursively format all datetime objects in the data structure to strings."""
         if isinstance(obj, dict):
