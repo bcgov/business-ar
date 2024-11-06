@@ -198,6 +198,7 @@ def run():
                             filled_template,
                         )
                         business.last_ar_reminder_year = next_ar_reminder_year
+                        business.ar_reminder_flag = False
                         business.save()
                         update_ar_indicator_in_colin(
                             application, business.legal_type, business.identifier, token)
