@@ -22,7 +22,7 @@ const accountDetails = reactive<NewAccount>({
   accountName: undefined,
   contact: {
     phone: undefined,
-    phoneExt: undefined,
+    extension: undefined,
     email: undefined
   }
 })
@@ -135,15 +135,16 @@ if (import.meta.client) {
                 />
               </UFormGroup>
               <!-- phone number extension -->
-              <UFormGroup name="contact.phoneExt" class="md:flex-1">
+              <UFormGroup name="contact.extension" class="md:flex-1">
                 <UInput
-                  v-model="accountDetails.contact.phoneExt"
-                  :variant="handleFormInputVariant('contact.phoneExt', accountFormRef?.errors)"
+                  v-model="accountDetails.contact.extension"
+                  :variant="handleFormInputVariant('contact.extension', accountFormRef?.errors)"
                   :placeholder="t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.main')"
                   :aria-label="t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
+                  @input="validateNumericInput"
                 />
-                <div v-if="accountFormRef?.errors['contact.phoneExt']" class="mt-1 text-sm text-red-500">
-                  {{ accountFormRef.errors['contact.phoneExt'] }}
+                <div v-if="accountFormRef?.errors['contact.extension']" class="mt-1 text-sm text-red-500">
+                  {{ accountFormRef.errors['contact.extension'] }}
                 </div>
               </UFormGroup>
             </div>
