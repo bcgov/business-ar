@@ -68,7 +68,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
             contactPoint: {
               email: data.contact.email,
               phone: data.contact.phone,
-              extension: data.contact.phoneExt
+              extension: data.contact.extension
             }
           }
         },
@@ -80,7 +80,7 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
         response.contacts = [{
           email: data.contact.email,
           phone: data.contact.phone,
-          phoneExtension: data.contact.phoneExt
+          extension: data.contact.extension
         }]
       }
       currentAccount.value = response

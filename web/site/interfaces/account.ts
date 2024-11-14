@@ -18,6 +18,6 @@ export interface NewAccount {
   contact: {
     phone: string | undefined
     email: string | undefined
-    phoneExt?: string | undefined
+    extension?: string | undefined
   }
 }

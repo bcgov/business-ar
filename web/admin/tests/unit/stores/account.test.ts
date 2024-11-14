@@ -65,7 +65,7 @@ describe('Account Store Tests', () => {
       contact: {
         phone: '1234567890',
         email: 'test@email.com',
-        phoneExt: undefined
+        extension: undefined
       }
     }
 

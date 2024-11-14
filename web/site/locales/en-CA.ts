@@ -222,7 +222,9 @@ export default {
               req: 'Please enter a Phone Number',
               invalid: 'Please enter a valid phone number'
             },
-            phoneExt: 'Please enter a valid extension',
+            phoneExt: {
+              invalid: 'Please enter a valid phone extension (numbers only)'
+            },
             email: {
               req: 'Please enter an Email Address',
               invalid: 'Please enter a valid email address'

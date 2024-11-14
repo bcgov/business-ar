@@ -31,7 +31,9 @@ const accountSchema = z.object({
   accountName: z.string({ required_error: t('page.createAccount.form.accountNameSection.error.req') }).min(2, t('page.createAccount.form.accountNameSection.error.min')),
   contact: z.object({
     phone: z.string({ required_error: t('page.createAccount.form.contactDetailsSection.error.phone.req') }).min(10, t('page.createAccount.form.contactDetailsSection.error.phone.invalid')).regex(/^[0-9()/ -]+$/, t('page.createAccount.form.contactDetailsSection.error.phone.invalid')),
-    phoneExt: z.string().optional(),
+    extension: z.string()
+      .regex(/^[0-9]*$/, { message: t('page.createAccount.form.contactDetailsSection.error.phoneExt.invalid') })
+      .optional(),
     email: z.string({ required_error: t('page.createAccount.form.contactDetailsSection.error.email.req') }).email({ message: t('page.createAccount.form.contactDetailsSection.error.email.invalid') })
   })
 })
@@ -137,9 +139,12 @@ if (import.meta.client) {
                 <UInput
                   v-model="accountDetails.contact.phoneExt"
                   :variant="handleFormInputVariant('contact.phoneExt', accountFormRef?.errors)"
-                  :placeholder="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.main')"
-                  :aria-label="$t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
+                  :placeholder="t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.main')"
+                  :aria-label="t('page.createAccount.form.contactDetailsSection.phoneExtInputLabel.aria')"
                 />
+                <div v-if="accountFormRef?.errors['contact.phoneExt']" class="mt-1 text-sm text-red-500">
+                  {{ accountFormRef.errors['contact.phoneExt'] }}
+                </div>
               </UFormGroup>
             </div>
           </div>

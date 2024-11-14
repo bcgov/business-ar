@@ -18,6 +18,7 @@ Test helper functions to load and assert that a JSON payload validates against a
 import json
 from os import listdir, path
 from typing import Tuple
+from flask import current_app
 
 from jsonschema import Draft7Validator, SchemaError
 from referencing import Registry, Resource
@@ -105,8 +106,12 @@ def validate(
         )
 
         if not validator.is_valid(json_data):
-            return False, sorted(validator.iter_errors(json_data), key=lambda e: e.path)
-
+            errors = sorted(validator.iter_errors(json_data), key=lambda e: e.path)
+            # Enhanced logging of validation errors
+            current_app.logger.error(
+                f'Validation errors for schema {schema_id}: {errors}'
+            )
+            return False, errors
         return True, []
 
     except SchemaError as error:
