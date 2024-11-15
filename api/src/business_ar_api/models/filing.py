@@ -151,7 +151,7 @@ class Filing(BaseModel):
     def get_last_ar_filed_date(cls, business_id: str) -> str | None:
         """Get the last AR filed date."""
         try:
-            status = [Filing.Status.COMPLETED, Filing.Status.PAID]
+            status = [Filing.Status.COMPLETED, Filing.Status.PAID, Filing.Status.PENDING]
             query = (
                 db.session.query(Filing)
                 .filter(Filing.business_id == int(business_id))
