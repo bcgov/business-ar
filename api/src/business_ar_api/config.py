@@ -78,7 +78,7 @@ class Config:
     # API Endpoints
     BAR_SCV_CLIENT_ID = os.getenv("BAR_SERVICE_ACCOUNT_CLIENT_ID")
     BAR_SCV_CLIENT_SECRET = os.getenv("BAR_SERVICE_ACCOUNT_CLIENT_SECRET")
-    
+
     PAY_API_URL = os.getenv("PAY_API_URL", "") + os.getenv("PAY_API_VERSION", "")
     AUTH_API_URL = os.getenv("AUTH_API_URL", "") + os.getenv("AUTH_API_VERSION", "")
 

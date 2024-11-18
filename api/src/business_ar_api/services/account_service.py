@@ -251,7 +251,6 @@ class AccountService:
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
             )
 
-        user: UserContext = kwargs["user_context"]
         endpoint = f"{current_app.config.get('AUTH_API_URL')}/orgs/{account_id}/affiliations"
         affiliation_payload = {
             "businessIdentifier": business_identifier,
