@@ -13,15 +13,18 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
       if (Object.keys(arFiling.value).length !== 0) {
         apiSuffix += `/${arFiling.value.filing.header.id}`
       }
+      // Log the founding date and next AR date
+      console.log(`Founding Date: ${busStore.foundingDate}`)
+      console.log(`Next AR Date: ${busStore.nextArDate}`)
 
       // Create the AR date with the same month/day as the founding date
       const arDate = busStore.nextArDate && busStore.foundingDate
         ? (() => {
-            const arDueDate = new Date(
+            const arDueDate = new Date(Date.UTC(
               busStore.nextArDate.getFullYear(),
               busStore.foundingDate.getMonth(),
               busStore.foundingDate.getDate()
-            )
+            ))
             return arDueDate.toISOString().slice(0, 10)
           })()
         : null
