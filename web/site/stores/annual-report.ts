@@ -20,11 +20,11 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
       // Create the AR date with the same month/day as the founding date
       const arDate = busStore.nextArDate && busStore.foundingDate
         ? (() => {
-            const arDueDate = new Date((
+            const arDueDate = new Date(
               busStore.nextArDate.getFullYear(),
               busStore.foundingDate.getMonth(),
               busStore.foundingDate.getDate()
-            ))
+            )
             return arDueDate.toISOString().slice(0, 10)
           })()
         : null
