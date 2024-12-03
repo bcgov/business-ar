@@ -23,8 +23,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         ? (() => {
             const arDueDate = new Date(
               busStore.nextArDate.getFullYear(),
-              busStore.foundingDate.getMonth(),
-              busStore.foundingDate.getDate()
+              busStore.foundingDate.getUTCMonth(),
+              busStore.foundingDate.getUTCDate()
             )
             return arDueDate.toISOString().slice(0, 10)
           })()
@@ -61,7 +61,7 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
 
       const endTime = performance.now()
       console.log(`submitAnnualReportFiling took ${endTime - startTime} milliseconds`)
-      
+
       return { paymentToken, filingId, payStatus }
     } catch (e) {
       alertStore.addAlert({
