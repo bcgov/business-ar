@@ -198,6 +198,10 @@ def run():
             token = AccountService.get_service_client_token(client_id, client_secret)
             filings_res = get_filings(app=application, token=token)
             filings = filings_res.get("filings")
+            if filings:
+                filings.sort(key=lambda x: x["filing"]["header"]["id"])
+            else:
+                application.logger.debug("No completed filings to send to colin.")
             if not filings:
                 # pylint: disable=no-member; false positive
                 application.logger.debug("No completed filings to send to colin.")
