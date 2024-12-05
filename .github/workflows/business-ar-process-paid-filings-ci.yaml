@@ -12,10 +12,10 @@ defaults:
     working-directory: ./jobs/process_paid_filings
 
 jobs:
-  business-ar-job-process-paid-filings-cd:
+  bar-paid-filings-job-ci:
     uses: bcgov/bcregistry-sre/.github/workflows/backend-ci.yaml@main
     with:
-      app_name: "business-ar-job-process-paid-filings"
+      app_name: "bar-paid-filings-job"
       working_directory: "./jobs/process_paid_filings"
       codecov_flag: "businessarprocess_paid_filings"
       skip_isort: "true"

@@ -29,7 +29,7 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
- name: business-business-sync-pipeline
+ name: bar-business-sync-pipeline
 description: Deployment pipeline
 serialPipeline:
  stages:
@@ -42,7 +42,7 @@ serialPipeline:
    - values:
       deploy-env: "development"
       deploy-project-id: "a083gt-dev"
-      job-name: "business-ar-business-sync-dev"
+      job-name: "bar-business-sync-dev"
       cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
@@ -55,7 +55,7 @@ serialPipeline:
    - values:
       deploy-env: "development"
       deploy-project-id: "a083gt-test"
-      job-name: "business-ar-business-sync-test"
+      job-name: "bar-business-sync-test"
       cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
@@ -68,7 +68,7 @@ serialPipeline:
    - values:
       deploy-env: "production"
       deploy-project-id: "a083gt-integration"
-      job-name: "business-ar-business-sync-sandbox"
+      job-name: "bar-business-sync-sandbox"
       cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-integration.iam.gserviceaccount.com"
@@ -81,7 +81,7 @@ serialPipeline:
    - values:
       deploy-env: "production"
       deploy-project-id: "a083gt-prod"
-      job-name: "business-ar-business-sync-prod"
+      job-name: "bar-business-sync-prod"
       cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"

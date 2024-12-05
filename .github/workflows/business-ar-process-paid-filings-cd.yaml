@@ -19,11 +19,11 @@ on:
         - prod
 
 jobs:
-  business-ar-job-process-paid-filings-cd:
+  bar-paid-filings-job-cd:
     uses: bcgov/bcregistry-sre/.github/workflows/backend-job-cd.yaml@main
     with:
       target: ${{ inputs.target }}
-      app_name: "business-ar-job-process-paid-filings"
+      app_name: "bar-paid-filings-job"
       working_directory: "./jobs/process_paid_filings"
     secrets:
       WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}

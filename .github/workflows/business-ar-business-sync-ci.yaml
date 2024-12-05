@@ -12,10 +12,10 @@ defaults:
     working-directory: ./jobs/business-sync
 
 jobs:
-  business-ar-job-business-sync-ci:
+  bar-business-sync-ci:
     uses: bcgov/bcregistry-sre/.github/workflows/backend-ci.yaml@main
     with:
-      app_name: "business-ar-job-business-sync"
+      app_name: "bar-business-sync"
       working_directory: "./jobs/business-sync"
       codecov_flag: "businessarbusiness_sync"
       skip_isort: "true"

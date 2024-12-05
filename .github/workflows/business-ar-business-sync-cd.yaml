@@ -19,11 +19,11 @@ on:
         - prod
 
 jobs:
-  business-ar-job-business-sync-cd:
+  bar-business-sync-cd:
     uses: bcgov/bcregistry-sre/.github/workflows/backend-job-cd.yaml@main
     with:
       target: ${{ inputs.target }}
-      app_name: "business-ar-job-business-sync"
+      app_name: "bar-business-sync"
       working_directory: "./jobs/business-sync"
     secrets:
       WORKLOAD_IDENTIFY_POOLS_PROVIDER: ${{ secrets.WORKLOAD_IDENTIFY_POOLS_PROVIDER }}

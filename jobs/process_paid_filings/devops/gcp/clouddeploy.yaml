@@ -29,7 +29,7 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
- name: business-ar-process-paid-filings-pipeline
+ name: bar-paid-filings-job-pipeline
 description: Deployment pipeline
 serialPipeline:
  stages:
@@ -42,7 +42,7 @@ serialPipeline:
    - values:
       deploy-env: "development"
       deploy-project-id: "a083gt-dev"
-      job-name: "business-ar-job-process-paid-filings-dev"
+      job-name: "bar-paid-filings-job-dev"
       cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
@@ -55,7 +55,7 @@ serialPipeline:
    - values:
       deploy-env: "development"
       deploy-project-id: "a083gt-test"
-      job-name: "business-ar-job-process-paid-filings-test"
+      job-name: "bar-paid-filings-job-test"
       cloudsql-instances: "a083gt-test:northamerica-northeast1:businesses-db-test"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-test.iam.gserviceaccount.com"
@@ -68,7 +68,7 @@ serialPipeline:
    - values:
       deploy-env: "sandbox"
       deploy-project-id: "a083gt-integration"
-      job-name: "business-ar-job-process-paid-filings-sandbox"
+      job-name: "bar-paid-filings-job-sandbox"
       cloudsql-instances: "a083gt-integration:northamerica-northeast1:businesses-db-sandbox"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-integration.iam.gserviceaccount.com"
@@ -81,7 +81,7 @@ serialPipeline:
    - values:
       deploy-env: "production"
       deploy-project-id: "a083gt-prod"
-      job-name: "business-ar-job-process-paid-filings-prod"
+      job-name: "bar-paid-filings-job-prod"
       cloudsql-instances: "a083gt-prod:northamerica-northeast1:businesses-db-prod"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-prod.iam.gserviceaccount.com"
