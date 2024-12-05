@@ -8,7 +8,6 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
 
   async function submitAnnualReportFiling (arData: ArFormData): Promise<{ paymentToken: number, filingId: number, payStatus: string }> {
     try {
-      const startTime = performance.now()
       let apiSuffix = `/business/${busStore.businessNano.identifier}/filings`
       // add filing id to end of url if filing exists in the store
       if (Object.keys(arFiling.value).length !== 0) {
@@ -23,8 +22,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         ? (() => {
             const arDueDate = new Date(
               busStore.nextArDate.getFullYear(),
-              busStore.foundingDate.getUTCMonth(),
-              busStore.foundingDate.getUTCDate()
+              busStore.foundingDate.getMonth(),
+              busStore.foundingDate.getDate()
             )
             return arDueDate.toISOString().slice(0, 10)
           })()
@@ -58,9 +57,6 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
       const paymentToken = response.filing.header.paymentToken
       const filingId = response.filing.header.id
       const payStatus = response.filing.header.status
-
-      const endTime = performance.now()
-      console.log(`submitAnnualReportFiling took ${endTime - startTime} milliseconds`)
 
       return { paymentToken, filingId, payStatus }
     } catch (e) {
