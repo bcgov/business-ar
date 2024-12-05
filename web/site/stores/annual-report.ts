@@ -23,8 +23,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
         ? (() => {
             const arDueDate = new Date(
               busStore.nextArDate.getFullYear(),
-              busStore.foundingDate.getUTCMonth(),
-              busStore.foundingDate.getUTCDate()
+              busStore.foundingDate.getMonth(),
+              busStore.foundingDate.getDate()
             )
             return arDueDate.toISOString().slice(0, 10)
           })()
