@@ -34,6 +34,8 @@
 """Business Service."""
 from datetime import date, datetime
 from http import HTTPStatus
+import pytz
+from pytz import timezone
 
 from flask import current_app
 from business_ar_api.exceptions.exceptions import BusinessException
@@ -76,6 +78,17 @@ class BusinessService:
             )
 
         business_details = RestService.get(endpoint=colin_api_endpoint, token=token).json()
+        
+        # Convert founding date from UTC to Pacific Time when getting from Colin
+        if business_details and "foundingDate" in business_details.get("business", {}):
+            utc_founding_date = datetime.fromisoformat(
+                business_details["business"]["foundingDate"]
+            ).replace(tzinfo=pytz.utc)
+            pacific_tz = timezone("America/Los_Angeles")
+            pacific_founding_date = utc_founding_date.astimezone(pacific_tz)
+            business_details["business"]["foundingDate"] = pacific_founding_date.isoformat()
+            # Add a flag to indicate timezone is already Pacific
+            business_details["business"]["foundingDateTz"] = "America/Los_Angeles"
 
         if business_details:
             business_details["business"]["nextARYear"] = BusinessService._get_next_ar_year(business_details)
