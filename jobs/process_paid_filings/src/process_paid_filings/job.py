@@ -18,6 +18,7 @@ import json
 import os
 from typing import List
 from datetime import datetime
+from datetime import timezone
 import pytz
 
 import requests
