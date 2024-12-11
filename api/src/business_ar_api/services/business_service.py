@@ -78,7 +78,7 @@ class BusinessService:
             )
 
         business_details = RestService.get(endpoint=colin_api_endpoint, token=token).json()
-        
+
         # Convert founding date from UTC to Pacific Time when getting from Colin
         if business_details and "foundingDate" in business_details.get("business", {}):
             utc_founding_date = datetime.fromisoformat(
