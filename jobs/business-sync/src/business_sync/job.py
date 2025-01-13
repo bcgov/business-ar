@@ -25,7 +25,7 @@ from sqlalchemy.sql.expression import text
 from business_sync.config import CONFIGURATION
 from business_sync.utils.logging import setup_logging
 
-setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
+setup_logging("logging.conf")
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
