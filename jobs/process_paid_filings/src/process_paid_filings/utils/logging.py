@@ -17,15 +17,15 @@ import sys
 from os import path
 
 
-def initialize_logging(conf):
+def setup_logging(conf_filename):
     """Create the services logger."""
-    # log_file_path = path.join(path.abspath(path.dirname(__file__)), conf)
-
-    if conf and path.isfile(conf):
-        logging.config.fileConfig(conf)
-        print("Configure logging, from conf:{}".format(conf), file=sys.stdout)
+    script_dir = path.dirname(__file__)
+    log_file_path = path.normpath(path.join(script_dir, "../../..", conf_filename))
+    if path.isfile(log_file_path):
+        logging.config.fileConfig(log_file_path)
+        print(f"Configured logging from conf: {log_file_path}", file=sys.stdout)
     else:
         print(
-            "Unable to configure logging, attempted conf:{}".format(conf),
+            f"Unable to configure logging, attempted conf: {log_file_path}",
             file=sys.stderr,
         )

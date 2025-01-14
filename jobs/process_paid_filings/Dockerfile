@@ -81,6 +81,8 @@ RUN --mount=type=cache,target="$POETRY_CACHE_DIR" \
     --no-interaction --no-ansi
 # Running as non-root user:
 COPY --chown=web:web . /code
+COPY --chown=web:web ./logging.conf /code
+
 RUN chmod -R 755 /code
   
 USER web

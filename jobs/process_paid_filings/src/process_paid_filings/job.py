@@ -30,9 +30,9 @@ from flask import Flask
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .config import CONFIGURATION
-from .utils.logging import initialize_logging
+from .utils.logging import setup_logging
 
-initialize_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf"))
+setup_logging("logging.conf")
 
 SENTRY_LOGGING = LoggingIntegration(event_level=logging.ERROR)  # send errors as events
 CONTENT_TYPE_JSON = {"Content-Type": "application/json"}
