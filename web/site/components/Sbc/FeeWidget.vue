@@ -1,12 +1,41 @@
 <script setup lang="ts" generic="T">
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+import { computed, onMounted } from 'vue'
+import { usePayFeesStore } from '@/stores/pay-fees'
+
+provide('sbc-bar-success-text', 'payment success')
+provide('sbc-bar-platform-info', 'platform info')
+provide('sbc-bar-index1', 0)
+provide('sbc-bar-index2', 1)
 const props = defineProps({
   fees: { type: Array<PayFeesWidgetItem>, required: true },
-  isLoading: { type: Boolean, default: false }
+  isLoading: { type: Boolean, default: false },
+  altPaymentMethodAllowed: { type: Boolean, default: false },
+  selectedPaymentMethod: { type: String, default: '' },
+  possiblePaymentMethods: { type: Array<PaymentMethod>, default: [] },
+  payMethodLabel: { type: String, default: '' }
 })
 
 defineEmits<{(e: 'submit'): void}>()
 
 // const hasEmptyFees = computed(() => !props.fees?.length)
+
+const payFeesStore = usePayFeesStore()
+const {
+  userSelectedPaymentMethod,
+  allowedPaymentMethods,
+  allowAlternatePaymentMethod,
+  userPaymentAccount
+} = storeToRefs(payFeesStore)
+
+const { t } = useI18n()
+
+const paymentMethodLabel = computed(() => {
+  return t(`payment.methodLabels.${userSelectedPaymentMethod.value}`, {
+    account: userPaymentAccount?.value?.cfsAccount?.bankAccountNumber
+  })
+})
 
 const displayCanadianDollars = (amount: number) => {
   if (!amount) {
@@ -19,6 +48,15 @@ const displayCanadianDollars = (amount: number) => {
 const total = computed(() => {
   return props.fees.reduce((total, feeInfo) => total + feeInfo.total, 0)
 })
+
+onMounted(async () => {
+  try {
+    await payFeesStore.initAlternatePaymentMethod()
+  } catch (e) {
+    console.error('Failed to initialize alternate payment method', e)
+  }
+})
+
 </script>
 <template>
   <div class="flex flex-col gap-4 font-bold">
@@ -72,26 +110,45 @@ const total = computed(() => {
       </div>
 
       <template #footer>
-        <div class="flex items-center justify-between" data-cy="pay-fees-widget-total">
-          <span class="mr-auto text-sm text-bcGovColor-darkGray">
-            {{ $t('widgets.feeSummary.total') }}
-          </span>
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-normal text-gray-700">
-              {{ $t('currency.cad') }}
-            </span>
-            <span
-              v-if="fees?.length > 0"
-              class="overflow-hidden whitespace-nowrap text-2xl"
+        <div class="space-y-4">
+          <div v-if="allowAlternatePaymentMethod" class="mt-4 border-t pt-4">
+            <label class="mb-2 block text-sm font-medium">{{ $t('payment.method') }}</label>
+            <USelectMenu
+              v-model="userSelectedPaymentMethod"
+              :options="allowedPaymentMethods"
+              value-attribute="value"
+              class="w-full"
+              :ui-menu="{ option: { base: 'cursor-pointer', size: 'text-xs' } }"
             >
-              {{ displayCanadianDollars(total) }}
+              <template #label>
+                <span class="text-xs">
+                  {{ paymentMethodLabel }}
+                </span>
+              </template>
+            </USelectMenu>
+          </div>
+
+          <div class="flex items-center justify-between" data-cy="pay-fees-widget-total">
+            <span class="mr-auto text-sm text-bcGovColor-darkGray">
+              {{ $t('widgets.feeSummary.total') }}
             </span>
-            <span
-              v-else
-              class="overflow-hidden whitespace-nowrap text-2xl"
-            >
-              -
-            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-normal text-gray-700">
+                {{ $t('currency.cad') }}
+              </span>
+              <span
+                v-if="fees?.length > 0"
+                class="overflow-hidden whitespace-nowrap text-2xl"
+              >
+                {{ displayCanadianDollars(total) }}
+              </span>
+              <span
+                v-else
+                class="overflow-hidden whitespace-nowrap text-2xl"
+              >
+                -
+              </span>
+            </div>
           </div>
         </div>
       </template>
@@ -100,7 +157,15 @@ const total = computed(() => {
       :label="$t('btn.submitAndPay')"
       :loading="isLoading"
       block
-      @click="$emit('submit')"
+      @click="$emit('submit', userSelectedPaymentMethod.value)"
     />
   </div>
 </template>
+
+<style scoped>
+.payment-method-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+</style>

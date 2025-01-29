@@ -173,6 +173,7 @@ onUnmounted(() => {
 if (import.meta.client) {
   try {
     // load fees for fee widget, might move into earlier setup
+    await feeStore.initAlternatePaymentMethod()
     feeStore.addPayFees('BCANN')
 
     // try to prefill form if a filing exists

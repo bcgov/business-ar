@@ -1,22 +1,34 @@
 import { v4 as UUIDv4 } from 'uuid'
+import { useI18n } from 'vue-i18n'
 import payApi from '~/services/pay-api'
+import { ConnectPaymentMethod } from '~/enums/connect-payment-method'
+import type { ConnectPayAccount } from '~/interfaces/connect-pay-account'
+
 export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
   const fees: Ref<PayFeesWidgetItem[]> = ref([])
   const folioNumber = ref('')
   const feeInfo: Ref<[FeeData, FeeInfo][]> = ref([])
+  const PAD_PENDING_STATES = ['PENDING', 'PENDING_PAD_ACTIVATION']
+  const userPaymentAccount = ref<ConnectPayAccount>({} as ConnectPayAccount)
+  const userSelectedPaymentMethod = ref<ConnectPaymentMethod>(ConnectPaymentMethod.DIRECT_PAY)
+  const allowAlternatePaymentMethod = ref<boolean>(false)
+  const allowedPaymentMethods = ref<{ label: string, value: ConnectPaymentMethod }[]>([])
 
   function addFee (newFee: FeeInfo) {
+    console.log('[PayFeesStore] addFee:', newFee.filingTypeCode)
     const fee = fees.value.find((fee: PayFeesWidgetItem) => // check if fee already exists
       fee.filingType === newFee.filingType && fee.filingTypeCode === newFee.filingTypeCode
     )
 
     if (fee) {
+      console.log('[PayFeesStore] fee already exists, update quantity:', fee.filingTypeCode)
       if (fee.quantity === undefined) {
         fee.quantity = 1 // set quantity to 1 if fee exists but has no quantity
       } else {
         fee.quantity += 1 // increase quantity if it already exists
       }
     } else { // validate fee doesnt have null values
+      console.log('[PayFeesStore] add new fee:', newFee.filingTypeCode)
       if (!newFee || newFee.total == null || newFee.filingFees == null || newFee.filingTypeCode == null) {
         console.error('Trying to add INVALID FEE; Fee is missing details. Fee:', newFee)
         return
@@ -88,10 +100,54 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
     }
   }
 
+  const $resetAlternatePayOptions = () => {
+    userPaymentAccount.value = {} as ConnectPayAccount
+    userSelectedPaymentMethod.value = ConnectPaymentMethod.DIRECT_PAY
+    allowAlternatePaymentMethod.value = false
+    allowedPaymentMethods.value = []
+  }
+
   function $reset () {
     fees.value = []
     folioNumber.value = ''
     feeInfo.value = []
+    $resetAlternatePayOptions()
+  }
+
+  const initAlternatePaymentMethod = async () => {
+    console.log('[Payment] start initializing alternative payment method')
+    $resetAlternatePayOptions()
+    const { t } = useI18n()
+    try {
+      console.log('[Payment] current account status:', useAccountStore().currentAccount)
+      const accountId = useAccountStore().currentAccount.id.toString()
+      console.log('[Payment] using account ID:', accountId)
+      const res = await payApi.getAccount(accountId)
+      console.log('[Payment] account API response:', res)
+      userPaymentAccount.value = res
+
+      if (res.paymentMethod) {
+        const accountNum = res.cfsAccount?.bankAccountNumber ?? ''
+        allowedPaymentMethods.value.push({
+          label: t(`paymentMethod.${res.paymentMethod}`, { account: accountNum }),
+          value: res.paymentMethod
+        })
+
+        if (res.paymentMethod !== ConnectPaymentMethod.DIRECT_PAY) {
+          allowedPaymentMethods.value.push({
+            label: t(`paymentMethod.${ConnectPaymentMethod.DIRECT_PAY}`),
+            value: ConnectPaymentMethod.DIRECT_PAY
+          })
+
+          if (PAD_PENDING_STATES.includes(res.cfsAccount?.status)) {
+            userSelectedPaymentMethod.value = ConnectPaymentMethod.DIRECT_PAY
+          }
+        }
+      }
+      allowAlternatePaymentMethod.value = true
+    } catch (e) {
+      console.error('Error initializing user payment account', e)
+    }
   }
 
   return {
@@ -103,7 +159,11 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
     removeFee,
     getFeeInfo,
     addPayFees,
-    $reset
+    $reset,
+    userPaymentAccount,
+    userSelectedPaymentMethod,
+    allowedPaymentMethods,
+    allowAlternatePaymentMethod,
+    initAlternatePaymentMethod
   }
-}
-)
+})

@@ -342,5 +342,14 @@ export default {
   LocaleSelect: {
     // aria-label
     label: 'Select a Language, current language: English'
+  },
+  payment: {
+    method: 'Payment Method',
+    methodLabels: {
+      DIRECT_PAY: 'Credit Card',
+      PAD: 'Pre-authorized Debit (PAD) {account}',
+      BCOL: 'Online Banking',
+      JV: 'Journal Voucher'
+    }
   }
 }

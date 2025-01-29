@@ -112,8 +112,11 @@ export default defineNuxtConfig({
     transpile: ['@vuepic/vue-datepicker']
   },
 
+  // compatibilityDate: '2024-07-03' add compatibility date?
   piniaPersistedstate: {
     storage: 'sessionStorage'
-  }
-  // compatibilityDate: '2024-07-03' add compatibility date?
+  },
+
+  compatibilityDate: '2025-01-28'
 })
+
