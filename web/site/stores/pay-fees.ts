@@ -15,22 +15,18 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
   const allowedPaymentMethods = ref<{ label: string, value: ConnectPaymentMethod }[]>([])
 
   function addFee (newFee: FeeInfo) {
-    console.log('[PayFeesStore] addFee:', newFee.filingTypeCode)
     const fee = fees.value.find((fee: PayFeesWidgetItem) => // check if fee already exists
       fee.filingType === newFee.filingType && fee.filingTypeCode === newFee.filingTypeCode
     )
 
     if (fee) {
-      console.log('[PayFeesStore] fee already exists, update quantity:', fee.filingTypeCode)
       if (fee.quantity === undefined) {
         fee.quantity = 1 // set quantity to 1 if fee exists but has no quantity
       } else {
         fee.quantity += 1 // increase quantity if it already exists
       }
     } else { // validate fee doesnt have null values
-      console.log('[PayFeesStore] add new fee:', newFee.filingTypeCode)
       if (!newFee || newFee.total == null || newFee.filingFees == null || newFee.filingTypeCode == null) {
-        console.error('Trying to add INVALID FEE; Fee is missing details. Fee:', newFee)
         return
       }
       fees.value.push({ ...newFee, quantity: 1, uiUuid: UUIDv4() }) // add fee if valid
@@ -115,15 +111,11 @@ export const usePayFeesStore = defineStore('bar-sbc-pay-fees', () => {
   }
 
   const initAlternatePaymentMethod = async () => {
-    console.log('[Payment] start initializing alternative payment method')
     $resetAlternatePayOptions()
     const { t } = useI18n()
     try {
-      console.log('[Payment] current account status:', useAccountStore().currentAccount)
       const accountId = useAccountStore().currentAccount.id.toString()
-      console.log('[Payment] using account ID:', accountId)
       const res = await payApi.getAccount(accountId)
-      console.log('[Payment] account API response:', res)
       userPaymentAccount.value = res
 
       if (res.paymentMethod) {

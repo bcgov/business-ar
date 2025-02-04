@@ -351,5 +351,11 @@ export default {
       BCOL: 'Online Banking',
       JV: 'Journal Voucher'
     }
+  },
+  paymentMethod: {
+    DIRECT_PAY: 'Credit Card',
+    PAD: 'Pre-authorized Debit (PAD) {account}',
+    BCOL: 'Online Banking',
+    JV: 'Journal Voucher'
   }
 }

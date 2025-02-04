@@ -340,5 +340,20 @@ export default {
   LocaleSelect: {
     // aria-label
     label: 'Sélectionnez une langue, langue courante: Français'
+  },
+  payment: {
+    method: 'Méthode de Paiement',
+    methodLabels: {
+      DIRECT_PAY: 'Carte de crédit',
+      PAD: 'Débit préautorisé (PAD) {account}',
+      BCOL: 'Services bancaires en ligne',
+      JV: 'Bon de journal'
+    }
+  },
+  paymentMethod: {
+    DIRECT_PAY: 'Carte de crédit',
+    PAD: 'Débit préautorisé (PAD) {account}',
+    BCOL: 'Services bancaires en ligne',
+    JV: 'Bon de journal'
   }
 }

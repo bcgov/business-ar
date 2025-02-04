@@ -88,7 +88,7 @@ onMounted(async () => {
       <div
         v-for="fee in fees"
         :key="fee.uiUuid"
-        class="flex flex-col gap-2"
+        class="flex flex-col gap-3"
       >
         <div class="flex items-center justify-between">
           <span class="mr-auto text-sm text-bcGovColor-darkGray">
@@ -111,7 +111,7 @@ onMounted(async () => {
 
       <template #footer>
         <div class="space-y-4">
-          <div v-if="allowAlternatePaymentMethod" class="mt-4 border-t pt-4">
+          <div v-if="allowAlternatePaymentMethod" class="pt-4">
             <label class="mb-2 block text-sm font-medium">{{ $t('payment.method') }}</label>
             <USelectMenu
               v-model="userSelectedPaymentMethod"

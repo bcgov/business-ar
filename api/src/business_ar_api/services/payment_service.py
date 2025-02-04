@@ -20,7 +20,7 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 # THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
@@ -53,13 +53,14 @@ class PaymentService:
     A class that provides utility functions for connecting with the BC Registries pay-api.
     """
 
-    def create_invoice(account_id: str, user_jwt: JwtManager, business_details: dict) -> requests.Response:
+    def create_invoice(account_id: str, user_jwt: JwtManager, business_details: dict, payment_method: str) -> requests.Response:
         """Create the invoice via the pay-api."""
         SVC_URL = current_app.config.get("PAY_API_URL")
         SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
         CREATE_INVOICE_PAYLOAD = {
             "filingInfo": {"filingTypes": [{"filingTypeCode": "BCANN"}]},
             "businessInfo": {},
+            "paymentInfo": {"methodOfPayment": "DIRECT_PAY"}
         }
         payload = deepcopy(CREATE_INVOICE_PAYLOAD)
 
@@ -69,6 +70,10 @@ class PaymentService:
             payload["details"] = [{"label": f"{label_name}: ", "value": identifier}]
             payload["businessInfo"]["businessIdentifier"] = identifier
             payload["businessInfo"]["corpType"] = business_details.get("legalType", None)
+            
+            # Add payment method handling from STRR pattern
+            if payment_method and payment_method.upper() != "DIRECT_PAY":
+                payload["paymentInfo"]["methodOfPayment"] = payment_method.upper()
 
         try:
             # make api call

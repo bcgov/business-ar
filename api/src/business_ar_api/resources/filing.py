@@ -20,7 +20,7 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 # THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
@@ -149,8 +149,9 @@ def create_filing(identifier, filing_id: Optional[int] = None):
 
         # create invoice in pay system if the invoice does not exist for the filing.
         if not filing.invoice_id:
-            invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json())
-
+            payment_method = json_input["filing"]["header"]["paymentMethod"]
+            invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json(), payment_method)
+            
             # Update the filing with the payment token save it in the db.
             filing = FilingService.update_filing_invoice_details(filing.id, invoice_resp.json())
 

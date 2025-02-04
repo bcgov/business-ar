@@ -1,5 +1,6 @@
 export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', () => {
   const busStore = useBusinessStore()
+  const feeStore = usePayFeesStore()
   const alertStore = useAlertStore()
 
   // store values
@@ -36,7 +37,8 @@ export const useAnnualReportStore = defineStore('bar-sbc-annual-report-store', (
           body: {
             filing: {
               header: {
-                filingYear: busStore.nextArYear
+                filingYear: busStore.nextArYear,
+                paymentMethod: feeStore.userSelectedPaymentMethod
               },
               annualReport: {
                 annualGeneralMeetingDate: arData.agmDate,
