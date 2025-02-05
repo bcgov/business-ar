@@ -53,7 +53,12 @@ class PaymentService:
     A class that provides utility functions for connecting with the BC Registries pay-api.
     """
 
-    def create_invoice(account_id: str, user_jwt: JwtManager, business_details: dict, payment_method: str) -> requests.Response:
+    def create_invoice(
+        account_id: str,
+        user_jwt: JwtManager,
+        business_details: dict,
+        payment_method: str
+    ) -> requests.Response:
         """Create the invoice via the pay-api."""
         SVC_URL = current_app.config.get("PAY_API_URL")
         SVC_TIMEOUT = current_app.config.get("PAYMENT_SVC_TIMEOUT", 20)
