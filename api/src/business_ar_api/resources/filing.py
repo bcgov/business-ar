@@ -151,7 +151,7 @@ def create_filing(identifier, filing_id: Optional[int] = None):
         if not filing.invoice_id:
             payment_method = json_input["filing"]["header"]["paymentMethod"]
             invoice_resp = PaymentService.create_invoice(account_id, jwt, business.json(), payment_method)
-            
+
             # Update the filing with the payment token save it in the db.
             filing = FilingService.update_filing_invoice_details(filing.id, invoice_resp.json())
 

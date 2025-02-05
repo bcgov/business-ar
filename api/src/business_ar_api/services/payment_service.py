@@ -70,7 +70,7 @@ class PaymentService:
             payload["details"] = [{"label": f"{label_name}: ", "value": identifier}]
             payload["businessInfo"]["businessIdentifier"] = identifier
             payload["businessInfo"]["corpType"] = business_details.get("legalType", None)
-            
+
             # Add payment method handling from STRR pattern
             if payment_method and payment_method.upper() != "DIRECT_PAY":
                 payload["paymentInfo"]["methodOfPayment"] = payment_method.upper()
