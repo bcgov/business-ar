@@ -217,6 +217,7 @@ def run():
                 filing["filing"]["header"]["certifiedBy"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["submitter"] = filing["filing"]["header"]["certifiedByDisplayName"]
                 filing["filing"]["header"]["source"] = "BAR"
+                filing["filing"]["header"]["isFutureEffective"] = False
 
                 # Convert the founding date from UTC to Pacific Time.
                 # The Colin API sends the founding date in UTC, but we need to convert it
