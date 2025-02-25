@@ -76,12 +76,6 @@ def run():
                 result_set = connection.execute(
                     text(
                         """
-                        WITH email_counts AS (
-                        SELECT admin_email,
-                                COUNT(*) AS cnt
-                        FROM "colin".corporation
-                        GROUP BY admin_email
-                        )
                         SELECT
                             co.corp_num,
                             co.recognition_dts,
@@ -93,57 +87,66 @@ def run():
                             co.bn_15,
                             cs.state_typ_cd AS corp_state,
                             ct.corp_class
-                        FROM "colin".corporation co
-                        JOIN email_counts ec
-                        ON co.admin_email = ec.admin_email
-                        JOIN "colin".corp_type ct
-                        ON co.corp_typ_cd = ct.corp_typ_cd
-                        JOIN "colin".corp_state cs
-                        ON co.corp_num = cs.corp_num
-                        JOIN "colin".corp_name cn
-                        ON co.corp_num = cn.corp_num
-                        WHERE ec.cnt <= 50
-                        AND cs.end_event_id IS NULL
-                        AND cn.end_event_id IS NULL
-                        AND cn.corp_name_typ_cd = 'CO'
-                        AND cs.state_typ_cd = 'ACT'
-                        AND ct.corp_class = 'BC'
-                        AND co.corp_typ_cd <> 'BEN'
-                        AND co.admin_email IS NOT NULL
-                        AND co.send_ar_ind = 'Y'
-                        AND NOT EXISTS (
+                        FROM
+                            "colin"."corporation" co,
+                            "colin".corp_type ct,
+                            "colin".corp_state cs,
+                            "colin".corp_name cn
+                        WHERE
+                            co.corp_typ_cd = ct.corp_typ_cd
+                            AND co.corp_num = cs.corp_num
+                            AND co.corp_num = cn.corp_num
+                            AND cs.end_event_id IS NULL
+                            AND cn.end_event_id IS NULL
+                            AND cn.corp_name_typ_cd = 'CO'
+                            AND cs.state_typ_cd = 'ACT' -- active
+                            AND ct.corp_class = 'BC' -- BC Corporations
+                            AND co.corp_typ_cd <> 'BEN' -- no Benefit Companies
+                            AND co.admin_email IS NOT NULL -- they have an email
+                            AND co.send_ar_ind = 'Y' -- AR reminder indicator is "Y"
+                            AND NOT EXISTS (
                                 SELECT 'x'
                                 FROM "colin".filing f, "colin".event e, "colin".filing_user u
                                 WHERE
                                     f.event_id = e.event_id
-                                    AND f.event_id = u.event_id
+                                    AND f.event_id = u.event_id -- no previous BCOL filings
                                     AND e.corp_num = co.corp_num
                                     AND u.role_typ_cd = 'bcol'
                             )
-                        AND NOT EXISTS (
+                            AND NOT EXISTS (
+                                SELECT 'x'
+                                FROM "colin".corporation
+                                WHERE
+                                    admin_email = co.admin_email
+                                    AND corp_num <> co.corp_num
+                            ) -- no other business using the same email
+                            AND NOT EXISTS (
                                 SELECT 'x'
                                 FROM "auth"."users" u
                                 WHERE co.admin_email = u.email
-                            )
-                        AND NOT EXISTS (
+                            ) -- no SBC Connect account associated with the email
+                            AND NOT EXISTS (
                                 SELECT 'x'
                                 FROM "auth"."entities" auth
                                 WHERE TRIM(LEADING 'BC' FROM auth.business_identifier) = co.corp_num
-                            )
-                        AND (
+                            ) -- exclude if business identifier already exists in Auth-db
+                            AND (
                                 (co.recognition_dts
                                 + ((EXTRACT(YEAR FROM current_date) - EXTRACT(YEAR FROM co.recognition_dts)) * interval '1 year')
                                 + interval '1 day')::date = current_date
                             )
-                        AND (
+                            AND (
+                                -- Exclude companies founded in the current year, include those from previous year
                                 (
                                     EXTRACT(YEAR FROM co.recognition_dts) = EXTRACT(YEAR FROM current_date) - 1
                                     AND co.last_ar_filed_dt IS NULL
                                 )
+                                -- Or include if last_ar_filed_dt is not NULL and was filed in the previous year
                                 OR (
                                     co.last_ar_filed_dt IS NOT NULL
                                     AND EXTRACT(YEAR FROM co.last_ar_filed_dt) < EXTRACT(YEAR FROM current_date)
-                                );
+                                )
+                            );
                         """
                     )
                 )
