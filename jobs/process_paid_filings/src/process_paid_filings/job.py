@@ -245,6 +245,7 @@ def run():
                         f' {filing["filing"]["business"]["identifier"]}.'
                     )
                 else:
+                    application.logger.debug("Sending filing JSON: %s", json.dumps(filing, indent=2))
                     colin_ids = send_filing(
                         app=application, filing=filing, filing_id=filing_id, token=token
                     )
