@@ -59,18 +59,24 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       await keycloak.getToken(true) // force refresh
       // }
 
+      const accountPayload: any = {
+        name: data.accountName,
+        contactPoint: {
+          email: data.contact.email,
+          phone: data.contact.phone,
+          extension: data.contact.extension ? Number(data.contact.extension) : undefined
+        }
+      }
+
+      if (data.mailingAddress) {
+        accountPayload.mailingAddress = data.mailingAddress
+      }
+
       const response = await useBarApi<Org>(
         '/user/accounts',
         {
           method: 'POST',
-          body: {
-            name: data.accountName,
-            contactPoint: {
-              email: data.contact.email,
-              phone: data.contact.phone,
-              extension: data.contact.extension ? Number(data.contact.extension) : undefined
-            }
-          }
+          body: accountPayload
         },
         'token',
         'An error occurred while creating a new account.'
@@ -81,10 +87,34 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
           email: data.contact.email,
           phone: data.contact.phone,
           extension: data.contact.extension ? Number(data.contact.extension) : undefined
-        }]
+        }] as any
       }
       currentAccount.value = response
       userAccounts.value.push(response)
+
+      // After successful account and basic contact creation, add mailing address
+      // REMOVED: This is now handled in the initial POST request
+      // if (currentAccount.value.id && data.mailingAddress) {
+      //   try {
+      //     await useBarApi(
+      //       `/user/accounts/${currentAccount.value.id}/mailing-address`,
+      //       {
+      //         method: 'PUT',
+      //         body: data.mailingAddress
+      //       },
+      //       'token',
+      //       'An error occurred while adding the mailing address.'
+      //     )
+      //     console.log('Mailing address added successfully for account:', currentAccount.value.id)
+      //   } catch (mailError) {
+      //     console.error('Failed to add mailing address for account:', currentAccount.value.id, mailError)
+      //     alertStore.addAlert({
+      //       severity: 'error',
+      //       description: 'Account was created, but failed to add mailing address. Please update it manually.',
+      //       category: AlertCategory.CREATE_ACCOUNT
+      //     })
+      //   }
+      // }
 
       console.log('Account created successfully with email:', data.contact.email)
       await getUserAccounts()
@@ -92,13 +122,12 @@ export const useAccountStore = defineStore('bar-sbc-account-store', () => {
       if (callback) {
         callback()
       }
-    } catch {
+    } catch (error) {
       console.error('Failed to create account with email:', data.contact.email, error)
       alertStore.addAlert({
         severity: 'error',
         category: AlertCategory.CREATE_ACCOUNT
       })
-      console.error('Error creating new account:', error)
     } finally {
       loading.value = false
     }

@@ -20,7 +20,7 @@
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 # THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
@@ -120,8 +120,14 @@ class AccountService:
             "typeCode": "BASIC",
             "productSubscriptions": [{"productCode": "BUSINESS"}],
             "paymentInfo": {"paymentMethod": "DIRECT_PAY"},
+            "isBusinessAccount": False
         }
         create_account_payload["name"] = account_details.get("name")
+        
+        # Include mailing address if provided
+        if mailing_address := account_details.get("mailingAddress"):
+            create_account_payload["mailingAddress"] = mailing_address
+            
         new_user_account_details = RestService.post(
             data=create_account_payload,
             endpoint=endpoint,
