@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '#ui/types'
 import { z } from 'zod'
 import { handleFormErrorEvent } from '~/utils/form/handleFormErrorEvent'
-import { UForm } from '#components'
+import { UForm, USelectMenu } from '#components'
+import { isoCountriesList, countrySubdivisions } from '~/utils/validate/isoCountriesList'
+import type { Iso3166_1Country, SbcCountrySubdivision } from '~/utils/validate/isoCountriesList'
+
 const localePath = useLocalePath()
 const { t } = useI18n()
 const accountStore = useAccountStore()
@@ -24,7 +27,31 @@ const accountDetails = reactive<NewAccount>({
     phone: undefined,
     extension: undefined,
     email: undefined
+  },
+  mailingAddress: {
+    street: undefined,
+    streetAdditional: undefined,
+    city: undefined,
+    region: undefined,
+    postalCode: undefined,
+    country: 'CA',
+    deliveryInstructions: undefined
   }
+})
+
+const countryOptions = isoCountriesList.map(country => ({ label: country.name, value: country.alpha_2 }))
+
+const regionOptions = computed(() => {
+  const selectedCountryCode = accountDetails.mailingAddress.country?.toLowerCase()
+  if (selectedCountryCode === 'ca' || selectedCountryCode === 'us') {
+    return countrySubdivisions[selectedCountryCode].map(sub => ({ label: sub.name, value: sub.code }))
+  }
+  return []
+})
+
+const isRegionDropdown = computed(() => {
+  const selectedCountryCode = accountDetails.mailingAddress.country?.toLowerCase()
+  return selectedCountryCode === 'ca' || selectedCountryCode === 'us'
 })
 
 const accountSchema = z.object({
@@ -35,16 +62,26 @@ const accountSchema = z.object({
       .regex(/^[0-9]*$/, { message: t('page.createAccount.form.contactDetailsSection.error.phoneExt.invalid') })
       .optional(),
     email: z.string({ required_error: t('page.createAccount.form.contactDetailsSection.error.email.req') }).email({ message: t('page.createAccount.form.contactDetailsSection.error.email.invalid') })
+  }),
+  mailingAddress: z.object({
+    street: z.string({ required_error: t('page.createAccount.form.addressSection.error.street.req') }),
+    streetAdditional: z.string().optional(),
+    city: z.string({ required_error: t('page.createAccount.form.addressSection.error.city.req') }),
+    region: z.string().optional(),
+    postalCode: z.string({ required_error: t('page.createAccount.form.addressSection.error.postalCode.req') }),
+    country: z.string({ required_error: t('page.createAccount.form.addressSection.error.country.req') }),
+    deliveryInstructions: z.string().optional()
   })
 })
 
 type FormSchema = z.output<typeof accountSchema>
 
 async function submitCreateAccountForm (event: FormSubmitEvent<FormSchema>) {
+  if (!isRegionDropdown.value && accountDetails.mailingAddress.region && countrySubdivisions.ca.some(p => p.code === accountDetails.mailingAddress.region) || countrySubdivisions.us.some(s => s.code === accountDetails.mailingAddress.region)) {
+  }
   await accountStore.createNewAccount(event.data, () => navigateTo(localePath('/annual-report')))
 }
 
-// custom validate account name on blur, using debounced on input is giving me issues currently
 const validate = async (state: any): Promise<FormError[]> => {
   const errors = []
   try {
@@ -56,14 +93,33 @@ const validate = async (state: any): Promise<FormError[]> => {
   } catch {
     // fail silently
   }
+  if (!isRegionDropdown.value && state.mailingAddress.region && (countrySubdivisions.ca.some(p => p.code === state.mailingAddress.region) || countrySubdivisions.us.some(s => s.code === state.mailingAddress.region))) {
+  }
+
   return errors
 }
 
-// try to prefill account name on page load
+watch(() => accountDetails.mailingAddress.country, (newCountry, oldCountry) => {
+  const oldCountryCode = oldCountry?.toLowerCase()
+  const newCountryCode = newCountry?.toLowerCase()
+
+  const wasDropdown = oldCountryCode === 'ca' || oldCountryCode === 'us'
+  const isNowDropdown = newCountryCode === 'ca' || newCountryCode === 'us'
+
+  if (wasDropdown && !isNowDropdown) {
+    accountDetails.mailingAddress.region = undefined
+    accountFormRef.value?.validate('mailingAddress.region', { silent: true })
+  }
+  else if (!wasDropdown && isNowDropdown) {
+    accountDetails.mailingAddress.region = undefined
+    accountFormRef.value?.validate('mailingAddress.region', { silent: true })
+  }
+})
+
 if (import.meta.client) {
   try {
-    const name = parseSpecialChars(keycloak.kcUser.value.fullName, '') // parse name if special chars
-    accountDetails.accountName = await accountStore.findAvailableAccountName(name) // find account name using users name
+    const name = parseSpecialChars(keycloak.kcUser.value.fullName, '')
+    accountDetails.accountName = await accountStore.findAvailableAccountName(name)
   } catch (e) {
     console.error(`Could not prefill account name: ${e}`)
   } finally {
@@ -89,7 +145,6 @@ if (import.meta.client) {
       <SbcPageSectionCard
         :heading="$t('page.createAccount.h2')"
       >
-        <!-- display current users name -->
         <div class="flex flex-col gap-y-4 md:grid md:grid-cols-6">
           <span class="col-span-1 col-start-1 font-semibold text-bcGovColor-darkGray">{{ $t('page.createAccount.form.infoSection.fieldSet') }}</span>
           <div class="col-span-full col-start-2 flex flex-col gap-2 text-bcGovColor-midGray">
@@ -109,7 +164,6 @@ if (import.meta.client) {
           @error="handleFormErrorEvent"
           @submit="submitCreateAccountForm"
         >
-          <!-- account name -->
           <span aria-hidden="true" class="col-span-1 col-start-1 row-span-1 row-start-1 font-semibold text-bcGovColor-darkGray">{{ $t('page.createAccount.form.accountNameSection.fieldSet') }}</span>
           <UFormGroup name="accountName" class="col-span-full col-start-2 row-span-1 row-start-1">
             <UInput
@@ -121,11 +175,9 @@ if (import.meta.client) {
             />
           </UFormGroup>
 
-          <!-- contact details -->
           <span aria-hidden="true" class="col-span-1 col-start-1 row-span-1 row-start-3 mt-4 font-semibold text-bcGovColor-darkGray md:mt-0">{{ $t('page.createAccount.form.contactDetailsSection.fieldSet') }}</span>
           <div class="col-span-full col-start-2 row-span-1 row-start-3">
             <div class="flex flex-col justify-between gap-4 md:flex-row">
-              <!-- phone number -->
               <UFormGroup name="contact.phone" class="md:flex-1">
                 <UInput
                   v-model="accountDetails.contact.phone"
@@ -134,7 +186,6 @@ if (import.meta.client) {
                   :aria-label="$t('page.createAccount.form.contactDetailsSection.phoneInputLabel')"
                 />
               </UFormGroup>
-              <!-- phone number extension -->
               <UFormGroup name="contact.extension" class="md:flex-1">
                 <UInput
                   v-model="accountDetails.contact.extension"
@@ -149,7 +200,6 @@ if (import.meta.client) {
               </UFormGroup>
             </div>
           </div>
-          <!-- email address -->
           <UFormGroup name="contact.email" class="col-span-full col-start-2 row-span-1 row-start-4">
             <UInput
               v-model="accountDetails.contact.email"
@@ -159,8 +209,95 @@ if (import.meta.client) {
             />
           </UFormGroup>
 
-          <!-- submit button -->
-          <div class="col-span-full col-start-1 row-span-1 row-start-6">
+          <span aria-hidden="true" class="col-span-1 col-start-1 row-span-1 row-start-5 mt-4 font-semibold text-bcGovColor-darkGray md:mt-0">{{ $t('page.createAccount.form.addressSection.fieldSet') }}</span>
+          <div class="col-span-full col-start-2 row-span-1 row-start-5">
+            <div class="flex flex-col gap-4">
+              <UFormGroup name="mailingAddress.street">
+                <UInput
+                  v-model="accountDetails.mailingAddress.street"
+                  :variant="handleFormInputVariant('mailingAddress.street', accountFormRef?.errors)"
+                  :placeholder="$t('page.createAccount.form.addressSection.streetInputLabel')"
+                  :aria-label="$t('page.createAccount.form.addressSection.streetInputLabel')"
+                />
+              </UFormGroup>
+
+              <UFormGroup name="mailingAddress.streetAdditional">
+                <UInput
+                  v-model="accountDetails.mailingAddress.streetAdditional"
+                  :variant="handleFormInputVariant('mailingAddress.streetAdditional', accountFormRef?.errors)"
+                  :placeholder="$t('page.createAccount.form.addressSection.streetAdditionalInputLabel')"
+                  :aria-label="$t('page.createAccount.form.addressSection.streetAdditionalInputLabel')"
+                />
+              </UFormGroup>
+
+              <div class="flex flex-col justify-between gap-4 md:flex-row">
+                <UFormGroup name="mailingAddress.city" class="md:flex-1">
+                  <UInput
+                    v-model="accountDetails.mailingAddress.city"
+                    :variant="handleFormInputVariant('mailingAddress.city', accountFormRef?.errors)"
+                    :placeholder="$t('page.createAccount.form.addressSection.cityInputLabel')"
+                    :aria-label="$t('page.createAccount.form.addressSection.cityInputLabel')"
+                  />
+                </UFormGroup>
+
+                <UFormGroup name="mailingAddress.region" class="md:flex-1">
+                  <USelectMenu
+                    v-if="isRegionDropdown"
+                    v-model="accountDetails.mailingAddress.region"
+                    :options="regionOptions"
+                    value-attribute="value"
+                    option-attribute="label"
+                    searchable
+                    :placeholder="$t('page.createAccount.form.addressSection.regionSelectPlaceholder')"
+                    :aria-label="$t('page.createAccount.form.addressSection.regionSelectPlaceholder')"
+                    :variant="handleFormInputVariant('mailingAddress.region', accountFormRef?.errors)"
+                  />
+                  <UInput
+                    v-else
+                    v-model="accountDetails.mailingAddress.region"
+                    :variant="handleFormInputVariant('mailingAddress.region', accountFormRef?.errors)"
+                    :placeholder="$t('page.createAccount.form.addressSection.regionInputLabel')"
+                    :aria-label="$t('page.createAccount.form.addressSection.regionInputLabel')"
+                  />
+                </UFormGroup>
+              </div>
+
+              <div class="flex flex-col justify-between gap-4 md:flex-row">
+                <UFormGroup name="mailingAddress.postalCode" class="md:flex-1">
+                  <UInput
+                    v-model="accountDetails.mailingAddress.postalCode"
+                    :variant="handleFormInputVariant('mailingAddress.postalCode', accountFormRef?.errors)"
+                    :placeholder="$t('page.createAccount.form.addressSection.postalCodeInputLabel')"
+                    :aria-label="$t('page.createAccount.form.addressSection.postalCodeInputLabel')"
+                  />
+                </UFormGroup>
+
+                <UFormGroup name="mailingAddress.country" class="md:flex-1">
+                  <USelectMenu
+                    v-model="accountDetails.mailingAddress.country"
+                    :options="countryOptions"
+                    value-attribute="value"
+                    option-attribute="label"
+                    searchable
+                    :placeholder="$t('page.createAccount.form.addressSection.countrySelectPlaceholder')"
+                    :aria-label="$t('page.createAccount.form.addressSection.countrySelectPlaceholder')"
+                    :variant="handleFormInputVariant('mailingAddress.country', accountFormRef?.errors)"
+                  />
+                </UFormGroup>
+              </div>
+
+              <UFormGroup name="mailingAddress.deliveryInstructions">
+                <UInput
+                  v-model="accountDetails.mailingAddress.deliveryInstructions"
+                  :variant="handleFormInputVariant('mailingAddress.deliveryInstructions', accountFormRef?.errors)"
+                  :placeholder="$t('page.createAccount.form.addressSection.deliveryInstructionsInputLabel')"
+                  :aria-label="$t('page.createAccount.form.addressSection.deliveryInstructionsInputLabel')"
+                />
+              </UFormGroup>
+            </div>
+          </div>
+
+          <div class="col-span-full col-start-1 row-span-1 row-start-7">
             <div class="flex">
               <UButton
                 class="ml-auto"

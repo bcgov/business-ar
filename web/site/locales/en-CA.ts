@@ -175,7 +175,33 @@ export default {
     office: 'Office',
     reportsSequential: 'Reports must be filed from oldest to newest.',
     annualReportWithDate: '{year} BC Annual Report',
-    annualReportDueDate: 'Due {date}'
+    annualReportDueDate: 'Due {date}',
+    addressSection: {
+      fieldSet: 'Mailing Address',
+      streetInputLabel: 'Street Address',
+      streetAdditionalInputLabel: 'Additional Address Info (Optional)',
+      cityInputLabel: 'City',
+      regionInputLabel: 'Province/State (Optional)',
+      postalCodeInputLabel: 'Postal/ZIP Code',
+      countryInputLabel: 'Country',
+      deliveryInstructionsInputLabel: 'Delivery Instructions (Optional)',
+      countrySelectPlaceholder: 'Select Country',
+      regionSelectPlaceholder: 'Select Province/State',
+      error: {
+        street: {
+          req: 'Street address is required'
+        },
+        city: {
+          req: 'City is required'
+        },
+        postalCode: {
+          req: 'Postal/ZIP code is required'
+        },
+        country: {
+          req: 'Country is required'
+        }
+      }
+    }
   },
   links: {
     busCorpAct: {

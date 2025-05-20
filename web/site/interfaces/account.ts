@@ -20,4 +20,12 @@ export interface NewAccount {
     email: string | undefined
     extension?: string | undefined
   }
+  mailingAddress?: {
+    street: string | undefined
+    streetAdditional?: string | undefined
+    city: string | undefined
+    region: string | undefined
+    postalCode: string | undefined
+    country: string | undefined
+  }
 }

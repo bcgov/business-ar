@@ -175,7 +175,33 @@ export default {
     office: 'Bureau',
     reportsSequential: 'Les rapports doivent être déposés du plus ancien au plus récent.',
     annualReportWithDate: 'Rapport Annuel De La CB {year}',
-    annualReportDueDate: 'Échéance le {date}'
+    annualReportDueDate: 'Échéance le {date}',
+    addressSection: {
+      fieldSet: 'Adresse Postale',
+      streetInputLabel: 'Adresse',
+      streetAdditionalInputLabel: 'Adresse additionnelle (Facultatif)',
+      cityInputLabel: 'Ville',
+      regionInputLabel: 'Province/Territoire (Facultatif)',
+      postalCodeInputLabel: 'Code Postal',
+      countryInputLabel: 'Pays',
+      deliveryInstructionsInputLabel: 'Instructions de Livraison (Facultatif)',
+      countrySelectPlaceholder: 'Sélectionner un Pays',
+      regionSelectPlaceholder: 'Sélectionner une Province/Territoire',
+      error: {
+        street: {
+          req: 'L\'adresse est requise'
+        },
+        city: {
+          req: 'La ville est requise'
+        },
+        postalCode: {
+          req: 'Le code postal est requis'
+        },
+        country: {
+          req: 'Le pays est requis'
+        }
+      }
+    }
   },
   links: {
     busCorpAct: {
