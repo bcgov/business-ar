@@ -46,8 +46,6 @@ serialPipeline:
       cloudsql-instances: "a083gt-dev:northamerica-northeast1:businesses-db-dev"
       run-command: "./run.sh"
       service-account: "sa-job@a083gt-dev.iam.gserviceaccount.com"
-      task-max-retries: '0'
-      task-timeout: '700'
  - targetId: a083gt-test
    profiles: [test]
    strategy:
