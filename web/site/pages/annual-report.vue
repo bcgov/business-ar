@@ -20,24 +20,9 @@ definePageMeta({
 })
 
 // options for radio buttons
-const options = [
-  {
-    label: t('page.annualReport.form.agmStatus.opt1', { year: busStore.currentBusiness.nextARYear }),
-    value: 'option-1'
-  },
-  {
-    label: t('page.annualReport.form.agmStatus.opt2', { year: busStore.currentBusiness.nextARYear }),
-    value: 'option-2'
-  },
-  {
-    label: t('page.annualReport.form.agmStatus.opt3', { year: busStore.currentBusiness.nextARYear }),
-    value: 'option-3'
-  }
-]
 
 const arFormRef = ref<InstanceType<typeof UForm> | null>(null)
 const checkboxRef = ref<InstanceType<typeof UCheckbox> | null>(null)
-const selectedRadio = ref<string | null>(null)
 
 // Mobile View dropdowns
 const isMobile = ref(false)
@@ -50,38 +35,6 @@ const arData = reactive<{ agmDate: Date | null, voteDate: Date | null, officeAnd
   voteDate: null,
   officeAndDirectorsConfirmed: false
 })
-
-// validate form based on the selected radio value
-const validate = (state: { agmDate: string | null, voteDate: string | null, officeAndDirectorsConfirmed: boolean }): FormError[] => {
-  arFormRef.value?.clear() // reset form errors
-  const errors: FormError[] = []
-
-  switch (selectedRadio.value) {
-    case null: // add general error if no radio selected
-      errors.push({ path: 'radioGroup', message: t('page.annualReport.form.agmStatus.error') })
-      break
-
-    case 'option-1': // add agm date field error if selected option-1
-      if (!state.agmDate) {
-        errors.push({ path: 'agmDate', message: t('page.annualReport.form.agmDate.error') })
-      }
-      break
-
-    case 'option-2': // no error for option-2
-      break
-
-    case 'option-3': // add vote date field error if selected option-3
-      if (!state.voteDate) {
-        errors.push({ path: 'voteDate', message: t('page.annualReport.form.voteDate.error') })
-      }
-      break
-
-    default:
-      break
-  }
-
-  return errors
-}
 
 // separate checkbox validation method, cant include in validate prop on UForm
 function handleCertifyCheckboxValidation () {
@@ -99,7 +52,7 @@ function handleCertifyCheckboxValidation () {
 }
 
 // handle submitting filing and directing to pay screen
-async function submitAnnualReport (event: FormSubmitEvent<any>) {
+async function submitAnnualReport (_event: FormSubmitEvent<any>) {
   arFormRef.value?.clear() // reset form errors
   try {
     arStore.loading = true
@@ -108,9 +61,9 @@ async function submitAnnualReport (event: FormSubmitEvent<any>) {
     }
     // set data based off radio option
     const arFiling: ArFormData = {
-      agmDate: selectedRadio.value === 'option-1' ? datetimeStringToDateString(event.data.agmDate) : null,
-      votedForNoAGM: selectedRadio.value === 'option-3',
-      unanimousResolutionDate: selectedRadio.value === 'option-3' ? datetimeStringToDateString(event.data.voteDate) : null
+      agmDate: null,
+      votedForNoAGM: arStore.arFiling.filing.annualReport.votedForNoAGM,
+      unanimousResolutionDate: arStore.arFiling.filing.annualReport.unanimousResolutionDate
     }
 
     // submit filing
@@ -146,16 +99,6 @@ watch(
   }, { deep: true }
 )
 
-// reset form state any time the radio option changes
-watch(selectedRadio, (newVal) => {
-  arFormRef.value?.clear('radioGroup') // clear radio group error if exists
-  if (newVal) {
-    arData.agmDate = null
-    arData.voteDate = null
-    arData.officeAndDirectorsConfirmed = false
-  }
-})
-
 function handleResize () {
   isMobile.value = window.innerWidth < 640
 }
@@ -184,22 +127,6 @@ if (import.meta.client) {
           severity: 'error',
           category: AlertCategory.PAYMENT_ERROR
         })
-      }
-
-      // set radio option and prefill date inputs
-      const votedForNoAGM = arStore.arFiling.filing.annualReport.votedForNoAGM
-      const agmDate = arStore.arFiling.filing.annualReport.annualGeneralMeetingDate
-      const voteDate = arStore.arFiling.filing.annualReport.unanimousResolutionDate
-      if (votedForNoAGM) {
-        selectedRadio.value = 'option-3'
-        await nextTick() // wait for dom update so input exists before setting date
-        arData.voteDate = voteDate !== null ? dateStringToDate(voteDate) : null
-      } else if (!votedForNoAGM && !agmDate) {
-        selectedRadio.value = 'option-2'
-      } else if (agmDate) {
-        selectedRadio.value = 'option-1'
-        await nextTick() // wait for dom update so input exists before setting date
-        arData.agmDate = dateStringToDate(agmDate)
       }
     }
   } catch { // silently handle errors
@@ -239,107 +166,14 @@ if (import.meta.client) {
             :is-authenticated="keycloak.isAuthenticated()"
           />
 
-          <UDivider class="mb-4 mt-8" />
-
           <UForm
             ref="arFormRef"
             :state="arData"
-            :validate="validate"
-            :validate-on="['submit']"
             autocomplete="off"
             class="space-y-6"
             @submit="submitAnnualReport"
             @error="handleFormErrorEvent"
-          >
-            <UFormGroup name="radioGroup">
-              <!-- label for visual -->
-              <template #label>
-                <span>{{ $t('page.annualReport.form.agmStatus.question', { year: busStore.nextArYear }) }}
-                  <SbcTooltip id="agm-status-tooltip" :text="$t('page.annualReport.form.agmStatus.tooltip')" />
-                </span>
-              </template>
-              <fieldset>
-                <!-- legend for accessibility -->
-                <legend class="sr-only">
-                  {{ $t('page.annualReport.form.agmStatus.question', { year: busStore.nextArYear }) }}
-                </legend>
-                <!-- use radio instead of radio group, allows aria-describedby property -->
-                <div class="space-y-1">
-                  <URadio
-                    v-for="option in options"
-                    :key="option.value"
-                    v-model="selectedRadio"
-                    v-bind="option"
-                    aria-describedby="agm-status-tooltip"
-                    :ui="{ label: 'text-base font-medium text-bcGovColor-midGray dark:text-gray-200', wrapper: 'relative flex items-center' }"
-                  />
-                </div>
-              </fieldset>
-            </UFormGroup>
-
-            <!-- AGM Date -->
-            <UFormGroup
-              v-if="selectedRadio && selectedRadio === 'option-1'"
-              name="agmDate"
-              class="mt-4"
-              :help="$t('page.annualReport.form.agmDate.format')"
-              :ui="{ help: 'text-bcGovColor-midGray' }"
-            >
-              <SbcDatePicker
-                id="date-select-agm"
-                v-model="arData.agmDate"
-                :max-date="new Date()"
-                :placeholder="$t('page.annualReport.form.agmDate.placeholder')"
-                :arialabel="$t('page.annualReport.form.agmDate.label')"
-                :input-variant="handleFormInputVariant('agmDate', arFormRef?.errors)"
-                @blur="arFormRef?.validate('agmDate', { silent: true } )"
-              />
-            </UFormGroup>
-
-            <!-- did not hold agm warning -->
-            <UAlert
-              v-if="selectedRadio && (selectedRadio === 'option-2' || selectedRadio === 'option-3')"
-              icon="i-mdi-warning"
-              variant="subtle"
-              color="red"
-              :ui="{ description: 'mt-1 text-sm leading-4 opacity-90 text-bcGovColor-midGray', variant: { subtle: 'ring-2' }, rounded: 'rounded-none' }"
-            >
-              <template #description>
-                <div class="flex flex-col gap-1">
-                  <SbcI18nBold translation-path="page.annualReport.form.complianceWarning.main" />
-                  <i18n-t keypath="page.annualReport.form.complianceWarning.link" tag="span" scope="global">
-                    <template #link>
-                      <a class="text-sm text-bcGovBlue-500 underline" target="_blank" href="https://www.bclaws.gov.bc.ca/civix/document/id/complete/statreg/02057_06#section182">
-                        {{ $t('links.busCorpAct.sect182') }}
-                      </a>
-                      <span class="ml-1 inline-flex pb-1 align-middle">
-                        <UIcon name="i-mdi-open-in-new" class="size-4 shrink-0 text-bcGovBlue-500" />
-                      </span>
-                    </template>
-                  </i18n-t>
-                </div>
-              </template>
-            </UAlert>
-
-            <!-- Unanimous vote date -->
-            <UFormGroup
-              v-if="selectedRadio && selectedRadio === 'option-3'"
-              name="voteDate"
-              class="mt-4"
-              :help="$t('page.annualReport.form.voteDate.format')"
-              :ui="{ help: 'text-bcGovColor-midGray' }"
-            >
-              <SbcDatePicker
-                id="date-select-vote"
-                v-model="arData.voteDate"
-                :max-date="new Date()"
-                :placeholder="$t('page.annualReport.form.voteDate.placeholder')"
-                :arialabel="$t('page.annualReport.form.voteDate.label')"
-                :input-variant="handleFormInputVariant('voteDate', arFormRef?.errors)"
-                @blur="arFormRef?.validate('voteDate', { silent: true } )"
-              />
-            </UFormGroup>
-          </UForm>
+          />
         </SbcPageSectionCard>
 
         <h2 class="text-lg font-semibold text-bcGovColor-darkGray">
