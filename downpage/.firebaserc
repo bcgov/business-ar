@@ -1,5 +1,23 @@
 {
   "projects": {
-    "default": "a083gt-prod"
-  }
+    "default": "a083gt-prod",
+    "dev": "yfthig-dev"
+  },
+  "targets": {
+    "yfthig-dev": {
+      "hosting": {
+        "downpage": [
+          "business-ar-dev"
+        ]
+      }
+    },
+    "yfthig-test": {
+      "hosting": {
+        "downpage": [
+          "business-ar-test"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

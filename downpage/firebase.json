@@ -1,7 +1,13 @@
 {
   "hosting": {
-    "site": "downpage",
-    "public": "/",
+    "target": "downpage",
+    "public": ".",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
     "ignore": [
       "**/k8s/**",
       "**/.*",
